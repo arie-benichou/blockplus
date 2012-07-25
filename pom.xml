@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 
 	<name>blokus</name>
-	<url>http://maven.apache.org</url>
+	<url>https://code.google.com/p/blockplus/</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
