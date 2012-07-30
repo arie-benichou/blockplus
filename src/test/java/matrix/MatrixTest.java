@@ -7,7 +7,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import blockplus.matrix.Matrix;
+
 // TODO tester hashCode() et equals()
+// TODO tester getPositionHavingLowestValue()
+// TODO tester getPositionHavingHighestValue()
 public class MatrixTest {
 
     @Test
