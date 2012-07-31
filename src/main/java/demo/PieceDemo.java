@@ -22,9 +22,9 @@ import java.util.List;
 import blockplus.Color;
 import blockplus.board.Board;
 import blockplus.board.BoardRenderingManager;
-import blockplus.board.position.Position;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
+import blockplus.position.Position;
 
 import com.google.common.base.Supplier;
 
@@ -47,32 +47,29 @@ public final class PieceDemo {
 
     private static void putPiece(final BoardRenderingManager boardRenderingManager, final Board board, final Supplier<PieceInterface> pieceSupplier) {
         for (final PieceInterface rotation : pieceSupplier.get().getRotations()) {
-            System.out.println(boardRenderingManager.render(board.put(Color.Blue, rotation, Position.from(5, 10))));
+            System.out.println(boardRenderingManager.render(board.put(Color.Blue, rotation, Position.from(3, 3))));
         }
     }
 
     private static void putAllPieces() {
         final BoardRenderingManager boardRenderingManager = new BoardRenderingManager();
         final String data = "" +
-                "11111111111111111111" +
-                "11111111111111111111" +
-                "11111111111111111111" +
-                "11111111111111111111" +
-                "11111111111111111111" +
-                "11111111111111111111" +
-                "11111111111111111111" +
-                "11111111111111111111" +
-                "11111111111111111111" +
-                "11111111111111111111";
+                "3111113" +
+                "1111111" +
+                "1111111" +
+                "1111111" +
+                "1111111" +
+                "1111111" +
+                "3111113";
         for (final Pieces piece : Pieces.values()) {
             System.out.println("----------------8<----------------");
-            System.out.println(piece);
+            System.out.println(piece.name());
             putPiece(boardRenderingManager, Board.from(data), piece); // TODO ? BoardManager
         }
     }
 
     public static void main(final String[] args) {
-        renderAllPieces();
+        //renderAllPieces();
         putAllPieces();
     }
 

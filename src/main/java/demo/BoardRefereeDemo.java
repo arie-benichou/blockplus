@@ -35,56 +35,50 @@ import com.google.common.collect.Maps;
 
 public class BoardRefereeDemo {
 
-    public static void main(final String[] args) throws InterruptedException {
+    public static void main(final String[] args) {
 
         final String data = "" +
-                "33333333333333333333" +
-                "33333333333333333333" +
-                "33333333333333333333" +
-                "33333333333333333333" +
-                "33333333333333333333" +
-                "33333333333333311111" +
-                "33333333333333311111" +
-                "33333333333333311111" +
-                "33333333333333311111" +
-                "33333333333333311111";
+                "3111113" +
+                "1111111" +
+                "1111111" +
+                "1111111" +
+                "1111111" +
+                "1111111" +
+                "3111111";
+
         final Board board = Board.from(data);
+
         final BoardRenderingManager boardRenderingManager = new BoardRenderingManager();
-        System.out.println(boardRenderingManager.render(board));
 
         final Map<PieceInterface, Integer> instanceOfPieces = Maps.newHashMap();
-        for (final Pieces piece : Pieces.values())
+        for (final Pieces piece : Pieces.values()) {
+            //instanceOfPieces.put(piece.get(), 1000);
             instanceOfPieces.put(piece.get(), 1);
-        instanceOfPieces.put(Pieces.get(0).get(), 0); // TODO tester les opérations avec la pièce null
-
-        PiecesBag bagOfPieces = new PiecesBag(instanceOfPieces);
-        Player player = new Player(Color.Blue, bagOfPieces);
-
-        final BoardReferee boardReferee = new BoardReferee();
-        final Stopwatch stopwatch = new Stopwatch();
-
-        //while (!player.getBagOfPieces().isEmpty()) {
-
-        stopwatch.start();
-        final List<Move> legalMoves = boardReferee.getLegalMoves(board, player);
-        stopwatch.stop();
-
-        System.out.println();
-        System.out.println("user's remaining pieces: " + bagOfPieces.getList().size());
-
-        final PieceInterface pieceToRemove = player.getBagOfPieces().iterator().next();
-        bagOfPieces = bagOfPieces.remove(pieceToRemove);
-        player = new Player(Color.Blue, bagOfPieces);
-
-        for (final Move legalMove : legalMoves) {
-            System.out.println(boardRenderingManager.render(legalMove.getNewBoard()));
         }
 
-        System.out.println("number of legal moves:" + legalMoves.size());
-        System.out.println();
-        //System.out.println(pieceToRemove.getId());
-        System.out.println("computation time: " + stopwatch.elapsedMillis());
-        //}
+        instanceOfPieces.put(Pieces.get(0).get(), 0); // TODO tester les opérations avec la pièce null
+
+        final PiecesBag bagOfPieces = new PiecesBag(instanceOfPieces);
+        final Player player = new Player(Color.Blue, bagOfPieces);
+
+        final BoardReferee boardReferee = new BoardReferee();
+
+        final Stopwatch stopwatch = new Stopwatch();
+
+        if (!player.getBagOfPieces().isEmpty()) {
+
+            stopwatch.start();
+            final List<Move> legalMoves = boardReferee.getOrderedLegalMoves(board, player);
+            stopwatch.stop();
+
+            for (final Move legalMove : legalMoves)
+                System.out.println(boardRenderingManager.render(legalMove.getNewBoard()));
+
+            System.out.println("number of pieces      : " + player.getBagOfPieces().getList().size());
+            System.out.println("number of legal moves : " + legalMoves.size());
+            System.out.println("computation time      : " + stopwatch.elapsedMillis());
+        }
 
     }
+
 }

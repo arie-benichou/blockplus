@@ -15,9 +15,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.board.position;
+package blockplus.position;
 
-import blockplus.board.direction.DirectionInterface;
+import blockplus.direction.DirectionInterface;
 
 public interface PositionInterface extends Comparable<PositionInterface> {
 

@@ -17,6 +17,7 @@
 
 package blockplus.board;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,12 +26,11 @@ import java.util.Set;
 import blockplus.Color;
 import blockplus.Move;
 import blockplus.Player;
-import blockplus.board.direction.DirectionInterface;
-import blockplus.board.position.PositionInterface;
+import blockplus.direction.DirectionInterface;
 import blockplus.piece.PieceInterface;
+import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 // TODO caching
@@ -47,7 +47,7 @@ public class BoardReferee {
     private boolean hasAtLeastOneCellWithSideNeighbourOfSameColor(final Board board, final Color color, final PieceInterface piece,
             final PositionInterface position) {
         for (final PositionInterface coordinates : piece.getPositions(position))
-            for (final Integer value : board.getSideNeighbours(coordinates).values())
+            for (final Integer value : board.getSides(coordinates).values())
                 if (value == color.getValue()) return true;
         return false;
     }
@@ -103,37 +103,50 @@ public class BoardReferee {
         return distinctLegalMovesByPiece;
     }
 
-    private List<Move> getLegalMovesByCell(final Player player, final Board board, final PositionInterface position) {
+    private List<Move> getLegalMovesByPosition(final Player player, final Board board, final PositionInterface position) {
         final List<Move> legalMovesByCell = Lists.newArrayList();
-        for (final PieceInterface piece : player.getBagOfPieces()) {
+        for (final PieceInterface piece : player.getBagOfPieces())
             legalMovesByCell.addAll(this.getDistinctLegalMovesByPiece(board, player.getColor(), piece, position));
-        }
         return legalMovesByCell;
     }
 
-    private Map<Integer, Integer> getPotentialCells(final Board board, final Color color) {
-        final List<Integer> emptyCells = board.getEmptyCells();
-        final Map<Integer, Integer> cornersProductByEmptyCellHavingAtLeastOneCornerOfSameColor = Maps.newTreeMap();
-        for (final Integer cellIndex : emptyCells) {
-            final Map<DirectionInterface, Integer> neighbours = board.getCorners(cellIndex);
+    // TODO ! réfléchir à des heuristiques permettant d'augmenter le nombre de cut-off 
+    // TODO ? utiliser un board de Color
+    // TODO ? avoir un objet Neighbourhood (Side et Corners)
+    private List<PositionInterface> getPotentialPositions(final Board board, final Color color, final List<PositionInterface> emptyCells) {
+        final List<PositionInterface> potentialPositions = Lists.newArrayList();
+        for (final PositionInterface position : emptyCells) {
+            final Map<DirectionInterface, Integer> corners = board.getCorners(position);
             int cornersProduct = 1;
-            for (final Integer n : neighbours.values())
+            for (final Integer n : corners.values()) {
                 cornersProduct *= n;
-            if (Math.abs(cornersProduct) % color.getValue() == 0)
-                cornersProductByEmptyCellHavingAtLeastOneCornerOfSameColor.put(cellIndex, cornersProduct);
+            }
+            if (Math.abs(cornersProduct) % color.getValue() != 0) continue; // Board.UNDEFINED = -1
+            /*
+            final Map<DirectionInterface, Integer> sides = board.getSides(position);
+            int sidesProduct = 1;
+            for (final Integer n : sides.values())
+                sidesProduct *= n;
+            if (Math.abs(sidesProduct) % color.getValue() == 0) continue;
+            */
+            potentialPositions.add(position);
         }
-        return cornersProductByEmptyCellHavingAtLeastOneCornerOfSameColor;
+        return potentialPositions;
     }
 
-    public List<Move> getLegalMoves(final Board board, final Player player) {
-        final Map<Integer, Integer> potentialCells = this.getPotentialCells(board, player.getColor());
-        final List<Move> legalMoves = Lists.newArrayList();
-        for (final Integer cellIndex : potentialCells.keySet()) {
-            final PositionInterface position = board.getPositionFromIndex(cellIndex);
-            final List<Move> legalMovesByCell = this.getLegalMovesByCell(player, board, position);
-            legalMoves.addAll(legalMovesByCell);
-        }
+    public Set<Move> getLegalMoves(final Board board, final Player player) {
+        final Set<Move> legalMoves = Sets.newHashSet();
+        final List<PositionInterface> potentialPositions = this.getPotentialPositions(board, player.getColor(), board.getEmptyCellPositions());
+        for (final PositionInterface potentialPosition : potentialPositions)
+            legalMoves.addAll(this.getLegalMovesByPosition(player, board, potentialPosition));
         return legalMoves;
+    }
+
+    // TODO pouvoir passer un Ordering/Comparator de Move
+    public List<Move> getOrderedLegalMoves(final Board board, final Player player) {
+        final List<Move> moves = Lists.newArrayList(this.getLegalMoves(board, player));
+        Collections.sort(moves);
+        return moves;
     }
 
     // TODO à revoir

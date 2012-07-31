@@ -19,20 +19,21 @@ package blockplus.board;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import blockplus.Color;
-import blockplus.board.direction.Direction;
-import blockplus.board.direction.DirectionInterface;
-import blockplus.board.position.Position;
-import blockplus.board.position.PositionInterface;
+import blockplus.direction.Direction;
+import blockplus.direction.DirectionInterface;
 import blockplus.piece.PieceInterface;
+import blockplus.position.Position;
+import blockplus.position.PositionInterface;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+// TODO ? avoir un board de Color
+// TODO nettoyage de la classe
 public final class Board {
 
     public final static List<DirectionInterface> CORNERS_DIRECTIONS = ImmutableList.of(
@@ -49,8 +50,8 @@ public final class Board {
             Direction.BOTTOM
             );
 
-    public final static int WIDTH = 20;
-    public final static int HEIGHT = 10;
+    public final static int WIDTH = 7;
+    public final static int HEIGHT = 7;
     public final static int SIZE = WIDTH * HEIGHT;
 
     public final static int EMPTY = 1;
@@ -80,10 +81,11 @@ public final class Board {
 
     public int getCell(final int y, final int x) {
 
+        // TODO pouvoir injecter les "special cases" au board
         if (y == -1 && x == -1) return 2 * 3 * 5 * 7;
-        if (y == -1 && x == 20) return 2 * 3 * 5 * 7;
-        if (y == 10 && x == -1) return 2 * 3 * 5 * 7;
-        if (y == 10 && x == 20) return 2 * 3 * 5 * 7;
+        if (y == -1 && x == WIDTH) return 2 * 3 * 5 * 7;
+        if (y == HEIGHT && x == -1) return 2 * 3 * 5 * 7;
+        if (y == HEIGHT && x == WIDTH) return 2 * 3 * 5 * 7;
 
         if (y < 0) return UNDEFINED;
         if (x < 0) return UNDEFINED;
@@ -131,6 +133,15 @@ public final class Board {
         return emptyCells;
     }
 
+    public List<PositionInterface> getEmptyCellPositions() {
+        final List<PositionInterface> emptyCellPositions = Lists.newArrayList();
+        for (int i = 0; i < HEIGHT; ++i)
+            for (int j = 0; j < WIDTH; ++j)
+                if (this.data[i][j] == EMPTY)
+                    emptyCellPositions.add(Position.from(i, j));
+        return emptyCellPositions;
+    }
+
     // TODO NeighbourhoodFeature
     public Map<DirectionInterface, Integer> getCorners(final int y, final int x) {
         final Map<DirectionInterface, Integer> neighbours = Maps.newHashMap();
@@ -142,6 +153,10 @@ public final class Board {
     // TODO NeighbourhoodFeature
     public Map<DirectionInterface, Integer> getCorners(final int index) {
         return this.getCorners(index / WIDTH, index % WIDTH);
+    }
+
+    public Map<DirectionInterface, Integer> getCorners(final PositionInterface position) {
+        return this.getCorners(position.row(), position.column());
     }
 
     // TODO NeighbourhoodFeature
@@ -192,7 +207,7 @@ public final class Board {
     }
 
     // TODO NeighbourhoodFeature    
-    public Map<DirectionInterface, Integer> getSideNeighbours(final PositionInterface position) {
+    public Map<DirectionInterface, Integer> getSides(final PositionInterface position) {
         return this.getNeighbours(position, SIDES_DIRECTIONS);
     }
 
@@ -226,61 +241,4 @@ public final class Board {
         return board;
     }
 
-    public static void main(final String[] args) {
-
-        final Board board;
-
-        final String data = "" +
-                "00000044444444400000" +
-                "00000043333333400000" +
-                "00000043222223400000" +
-                "00000043211123400000" +
-                "00000043210123400000" +
-                "00000043211123400000" +
-                "00000043222223400000" +
-                "00000043333333400000" +
-                "00000044444444400000" +
-                "00000000000000000000";
-
-        board = Board.from(data);
-
-        final BoardRenderingManager boardRenderingManager = new BoardRenderingManager();
-        System.out.println(boardRenderingManager.render(board));
-
-        final PositionInterface position = Position.from(4, 10);
-
-        final Map<DirectionInterface, Integer> neighbours0 = board.getNeighbours(position, 0);
-        for (final Entry<DirectionInterface, Integer> entry : neighbours0.entrySet()) {
-            System.out.println(entry);
-        }
-
-        System.out.println();
-
-        final Map<DirectionInterface, Integer> neighbours1 = board.getNeighbours(position);
-        for (final Entry<DirectionInterface, Integer> entry : neighbours1.entrySet()) {
-            System.out.println(entry);
-        }
-
-        System.out.println();
-
-        final Map<DirectionInterface, Integer> neighbours2 = board.getNeighbours(position, 2);
-        for (final Entry<DirectionInterface, Integer> entry : neighbours2.entrySet()) {
-            System.out.println(entry);
-        }
-
-        System.out.println();
-
-        final Map<DirectionInterface, Integer> neighbours3 = board.getNeighbours(position, 3);
-        for (final Entry<DirectionInterface, Integer> entry : neighbours3.entrySet()) {
-            System.out.println(entry);
-        }
-
-        System.out.println();
-
-        final Map<DirectionInterface, Integer> neighbours4 = board.getNeighbours(position, 4);
-        for (final Entry<DirectionInterface, Integer> entry : neighbours4.entrySet()) {
-            System.out.println(entry);
-        }
-
-    }
 }

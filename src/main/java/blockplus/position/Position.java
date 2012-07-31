@@ -15,28 +15,21 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.board.position;
+package blockplus.position;
 
 import java.util.Map;
 
-import blockplus.board.direction.DirectionInterface;
+import blockplus.direction.DirectionInterface;
 
 import com.google.common.collect.Maps;
 
 public final class Position implements PositionInterface {
 
-    /*-------------------------------------8<-------------------------------------*/
-
     public final static PositionInterface NULL = new Position(0, 0);
 
-    /*-------------------------------------8<-------------------------------------*/
-
     private final static int computeHashCode(final int row, final int column) {
-        //return (17 * 31 + row) * 31 + column;
         return (row + "|" + column).hashCode();
     }
-
-    /*-------------------------------------8<-------------------------------------*/
 
     public final static class Factory { // TODO à revoir
 
@@ -68,16 +61,12 @@ public final class Position implements PositionInterface {
 
     }
 
-    /*-------------------------------------8<-------------------------------------*/
-
     private final int row;
 
     @Override
     public int row() {
         return this.row;
     }
-
-    /*-------------------------------------8<-------------------------------------*/
 
     private final int column;
 
@@ -86,16 +75,12 @@ public final class Position implements PositionInterface {
         return this.column;
     }
 
-    /*-------------------------------------8<-------------------------------------*/
-
     private final int hashCode;
 
     @Override
     public int hashCode() {
         return this.hashCode;
     }
-
-    /*-------------------------------------8<-------------------------------------*/
 
     public static PositionInterface from(final int row, final int column) {
         return NULL.apply(row, column);
@@ -106,8 +91,6 @@ public final class Position implements PositionInterface {
         this.column = column;
         this.hashCode = computeHashCode(row, column);
     }
-
-    /*-------------------------------------8<-------------------------------------*/
 
     public PositionInterface apply() {
         return this;
@@ -123,19 +106,14 @@ public final class Position implements PositionInterface {
         return direction == null ? this.apply() : this.apply(this.row() + direction.rowDelta(), this.column() + direction.columnDelta());
     }
 
-    /*-------------------------------------8<-------------------------------------*/
-
     @Override
     public boolean equals(final Object object) {
         if (object == this) return true;
         if (object == null) return false;
         if (!(object instanceof PositionInterface)) return false;
         final PositionInterface that = (PositionInterface) object;
-        //if (that.hashCode() != this.hashCode()) return false;
         return that.row() == this.row() && that.column() == this.column();
     }
-
-    /*-------------------------------------8<-------------------------------------*/
 
     @Override
     public int compareTo(final PositionInterface that) {
@@ -146,14 +124,10 @@ public final class Position implements PositionInterface {
         return 0;
     }
 
-    /*-------------------------------------8<-------------------------------------*/
-
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "(" + this.row() + ", " + this.column() + ")";
     }
-
-    /*-------------------------------------8<-------------------------------------*/
 
     public boolean isNull() {
         return this.equals(NULL);

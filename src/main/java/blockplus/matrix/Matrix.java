@@ -19,8 +19,8 @@ package blockplus.matrix;
 
 import java.util.Arrays;
 
-import blockplus.board.position.Position;
-import blockplus.board.position.PositionInterface;
+import blockplus.position.Position;
+import blockplus.position.PositionInterface;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;

@@ -24,9 +24,9 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import blockplus.board.position.Position;
-import blockplus.board.position.PositionInterface;
 import blockplus.matrix.Matrix;
+import blockplus.position.Position;
+import blockplus.position.PositionInterface;
 
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
@@ -59,6 +59,7 @@ public final class Piece implements PieceInterface {
     private final Matrix matrix;
     private final PositionInterface referential;
     private final int boxingSquareSide;
+    private final int instanceOrdinal;
 
     private transient volatile List<PositionInterface> positions = null;
     private transient volatile List<PieceInterface> rotations = null;
@@ -93,20 +94,29 @@ public final class Piece implements PieceInterface {
         return highestValue - lowestValue + 1;
     }
 
-    private Piece(final int id, final Matrix matrix, final PositionInterface referential, final int boxingSquareSide) {
+    // TODO ! private
+    // TODO ? PieceInstanceManager
+    public Piece(final int id, final Matrix matrix, final PositionInterface referential, final int boxingSquareSide, final int instanceOrdinal) {
         this.id = id;
         this.matrix = matrix;
         this.referential = referential;
         this.boxingSquareSide = boxingSquareSide;
+        this.instanceOrdinal = instanceOrdinal;
     }
 
-    private Piece(final PieceInterface piece, final Matrix matrix) {
-        this(piece.getId(), matrix, piece.getReferential(), piece.getBoxingSquareSide());
+    // TODO ! private    
+    public Piece(final PieceInterface piece, final Matrix matrix, final int i) {
+        this(piece.getId(), matrix, piece.getReferential(), piece.getBoxingSquareSide(), i);
+    }
+
+    // TODO ! private
+    public Piece(final PieceInterface piece, final Matrix matrix) {
+        this(piece.getId(), matrix, piece.getReferential(), piece.getBoxingSquareSide(), piece.getInstanceOrdinal());
     }
 
     //TODO ? à precomputer dans l'énumération
     private Piece(final int id, final Matrix matrix) {
-        this(id, computeTranslation(matrix), computeReferential(matrix), computeBoxingSquareSide(matrix));
+        this(id, computeTranslation(matrix), computeReferential(matrix), computeBoxingSquareSide(matrix), 0); // TODO extract constant
     }
 
     private Piece(final PieceData pieceData) {
@@ -136,6 +146,11 @@ public final class Piece implements PieceInterface {
     @Override
     public int getBoxingSquareSide() {
         return this.boxingSquareSide;
+    }
+
+    @Override
+    public int getInstanceOrdinal() {
+        return this.instanceOrdinal;
     }
 
     @Override
@@ -194,7 +209,7 @@ public final class Piece implements PieceInterface {
         rotations.put(flatten(piece), piece);
         builder.add(piece);
         for (int i = 1; i < NUMBER_OF_ROTATIONS; ++i) {
-            piece = new Piece(piece, ROTATION.multiply(piece.getMatrix()));
+            piece = new Piece(piece, ROTATION.multiply(piece.getMatrix()), i);
             final String flattenTemplate = flatten(piece);
             final PieceInterface rotation = rotations.get(flattenTemplate);
             if (rotation == null) {
@@ -223,9 +238,9 @@ public final class Piece implements PieceInterface {
         for (final PositionInterface position : piece) {
             final int row = position.row(), column = position.column();
             if (row < minY) minY = row;
-            else if (row > maxY) maxY = row;
+            if (row > maxY) maxY = row;
             if (column < minX) minX = column;
-            else if (column > maxX) maxX = column;
+            if (column > maxX) maxX = column;
         }
         return new int[] { minY, minX, maxY, maxX };
     }
@@ -259,7 +274,8 @@ public final class Piece implements PieceInterface {
 
     //TODO ? PieceRepresentation(Bounds, Delta, ...)
     private static String flatten(final PieceInterface piece) {
-        final int[] delta = computeDelta(piece, computeBounds(piece));
+        final int[] bounds = computeBounds(piece);
+        final int[] delta = computeDelta(piece, bounds);
         final PieceInterface flattenTemplate = Piece.computePieceSupplier(piece, delta);
         final int n = flattenTemplate.getBoxingSquareSide();
         final boolean[][] square = new boolean[n][n];

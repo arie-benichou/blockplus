@@ -15,35 +15,20 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.piece;
+package blockplus.direction;
 
-import java.util.List;
+public interface DirectionInterface {
 
-import blockplus.matrix.Matrix;
-import blockplus.position.PositionInterface;
+    int rowDelta();
 
-import com.google.common.base.Supplier;
+    int columnDelta();
 
-public interface PieceInterface extends Iterable<PositionInterface>, Supplier<PieceInterface> {
+    DirectionInterface apply(int rowDelta, int columnDelta);
 
-    int getId();
+    DirectionInterface apply(DirectionInterface direction, int k);
 
-    int getNumberOfCells();
+    DirectionInterface apply(DirectionInterface direction);
 
-    Matrix getMatrix();
-
-    PositionInterface getReferential();
-
-    int getBoxingSquareSide();
-
-    int getInstanceOrdinal();
-
-    List<PieceInterface> getRotations();
-
-    List<PositionInterface> getPositions();
-
-    List<PositionInterface> getPositions(PositionInterface position);
-
-    boolean isNull();
+    DirectionInterface opposite();
 
 }

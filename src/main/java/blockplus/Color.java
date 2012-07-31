@@ -19,6 +19,10 @@ package blockplus;
 
 public enum Color {
 
+    //TODO Black(-1),
+    //TODO White(2*3*5*7),
+    //TODO Transparent(1),
+
     Blue(2),
     Yellow(3),
     Red(5),

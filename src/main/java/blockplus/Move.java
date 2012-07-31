@@ -17,19 +17,16 @@
 
 package blockplus;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import blockplus.board.Board;
-import blockplus.board.direction.DirectionInterface;
-import blockplus.board.position.PositionInterface;
+import blockplus.direction.DirectionInterface;
+import blockplus.matrix.Matrix;
+import blockplus.piece.Piece;
 import blockplus.piece.PieceInterface;
+import blockplus.position.PositionInterface;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
-public class Move {
+public class Move implements Comparable<Move> {// TODO extract Comparator(s)
 
     private final Color color;
     private final PositionInterface position;
@@ -47,8 +44,10 @@ public class Move {
             final PieceInterface piece,
             final Board newBoard) {
         this.color = color;
-        this.position = position;
-        this.direction = direction;
+
+        this.position = position; // TODO à revoir
+        this.direction = direction; // TODO inutile
+
         this.piece = piece;
         this.newBoard = newBoard;
     }
@@ -73,32 +72,14 @@ public class Move {
         return this.newBoard;
     }
 
-    private static List<PositionInterface> getOrderedPositions(final PositionInterface position, final Map<DirectionInterface, Integer> neighbours) {
-        final List<PositionInterface> positions = Lists.newArrayList();
-        for (final DirectionInterface directionInterface : neighbours.keySet()) {
-            if (neighbours.get(directionInterface) != 210) // TODO à revoir
-                positions.add(position.apply(directionInterface));
-        }
-        Collections.sort(positions);
-        return positions;
-    }
-
-    private static String getBoardFragmentFootprint(final int[][] data) {
-        final StringBuilder stringBuilder = new StringBuilder("\n ");
-        for (final int[] js : data) {
-            for (final int k : js)
-                stringBuilder.append(k).append(" ");
-            stringBuilder.append("\n ");
-        }
-        return stringBuilder.toString();
-    }
-
     private static String computeFootPrint(final Move move) {
-        final int distance = move.getPiece().getBoxingSquareSide() - 1;
-        final Map<DirectionInterface, Integer> neighbours = move.getNewBoard().getAllNeighbours(move.getReferentialPosition(), distance);
-        final List<PositionInterface> orderedPositions = getOrderedPositions(move.getReferentialPosition(), neighbours);
-        final int[][] boardFragment = move.getNewBoard().getFragment(move.getPiece().getBoxingSquareSide(), orderedPositions);
-        return getBoardFragmentFootprint(boardFragment);
+        final PieceInterface piece = move.getPiece();
+        final PositionInterface position = move.getReferentialPosition().apply(move.getDirection());
+        // TODO !! piece.translateTo(position): PieceInterface
+        final Matrix matrix = Piece.translate(piece.getMatrix(), piece.getReferential(), position);
+        // TODO !! stocker cette instance de piece
+        final Piece pieceInstance = new Piece(piece.getId(), matrix, position, piece.getBoxingSquareSide(), piece.getInstanceOrdinal());
+        return pieceInstance.toString();
     }
 
     public String getFootPrint() {
@@ -126,6 +107,40 @@ public class Move {
         final boolean isEqual = this.getFootPrint().equals(that.getFootPrint());
         Preconditions.checkState(haveSameHashCode == isEqual);
         return isEqual;
+    }
+
+    @Override
+    public String toString() {
+        return this.getFootPrint();
+    }
+
+    @Override
+    public int compareTo(final Move that) {
+
+        final int boxingSquareSide1 = this.getPiece().getBoxingSquareSide();
+        final int boxingSquareSide2 = that.getPiece().getBoxingSquareSide();
+        final int compare1 = -(boxingSquareSide1 - boxingSquareSide2);
+        if (compare1 < 0) return -1;
+        if (compare1 > 0) return 1;
+
+        final int id1 = this.getPiece().getId();
+        final int id2 = that.getPiece().getId();
+        final int compare2 = -(id1 - id2);
+        if (compare2 < 0) return -1;
+        if (compare2 > 0) return 1;
+
+        final int instanceOrdinal1 = this.getPiece().getInstanceOrdinal();
+        final int instanceOrdinal2 = that.getPiece().getInstanceOrdinal();
+        final int compare3 = instanceOrdinal1 - instanceOrdinal2;
+        if (compare3 < 0) return -1;
+        if (compare3 > 0) return 1;
+
+        final PositionInterface position1 = this.getReferentialPosition().apply(this.getDirection()); // TODO !
+        final PositionInterface position2 = that.getReferentialPosition().apply(that.getDirection()); // TODO !
+        final int compare4 = position1.compareTo(position2);
+        if (compare4 != 0) return compare4;
+
+        return 0;
     }
 
 }

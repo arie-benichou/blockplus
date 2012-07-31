@@ -20,9 +20,9 @@ package blockplus.piece;
 import java.util.Iterator;
 import java.util.List;
 
-import blockplus.board.position.Position;
-import blockplus.board.position.PositionInterface;
 import blockplus.matrix.Matrix;
+import blockplus.position.Position;
+import blockplus.position.PositionInterface;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
@@ -69,6 +69,11 @@ public class PieceForNull implements PieceInterface {
     @Override
     public int getBoxingSquareSide() {
         return 0;
+    }
+
+    @Override
+    public int getInstanceOrdinal() {
+        return 0; // TODO ? -1
     }
 
     @Override

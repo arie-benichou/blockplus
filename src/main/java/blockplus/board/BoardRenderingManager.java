@@ -17,8 +17,6 @@
 
 package blockplus.board;
 
-import blockplus.Color;
-
 import com.google.common.base.Preconditions;
 
 public class BoardRenderingManager {
@@ -29,7 +27,8 @@ public class BoardRenderingManager {
             for (int j = 0; j < Board.WIDTH; ++j) {
                 char c = charArray[Board.WIDTH * i + j];
                 if (c == '1') c = '.';
-                else if (c != Color.Blue.getValue()) c = 'x'; // TODO ! à virer
+                else if (c == '2') c = 'o'; // TODO ! à virer...
+                else c = 'x'; // TODO ! à virer...
                 sb.append(c);
             }
             sb.append("\n");
@@ -42,37 +41,4 @@ public class BoardRenderingManager {
         return this.render(board.toCharArray());
     }
 
-    public static void main(final String[] args) {
-
-        final BoardRenderingManager boardRenderingManager = new BoardRenderingManager();
-
-        final String data1 = "" +
-                "01234567890123456789" +
-                "01234567890123456789" +
-                "01234567890123456789" +
-                "01234567890123456789" +
-                "01234567890123456789" +
-                "01234567890123456789" +
-                "01234567890123456789" +
-                "01234567890123456789" +
-                "01234567890123456789" +
-                "01234567890123456789";
-        final Board board1 = Board.from(data1);
-        System.out.println(boardRenderingManager.render(board1));
-
-        final String data2 = "" +
-                "00000000000000000000" +
-                "00000000000000000000" +
-                "00000000000000000000" +
-                "00000000000000000000" +
-                "00000000000000000000" +
-                "00000000000000000000" +
-                "00000000000000000000" +
-                "00000000000000000000" +
-                "00000000000000000000" +
-                "00000000000000000000";
-        final Board board2 = Board.from(data2);
-        System.out.println(boardRenderingManager.render(board2));
-
-    }
 }

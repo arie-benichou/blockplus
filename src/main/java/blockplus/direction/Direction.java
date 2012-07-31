@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.board.direction;
+package blockplus.direction;
 
 import java.util.List;
 import java.util.Map;
@@ -24,8 +24,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
 public final class Direction implements DirectionInterface {
-
-    /*-------------------------------------8<-------------------------------------*/
 
     /*
     -------------
@@ -126,19 +124,12 @@ public final class Direction implements DirectionInterface {
     */
     public final static DirectionInterface BOTTOM_RIGHT = new Direction(1, 1);
 
-    /*-------------------------------------8<-------------------------------------*/
-
-    public final static List<DirectionInterface> ALL_AROUND =
-                                                              ImmutableList.of(TOP_LEFT, TOP, TOP_RIGHT, LEFT, RIGHT, BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT);
-
-    /*-------------------------------------8<-------------------------------------*/
+    public final static List<DirectionInterface> ALL_AROUND = ImmutableList.of(
+            TOP_LEFT, TOP, TOP_RIGHT, LEFT, RIGHT, BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT);
 
     private final static int computeHashCode(final int rowDelta, final int columnDelta) {
-        //return (17 * 31 + rowDelta) * 31 + columnDelta;
         return (rowDelta + "|" + columnDelta).hashCode();
     }
-
-    /*-------------------------------------8<-------------------------------------*/
 
     public final static class Factory {
 
@@ -168,16 +159,12 @@ public final class Direction implements DirectionInterface {
 
     }
 
-    /*-------------------------------------8<-------------------------------------*/
-
     private final int rowDelta;
 
     @Override
     public int rowDelta() {
         return this.rowDelta;
     }
-
-    /*-------------------------------------8<-------------------------------------*/
 
     private final int columnDelta;
 
@@ -186,16 +173,12 @@ public final class Direction implements DirectionInterface {
         return this.columnDelta;
     }
 
-    /*-------------------------------------8<-------------------------------------*/
-
     private final int hashCode;
 
     @Override
     public int hashCode() {
         return this.hashCode;
     }
-
-    /*-------------------------------------8<-------------------------------------*/
 
     public static DirectionInterface from(final int rowDelta, final int columnDelta) {
         return NULL.apply(rowDelta, columnDelta);
@@ -206,8 +189,6 @@ public final class Direction implements DirectionInterface {
         this.columnDelta = columnDelta;
         this.hashCode = computeHashCode(rowDelta, columnDelta);
     }
-
-    /*-------------------------------------8<-------------------------------------*/
 
     public DirectionInterface apply() {
         return this;
@@ -228,47 +209,24 @@ public final class Direction implements DirectionInterface {
         return this.apply(direction, 1);
     }
 
-    /*-------------------------------------8<-------------------------------------*/
-
     @Override
     public DirectionInterface opposite() {
         return this.apply(-this.rowDelta(), -this.columnDelta());
     }
 
-    /*-------------------------------------8<-------------------------------------*/
-
     @Override
     public boolean equals(final Object object) {
-        if (object == this)
-            return true;
-        if (object == null)
-            return false;
-        if (!(object instanceof DirectionInterface))
-            return false;
+        if (object == this) return true;
+        if (object == null) return false;
+        if (!(object instanceof DirectionInterface)) return false;
         final DirectionInterface that = (DirectionInterface) object;
-        if (that.hashCode() != this.hashCode())
-            return false;
+        //if (that.hashCode() != this.hashCode()) return false;
         return that.rowDelta() == this.rowDelta() && that.columnDelta() == this.columnDelta();
     }
-
-    /*-------------------------------------8<-------------------------------------*/
 
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "(" + this.rowDelta() + ", " + this.columnDelta() + ")";
-    }
-
-    /*-------------------------------------8<-------------------------------------*/
-
-    public static void main(final String[] args) {
-
-        System.out.println(Direction.from(0, 0));
-        System.out.println(Direction.from(1, -1));
-        System.out.println(Direction.from(-1, 1));
-        System.out.println(Direction.NULL.apply(1, 2).apply(Direction.from(1, 2)));
-
-        System.out.println(Factory.CACHE.size());
-
     }
 
 }

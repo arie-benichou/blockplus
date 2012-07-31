@@ -15,20 +15,23 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.board.direction;
+package demo;
 
-public interface DirectionInterface {
+import blockplus.direction.Direction;
 
-    int rowDelta();
+public final class DirectionDemo {
 
-    int columnDelta();
+    public static void main(final String[] args) {
 
-    DirectionInterface apply(int rowDelta, int columnDelta);
+        System.out.println(Direction.from(0, 0));
+        System.out.println(Direction.from(1, -1));
+        System.out.println(Direction.from(-1, 1));
+        System.out.println(Direction.NULL.apply(1, 2).apply(Direction.from(1, 2)));
 
-    DirectionInterface apply(DirectionInterface direction, int k);
+        // TODO Factory.toString()
+        System.out.println(Direction.Factory.size());
+        System.out.println(Direction.Factory.cacheHits());
 
-    DirectionInterface apply(DirectionInterface direction);
-
-    DirectionInterface opposite();
+    }
 
 }
