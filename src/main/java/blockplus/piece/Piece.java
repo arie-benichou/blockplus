@@ -36,21 +36,23 @@ import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public final class Piece implements PieceInterface {
+// TODO enlever les responsabilités qui n'appartiennent pas à PieceTemplate
+// TODO ? renommer en PieceTemplate
+public final class Piece implements PieceTemplateInterface {
 
     private final static int FULL_ROTATION_UNIT = 360;
     private final static int COUNTER_CLOCKWISE_ROTATION = 90;
     private final static int NUMBER_OF_ROTATIONS = FULL_ROTATION_UNIT / COUNTER_CLOCKWISE_ROTATION;
     private final static Matrix ROTATION = new Matrix(2, 2, new int[][] { { 0, -1 }, { 1, 0 } });
     private final static PositionInterface ORIGIN = Position.from(0, 0);
-    private final static PieceInterface NULL = new PieceForNull();
+    private final static PieceTemplateInterface NULL = new PieceForNull();
 
     private static PieceData check(final PieceData pieceData) {
         Preconditions.checkArgument(pieceData != null); // TODO faire plus de vérifications
         return pieceData;
     }
 
-    public static PieceInterface from(final PieceData pieceData) {
+    public static PieceTemplateInterface from(final PieceData pieceData) {
         if (check(pieceData).ordinal() == 0) return NULL;
         return new Piece(pieceData);
     }
@@ -62,7 +64,7 @@ public final class Piece implements PieceInterface {
     private final int instanceOrdinal;
 
     private transient volatile List<PositionInterface> positions = null;
-    private transient volatile List<PieceInterface> rotations = null;
+    private transient volatile List<PieceTemplateInterface> rotations = null;
     private transient volatile String representation = null;
     private transient volatile Integer hashCode = null;
 
@@ -94,9 +96,8 @@ public final class Piece implements PieceInterface {
         return highestValue - lowestValue + 1;
     }
 
-    // TODO ! private
     // TODO ? PieceInstanceManager
-    public Piece(final int id, final Matrix matrix, final PositionInterface referential, final int boxingSquareSide, final int instanceOrdinal) {
+    private Piece(final int id, final Matrix matrix, final PositionInterface referential, final int boxingSquareSide, final int instanceOrdinal) {
         this.id = id;
         this.matrix = matrix;
         this.referential = referential;
@@ -104,27 +105,26 @@ public final class Piece implements PieceInterface {
         this.instanceOrdinal = instanceOrdinal;
     }
 
-    // TODO ! private    
-    public Piece(final PieceInterface piece, final Matrix matrix, final int i) {
-        this(piece.getId(), matrix, piece.getReferential(), piece.getBoxingSquareSide(), i);
+    private Piece(final PieceTemplateInterface piece, final Matrix matrix, final int instanceOrdinal) {
+        this(piece.getId(), matrix, piece.getReferential(), piece.getBoxingSquareSide(), instanceOrdinal);
     }
 
-    // TODO ! private
-    public Piece(final PieceInterface piece, final Matrix matrix) {
+    // TODO !
+    private Piece(final PieceInterface piece, final Matrix matrix) {
         this(piece.getId(), matrix, piece.getReferential(), piece.getBoxingSquareSide(), piece.getInstanceOrdinal());
     }
 
     //TODO ? à precomputer dans l'énumération
-    private Piece(final int id, final Matrix matrix) {
-        this(id, computeTranslation(matrix), computeReferential(matrix), computeBoxingSquareSide(matrix), 0); // TODO extract constant
+    private Piece(final int id, final Matrix matrix, final int instanceOrdinal) {
+        this(id, computeTranslation(matrix), computeReferential(matrix), computeBoxingSquareSide(matrix), instanceOrdinal);
     }
 
     private Piece(final PieceData pieceData) {
-        this(pieceData.ordinal(), pieceData.getMatrix());
+        this(pieceData.ordinal(), pieceData.getMatrix(), 0); // TODO extract constant
     }
 
     @Override
-    public PieceInterface get() {
+    public PieceTemplateInterface get() {
         return this;
     }
 
@@ -202,16 +202,16 @@ public final class Piece implements PieceInterface {
         return this.getPositions().iterator();
     }
 
-    private List<PieceInterface> computeRotations() {
-        PieceInterface piece = this;
-        final Builder<PieceInterface> builder = new ImmutableList.Builder<PieceInterface>();
-        final Map<String, PieceInterface> rotations = Maps.newHashMap();
+    private List<PieceTemplateInterface> computeRotations() {
+        PieceTemplateInterface piece = this;
+        final Builder<PieceTemplateInterface> builder = new ImmutableList.Builder<PieceTemplateInterface>();
+        final Map<String, PieceTemplateInterface> rotations = Maps.newHashMap();
         rotations.put(flatten(piece), piece);
         builder.add(piece);
         for (int i = 1; i < NUMBER_OF_ROTATIONS; ++i) {
             piece = new Piece(piece, ROTATION.multiply(piece.getMatrix()), i);
             final String flattenTemplate = flatten(piece);
-            final PieceInterface rotation = rotations.get(flattenTemplate);
+            final PieceTemplateInterface rotation = rotations.get(flattenTemplate);
             if (rotation == null) {
                 rotations.put(flattenTemplate, piece);
                 builder.add(piece);
@@ -221,8 +221,8 @@ public final class Piece implements PieceInterface {
     }
 
     @Override
-    public List<PieceInterface> getRotations() {
-        List<PieceInterface> value = this.rotations;
+    public List<PieceTemplateInterface> getRotations() {
+        List<PieceTemplateInterface> value = this.rotations;
         if (value == null) {
             synchronized (this) {
                 if ((value = this.rotations) == null) this.rotations = value = this.computeRotations();
@@ -273,7 +273,7 @@ public final class Piece implements PieceInterface {
     }
 
     //TODO ? PieceRepresentation(Bounds, Delta, ...)
-    private static String flatten(final PieceInterface piece) {
+    public static String flatten(final PieceInterface piece) { // TODO appartient à un autre objet
         final int[] bounds = computeBounds(piece);
         final int[] delta = computeDelta(piece, bounds);
         final PieceInterface flattenTemplate = Piece.computePieceSupplier(piece, delta);
@@ -319,8 +319,8 @@ public final class Piece implements PieceInterface {
     public boolean equals(final Object object) {
         if (object == null) return false;
         if (object == this) return true;
-        if (!(object instanceof PieceInterface)) return false;
-        final PieceInterface that = (PieceInterface) object;
+        if (!(object instanceof PieceTemplateInterface)) return false;
+        final PieceTemplateInterface that = (PieceTemplateInterface) object;
         final boolean haveSameHashCode = this.hashCode() == that.hashCode();
         final boolean isEqual = this.getId() == that.getId() && this.getMatrix().equals(that.getMatrix());
         Preconditions.checkState(haveSameHashCode == isEqual);

@@ -27,7 +27,7 @@ import blockplus.position.PositionInterface;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 
-public class PieceForNull implements PieceInterface {
+public class PieceForNull implements PieceTemplateInterface {
 
     private final static Matrix MATRIX = new Matrix(0, 0);
 
@@ -37,7 +37,7 @@ public class PieceForNull implements PieceInterface {
     }
 
     @Override
-    public PieceInterface get() {
+    public PieceTemplateInterface get() {
         return this;
     }
 
@@ -62,7 +62,7 @@ public class PieceForNull implements PieceInterface {
     }
 
     @Override
-    public List<PieceInterface> getRotations() {
+    public List<PieceTemplateInterface> getRotations() {
         return ImmutableList.of();
     }
 

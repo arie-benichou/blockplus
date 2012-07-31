@@ -27,7 +27,7 @@ import blockplus.Color;
 import blockplus.Move;
 import blockplus.Player;
 import blockplus.direction.DirectionInterface;
-import blockplus.piece.PieceInterface;
+import blockplus.piece.PieceTemplateInterface;
 import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Lists;
@@ -37,14 +37,14 @@ import com.google.common.collect.Sets;
 public class BoardReferee {
 
     // TODO ? predicate
-    private boolean hasEnoughSpaceForPiece(final Board board, final PieceInterface piece, final PositionInterface position) {
+    private boolean hasEnoughSpaceForPiece(final Board board, final PieceTemplateInterface piece, final PositionInterface position) {
         for (final PositionInterface coordinates : piece.getPositions(position))
             if (!board.isEmpty(coordinates)) return false;
         return true;
     }
 
     // TODO ? predicate
-    private boolean hasAtLeastOneCellWithSideNeighbourOfSameColor(final Board board, final Color color, final PieceInterface piece,
+    private boolean hasAtLeastOneCellWithSideNeighbourOfSameColor(final Board board, final Color color, final PieceTemplateInterface piece,
             final PositionInterface position) {
         for (final PositionInterface coordinates : piece.getPositions(position))
             for (final Integer value : board.getSides(coordinates).values())
@@ -53,7 +53,7 @@ public class BoardReferee {
     }
 
     // TODO ? predicate
-    private boolean hasAtLeastOneCellWithCornerNeighbourOfSameColor(final Board board, final Color color, final PieceInterface piece,
+    private boolean hasAtLeastOneCellWithCornerNeighbourOfSameColor(final Board board, final Color color, final PieceTemplateInterface piece,
             final PositionInterface position) {
         for (final PositionInterface coordinates : piece.getPositions(position))
             for (final Integer value : board.getCornerNeighbours(coordinates).values())
@@ -62,21 +62,19 @@ public class BoardReferee {
     }
 
     // TODO ? predicate
-    private boolean isLegal(final Board board, final Color color, final PieceInterface piece, final PositionInterface position) {
+    private boolean isLegal(final Board board, final Color color, final PieceTemplateInterface piece, final PositionInterface position) {
         final boolean c1 = this.hasEnoughSpaceForPiece(board, piece, position);
         final boolean c2 = !this.hasAtLeastOneCellWithSideNeighbourOfSameColor(board, color, piece, position);
         final boolean c3 = this.hasAtLeastOneCellWithCornerNeighbourOfSameColor(board, color, piece, position);
         return c1 && c2 && c3;
     }
 
-    private List<Move> getLegalMovesByPiece(final Board board, final Color color, final PieceInterface piece, final PositionInterface position,
-            final DirectionInterface direction) {
+    private List<Move> getLegalMovesByPiece(final Board board, final Color color, final PieceTemplateInterface piece, final PositionInterface position) {
         final List<Move> legalMovesByPiece = Lists.newArrayList();
-        final PositionInterface newPosition = position.apply(direction);
-        for (final PieceInterface rotation : piece.getRotations()) {
-            if (this.isLegal(board, color, rotation, newPosition)) {
-                final Board newBoard = board.put(color, rotation, newPosition);
-                final Move move = new Move(color, position, direction, rotation, newBoard);
+        for (final PieceTemplateInterface rotation : piece.getRotations()) {
+            if (this.isLegal(board, color, rotation, position)) {
+                final Board newBoard = board.put(color, rotation, position);
+                final Move move = new Move(color, position, rotation, newBoard);
                 legalMovesByPiece.add(move);
             }
         }
@@ -93,19 +91,19 @@ public class BoardReferee {
         return potentialDirections;
     }
 
-    private Set<Move> getDistinctLegalMovesByPiece(final Board board, final Color color, final PieceInterface piece, final PositionInterface position) {
+    private Set<Move> getDistinctLegalMovesByPiece(final Board board, final Color color, final PieceTemplateInterface piece, final PositionInterface position) {
         final int distance = piece.getBoxingSquareSide() - 1;
         final Map<DirectionInterface, Integer> neighbours = board.getAllNeighbours(position, distance);
         final List<DirectionInterface> potentialDirections = this.getPotentialDirections(neighbours);
         final Set<Move> distinctLegalMovesByPiece = Sets.newHashSet();
         for (final DirectionInterface direction : potentialDirections)
-            distinctLegalMovesByPiece.addAll(this.getLegalMovesByPiece(board, color, piece, position, direction));
+            distinctLegalMovesByPiece.addAll(this.getLegalMovesByPiece(board, color, piece, position.apply(direction)));
         return distinctLegalMovesByPiece;
     }
 
     private List<Move> getLegalMovesByPosition(final Player player, final Board board, final PositionInterface position) {
         final List<Move> legalMovesByCell = Lists.newArrayList();
-        for (final PieceInterface piece : player.getBagOfPieces())
+        for (final PieceTemplateInterface piece : player.getBagOfPieces())
             legalMovesByCell.addAll(this.getDistinctLegalMovesByPiece(board, player.getColor(), piece, position));
         return legalMovesByCell;
     }
@@ -150,7 +148,7 @@ public class BoardReferee {
     }
 
     // TODO à revoir
-    public Board submit(final Board board, final Color color, final PieceInterface piece, final PositionInterface position) {
+    public Board submit(final Board board, final Color color, final PieceTemplateInterface piece, final PositionInterface position) {
         if (!this.isLegal(board, color, piece, position)) return board;
         return board.put(color, piece, position);
     }

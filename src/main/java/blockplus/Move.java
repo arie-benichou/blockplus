@@ -18,10 +18,10 @@
 package blockplus;
 
 import blockplus.board.Board;
-import blockplus.direction.DirectionInterface;
 import blockplus.matrix.Matrix;
 import blockplus.piece.Piece;
-import blockplus.piece.PieceInterface;
+import blockplus.piece.PieceInstance;
+import blockplus.piece.PieceTemplateInterface;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Preconditions;
@@ -30,8 +30,7 @@ public class Move implements Comparable<Move> {// TODO extract Comparator(s)
 
     private final Color color;
     private final PositionInterface position;
-    private final DirectionInterface direction;
-    private final PieceInterface piece;
+    private final PieceTemplateInterface piece;
     private final Board newBoard;
 
     private transient volatile String footPrint;
@@ -40,14 +39,10 @@ public class Move implements Comparable<Move> {// TODO extract Comparator(s)
     public Move(
             final Color color,
             final PositionInterface position,
-            final DirectionInterface direction,
-            final PieceInterface piece,
+            final PieceTemplateInterface piece,
             final Board newBoard) {
         this.color = color;
-
-        this.position = position; // TODO à revoir
-        this.direction = direction; // TODO inutile
-
+        this.position = position;
         this.piece = piece;
         this.newBoard = newBoard;
     }
@@ -56,15 +51,11 @@ public class Move implements Comparable<Move> {// TODO extract Comparator(s)
         return this.color;
     }
 
-    public PositionInterface getReferentialPosition() {
+    public PositionInterface getPosition() {
         return this.position;
     }
 
-    public DirectionInterface getDirection() {
-        return this.direction;
-    }
-
-    public PieceInterface getPiece() {
+    public PieceTemplateInterface getPiece() {
         return this.piece;
     }
 
@@ -73,12 +64,13 @@ public class Move implements Comparable<Move> {// TODO extract Comparator(s)
     }
 
     private static String computeFootPrint(final Move move) {
-        final PieceInterface piece = move.getPiece();
-        final PositionInterface position = move.getReferentialPosition().apply(move.getDirection());
-        // TODO !! piece.translateTo(position): PieceInterface
+        final PieceTemplateInterface piece = move.getPiece();
+        final PositionInterface position = move.getPosition();
+
+        // TODO ! PieceInstance as a flatten PieceTemplate (current Piece class)
         final Matrix matrix = Piece.translate(piece.getMatrix(), piece.getReferential(), position);
-        // TODO !! stocker cette instance de piece
-        final Piece pieceInstance = new Piece(piece.getId(), matrix, position, piece.getBoxingSquareSide(), piece.getInstanceOrdinal());
+        final PieceInstance pieceInstance = new PieceInstance(piece, matrix, position);
+
         return pieceInstance.toString();
     }
 
@@ -135,12 +127,11 @@ public class Move implements Comparable<Move> {// TODO extract Comparator(s)
         if (compare3 < 0) return -1;
         if (compare3 > 0) return 1;
 
-        final PositionInterface position1 = this.getReferentialPosition().apply(this.getDirection()); // TODO !
-        final PositionInterface position2 = that.getReferentialPosition().apply(that.getDirection()); // TODO !
-        final int compare4 = position1.compareTo(position2);
-        if (compare4 != 0) return compare4;
+        final int compare4 = this.getPosition().compareTo(that.getPosition());
+        //if (compare4 != 0)
+        return compare4;
 
-        return 0;
+        //return 0;
     }
 
 }

@@ -11,7 +11,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import blockplus.piece.PieceInterface;
+import blockplus.piece.PieceTemplateInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 
@@ -22,7 +22,7 @@ public class PiecesBagTest {
 
     @Test
     public void testIsEmpty() {
-        final Map<PieceInterface, Integer> instancesOfPieces = Maps.newLinkedHashMap();
+        final Map<PieceTemplateInterface, Integer> instancesOfPieces = Maps.newLinkedHashMap();
 
         {
             final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
@@ -40,12 +40,12 @@ public class PiecesBagTest {
     @Test
     public void testIterator() {
 
-        final Map<PieceInterface, Integer> instancesOfPieces = Maps.newHashMap();
+        final Map<PieceTemplateInterface, Integer> instancesOfPieces = Maps.newHashMap();
 
         {
             final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
-            PieceInterface lastPiece = null;
-            for (final PieceInterface piece : bagOfPieces)
+            PieceTemplateInterface lastPiece = null;
+            for (final PieceTemplateInterface piece : bagOfPieces)
                 lastPiece = piece;
             assertTrue(lastPiece == null);
         }
@@ -54,10 +54,10 @@ public class PiecesBagTest {
 
         {
             final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
-            final List<PieceInterface> expectedPieces = new ArrayList<PieceInterface>();
+            final List<PieceTemplateInterface> expectedPieces = new ArrayList<PieceTemplateInterface>();
             expectedPieces.add(Pieces.get(1).get());
-            final List<PieceInterface> actualPieces = Lists.newArrayList();
-            for (final PieceInterface piece : bagOfPieces)
+            final List<PieceTemplateInterface> actualPieces = Lists.newArrayList();
+            for (final PieceTemplateInterface piece : bagOfPieces)
                 actualPieces.add(piece);
             assertEquals(expectedPieces, actualPieces);
         }
@@ -66,11 +66,11 @@ public class PiecesBagTest {
 
         {
             final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
-            final List<PieceInterface> expectedPieces = new ArrayList<PieceInterface>();
+            final List<PieceTemplateInterface> expectedPieces = new ArrayList<PieceTemplateInterface>();
             expectedPieces.add(Pieces.get(1).get());
             expectedPieces.add(Pieces.get(1).get());
-            final List<PieceInterface> actualPieces = Lists.newArrayList();
-            for (final PieceInterface piece : bagOfPieces)
+            final List<PieceTemplateInterface> actualPieces = Lists.newArrayList();
+            for (final PieceTemplateInterface piece : bagOfPieces)
                 actualPieces.add(piece);
             assertEquals(expectedPieces, actualPieces);
         }
@@ -79,12 +79,12 @@ public class PiecesBagTest {
 
         {
             final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
-            final List<PieceInterface> expectedPieces = new ArrayList<PieceInterface>();
+            final List<PieceTemplateInterface> expectedPieces = new ArrayList<PieceTemplateInterface>();
             expectedPieces.add(Pieces.get(1).get());
             expectedPieces.add(Pieces.get(1).get());
             expectedPieces.add(Pieces.get(2).get());
-            final List<PieceInterface> actualPieces = Lists.newArrayList();
-            for (final PieceInterface piece : bagOfPieces)
+            final List<PieceTemplateInterface> actualPieces = Lists.newArrayList();
+            for (final PieceTemplateInterface piece : bagOfPieces)
                 actualPieces.add(piece);
             assertEquals(expectedPieces, actualPieces);
         }
@@ -93,13 +93,13 @@ public class PiecesBagTest {
 
         {
             final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
-            final List<PieceInterface> expectedPieces = new ArrayList<PieceInterface>();
+            final List<PieceTemplateInterface> expectedPieces = new ArrayList<PieceTemplateInterface>();
             expectedPieces.add(Pieces.get(1).get());
             expectedPieces.add(Pieces.get(1).get());
             expectedPieces.add(Pieces.get(2).get());
             expectedPieces.add(Pieces.get(3).get());
-            final List<PieceInterface> actualPieces = Lists.newArrayList();
-            for (final PieceInterface piece : bagOfPieces)
+            final List<PieceTemplateInterface> actualPieces = Lists.newArrayList();
+            for (final PieceTemplateInterface piece : bagOfPieces)
                 actualPieces.add(piece);
             assertEquals(expectedPieces, actualPieces);
         }
@@ -108,7 +108,7 @@ public class PiecesBagTest {
 
     @Test
     public void testRemove() {
-        final Map<PieceInterface, Integer> instancesOfPieces = Maps.newLinkedHashMap();
+        final Map<PieceTemplateInterface, Integer> instancesOfPieces = Maps.newLinkedHashMap();
 
         instancesOfPieces.put(Pieces.get(1).get(), 1);
 

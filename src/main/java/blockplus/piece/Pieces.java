@@ -19,7 +19,7 @@ package blockplus.piece;
 
 import com.google.common.base.Supplier;
 
-public enum Pieces implements Supplier<PieceInterface> {
+public enum Pieces implements Supplier<PieceTemplateInterface> {
 
     // null object
     ENTRY0,
@@ -46,14 +46,14 @@ public enum Pieces implements Supplier<PieceInterface> {
         return Pieces.valueOf(ENTRY_NAME_PATTERN + ordinal);
     }
 
-    private PieceInterface piece;
+    private PieceTemplateInterface piece;
 
     private Pieces() {
         this.piece = Piece.from(PieceData.get(this.ordinal()));
     }
 
     @Override
-    public PieceInterface get() {
+    public PieceTemplateInterface get() {
         return this.piece;
     }
 

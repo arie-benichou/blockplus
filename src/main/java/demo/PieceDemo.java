@@ -22,7 +22,7 @@ import java.util.List;
 import blockplus.Color;
 import blockplus.board.Board;
 import blockplus.board.BoardRenderingManager;
-import blockplus.piece.PieceInterface;
+import blockplus.piece.PieceTemplateInterface;
 import blockplus.piece.Pieces;
 import blockplus.position.Position;
 
@@ -30,9 +30,9 @@ import com.google.common.base.Supplier;
 
 public final class PieceDemo {
 
-    private static void renderPiece(final Supplier<PieceInterface> pieceSupplier) {
-        final List<PieceInterface> rotations = pieceSupplier.get().getRotations();
-        for (final PieceInterface rotation : rotations) {
+    private static void renderPiece(final Supplier<PieceTemplateInterface> pieceSupplier) {
+        final List<PieceTemplateInterface> rotations = pieceSupplier.get().getRotations();
+        for (final PieceTemplateInterface rotation : rotations) {
             System.out.println(rotation);
         }
     }
@@ -45,8 +45,8 @@ public final class PieceDemo {
         }
     }
 
-    private static void putPiece(final BoardRenderingManager boardRenderingManager, final Board board, final Supplier<PieceInterface> pieceSupplier) {
-        for (final PieceInterface rotation : pieceSupplier.get().getRotations()) {
+    private static void putPiece(final BoardRenderingManager boardRenderingManager, final Board board, final Supplier<PieceTemplateInterface> pieceSupplier) {
+        for (final PieceTemplateInterface rotation : pieceSupplier.get().getRotations()) {
             System.out.println(boardRenderingManager.render(board.put(Color.Blue, rotation, Position.from(3, 3))));
         }
     }
@@ -69,7 +69,7 @@ public final class PieceDemo {
     }
 
     public static void main(final String[] args) {
-        //renderAllPieces();
+        renderAllPieces();
         putAllPieces();
     }
 

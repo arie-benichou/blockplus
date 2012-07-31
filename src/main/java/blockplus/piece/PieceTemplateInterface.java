@@ -19,27 +19,12 @@ package blockplus.piece;
 
 import java.util.List;
 
-import blockplus.matrix.Matrix;
 import blockplus.position.PositionInterface;
 
-import com.google.common.base.Supplier;
+public interface PieceTemplateInterface extends PieceInterface {
 
-public interface PieceInterface extends Iterable<PositionInterface>, Supplier<PieceInterface> {
+    List<PieceTemplateInterface> getRotations();
 
-    int getId();
-
-    int getNumberOfCells();
-
-    Matrix getMatrix();
-
-    PositionInterface getReferential();
-
-    int getBoxingSquareSide();
-
-    int getInstanceOrdinal();
-
-    List<PositionInterface> getPositions();
-
-    boolean isNull();
+    List<PositionInterface> getPositions(PositionInterface position);
 
 }

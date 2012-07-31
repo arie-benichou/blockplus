@@ -23,7 +23,7 @@ import java.util.Map;
 import blockplus.Color;
 import blockplus.direction.Direction;
 import blockplus.direction.DirectionInterface;
-import blockplus.piece.PieceInterface;
+import blockplus.piece.PieceTemplateInterface;
 import blockplus.position.Position;
 import blockplus.position.PositionInterface;
 
@@ -234,7 +234,7 @@ public final class Board {
     }
 
     // TODO ? utiliser un objet mutation pour éviter le couplage entre board et les autres objets
-    public Board put(final Color color, final PieceInterface piece, final PositionInterface position) {
+    public Board put(final Color color, final PieceTemplateInterface piece, final PositionInterface position) {
         final Board board = new Board(this.data);
         for (final PositionInterface coordinates : piece.getPositions(position))
             board.data[coordinates.row()][coordinates.column()] = color.getValue();

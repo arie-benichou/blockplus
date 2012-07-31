@@ -26,7 +26,7 @@ import blockplus.Player;
 import blockplus.board.Board;
 import blockplus.board.BoardReferee;
 import blockplus.board.BoardRenderingManager;
-import blockplus.piece.PieceInterface;
+import blockplus.piece.PieceTemplateInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 
@@ -50,10 +50,10 @@ public class BoardRefereeDemo {
 
         final BoardRenderingManager boardRenderingManager = new BoardRenderingManager();
 
-        final Map<PieceInterface, Integer> instanceOfPieces = Maps.newHashMap();
+        final Map<PieceTemplateInterface, Integer> instanceOfPieces = Maps.newHashMap();
         for (final Pieces piece : Pieces.values()) {
-            //instanceOfPieces.put(piece.get(), 1000);
             instanceOfPieces.put(piece.get(), 1);
+            //instanceOfPieces.put(piece.get(), 1000);
         }
 
         instanceOfPieces.put(Pieces.get(0).get(), 0); // TODO tester les opérations avec la pièce null

@@ -29,36 +29,36 @@ import com.google.common.collect.ImmutableSortedMap.Builder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public class PiecesBag implements Iterable<PieceInterface> {
+public class PiecesBag implements Iterable<PieceTemplateInterface> {
 
-    private final static Comparator<PieceInterface> comparator = new Comparator<PieceInterface>() {
+    private final static Comparator<PieceTemplateInterface> comparator = new Comparator<PieceTemplateInterface>() {
 
         @Override
-        public int compare(final PieceInterface piece1, final PieceInterface piece2) {
+        public int compare(final PieceTemplateInterface piece1, final PieceTemplateInterface piece2) {
             return piece1.getId() - piece2.getId();
         }
 
     };
 
-    private final Map<PieceInterface, Integer> instanceOfPieces;
-    private volatile List<PieceInterface> piecesAsList;
+    private final Map<PieceTemplateInterface, Integer> instanceOfPieces;
+    private volatile List<PieceTemplateInterface> piecesAsList;
 
-    public PiecesBag(final Map<PieceInterface, Integer> instanceOfPieces) {
-        final Builder<PieceInterface, Integer> builder = new ImmutableSortedMap.Builder<PieceInterface, Integer>(PiecesBag.comparator);
+    public PiecesBag(final Map<PieceTemplateInterface, Integer> instanceOfPieces) {
+        final Builder<PieceTemplateInterface, Integer> builder = new ImmutableSortedMap.Builder<PieceTemplateInterface, Integer>(PiecesBag.comparator);
         builder.putAll(instanceOfPieces);
         this.instanceOfPieces = builder.build();
     }
 
-    private List<PieceInterface> computeList() {
-        final List<PieceInterface> list = Lists.newArrayList();
-        for (final Entry<PieceInterface, Integer> entry : this.instanceOfPieces.entrySet())
+    private List<PieceTemplateInterface> computeList() {
+        final List<PieceTemplateInterface> list = Lists.newArrayList();
+        for (final Entry<PieceTemplateInterface, Integer> entry : this.instanceOfPieces.entrySet())
             for (int n = 0; n < entry.getValue(); ++n)
                 list.add(entry.getKey());
         return list;
     }
 
-    public List<PieceInterface> getList() {
-        List<PieceInterface> value = this.piecesAsList;
+    public List<PieceTemplateInterface> getList() {
+        List<PieceTemplateInterface> value = this.piecesAsList;
         if (value == null)
             synchronized (this) {
                 if ((value = this.piecesAsList) == null) this.piecesAsList = value = this.computeList();
@@ -70,18 +70,18 @@ public class PiecesBag implements Iterable<PieceInterface> {
         return this.getList().isEmpty();
     }
 
-    public PiecesBag remove(final PieceInterface piece) {
+    public PiecesBag remove(final PieceTemplateInterface piece) {
         Preconditions.checkArgument(piece != null);
         final Integer instances = this.instanceOfPieces.get(piece);
         Preconditions.checkArgument(instances != null);
         Preconditions.checkArgument(instances > 0);
-        final Map<PieceInterface, Integer> map = Maps.newHashMap(this.instanceOfPieces);
+        final Map<PieceTemplateInterface, Integer> map = Maps.newHashMap(this.instanceOfPieces);
         map.put(piece, instances - 1);
         return new PiecesBag(map);
     }
 
     @Override
-    public Iterator<PieceInterface> iterator() {
+    public Iterator<PieceTemplateInterface> iterator() {
         return this.getList().iterator();
     }
 
