@@ -30,6 +30,7 @@ import blockplus.position.PositionInterface;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
+// TODO ? MoveForNull
 // TODO extract Comparator(s)
 public class Move implements Comparable<Move> {
 
@@ -76,7 +77,10 @@ public class Move implements Comparable<Move> {
     }
 
     private static String computeFootPrint(final Move move) {
+
         final PieceTemplateInterface piece = move.getPiece();
+        if (piece.isNull()) return "";
+
         final PositionInterface position = move.getPosition();
 
         // TODO ! PieceInstance as a flatten PieceTemplate (current Piece class)

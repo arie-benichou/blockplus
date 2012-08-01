@@ -28,6 +28,7 @@ import blockplus.position.PositionInterface;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
+// TODO !! ajouter la possibilité d'avoir des layers
 public final class Board<T> {
 
     private static <T> SortedMap<PositionInterface, T> buildData(

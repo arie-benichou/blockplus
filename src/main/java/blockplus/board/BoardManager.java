@@ -65,7 +65,7 @@ public final class BoardManager {
 
     public Map<DirectionInterface, Color> getNeighbours(final PositionInterface position, final int distance) {
         Preconditions.checkArgument(position != null);
-        Preconditions.checkArgument(distance >= 0);
+        Preconditions.checkArgument(distance >= 0); // TODO ? vraiment nécéssaire
         final Map<DirectionInterface, Color> neighbours = Maps.newHashMap();
         for (int i = -distance; i <= distance; ++i) {
             final int ii = Math.abs(i);

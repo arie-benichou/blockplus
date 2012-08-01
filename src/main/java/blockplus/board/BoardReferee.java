@@ -72,10 +72,9 @@ public class BoardReferee {
 
     // TODO ? predicate
     private boolean isLegal(final Board<Color> board, final Color color, final PieceTemplateInterface piece, final PositionInterface position) {
-        final boolean c1 = this.hasRoomForPiece(board, piece, position);
-        final boolean c2 = !this.hasAtLeastOneCellWithSideNeighbourOfSameColor(board, color, piece, position);
-        final boolean c3 = this.hasAtLeastOneCellWithCornerNeighbourOfSameColor(board, color, piece, position);
-        return c1 && c2 && c3;
+        return this.hasRoomForPiece(board, piece, position)
+                & !this.hasAtLeastOneCellWithSideNeighbourOfSameColor(board, color, piece, position)
+                & this.hasAtLeastOneCellWithCornerNeighbourOfSameColor(board, color, piece, position);
     }
 
     private List<Move> getLegalMovesByPiece(final Board<Color> board, final Color color, final PieceTemplateInterface piece, final PositionInterface position) {

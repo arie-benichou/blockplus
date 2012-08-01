@@ -42,6 +42,10 @@ public class BoardDemo {
         updatedPositions.put(Position.from(2, 0), Color.Red);
         updatedPositions.put(Position.from(3, 0), Color.Green);
 
+        updatedPositions.put(Position.from(0, columns - 1), Color.Unknown);
+        updatedPositions.put(Position.from(1, columns - 1), Color.Black);
+        updatedPositions.put(Position.from(2, columns - 1), Color.White);
+
         System.out.println(board.update(updatedPositions));
         System.out.println(board);
 

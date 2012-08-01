@@ -33,7 +33,7 @@ import blockplus.piece.PiecesBag;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Maps;
 
-public class BoardRefereeDemo {
+public class BoardRefereeDemo1 {
 
     public static void main(final String[] args) {
 

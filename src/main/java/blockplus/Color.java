@@ -17,6 +17,10 @@
 
 package blockplus;
 
+// TODO ? NotBlue
+// TODO ? NotYellow
+// TODO ? NotRed
+// TODO ? NotGreen
 public enum Color {
 
     Unknown(0, "?"),
@@ -26,9 +30,9 @@ public enum Color {
     Red(5, "R"),
     Green(7, "G"),
 
-    White(Blue.value() * Yellow.value() * Red.value() * Green.value(), "X"),
+    Black(-1, "Ø"),
+    White(Blue.value() * Yellow.value() * Red.value() * Green.value(), "Ω"),
 
-    Black(-1, ""),
     Transparent(1, " ");
 
     private final int value;

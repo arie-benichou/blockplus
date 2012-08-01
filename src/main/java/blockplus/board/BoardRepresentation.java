@@ -7,24 +7,20 @@ import blockplus.Color;
 import blockplus.position.Position;
 import blockplus.position.PositionInterface;
 
-import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Maps;
 
 public final class BoardRepresentation {
 
-    private final static Map<Character, Color> COLOR_BY_STRING = ImmutableSortedMap.of(
-            '.', Color.Transparent,
-            Color.Blue.toString().charAt(0), Color.Blue,
-            Color.Yellow.toString().charAt(0), Color.Yellow,
-            Color.Red.toString().charAt(0), Color.Red,
-            Color.Green.toString().charAt(0), Color.Green);
+    private final static Map<Character, Color> COLOR_BY_STRING = Maps.newTreeMap();
+    private final static Map<Integer, Color> COLOR_BY_VALUE = Maps.newTreeMap();
 
-    private final static Map<Integer, Color> COLOR_BY_VALUE = ImmutableSortedMap.of(
-            Color.Transparent.value(), Color.Transparent,
-            Color.Blue.value(), Color.Blue,
-            Color.Yellow.value(), Color.Yellow,
-            Color.Red.value(), Color.Red,
-            Color.Green.value(), Color.Green);
+    static {
+        for (final Color color : Color.values()) {
+            COLOR_BY_STRING.put(color.toString().charAt(0), color);
+            COLOR_BY_VALUE.put(color.value(), color);
+        }
+        COLOR_BY_STRING.put('.', Color.Transparent);
+    }
 
     private static Map<PositionInterface, Color> getDefinedPositions(final int rows, final int columns) {
         final Map<PositionInterface, Color> definedPositions = Maps.newHashMap();
