@@ -17,6 +17,9 @@
 
 package blockplus;
 
+import java.util.List;
+import java.util.Map;
+
 import blockplus.board.Board;
 import blockplus.matrix.Matrix;
 import blockplus.piece.Piece;
@@ -25,26 +28,30 @@ import blockplus.piece.PieceTemplateInterface;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 
-public class Move implements Comparable<Move> {// TODO extract Comparator(s)
+// TODO extract Comparator(s)
+public class Move implements Comparable<Move> {
 
     private final Color color;
     private final PositionInterface position;
     private final PieceTemplateInterface piece;
-    private final Board newBoard;
+    private final Board<Color> board;
 
     private transient volatile String footPrint;
 
-    // TODO ? inputGameState, outPutGameState
+    // TODO ... inputGameState, outPutGameState
     public Move(
             final Color color,
             final PositionInterface position,
             final PieceTemplateInterface piece,
-            final Board newBoard) {
+            final Board<Color> board
+
+    ) {
         this.color = color;
         this.position = position;
         this.piece = piece;
-        this.newBoard = newBoard;
+        this.board = board;
     }
 
     public Color getColor() {
@@ -59,8 +66,13 @@ public class Move implements Comparable<Move> {// TODO extract Comparator(s)
         return this.piece;
     }
 
-    public Board getNewBoard() {
-        return this.newBoard;
+    public Board<Color> getOutputBoard() {
+        final Map<PositionInterface, Color> cells = Maps.newHashMap();
+        final List<PositionInterface> positions = this.getPiece().getPositions(this.getPosition());
+        for (final PositionInterface position : positions) {
+            cells.put(position, this.getColor());
+        }
+        return Board.from(this.board, cells);
     }
 
     private static String computeFootPrint(final Move move) {
@@ -69,6 +81,8 @@ public class Move implements Comparable<Move> {// TODO extract Comparator(s)
 
         // TODO ! PieceInstance as a flatten PieceTemplate (current Piece class)
         final Matrix matrix = Piece.translate(piece.getMatrix(), piece.getReferential(), position);
+
+        // TODO ! pouvoir stocker cette instance
         final PieceInstance pieceInstance = new PieceInstance(piece, matrix, position);
 
         return pieceInstance.toString();

@@ -80,7 +80,7 @@ public class PieceInstance implements PieceInterface {
         return this.instanceOrdinal;
     }
 
-    // TODO
+    // TODO ! refactoring with PieceTemplate
     @Override
     public List<PositionInterface> getPositions() {
         final Builder<PositionInterface> positionsBuilder = ImmutableList.builder();
@@ -100,7 +100,7 @@ public class PieceInstance implements PieceInterface {
 
     @Override
     public String toString() {
-        return Piece.flatten(this); // TODO !
+        return Piece.flatten(this); // TODO ! à revoir
     }
 
 }

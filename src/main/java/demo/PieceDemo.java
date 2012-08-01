@@ -17,21 +17,85 @@
 
 package demo;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import blockplus.Color;
+import blockplus.Move;
 import blockplus.board.Board;
-import blockplus.board.BoardRenderingManager;
+import blockplus.board.BoardRepresentation;
 import blockplus.piece.PieceTemplateInterface;
 import blockplus.piece.Pieces;
 import blockplus.position.Position;
+import blockplus.position.PositionInterface;
 
+import com.google.common.base.Function;
 import com.google.common.base.Supplier;
+import com.google.common.collect.Lists;
 
 public final class PieceDemo {
 
+    // TODO précomputer les positions d'ancrage d'un template de pièce et s'en servir pour le score
+    // et pour la recherche de positions légales potentielles
+
+    private static double computeScore(final PieceTemplateInterface pieceTemplate) {
+
+        if (pieceTemplate.isNull()) return Double.POSITIVE_INFINITY;
+
+        final int boxingSquareSide = pieceTemplate.getBoxingSquareSide();
+        final int numberOfCells = pieceTemplate.getNumberOfCells();
+        final int numberOfRotations = pieceTemplate.getRotations().size();
+
+        double score = 1;
+        score *= 5.0 / numberOfCells;
+        score *= 1.0 * numberOfCells / (boxingSquareSide * boxingSquareSide);
+        score *= numberOfRotations;
+        score -= 5 * numberOfCells;
+        //score += 1;
+        return score;
+
+    }
+
+    private final static Comparator<PieceTemplateInterface> COMPARATOR = new Comparator<PieceTemplateInterface>() {
+
+        @Override
+        public int compare(final PieceTemplateInterface pt1, final PieceTemplateInterface pt2) {
+            return Double.compare(computeScore(pt1), computeScore(pt2));
+        }
+
+    };
+
+    private static void renderAllPiecesByScore() {
+
+        final List<Pieces> pieces = Lists.newArrayList(Pieces.values());
+
+        final List<PieceTemplateInterface> templates = Lists.transform(pieces, new Function<Pieces, PieceTemplateInterface>() {
+
+            @Override
+            public PieceTemplateInterface apply(@Nullable final Pieces input) {
+                return input.get();
+            }
+
+        });
+
+        final List<PieceTemplateInterface> list = Lists.newArrayList(templates);
+
+        Collections.sort(list, COMPARATOR);
+
+        for (final PieceTemplateInterface piece : list) {
+            System.out.println("----------------8<----------------");
+            System.out.println(piece);
+            System.out.println(computeScore(piece));
+        }
+
+    }
+
     private static void renderPiece(final Supplier<PieceTemplateInterface> pieceSupplier) {
-        final List<PieceTemplateInterface> rotations = pieceSupplier.get().getRotations();
+        final PieceTemplateInterface pieceTemplate = pieceSupplier.get();
+        final List<PieceTemplateInterface> rotations = pieceTemplate.getRotations();
         for (final PieceTemplateInterface rotation : rotations) {
             System.out.println(rotation);
         }
@@ -45,32 +109,37 @@ public final class PieceDemo {
         }
     }
 
-    private static void putPiece(final BoardRenderingManager boardRenderingManager, final Board board, final Supplier<PieceTemplateInterface> pieceSupplier) {
+    private static void putPiece(final Board<Color> board, final Supplier<PieceTemplateInterface> pieceSupplier) {
+        final PositionInterface position = Position.from(3, 3);
         for (final PieceTemplateInterface rotation : pieceSupplier.get().getRotations()) {
-            System.out.println(boardRenderingManager.render(board.put(Color.Blue, rotation, Position.from(3, 3))));
+            final Move move = new Move(Color.Blue, position, rotation, board); // TODO ? MoveManager.emit(move)
+            System.out.println(move.getOutputBoard());
         }
     }
 
     private static void putAllPieces() {
-        final BoardRenderingManager boardRenderingManager = new BoardRenderingManager();
-        final String data = "" +
-                "3111113" +
-                "1111111" +
-                "1111111" +
-                "1111111" +
-                "1111111" +
-                "1111111" +
-                "3111113";
+
+        final int[][] data = {
+                { 3, 1, 1, 1, 1, 1, 5 },
+                { 1, 1, 1, 1, 1, 1, 1 },
+                { 1, 1, 1, 1, 1, 1, 1 },
+                { 1, 1, 1, 1, 1, 1, 1 },
+                { 1, 1, 1, 1, 1, 1, 1 },
+                { 1, 1, 1, 1, 1, 1, 1 },
+                { 7, 1, 1, 1, 1, 1, 1 }
+        };
+
+        final Board<Color> board = BoardRepresentation.parse(data);
         for (final Pieces piece : Pieces.values()) {
             System.out.println("----------------8<----------------");
             System.out.println(piece.name());
-            putPiece(boardRenderingManager, Board.from(data), piece); // TODO ? BoardManager
+            putPiece(board, piece);
         }
     }
 
     public static void main(final String[] args) {
         renderAllPieces();
         putAllPieces();
+        renderAllPiecesByScore();
     }
-
 }

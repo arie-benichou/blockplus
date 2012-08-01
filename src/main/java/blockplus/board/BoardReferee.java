@@ -37,63 +37,78 @@ import com.google.common.collect.Sets;
 public class BoardReferee {
 
     // TODO ? predicate
-    private boolean hasEnoughSpaceForPiece(final Board board, final PieceTemplateInterface piece, final PositionInterface position) {
+    private boolean hasRoomForPiece(final Board<Color> board, final PieceTemplateInterface piece, final PositionInterface position) {
         for (final PositionInterface coordinates : piece.getPositions(position))
-            if (!board.isEmpty(coordinates)) return false;
+            if (!board.get(coordinates).equals(Color.Transparent)) return false;
         return true;
     }
 
     // TODO ? predicate
-    private boolean hasAtLeastOneCellWithSideNeighbourOfSameColor(final Board board, final Color color, final PieceTemplateInterface piece,
+    private boolean hasAtLeastOneCellWithSideNeighbourOfSameColor(final Board<Color> board, final Color color, final PieceTemplateInterface piece,
             final PositionInterface position) {
+
+        // TODO ! BoardReferal
+        final BoardManager boardManager = new BoardManager(board);
+
         for (final PositionInterface coordinates : piece.getPositions(position))
-            for (final Integer value : board.getSides(coordinates).values())
-                if (value == color.getValue()) return true;
+            for (final Color value : boardManager.getNeighbours(coordinates, BoardManager.SIDES_DIRECTIONS).values())
+                if (value.equals(color)) return true;
         return false;
     }
 
     // TODO ? predicate
-    private boolean hasAtLeastOneCellWithCornerNeighbourOfSameColor(final Board board, final Color color, final PieceTemplateInterface piece,
+    private boolean hasAtLeastOneCellWithCornerNeighbourOfSameColor(final Board<Color> board, final Color color, final PieceTemplateInterface piece,
             final PositionInterface position) {
+
+        // TODO ! BoardReferal
+        final BoardManager boardManager = new BoardManager(board);
+
         for (final PositionInterface coordinates : piece.getPositions(position))
-            for (final Integer value : board.getCornerNeighbours(coordinates).values())
-                if (Math.abs(value) % color.getValue() == 0) return true;
+            for (final Color value : boardManager.getNeighbours(coordinates, BoardManager.CORNERS_DIRECTIONS).values())
+                // TODO ? helper dans Color
+                if (Math.abs(value.value()) % color.value() == 0) return true;
         return false;
     }
 
     // TODO ? predicate
-    private boolean isLegal(final Board board, final Color color, final PieceTemplateInterface piece, final PositionInterface position) {
-        final boolean c1 = this.hasEnoughSpaceForPiece(board, piece, position);
+    private boolean isLegal(final Board<Color> board, final Color color, final PieceTemplateInterface piece, final PositionInterface position) {
+        final boolean c1 = this.hasRoomForPiece(board, piece, position);
         final boolean c2 = !this.hasAtLeastOneCellWithSideNeighbourOfSameColor(board, color, piece, position);
         final boolean c3 = this.hasAtLeastOneCellWithCornerNeighbourOfSameColor(board, color, piece, position);
         return c1 && c2 && c3;
     }
 
-    private List<Move> getLegalMovesByPiece(final Board board, final Color color, final PieceTemplateInterface piece, final PositionInterface position) {
+    private List<Move> getLegalMovesByPiece(final Board<Color> board, final Color color, final PieceTemplateInterface piece, final PositionInterface position) {
         final List<Move> legalMovesByPiece = Lists.newArrayList();
         for (final PieceTemplateInterface rotation : piece.getRotations()) {
             if (this.isLegal(board, color, rotation, position)) {
-                final Board newBoard = board.put(color, rotation, position);
-                final Move move = new Move(color, position, rotation, newBoard);
+                final Move move = new Move(color, position, rotation, board);
                 legalMovesByPiece.add(move);
             }
         }
         return legalMovesByPiece;
     }
 
-    private List<DirectionInterface> getPotentialDirections(final Map<DirectionInterface, Integer> neighbours) {
+    private List<DirectionInterface> getPotentialDirections(final Map<DirectionInterface, Color> neighbours) {
         final List<DirectionInterface> potentialDirections = Lists.newArrayList();
-        for (final Entry<DirectionInterface, Integer> entry : neighbours.entrySet()) {
+        for (final Entry<DirectionInterface, Color> entry : neighbours.entrySet()) {
             final DirectionInterface direction = entry.getKey();
-            final Integer value = entry.getValue();
-            if (value == Board.EMPTY) potentialDirections.add(direction); // TODO ? Cell Object
+            final Color value = entry.getValue();
+            if (value.equals(Color.Transparent)) potentialDirections.add(direction);
         }
         return potentialDirections;
     }
 
-    private Set<Move> getDistinctLegalMovesByPiece(final Board board, final Color color, final PieceTemplateInterface piece, final PositionInterface position) {
+    private Set<Move> getDistinctLegalMovesByPiece(final Board<Color> board, final Color color, final PieceTemplateInterface piece,
+            final PositionInterface position) {
+
         final int distance = piece.getBoxingSquareSide() - 1;
-        final Map<DirectionInterface, Integer> neighbours = board.getAllNeighbours(position, distance);
+
+        // TODO ! BoardReferal
+        final BoardManager boardManager = new BoardManager(board);
+
+        final Map<DirectionInterface, Color> neighbours = boardManager.getAllNeighbours(position, distance);
+
         final List<DirectionInterface> potentialDirections = this.getPotentialDirections(neighbours);
         final Set<Move> distinctLegalMovesByPiece = Sets.newHashSet();
         for (final DirectionInterface direction : potentialDirections)
@@ -101,7 +116,7 @@ public class BoardReferee {
         return distinctLegalMovesByPiece;
     }
 
-    private List<Move> getLegalMovesByPosition(final Player player, final Board board, final PositionInterface position) {
+    private List<Move> getLegalMovesByPosition(final Player player, final Board<Color> board, final PositionInterface position) {
         final List<Move> legalMovesByCell = Lists.newArrayList();
         for (final PieceTemplateInterface piece : player.getBagOfPieces())
             legalMovesByCell.addAll(this.getDistinctLegalMovesByPiece(board, player.getColor(), piece, position));
@@ -109,17 +124,19 @@ public class BoardReferee {
     }
 
     // TODO ! réfléchir à des heuristiques permettant d'augmenter le nombre de cut-off 
-    // TODO ? utiliser un board de Color
-    // TODO ? avoir un objet Neighbourhood (Side et Corners)
-    private List<PositionInterface> getPotentialPositions(final Board board, final Color color, final List<PositionInterface> emptyCells) {
+    private List<PositionInterface> getPotentialPositions(final Board<Color> board, final Color color, final List<PositionInterface> emptyCells) {
         final List<PositionInterface> potentialPositions = Lists.newArrayList();
+
+        // TODO ! BoardReferal
+        final BoardManager boardManager = new BoardManager(board);
+
         for (final PositionInterface position : emptyCells) {
-            final Map<DirectionInterface, Integer> corners = board.getCorners(position);
+            final Map<DirectionInterface, Color> corners = boardManager.getCorners(position);
             int cornersProduct = 1;
-            for (final Integer n : corners.values()) {
-                cornersProduct *= n;
+            for (final Color n : corners.values()) {
+                cornersProduct *= n.value();
             }
-            if (Math.abs(cornersProduct) % color.getValue() != 0) continue; // Board.UNDEFINED = -1
+            if (Math.abs(cornersProduct) % color.value() != 0) continue; // TODO ! à revoir
             /*
             final Map<DirectionInterface, Integer> sides = board.getSides(position);
             int sidesProduct = 1;
@@ -132,25 +149,23 @@ public class BoardReferee {
         return potentialPositions;
     }
 
-    public Set<Move> getLegalMoves(final Board board, final Player player) {
+    public Set<Move> getLegalMoves(final Board<Color> board, final Player player) {
         final Set<Move> legalMoves = Sets.newHashSet();
-        final List<PositionInterface> potentialPositions = this.getPotentialPositions(board, player.getColor(), board.getEmptyCellPositions());
+
+        // TODO ! BoardReferal
+        final BoardManager boardManager = new BoardManager(board);
+
+        final List<PositionInterface> potentialPositions = this.getPotentialPositions(board, player.getColor(), boardManager.getEmptyCellPositions());
         for (final PositionInterface potentialPosition : potentialPositions)
             legalMoves.addAll(this.getLegalMovesByPosition(player, board, potentialPosition));
         return legalMoves;
     }
 
     // TODO pouvoir passer un Ordering/Comparator de Move
-    public List<Move> getOrderedLegalMoves(final Board board, final Player player) {
+    public List<Move> getOrderedLegalMoves(final Board<Color> board, final Player player) {
         final List<Move> moves = Lists.newArrayList(this.getLegalMoves(board, player));
         Collections.sort(moves);
         return moves;
-    }
-
-    // TODO à revoir
-    public Board submit(final Board board, final Color color, final PieceTemplateInterface piece, final PositionInterface position) {
-        if (!this.isLegal(board, color, piece, position)) return board;
-        return board.put(color, piece, position);
     }
 
 }

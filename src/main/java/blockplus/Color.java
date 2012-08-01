@@ -19,23 +19,33 @@ package blockplus;
 
 public enum Color {
 
-    //TODO Black(-1),
-    //TODO White(2*3*5*7),
-    //TODO Transparent(1),
+    Unknown(0, "?"),
 
-    Blue(2),
-    Yellow(3),
-    Red(5),
-    Green(7);
+    Blue(2, "B"),
+    Yellow(3, "Y"),
+    Red(5, "R"),
+    Green(7, "G"),
+
+    White(Blue.value() * Yellow.value() * Red.value() * Green.value(), "X"),
+
+    Black(-1, ""),
+    Transparent(1, " ");
 
     private final int value;
+    private final String literal;
 
-    private Color(final int value) {
+    private Color(final int value, final String literal) {
         this.value = value;
+        this.literal = literal;
     }
 
-    public int getValue() {
+    public int value() {
         return this.value;
+    }
+
+    @Override
+    public String toString() {
+        return this.literal;
     }
 
 }

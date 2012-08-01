@@ -36,8 +36,8 @@ import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+// TODO renommer en PieceTemplate
 // TODO enlever les responsabilités qui n'appartiennent pas à PieceTemplate
-// TODO ? renommer en PieceTemplate
 public final class Piece implements PieceTemplateInterface {
 
     private final static int FULL_ROTATION_UNIT = 360;
@@ -109,7 +109,6 @@ public final class Piece implements PieceTemplateInterface {
         this(piece.getId(), matrix, piece.getReferential(), piece.getBoxingSquareSide(), instanceOrdinal);
     }
 
-    // TODO !
     private Piece(final PieceInterface piece, final Matrix matrix) {
         this(piece.getId(), matrix, piece.getReferential(), piece.getBoxingSquareSide(), piece.getInstanceOrdinal());
     }

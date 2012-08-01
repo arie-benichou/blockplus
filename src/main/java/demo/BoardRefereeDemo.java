@@ -25,7 +25,7 @@ import blockplus.Move;
 import blockplus.Player;
 import blockplus.board.Board;
 import blockplus.board.BoardReferee;
-import blockplus.board.BoardRenderingManager;
+import blockplus.board.BoardRepresentation;
 import blockplus.piece.PieceTemplateInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
@@ -37,42 +37,38 @@ public class BoardRefereeDemo {
 
     public static void main(final String[] args) {
 
-        final String data = "" +
-                "3111113" +
-                "1111111" +
-                "1111111" +
-                "1111111" +
-                "1111111" +
-                "1111111" +
-                "3111111";
+        final int[][] data = {
+                { 3, 1, 1, 1, 1, 1, 5 },
+                { 1, 1, 1, 1, 1, 1, 1 },
+                { 1, 1, 1, 1, 1, 1, 1 },
+                { 1, 1, 1, 1, 1, 1, 1 },
+                { 1, 1, 1, 1, 1, 1, 1 },
+                { 1, 1, 1, 1, 1, 1, 1 },
+                { 7, 1, 1, 1, 1, 1, 1 }
+        };
 
-        final Board board = Board.from(data);
-
-        final BoardRenderingManager boardRenderingManager = new BoardRenderingManager();
+        final Board<Color> board = BoardRepresentation.parse(data);
+        System.out.println(board);
 
         final Map<PieceTemplateInterface, Integer> instanceOfPieces = Maps.newHashMap();
-        for (final Pieces piece : Pieces.values()) {
-            instanceOfPieces.put(piece.get(), 1);
-            //instanceOfPieces.put(piece.get(), 1000);
-        }
-
+        for (final Pieces piece : Pieces.values())
+            instanceOfPieces.put(piece.get(), 1); // tester avec 1000 ;)
         instanceOfPieces.put(Pieces.get(0).get(), 0); // TODO tester les opérations avec la pièce null
 
         final PiecesBag bagOfPieces = new PiecesBag(instanceOfPieces);
         final Player player = new Player(Color.Blue, bagOfPieces);
-
         final BoardReferee boardReferee = new BoardReferee();
 
-        final Stopwatch stopwatch = new Stopwatch();
-
         if (!player.getBagOfPieces().isEmpty()) {
+
+            final Stopwatch stopwatch = new Stopwatch();
 
             stopwatch.start();
             final List<Move> legalMoves = boardReferee.getOrderedLegalMoves(board, player);
             stopwatch.stop();
 
             for (final Move legalMove : legalMoves)
-                System.out.println(boardRenderingManager.render(legalMove.getNewBoard()));
+                System.out.println(legalMove.getOutputBoard());
 
             System.out.println("number of pieces      : " + player.getBagOfPieces().getList().size());
             System.out.println("number of legal moves : " + legalMoves.size());

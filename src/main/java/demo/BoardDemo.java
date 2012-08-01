@@ -1,93 +1,50 @@
-/*
- * Copyright 2012 Arie Benichou
- * 
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- */
 
 package demo;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
+import blockplus.Color;
 import blockplus.board.Board;
-import blockplus.board.BoardRenderingManager;
-import blockplus.direction.DirectionInterface;
 import blockplus.position.Position;
 import blockplus.position.PositionInterface;
 
-public final class BoardDemo {
+import com.google.common.collect.Maps;
+
+public class BoardDemo {
 
     public static void main(final String[] args) {
 
-        final String data = "" +
-                "3333333" +
-                "3222223" +
-                "3211123" +
-                "3210123" +
-                "3211123" +
-                "3222223" +
-                "3333333";
+        final int n = 5 + 1 + 5;
 
-        final Board board = Board.from(data);
+        final int rows = n;
+        final int columns = n;
 
-        final BoardRenderingManager boardRenderingManager = new BoardRenderingManager();
-        System.out.println(boardRenderingManager.render(board));
+        final Map<PositionInterface, Color> definedPositions = Maps.newHashMap();
+        definedPositions.put(Position.from(-1, -1), Color.White);
+        definedPositions.put(Position.from(-1, columns), Color.White);
+        definedPositions.put(Position.from(rows, -1), Color.White);
+        definedPositions.put(Position.from(rows, columns), Color.White);
 
-        final PositionInterface position = Position.from(3, 3);
+        final Board<Color> board = Board.from(rows, columns, Color.Transparent, Color.Black, definedPositions);
 
-        {
-            final Map<DirectionInterface, Integer> neighbours = board.getNeighbours(position, 0);
-            for (final Entry<DirectionInterface, Integer> entry : neighbours.entrySet()) {
-                System.out.println(entry);
-            }
-        }
+        System.out.println(board);
 
-        System.out.println();
+        System.out.println(board.get(Position.from(-1, -2)).name());
+        System.out.println(board.get(Position.from(-1, -1)).name());
+        System.out.println(board.get(Position.from(-1, columns)).name());
+        System.out.println(board.get(Position.from(rows, -1)).name());
+        System.out.println(board.get(Position.from(rows, columns)).name());
+        System.out.println(board.get(Position.from(0, 0)).name());
 
-        {
-            final Map<DirectionInterface, Integer> neighbours = board.getNeighbours(position, 1);
-            for (final Entry<DirectionInterface, Integer> entry : neighbours.entrySet()) {
-                System.out.println(entry);
-            }
-        }
+        final Map<PositionInterface, Color> updatedPositions = Maps.newHashMap();
+        updatedPositions.put(Position.from(0, 0), Color.Blue);
+        updatedPositions.put(Position.from(1, 0), Color.Yellow);
+        updatedPositions.put(Position.from(2, 0), Color.Red);
+        updatedPositions.put(Position.from(3, 0), Color.Green);
 
-        System.out.println();
-
-        {
-            final Map<DirectionInterface, Integer> neighbours = board.getNeighbours(position);
-            for (final Entry<DirectionInterface, Integer> entry : neighbours.entrySet()) {
-                System.out.println(entry);
-            }
-        }
-
-        System.out.println();
-
-        {
-            final Map<DirectionInterface, Integer> neighbours = board.getNeighbours(position, 2);
-            for (final Entry<DirectionInterface, Integer> entry : neighbours.entrySet()) {
-                System.out.println(entry);
-            }
-        }
-
-        System.out.println();
-
-        {
-            final Map<DirectionInterface, Integer> neighbours = board.getNeighbours(position, 3);
-            for (final Entry<DirectionInterface, Integer> entry : neighbours.entrySet()) {
-                System.out.println(entry);
-            }
-        }
+        System.out.println(board.update(updatedPositions));
+        System.out.println(board);
 
     }
+
 }
