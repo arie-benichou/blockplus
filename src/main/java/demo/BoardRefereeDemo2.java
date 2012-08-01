@@ -35,6 +35,10 @@ import blockplus.position.PositionInterface;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 
+// TODO MasterPiece (a template of a piece)
+// TODO RotatedPiece (a rotated template of a piece)
+// TODO TranslatedPiece (a rotated and translated template of a piece)
+// TODO Piece (a rotated, translated and colored template of piece)
 public class BoardRefereeDemo2 {
 
     public static void main(final String[] args) {
@@ -60,14 +64,12 @@ public class BoardRefereeDemo2 {
         final PiecesBag bagOfPieces = new PiecesBag(instanceOfPieces);
         final Player player = new Player(Color.White, bagOfPieces);
         final BoardReferee boardReferee = new BoardReferee();
-
         final PositionInterface position = Position.from(5, 5);
 
         for (final Pieces piece : Pieces.values()) {
 
             System.out.println("================================8<================================");
             System.out.println();
-
             System.out.println(piece.name());
             System.out.println(piece);
 
@@ -75,7 +77,6 @@ public class BoardRefereeDemo2 {
             final Set<Move> distinctLegalMoves = Sets.newHashSet();
 
             System.out.println(new Move(player.getColor(), position, piece.get(), board).getOutputBoard());
-
             System.out.println("--------------------------------8<--------------------------------");
 
             for (final PieceTemplateInterface rotation : piece.get().getRotations()) {
@@ -88,6 +89,7 @@ public class BoardRefereeDemo2 {
 
                 for (final Move legalMove : legalMoves) {
                     System.out.println(legalMove.getOutputBoard());
+                    System.out.println(legalMove);
                 }
 
                 final int numberOfLegalMoves = legalMoves.size();

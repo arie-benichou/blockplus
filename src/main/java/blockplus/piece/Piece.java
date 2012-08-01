@@ -281,7 +281,7 @@ public final class Piece implements PieceTemplateInterface {
         for (final PositionInterface position : flattenTemplate)
             square[position.row()][position.column()] = true;
         final StringBuilder sb = new StringBuilder();
-        sb.append("Referential = " + Position.from(delta[0], delta[1]));
+        sb.append("Referential = " + Position.from(-delta[0], -delta[1]));
         sb.append("\n");
         for (final boolean[] row : square) {
             for (final boolean cell : row)

@@ -31,7 +31,7 @@ public enum Color {
     Green(7, "G"),
 
     Black(-1, "Ø"),
-    White(Blue.value() * Yellow.value() * Red.value() * Green.value(), "Ω"),
+    White(Blue.value() * Yellow.value() * Red.value() * Green.value(), "O"),
 
     Transparent(1, " ");
 
