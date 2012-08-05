@@ -11,6 +11,7 @@ import blockplus.piece.matrix.Matrix;
 import blockplus.position.Position;
 import blockplus.position.PositionInterface;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSortedSet;
@@ -31,7 +32,7 @@ public final class PieceComposite implements PieceInterface {
     private final static int MINIMAL_INDEX = 0;
     private final static int MAXIMAL_INDEX = MAXIMAL_NUMBER_OF_COMPONENTS - 1;
 
-    private static PieceData check(final PieceData pieceData) {
+    private static PieceTemplateData check(final PieceTemplateData pieceData) {
         Preconditions.checkArgument(pieceData != null);
         return pieceData;
     }
@@ -145,7 +146,7 @@ public final class PieceComposite implements PieceInterface {
 
     /*----------------------------------------8<----------------------------------------*/
 
-    public static PieceInterface from(final PieceData pieceData) {
+    public static PieceInterface from(final PieceTemplateData pieceData) {
         final int id = check(pieceData).ordinal();
         final int numberOfCells = check(pieceData.getNumberOfCells());
         final Matrix matrix = check(pieceData.getMatrix());
@@ -293,33 +294,28 @@ public final class PieceComposite implements PieceInterface {
         return rotateAround;
     }
 
-    /*
     @Override
-    public int hashCode() {
-        return 0; // TODO
+    public int hashCode() { // TODO caching
+        return this.toString().hashCode();
     }
 
     @Override
-    public boolean equals(final Object object) {
+    public boolean equals(final Object object) { // TODO vérifier hashcode
         if (object == null) return false;
         if (object == this) return true;
         if (!(object instanceof PieceInterface)) return false;
         final PieceInterface that = (PieceInterface) object;
         if (this.getId() != that.getId()) return false;
         if (!this.getReferential().equals(that.getReferential())) return false;
-
-        final Iterable<PieceInterface> components = that.get();
-        for (final PieceInterface pieceInterface : this) {
-            //components.c
-        }
-
-        return false; // TODO
+        return this.components.equals(that.get());
     }
-    */
 
     @Override
-    public String toString() {
-        return Objects.toStringHelper(this).addValue(this.get()).toString();
+    public String toString() { // TODO caching
+        return Objects.toStringHelper(this)
+                .addValue("\n  " + this.getId())
+                .addValue("\n  " + Joiner.on("\n  ").join(this.get()) + " \n  ")
+                .toString();
     }
 
 }

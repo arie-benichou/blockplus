@@ -18,10 +18,11 @@
 package demo;
 
 import blockplus.piece.PieceComponent;
+import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceTemplate;
 
 // TODO !! next thing to do: nombre de rotations + boxing square side
-public class PieceTemplateDemo {
+public class PieceTemplateDemo1 {
 
     public static void main(final String[] args) {
 
@@ -32,6 +33,7 @@ public class PieceTemplateDemo {
         }
 
         System.out.println(PieceComponent.FACTORY);
+        System.out.println(PieceComposite.FACTORY);
 
     }
 

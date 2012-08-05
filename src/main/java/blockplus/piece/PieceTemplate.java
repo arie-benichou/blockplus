@@ -17,11 +17,17 @@
 
 package blockplus.piece;
 
+import java.util.Set;
+
+import blockplus.piece.matrix.Matrix;
 import blockplus.position.Position;
+import blockplus.position.PositionInterface;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Supplier;
+import com.google.common.collect.Sets;
 
-public enum PieceTemplate implements Supplier<PieceInterface> {
+public enum PieceTemplate implements Supplier<PieceInterface>, PieceTemplateInterface {
 
     // null object
     ENTRY0 {
@@ -29,6 +35,16 @@ public enum PieceTemplate implements Supplier<PieceInterface> {
         @Override
         public PieceInterface get() {
             return NULL;
+        }
+
+        @Override
+        public int getBoxingSquareSide() {
+            return 0; // TODO 0 -1
+        }
+
+        @Override
+        public int getNumberOfRotations() {
+            return 0;
         }
 
     },
@@ -39,6 +55,16 @@ public enum PieceTemplate implements Supplier<PieceInterface> {
         @Override
         public PieceInterface get() {
             return UNIT;
+        }
+
+        @Override
+        public int getBoxingSquareSide() {
+            return 1; // TODO 0
+        }
+
+        @Override
+        public int getNumberOfRotations() {
+            return 1;
         }
 
     },
@@ -61,14 +87,44 @@ public enum PieceTemplate implements Supplier<PieceInterface> {
     private final static PieceInterface NULL = NullPieceComponent.getInstance();
     private final static PieceInterface UNIT = PieceComponent.from(Position.ORIGIN);
 
+    private final static int FULL_ROTATION_UNIT = 360;
+    private final static int COUNTER_CLOCKWISE_ROTATION = 90;
+    private final static int NUMBER_OF_ROTATIONS = FULL_ROTATION_UNIT / COUNTER_CLOCKWISE_ROTATION;
+
+    private static int computeBoxingSquareSide(final Matrix matrix) {
+        final PositionInterface p1 = matrix.getPositionHavingHighestValue(); // TODO !! Matrix.min();
+        final PositionInterface p2 = matrix.getPositionHavingLowestValue(); // TODO !! Matrix.max();
+        final int highestValue = matrix.get(p1.row(), p1.column());
+        final int lowestValue = matrix.get(p2.row(), p2.column());
+        return highestValue - lowestValue + 1;
+    }
+
+    private static int computeNumberOfDistinctRotations(final PieceInterface pieceInterface) {
+        PieceInterface rotatedPiece = pieceInterface;
+        final Set<PieceInterface> rotations = Sets.newHashSet();
+        rotations.add(rotatedPiece);
+        for (int i = 1; i < NUMBER_OF_ROTATIONS; ++i) {
+            rotatedPiece = rotatedPiece.rotate();
+            rotations.add(rotatedPiece);
+        }
+        return rotations.size();
+    }
+
     public final static PieceTemplate get(final int ordinal) {
         return PieceTemplate.valueOf(ENTRY_NAME_PATTERN + ordinal);
     }
 
     private PieceInterface piece;
+    private int boxingSquareSide;
+    private int numberOfRotations;
 
     private PieceTemplate() {
-        if (this.ordinal() > 1) this.piece = PieceComposite.from(PieceData.get(this.ordinal()));
+        if (this.ordinal() > 1) {
+            final PieceTemplateData pieceData = PieceTemplateData.get(this.ordinal());
+            this.boxingSquareSide = computeBoxingSquareSide(pieceData.getMatrix());
+            this.piece = PieceComposite.from(pieceData);
+            this.numberOfRotations = computeNumberOfDistinctRotations(this.piece);
+        }
     }
 
     @Override
@@ -76,9 +132,24 @@ public enum PieceTemplate implements Supplier<PieceInterface> {
         return this.piece;
     }
 
+    // TODO ! calculer un rayon plutot qu'un diametre
+    @Override
+    public int getBoxingSquareSide() {
+        return this.boxingSquareSide;
+    }
+
+    @Override
+    public int getNumberOfRotations() {
+        return this.numberOfRotations;
+    }
+
     @Override
     public String toString() {
-        return this.get().toString();
+        return Objects.toStringHelper(this)
+                .add("\n " + "diameter", this.getBoxingSquareSide())
+                .add("\n " + "rotations", this.getNumberOfRotations())
+                .addValue("\n " + this.get() + "\n")
+                .toString();
     }
 
 }

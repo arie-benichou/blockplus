@@ -19,7 +19,7 @@ package blockplus.piece;
 
 import blockplus.piece.matrix.Matrix;
 
-public enum PieceData {
+public enum PieceTemplateData {
 
     /*      
           NULL OBJECT
@@ -277,8 +277,8 @@ public enum PieceData {
     private static final String ENTRY_NAME_PATTERN = "ENTRY";
     private final static int DIMENSION = 2;
 
-    public final static PieceData get(final int ordinal) {
-        return PieceData.valueOf(ENTRY_NAME_PATTERN + ordinal);
+    public final static PieceTemplateData get(final int ordinal) {
+        return PieceTemplateData.valueOf(ENTRY_NAME_PATTERN + ordinal);
     }
 
     private final Matrix matrix;
@@ -292,7 +292,7 @@ public enum PieceData {
      *            row contains column indexes. The first [row][column] always
      *            contains the referential.
      */
-    private PieceData(final int[][] data) {
+    private PieceTemplateData(final int[][] data) {
         this.numberOfCells = data[0].length;
         this.matrix = new Matrix(DIMENSION, this.getNumberOfCells(), data);
     }
