@@ -29,4 +29,6 @@ public interface PositionInterface extends Comparable<PositionInterface> {
 
     PositionInterface apply(DirectionInterface direction);
 
+    boolean isNull();
+
 }

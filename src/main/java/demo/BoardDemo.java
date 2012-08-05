@@ -3,8 +3,8 @@ package demo;
 
 import java.util.Map;
 
-import blockplus.Color;
 import blockplus.board.Board;
+import blockplus.color.Color;
 import blockplus.position.Position;
 import blockplus.position.PositionInterface;
 
@@ -25,7 +25,7 @@ public class BoardDemo {
         definedPositions.put(Position.from(rows, -1), Color.White);
         definedPositions.put(Position.from(rows, columns), Color.White);
 
-        final Board<Color> board = Board.from(rows, columns, Color.Transparent, Color.Black, definedPositions);
+        final Board<Color> board = Board.from(rows, columns, Color.TRANSPARENT, Color.OPAQUE, definedPositions);
 
         System.out.println(board);
 
@@ -42,8 +42,8 @@ public class BoardDemo {
         updatedPositions.put(Position.from(2, 0), Color.Red);
         updatedPositions.put(Position.from(3, 0), Color.Green);
 
-        updatedPositions.put(Position.from(0, columns - 1), Color.Unknown);
-        updatedPositions.put(Position.from(1, columns - 1), Color.Black);
+        updatedPositions.put(Position.from(0, columns - 1), Color.UNKNOWN);
+        updatedPositions.put(Position.from(1, columns - 1), Color.OPAQUE);
         updatedPositions.put(Position.from(2, columns - 1), Color.White);
 
         System.out.println(board.update(updatedPositions));

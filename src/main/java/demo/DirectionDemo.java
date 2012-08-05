@@ -28,9 +28,7 @@ public final class DirectionDemo {
         System.out.println(Direction.from(-1, 1));
         System.out.println(Direction.NULL.apply(1, 2).apply(Direction.from(1, 2)));
 
-        // TODO Factory.toString()
-        System.out.println(Direction.Factory.size());
-        System.out.println(Direction.Factory.cacheHits());
+        System.out.println(Direction.Factory.asString());
 
     }
 

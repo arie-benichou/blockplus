@@ -15,9 +15,28 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.piece;
+package blockplus.player;
 
+import blockplus.color.Color;
+import blockplus.piece.PiecesBag;
 
-public interface PieceInstanceInterface extends PieceInterface {
+public class Player {
+
+    private final Color color;
+    private final PiecesBag bagOfPieces;
+
+    // TODO ? Set<Color> colors pour les variantes de jeux
+    public Player(final Color color, final PiecesBag bagOfPieces) {
+        this.color = color;
+        this.bagOfPieces = bagOfPieces;
+    }
+
+    public Color getColor() {
+        return this.color;
+    }
+
+    public PiecesBag getBagOfPieces() {
+        return this.bagOfPieces;
+    }
 
 }

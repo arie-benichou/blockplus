@@ -15,42 +15,39 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus;
+package blockplus.move;
 
-import java.util.List;
 import java.util.Map;
 
 import blockplus.board.Board;
-import blockplus.matrix.Matrix;
-import blockplus.piece.Piece;
-import blockplus.piece.PieceInstance;
-import blockplus.piece.PieceTemplateInterface;
+import blockplus.color.Color;
+import blockplus.piece.PieceInterface;
 import blockplus.position.PositionInterface;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
+// TODO !! à finir
 // TODO ? MoveForNull
 // TODO extract Comparator(s)
 public class Move implements Comparable<Move> {
 
     private final Color color;
-    private final PositionInterface position;
-    private final PieceTemplateInterface piece;
+    //private final PositionInterface position;
+    private final PieceInterface piece;
     private final Board<Color> board;
 
-    private transient volatile String footPrint;
+    //private transient volatile String footPrint;
 
     // TODO ... inputGameState, outPutGameState
     public Move(
             final Color color,
-            final PositionInterface position,
-            final PieceTemplateInterface piece,
+            //final PositionInterface position,
+            final PieceInterface piece,
             final Board<Color> board
 
     ) {
         this.color = color;
-        this.position = position;
+        //this.position = this.position;
         this.piece = piece;
         this.board = board;
     }
@@ -60,35 +57,40 @@ public class Move implements Comparable<Move> {
     }
 
     public PositionInterface getPosition() {
-        return this.position;
+        return this.getPiece().getReferential();
     }
 
-    public PieceTemplateInterface getPiece() {
+    public PieceInterface getPiece() {
         return this.piece;
     }
 
-    public Board<Color> getOutputBoard() {
+    public Board<Color> getOutputBoard() {// TODO à revoir
         final Map<PositionInterface, Color> cells = Maps.newHashMap();
-        final List<PositionInterface> positions = this.getPiece().getPositions(this.getPosition());
-        for (final PositionInterface position : positions) {
-            cells.put(position, this.getColor());
+        final PieceInterface translated = this.getPiece().translateTo(this.getPosition());
+
+        // TODO à revoir
+        for (final PieceInterface component : translated) {
+            cells.put(component.getReferential(), this.getColor());
         }
+        // TODO gérer les positions potentielles
+        for (final PositionInterface potentialPosition : translated.getPotentialPositions()) {
+            // TODO !? tester les positions
+            // TODO !! potential colors
+            cells.put(potentialPosition, this.getColor().potential());
+        }
+
         return Board.from(this.board, cells);
     }
 
+    /*
     private static String computeFootPrint(final Move move) {
-
-        final PieceTemplateInterface piece = move.getPiece();
+        final PieceInterface piece = move.getPiece();
         if (piece.isNull()) return "";
-
         final PositionInterface position = move.getPosition();
-
         // TODO ! PieceInstance as a flatten PieceTemplate (current Piece class)
         final Matrix matrix = Piece.translate(piece.getMatrix(), piece.getReferential(), position);
-
         // TODO ! pouvoir stocker cette instance
         final PieceInstance pieceInstance = new PieceInstance(piece, matrix, position);
-
         return pieceInstance.toString();
     }
 
@@ -118,15 +120,18 @@ public class Move implements Comparable<Move> {
         Preconditions.checkState(haveSameHashCode == isEqual);
         return isEqual;
     }
+    */
 
     @Override
     public String toString() {
-        return this.getFootPrint();
+        //return this.getFootPrint();
+        return "TODO";
     }
 
     @Override
     public int compareTo(final Move that) {
 
+        /*
         final int boxingSquareSide1 = this.getPiece().getBoxingSquareSide();
         final int boxingSquareSide2 = that.getPiece().getBoxingSquareSide();
         final int compare1 = -(boxingSquareSide1 - boxingSquareSide2);
@@ -148,8 +153,9 @@ public class Move implements Comparable<Move> {
         final int compare4 = this.getPosition().compareTo(that.getPosition());
         //if (compare4 != 0)
         return compare4;
+        */
 
-        //return 0;
+        return 0;
     }
 
 }

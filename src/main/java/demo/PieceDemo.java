@@ -12,134 +12,73 @@
  * details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * this program. If not, see <http:www.gnu.org/licenses/>.
  */
 
 package demo;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import blockplus.Color;
-import blockplus.Move;
 import blockplus.board.Board;
-import blockplus.board.BoardRepresentation;
-import blockplus.piece.PieceTemplateInterface;
-import blockplus.piece.Pieces;
+import blockplus.board.BoardBuilder;
+import blockplus.board.BoardRenderer;
+import blockplus.color.Color;
+import blockplus.move.Move;
+import blockplus.piece.PieceComponent;
+import blockplus.piece.PieceComposite;
+import blockplus.piece.PieceInterface;
+import blockplus.piece.PieceTemplate;
 import blockplus.position.Position;
 import blockplus.position.PositionInterface;
 
-import com.google.common.base.Function;
-import com.google.common.base.Supplier;
-import com.google.common.collect.Lists;
+import com.google.common.base.Stopwatch;
 
 public final class PieceDemo {
 
-    // TODO précomputer les positions d'ancrage d'un template de pièce et s'en servir pour le score
-    // et pour la recherche de positions légales potentielles
-
-    private static double computeScore(final PieceTemplateInterface pieceTemplate) {
-
-        if (pieceTemplate.isNull()) return Double.POSITIVE_INFINITY;
-
-        final int boxingSquareSide = pieceTemplate.getBoxingSquareSide();
-        final int numberOfCells = pieceTemplate.getNumberOfCells();
-        final int numberOfRotations = pieceTemplate.getRotations().size();
-
-        double score = 1;
-        score *= 5.0 / numberOfCells;
-        score *= 1.0 * numberOfCells / (boxingSquareSide * boxingSquareSide);
-        score *= numberOfRotations;
-        score -= 5 * numberOfCells;
-        //score += 1;
-        return score;
-
-    }
-
-    private final static Comparator<PieceTemplateInterface> COMPARATOR = new Comparator<PieceTemplateInterface>() {
-
-        @Override
-        public int compare(final PieceTemplateInterface pt1, final PieceTemplateInterface pt2) {
-            return Double.compare(computeScore(pt1), computeScore(pt2));
-        }
-
-    };
-
-    private static void renderAllPiecesByScore() {
-
-        final List<Pieces> pieces = Lists.newArrayList(Pieces.values());
-
-        final List<PieceTemplateInterface> templates = Lists.transform(pieces, new Function<Pieces, PieceTemplateInterface>() {
-
-            @Override
-            public PieceTemplateInterface apply(@Nullable final Pieces input) {
-                return input.get();
+    private static void TestAllPieces(final Board<Color> board) {
+        for (final PieceTemplate pieceTemplate : PieceTemplate.values()) {
+            //pieceTemplate = PieceTemplate.get(7);
+            System.out.println("======================8<======================\n");
+            System.out.println(pieceTemplate.name());
+            //final PositionInterface referential = Position.from(5, 5);
+            final PositionInterface position = Position.from(5, 8);
+            PieceInterface piece = pieceTemplate.get().translateTo(position);
+            // TODO !! pouvoir obtenir le nombre de rotations pour un template de piece
+            for (int i = 0; i < 4; ++i) {
+                final Move move = new Move(Color.Blue, piece, board);
+                final Board<Color> outputBoard = move.getOutputBoard();
+                BoardRenderer.render(outputBoard);
+                System.out.println();
+                piece = piece.rotate();
+                //piece = piece.rotateAround(referential);
+                System.out.println();
             }
-
-        });
-
-        final List<PieceTemplateInterface> list = Lists.newArrayList(templates);
-
-        Collections.sort(list, COMPARATOR);
-
-        for (final PieceTemplateInterface piece : list) {
-            System.out.println("----------------8<----------------");
-            System.out.println(piece);
-            System.out.println(computeScore(piece));
-        }
-
-    }
-
-    private static void renderPiece(final Supplier<PieceTemplateInterface> pieceSupplier) {
-        final PieceTemplateInterface pieceTemplate = pieceSupplier.get();
-        final List<PieceTemplateInterface> rotations = pieceTemplate.getRotations();
-        for (final PieceTemplateInterface rotation : rotations) {
-            System.out.println(rotation);
-        }
-    }
-
-    private static void renderAllPieces() {
-        for (final Pieces piece : Pieces.values()) {
-            System.out.println("----------------8<----------------");
-            System.out.println(piece.name());
-            renderPiece(piece);
-        }
-    }
-
-    private static void putPiece(final Board<Color> board, final Supplier<PieceTemplateInterface> pieceSupplier) {
-        final PositionInterface position = Position.from(3, 3);
-        for (final PieceTemplateInterface rotation : pieceSupplier.get().getRotations()) {
-            final Move move = new Move(Color.Blue, position, rotation, board); // TODO ? MoveManager.emit(move)
-            System.out.println(move.getOutputBoard());
-        }
-    }
-
-    private static void putAllPieces() {
-
-        final int[][] data = {
-                { 3, 1, 1, 1, 1, 1, 5 },
-                { 1, 1, 1, 1, 1, 1, 1 },
-                { 1, 1, 1, 1, 1, 1, 1 },
-                { 1, 1, 1, 1, 1, 1, 1 },
-                { 1, 1, 1, 1, 1, 1, 1 },
-                { 1, 1, 1, 1, 1, 1, 1 },
-                { 7, 1, 1, 1, 1, 1, 1 }
-        };
-
-        final Board<Color> board = BoardRepresentation.parse(data);
-        for (final Pieces piece : Pieces.values()) {
-            System.out.println("----------------8<----------------");
-            System.out.println(piece.name());
-            putPiece(board, piece);
+            //break;
         }
     }
 
     public static void main(final String[] args) {
-        renderAllPieces();
-        putAllPieces();
-        renderAllPiecesByScore();
+        final String[][] data = {
+                { "o.........o" },
+                { "..........." },
+                { "..........." },
+                { "..........." },
+                { "..........." },
+                { ".....?....." },
+                { "..........." },
+                { "..........." },
+                { "..........." },
+                { "..........." },
+                { "o.........o" }
+        };
+        final Board<Color> board = BoardBuilder.parse(data);
+        final Stopwatch stopwatch = new Stopwatch();
+        stopwatch.start();
+        for (int i = 0; i < 1; ++i) {
+            TestAllPieces(board);
+        }
+        stopwatch.stop();
+        System.out.println(stopwatch.toString());
+        System.out.println(PieceComponent.FACTORY);
+        System.out.println(PieceComposite.FACTORY);
     }
+
 }

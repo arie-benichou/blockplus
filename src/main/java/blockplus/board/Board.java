@@ -22,13 +22,15 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import blockplus.direction.Direction;
+import blockplus.direction.DirectionInterface;
 import blockplus.position.Position;
 import blockplus.position.PositionInterface;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
-// TODO !! ajouter la possibilité d'avoir des layers
 public final class Board<T> {
 
     private static <T> SortedMap<PositionInterface, T> buildData(
@@ -77,8 +79,8 @@ public final class Board<T> {
         return from(rows, columns, initialPositionvalue, undefinedPositionvalue, new HashMap<PositionInterface, T>());
     }
 
-    public static <T> Board<T> from(final Board<T> board, final Map<PositionInterface, T> updatedPositions) {
-        return from(board.rows(), board.columns(), board.initialPositionvalue(), board.undefinedPositionvalue(), board.data(), updatedPositions);
+    public static <T> Board<T> from(final Board<T> board, final Map<PositionInterface, T> cells) {
+        return from(board.rows(), board.columns(), board.initialPositionvalue(), board.undefinedPositionvalue(), board.data(), cells);
     }
 
     private final int rows;
@@ -117,6 +119,14 @@ public final class Board<T> {
                 : mergeData(definedPositions, updatedPositions);
     }
 
+    private Board(final Board<T> board) {
+        this.rows = board.rows();
+        this.columns = board.columns;
+        this.initialPositionvalue = board.initialPositionvalue();
+        this.undefinedPositionvalue = board.undefinedPositionvalue();
+        this.data = Maps.newTreeMap(board.data);
+    }
+
     public int rows() {
         return this.rows;
     }
@@ -134,6 +144,10 @@ public final class Board<T> {
         return Board.from(this, updatedPositions);
     }
 
+    public Board<T> copy() {
+        return new Board<T>(this);
+    }
+
     @Override
     public final String toString() {
         final String lineSeparator = "\n" + " " + Strings.repeat("----", this.columns()) + "-" + "\n";
@@ -141,12 +155,36 @@ public final class Board<T> {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < this.rows(); ++i) {
             sb.append(lineSeparator);
-            for (int j = 0; j < this.columns(); ++j)
-                sb.append(columnSeparator + this.get(Position.from(i, j)));
+            for (int j = 0; j < this.columns(); ++j) {
+                sb.append(columnSeparator);
+                sb.append(this.get(Position.from(i, j)));
+            }
             sb.append(columnSeparator);
         }
         sb.append(lineSeparator);
         return sb.toString();
+    }
+
+    public Map<DirectionInterface, T> getNeighbours(final PositionInterface position, final int distance) {
+        Preconditions.checkArgument(position != null);
+        Preconditions.checkArgument(distance >= 0);
+        final Map<DirectionInterface, T> neighbours = Maps.newHashMap();
+        for (int i = -distance; i <= distance; ++i) {
+            final int ii = Math.abs(i);
+            for (int j = -distance; j <= distance; ++j)
+                if (ii == distance || Math.abs(j) == distance)
+                    neighbours.put(Direction.from(i, j), this.get(Position.from(position.row() + i, position.column() + j)));
+        }
+        return neighbours;
+    }
+
+    public Map<DirectionInterface, T> getAllNeighbours(final PositionInterface position, final int distance) {
+        int n = distance;
+        final Map<DirectionInterface, T> neighbours = Maps.newHashMap();
+        do
+            neighbours.putAll(this.getNeighbours(position, n));
+        while (--n > -1);
+        return neighbours;
     }
 
 }

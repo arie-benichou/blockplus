@@ -17,7 +17,7 @@
 
 package blockplus.piece;
 
-import blockplus.matrix.Matrix;
+import blockplus.piece.matrix.Matrix;
 
 public enum PieceData {
 
@@ -210,7 +210,7 @@ public enum PieceData {
           -------------
     */
 
-    ENTRY16(new int[][] { { 0, 1, 1, 1, 2 }, { 0, 0, 1, 2, 0 } }),
+    ENTRY16(new int[][] { { 1, 0, 1, 1, 2 }, { 0, 0, 1, 2, 0 } }),
 
     /*      0   1   2  
           -------------
@@ -297,12 +297,12 @@ public enum PieceData {
         this.matrix = new Matrix(DIMENSION, this.getNumberOfCells(), data);
     }
 
-    public int getNumberOfCells() {
-        return this.numberOfCells;
-    }
-
     public Matrix getMatrix() {
         return this.matrix;
+    }
+
+    public int getNumberOfCells() {
+        return this.numberOfCells;
     }
 
 }

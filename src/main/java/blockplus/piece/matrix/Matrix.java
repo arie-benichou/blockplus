@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.matrix;
+package blockplus.piece.matrix;
 
 import java.util.Arrays;
 

@@ -17,15 +17,22 @@
 
 package demo;
 
-import blockplus.piece.Pieces;
+import blockplus.piece.PieceComponent;
+import blockplus.piece.PieceTemplate;
 
-public class PiecesDemo {
+// TODO !! next thing to do: nombre de rotations + boxing square side
+public class PieceTemplateDemo {
 
     public static void main(final String[] args) {
-        for (final Pieces pieces : Pieces.values()) {
+
+        for (final PieceTemplate pieces : PieceTemplate.values()) {
             System.out.println(pieces.name());
             System.out.println(pieces);
+            System.out.println();
         }
+
+        System.out.println(PieceComponent.FACTORY);
+
     }
 
 }

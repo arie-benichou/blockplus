@@ -23,31 +23,28 @@ import blockplus.direction.DirectionInterface;
 
 import com.google.common.collect.Maps;
 
+// TODO à revoir
 public final class Position implements PositionInterface {
 
-    public final static PositionInterface NULL = new Position(0, 0);
+    public final static PositionInterface ORIGIN = new Position(0, 0);
 
     private final static int computeHashCode(final int row, final int column) {
         return (row + "|" + column).hashCode();
     }
 
-    public final static class Factory { // TODO à revoir
+    public final static class Factory {
 
         private static int cacheHits;
 
         private final static Map<Integer, PositionInterface> CACHE = Maps.newHashMap();
 
         public static PositionInterface get(final int row, final int column) {
-            //if (row < 0) row = 0;
-            //if (column < 0) column = 0;
-            //if (row == -1 || column == -1) return NULL;
             final int address = computeHashCode(row, column);
             PositionInterface instance = CACHE.get(address);
             if (instance == null) {
-                instance = new Position(row, column);
-                CACHE.put(address, instance);
+                CACHE.put(address, instance = new Position(row, column));
             }
-            else ++cacheHits;
+            else ++cacheHits; // TODO ?! vérifier des éventuelles collisions
             return instance;
         }
 
@@ -83,7 +80,7 @@ public final class Position implements PositionInterface {
     }
 
     public static PositionInterface from(final int row, final int column) {
-        return NULL.apply(row, column);
+        return ORIGIN.apply(row, column); // TODO utiliser directement la factory
     }
 
     private Position(final int row, final int column) {
@@ -98,12 +95,12 @@ public final class Position implements PositionInterface {
 
     @Override
     public PositionInterface apply(final int row, final int column) {
-        return row == this.row() && column == this.column() ? this.apply() : Factory.get(row, column);
+        return row == 0 && column == 0 ? this.apply() : Factory.get(this.row() + row, this.column() + column);
     }
 
     @Override
     public PositionInterface apply(final DirectionInterface direction) {
-        return direction == null ? this.apply() : this.apply(this.row() + direction.rowDelta(), this.column() + direction.columnDelta());
+        return direction == null ? this.apply() : this.apply(direction.rowDelta(), direction.columnDelta());
     }
 
     @Override
@@ -129,8 +126,8 @@ public final class Position implements PositionInterface {
         return this.getClass().getSimpleName() + "(" + this.row() + ", " + this.column() + ")";
     }
 
+    @Override
     public boolean isNull() {
-        return this.equals(NULL);
-        //return this.row() == 0 && this.column() == 0;
+        return false;
     }
 }

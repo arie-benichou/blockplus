@@ -20,6 +20,9 @@ package blockplus.direction;
 import java.util.List;
 import java.util.Map;
 
+import blockplus.position.PositionInterface;
+
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
@@ -157,6 +160,14 @@ public final class Direction implements DirectionInterface {
             return cacheHits;
         }
 
+        // TODO avoir une instance constante de la factory
+        public static String asString() {
+            return Objects.toStringHelper(Factory.class)
+                    .add("cacheHit", cacheHits())
+                    .add("size", Factory.size())
+                    .toString();
+        }
+
     }
 
     private final int rowDelta;
@@ -182,6 +193,10 @@ public final class Direction implements DirectionInterface {
 
     public static DirectionInterface from(final int rowDelta, final int columnDelta) {
         return NULL.apply(rowDelta, columnDelta);
+    }
+
+    public static DirectionInterface from(final PositionInterface referential, final PositionInterface position) {
+        return from(position.row() - referential.row(), position.column() - referential.column());
     }
 
     private Direction(final int rowDelta, final int columnDelta) {
@@ -227,6 +242,15 @@ public final class Direction implements DirectionInterface {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "(" + this.rowDelta() + ", " + this.columnDelta() + ")";
+    }
+
+    @Override
+    public int compareTo(final DirectionInterface that) {
+        if (this.rowDelta() < that.rowDelta()) return -1;
+        if (this.rowDelta() > that.rowDelta()) return 1;
+        if (this.columnDelta() < that.columnDelta()) return -1;
+        if (this.columnDelta() > that.columnDelta()) return 1;
+        return 0;
     }
 
 }

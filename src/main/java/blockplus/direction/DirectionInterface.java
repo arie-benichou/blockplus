@@ -17,7 +17,8 @@
 
 package blockplus.direction;
 
-public interface DirectionInterface {
+
+public interface DirectionInterface extends Comparable<DirectionInterface> {
 
     int rowDelta();
 

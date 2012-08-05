@@ -17,15 +17,31 @@
 
 package blockplus.piece;
 
+import blockplus.position.Position;
+
 import com.google.common.base.Supplier;
 
-public enum Pieces implements Supplier<PieceTemplateInterface> {
+public enum PieceTemplate implements Supplier<PieceInterface> {
 
     // null object
-    ENTRY0,
+    ENTRY0 {
+
+        @Override
+        public PieceInterface get() {
+            return NULL;
+        }
+
+    },
 
     // monominoes
-    ENTRY1,
+    ENTRY1 {
+
+        @Override
+        public PieceInterface get() {
+            return UNIT;
+        }
+
+    },
 
     // dominoes
     ENTRY2,
@@ -40,20 +56,23 @@ public enum Pieces implements Supplier<PieceTemplateInterface> {
     ENTRY10, ENTRY11, ENTRY12, ENTRY13, ENTRY14, ENTRY15, ENTRY16,
     ENTRY17, ENTRY18, ENTRY19, ENTRY20, ENTRY21;
 
-    private static final String ENTRY_NAME_PATTERN = "ENTRY";
+    private final static String ENTRY_NAME_PATTERN = "ENTRY";
 
-    public final static Pieces get(final int ordinal) {
-        return Pieces.valueOf(ENTRY_NAME_PATTERN + ordinal);
+    private final static PieceInterface NULL = NullPieceComponent.getInstance();
+    private final static PieceInterface UNIT = PieceComponent.from(Position.ORIGIN);
+
+    public final static PieceTemplate get(final int ordinal) {
+        return PieceTemplate.valueOf(ENTRY_NAME_PATTERN + ordinal);
     }
 
-    private PieceTemplateInterface piece;
+    private PieceInterface piece;
 
-    private Pieces() {
-        this.piece = Piece.from(PieceData.get(this.ordinal()));
+    private PieceTemplate() {
+        if (this.ordinal() > 1) this.piece = PieceComposite.from(PieceData.get(this.ordinal()));
     }
 
     @Override
-    public PieceTemplateInterface get() {
+    public PieceInterface get() {
         return this.piece;
     }
 
