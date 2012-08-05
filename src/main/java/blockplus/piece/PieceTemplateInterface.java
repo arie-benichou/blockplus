@@ -1,8 +1,10 @@
 
 package blockplus.piece;
 
-// TODO ? étendre PieceInterface
+// TODO ? à supprimer ou étendre PieceInterface
 public interface PieceTemplateInterface {
+
+    int getId();
 
     int getBoxingSquareSide();
 

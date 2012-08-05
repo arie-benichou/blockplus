@@ -19,6 +19,7 @@ package blockplus.piece;
 
 import blockplus.piece.matrix.Matrix;
 
+// TODO à renommer en PieceData
 public enum PieceTemplateData {
 
     /*      

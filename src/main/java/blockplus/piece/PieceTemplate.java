@@ -27,6 +27,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Sets;
 
+// TODO Renommer en Pieces
 public enum PieceTemplate implements Supplier<PieceInterface>, PieceTemplateInterface {
 
     // null object
@@ -119,12 +120,18 @@ public enum PieceTemplate implements Supplier<PieceInterface>, PieceTemplateInte
     private int numberOfRotations;
 
     private PieceTemplate() {
-        if (this.ordinal() > 1) {
-            final PieceTemplateData pieceData = PieceTemplateData.get(this.ordinal());
+        final int id = this.getId();
+        if (id > 1) {
+            final PieceTemplateData pieceData = PieceTemplateData.get(id);
             this.boxingSquareSide = computeBoxingSquareSide(pieceData.getMatrix());
             this.piece = PieceComposite.from(pieceData);
             this.numberOfRotations = computeNumberOfDistinctRotations(this.piece);
         }
+    }
+
+    @Override
+    public int getId() {
+        return this.ordinal();
     }
 
     @Override
