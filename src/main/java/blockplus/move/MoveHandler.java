@@ -14,7 +14,7 @@ public class MoveHandler {
 
     private final Board<Color> board;
 
-    // TODO use guava bus event    
+    // TODO !? use guava bus event    
     public MoveHandler(final Board<Color> board) {
         this.board = board;
     }

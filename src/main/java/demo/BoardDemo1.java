@@ -10,7 +10,7 @@ import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Maps;
 
-public class BoardDemo {
+public class BoardDemo1 {
 
     public static void main(final String[] args) {
 

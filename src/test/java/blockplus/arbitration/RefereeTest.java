@@ -67,9 +67,4 @@ public class RefereeTest {
         // TODO à compléter
     }
 
-    @Test
-    public void testGetOrderedLegalMoves() {
-        //fail("Not yet implemented"); // TODO
-    }
-
 }

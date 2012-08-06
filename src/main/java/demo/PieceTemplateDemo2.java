@@ -33,7 +33,6 @@ import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Sets;
 
-// TODO !! next thing to do: nombre de rotations + boxing square side
 public class PieceTemplateDemo2 {
 
     public static void main(final String[] args) {

@@ -27,7 +27,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Sets;
 
-// TODO Renommer en Pieces
+// TODO !? Renommer en Pieces
 public enum PieceTemplate implements Supplier<PieceInterface>, PieceTemplateInterface {
 
     // null object

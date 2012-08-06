@@ -284,7 +284,7 @@ public final class PieceComposite implements PieceInterface {
     }
 
     @Override
-    public PieceInterface rotate() {// TODO ?! PieceTemplate
+    public PieceInterface rotate() {
         PieceInterface rotateAround = this.rotateAround;
         if (rotateAround == null) {
             synchronized (this) {
@@ -295,12 +295,12 @@ public final class PieceComposite implements PieceInterface {
     }
 
     @Override
-    public int hashCode() { // TODO caching
+    public int hashCode() { // TODO ! caching
         return this.toString().hashCode();
     }
 
     @Override
-    public boolean equals(final Object object) { // TODO vérifier hashcode
+    public boolean equals(final Object object) { // TODO tester hashcode
         if (object == null) return false;
         if (object == this) return true;
         if (!(object instanceof PieceInterface)) return false;
@@ -311,7 +311,7 @@ public final class PieceComposite implements PieceInterface {
     }
 
     @Override
-    public String toString() { // TODO caching
+    public String toString() {
         return Objects.toStringHelper(this)
                 .addValue("\n  " + this.getId())
                 .addValue("\n  " + Joiner.on("\n  ").join(this.get()) + " \n  ")

@@ -20,8 +20,8 @@ package blockplus.piece;
 import blockplus.piece.matrix.Matrix;
 
 // TODO !! choisir le référentiel (point d'ancrage) de manière
-// à minimaliser le radius de la pièce (cf TODO dans PieceTemplate)
-// TODO à renommer en PieceData
+// à minimaliser le radius de la pièce (cf todo dans PieceTemplate)
+// TODO ?! à renommer en PieceData
 public enum PieceTemplateData {
 
     /*      

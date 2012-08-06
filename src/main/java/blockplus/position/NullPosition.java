@@ -20,12 +20,12 @@ public class NullPosition implements PositionInterface {
 
     @Override
     public int row() {
-        return Integer.MAX_VALUE; // TODO a prendre en compte dans la factory
+        return Integer.MAX_VALUE; // TODO ! a prendre en compte dans la factory
     }
 
     @Override
     public int column() {
-        return Integer.MAX_VALUE; // TODO a prendre en compte dans la factory
+        return Integer.MAX_VALUE; // TODO ! a prendre en compte dans la factory
     }
 
     @Override
