@@ -1,7 +1,6 @@
 
 package blockplus.arbitration;
 
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.After;
@@ -14,12 +13,9 @@ import blockplus.board.BoardBuilder;
 import blockplus.board.BoardRenderer;
 import blockplus.color.Color;
 import blockplus.move.Move;
-import blockplus.piece.PieceInterface;
 import blockplus.piece.PieceTemplate;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
-
-import com.google.common.collect.Maps;
 
 // TODO à compléter
 public class RefereeTest {
@@ -58,26 +54,17 @@ public class RefereeTest {
 
     @Test
     public void testGetLegalMovesWithEmptyBagOfPieces() {
-        final Map<PieceInterface, Integer> instanceOfPieces = Maps.newHashMap();
-        instanceOfPieces.put(PieceTemplate.get(0).get(), 0);
-        final PiecesBag bagOfPieces = new PiecesBag(instanceOfPieces);
-        final Player player = new Player(Color.White, bagOfPieces);
+        final Player player = new Player(Color.White, PiecesBag.from());
         final Set<Move> legalMoves = this.referee.getLegalMoves(this.board, player);
         Assert.assertTrue(legalMoves.isEmpty());
     }
 
     @Test
     public void testGetLegalMovesWithBagOfPiecesHavingOnePiece() {
-        final Map<PieceInterface, Integer> instanceOfPieces = Maps.newHashMap();
-        instanceOfPieces.put(PieceTemplate.get(1).get(), 1);
-        final PiecesBag bagOfPieces = new PiecesBag(instanceOfPieces);
-        final Player player = new Player(Color.White, bagOfPieces);
+        final Player player = new Player(Color.White, PiecesBag.from(PieceTemplate.get(1)));
         final Set<Move> legalMoves = this.referee.getLegalMoves(this.board, player);
         Assert.assertTrue(!legalMoves.isEmpty());
-        // TODO à terminer
-        for (final Move move : legalMoves) {
-            BoardRenderer.render(move.getOutputBoard());
-        }
+        // TODO à compléter
     }
 
     @Test

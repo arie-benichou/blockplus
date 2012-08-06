@@ -22,6 +22,7 @@ import blockplus.board.BoardBuilder;
 import blockplus.board.BoardRenderer;
 import blockplus.color.Color;
 import blockplus.move.Move;
+import blockplus.move.MoveHandler;
 import blockplus.piece.PieceComponent;
 import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
@@ -34,6 +35,9 @@ import com.google.common.base.Stopwatch;
 public final class PieceDemo {
 
     private static void TestAllPieces(final Board<Color> board) {
+
+        final MoveHandler moveHandler = new MoveHandler(board);
+
         for (final PieceTemplate pieceTemplate : PieceTemplate.values()) {
             //pieceTemplate = PieceTemplate.get(7);
             System.out.println("======================8<======================\n");
@@ -43,9 +47,9 @@ public final class PieceDemo {
             PieceInterface piece = pieceTemplate.get().translateTo(position);
             // TODO !! pouvoir obtenir le nombre de rotations pour un template de piece
             for (int i = 0; i < 4; ++i) {
-                final Move move = new Move(Color.Blue, piece, board);
-                final Board<Color> outputBoard = move.getOutputBoard();
-                BoardRenderer.render(outputBoard);
+                final Move move = new Move(Color.Blue, piece);
+                final Board<Color> ouput = moveHandler.handle(move);
+                BoardRenderer.render(ouput);
                 System.out.println();
                 piece = piece.rotate();
                 //piece = piece.rotateAround(referential);

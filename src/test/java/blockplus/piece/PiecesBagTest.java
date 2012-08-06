@@ -7,99 +7,70 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 
-import blockplus.piece.PieceInterface;
-import blockplus.piece.PieceTemplate;
-import blockplus.piece.PiecesBag;
-
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 public class PiecesBagTest {
 
     @Test
     public void testIsEmpty() {
-        final Map<PieceInterface, Integer> instancesOfPieces = Maps.newLinkedHashMap();
-
-        {
-            final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
-            assertTrue(bagOfPieces.isEmpty());
-        }
-
-        instancesOfPieces.put(PieceTemplate.get(1).get(), 1);
-
-        {
-            final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
-            assertFalse(bagOfPieces.isEmpty());
-        }
+        assertTrue(PiecesBag.from().isEmpty());
+        assertFalse(PiecesBag.from(PieceTemplate.get(1)).isEmpty());
     }
 
     @Test
     public void testIterator() {
 
-        final Map<PieceInterface, Integer> instancesOfPieces = Maps.newHashMap();
-
         {
-            final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
-            PieceInterface lastPiece = null;
-            for (final PieceInterface piece : bagOfPieces)
+            final PiecesBag bagOfPieces = PiecesBag.from();
+            PieceTemplate lastPiece = null;
+            for (final PieceTemplate piece : bagOfPieces)
                 lastPiece = piece;
             assertTrue(lastPiece == null);
         }
 
-        instancesOfPieces.put(PieceTemplate.get(1).get(), 1);
+        {
+            final PiecesBag bagOfPieces = PiecesBag.from(PieceTemplate.get(1));
+            final List<PieceTemplate> expectedPieces = new ArrayList<PieceTemplate>();
+            expectedPieces.add(PieceTemplate.get(1));
+            final List<PieceTemplate> actualPieces = Lists.newArrayList(bagOfPieces);
+            assertEquals(expectedPieces, actualPieces);
+        }
 
         {
-            final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
-            final List<PieceInterface> expectedPieces = new ArrayList<PieceInterface>();
-            expectedPieces.add(PieceTemplate.get(1).get());
-            final List<PieceInterface> actualPieces = Lists.newArrayList();
-            for (final PieceInterface piece : bagOfPieces)
+            final PiecesBag bagOfPieces = PiecesBag.from(PieceTemplate.get(1), PieceTemplate.get(1));
+            final List<PieceTemplate> expectedPieces = new ArrayList<PieceTemplate>();
+            expectedPieces.add(PieceTemplate.get(1));
+            expectedPieces.add(PieceTemplate.get(1));
+            final List<PieceTemplate> actualPieces = Lists.newArrayList();
+            for (final PieceTemplate piece : bagOfPieces)
                 actualPieces.add(piece);
             assertEquals(expectedPieces, actualPieces);
         }
 
-        instancesOfPieces.put(PieceTemplate.get(1).get(), 2);
-
         {
-            final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
-            final List<PieceInterface> expectedPieces = new ArrayList<PieceInterface>();
-            expectedPieces.add(PieceTemplate.get(1).get());
-            expectedPieces.add(PieceTemplate.get(1).get());
-            final List<PieceInterface> actualPieces = Lists.newArrayList();
-            for (final PieceInterface piece : bagOfPieces)
+            final PiecesBag bagOfPieces = PiecesBag.from(PieceTemplate.get(1), PieceTemplate.get(1), PieceTemplate.get(2));
+            final List<PieceTemplate> expectedPieces = new ArrayList<PieceTemplate>();
+            expectedPieces.add(PieceTemplate.get(1));
+            expectedPieces.add(PieceTemplate.get(1));
+            expectedPieces.add(PieceTemplate.get(2));
+            final List<PieceTemplate> actualPieces = Lists.newArrayList();
+            for (final PieceTemplate piece : bagOfPieces)
                 actualPieces.add(piece);
             assertEquals(expectedPieces, actualPieces);
         }
 
-        instancesOfPieces.put(PieceTemplate.get(2).get(), 1);
-
         {
-            final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
-            final List<PieceInterface> expectedPieces = new ArrayList<PieceInterface>();
-            expectedPieces.add(PieceTemplate.get(1).get());
-            expectedPieces.add(PieceTemplate.get(1).get());
-            expectedPieces.add(PieceTemplate.get(2).get());
-            final List<PieceInterface> actualPieces = Lists.newArrayList();
-            for (final PieceInterface piece : bagOfPieces)
-                actualPieces.add(piece);
-            assertEquals(expectedPieces, actualPieces);
-        }
-
-        instancesOfPieces.put(PieceTemplate.get(3).get(), 1);
-
-        {
-            final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
-            final List<PieceInterface> expectedPieces = new ArrayList<PieceInterface>();
-            expectedPieces.add(PieceTemplate.get(1).get());
-            expectedPieces.add(PieceTemplate.get(1).get());
-            expectedPieces.add(PieceTemplate.get(2).get());
-            expectedPieces.add(PieceTemplate.get(3).get());
-            final List<PieceInterface> actualPieces = Lists.newArrayList();
-            for (final PieceInterface piece : bagOfPieces)
+            final PiecesBag bagOfPieces = PiecesBag.from(PieceTemplate.get(1), PieceTemplate.get(1), PieceTemplate.get(2), PieceTemplate.get(3));
+            final List<PieceTemplate> expectedPieces = new ArrayList<PieceTemplate>();
+            expectedPieces.add(PieceTemplate.get(1));
+            expectedPieces.add(PieceTemplate.get(1));
+            expectedPieces.add(PieceTemplate.get(2));
+            expectedPieces.add(PieceTemplate.get(3));
+            final List<PieceTemplate> actualPieces = Lists.newArrayList();
+            for (final PieceTemplate piece : bagOfPieces)
                 actualPieces.add(piece);
             assertEquals(expectedPieces, actualPieces);
         }
@@ -108,26 +79,21 @@ public class PiecesBagTest {
 
     @Test
     public void testRemove() {
-        final Map<PieceInterface, Integer> instancesOfPieces = Maps.newLinkedHashMap();
-
-        instancesOfPieces.put(PieceTemplate.get(1).get(), 1);
 
         {
-            final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
+            final PiecesBag bagOfPieces = PiecesBag.from(PieceTemplate.get(1));
             assertFalse(bagOfPieces.isEmpty());
-            final PiecesBag newBagOfPieces = bagOfPieces.remove(PieceTemplate.get(1).get());
+            final PiecesBag newBagOfPieces = bagOfPieces.remove(PieceTemplate.get(1));
             assertTrue(newBagOfPieces.isEmpty());
         }
 
-        instancesOfPieces.put(PieceTemplate.get(1).get(), 2);
-
         {
-            final PiecesBag bagOfPieces = new PiecesBag(instancesOfPieces);
+            final PiecesBag bagOfPieces = PiecesBag.from(PieceTemplate.get(1), PieceTemplate.get(1));
             assertFalse(bagOfPieces.isEmpty());
             PiecesBag newBagOfPieces = bagOfPieces;
-            newBagOfPieces = newBagOfPieces.remove(PieceTemplate.get(1).get());
+            newBagOfPieces = newBagOfPieces.remove(PieceTemplate.get(1));
             assertFalse(bagOfPieces.isEmpty());
-            newBagOfPieces = newBagOfPieces.remove(PieceTemplate.get(1).get());
+            newBagOfPieces = newBagOfPieces.remove(PieceTemplate.get(1));
             assertTrue(newBagOfPieces.isEmpty());
         }
     }

@@ -17,72 +17,90 @@
 
 package blockplus.piece;
 
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.ImmutableSortedMap.Builder;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Multiset.Entry;
 
-public class PiecesBag implements Iterable<PieceInterface> {
+public final class PiecesBag implements Iterable<PieceTemplate> {
 
-    private final static Comparator<PieceInterface> comparator = new Comparator<PieceInterface>() {
+    private final static Multiset<PieceTemplate> EMPTY_MULTI_SET = ImmutableMultiset.of();
+    private final static PiecesBag EMPTY_BAG = new PiecesBag(EMPTY_MULTI_SET);
 
-        @Override
-        public int compare(final PieceInterface piece1, final PieceInterface piece2) {
-            return piece1.getId() - piece2.getId();
-        }
-
-    };
-
-    private final Map<PieceInterface, Integer> instanceOfPieces;
-    private volatile List<PieceInterface> piecesAsList;
-
-    public PiecesBag(final Map<PieceInterface, Integer> instanceOfPieces) {
-        final Builder<PieceInterface, Integer> builder = new ImmutableSortedMap.Builder<PieceInterface, Integer>(PiecesBag.comparator);
-        builder.putAll(instanceOfPieces);
-        this.instanceOfPieces = builder.build();
-    }
-
-    private List<PieceInterface> computeList() {
-        final List<PieceInterface> list = Lists.newArrayList();
-        for (final Entry<PieceInterface, Integer> entry : this.instanceOfPieces.entrySet())
-            for (int n = 0; n < entry.getValue(); ++n)
-                list.add(entry.getKey());
+    private static List<PieceTemplate> computeList(final Multiset<PieceTemplate> data) {
+        final List<PieceTemplate> list = Lists.newArrayList();
+        for (final Entry<PieceTemplate> entry : data.entrySet())
+            for (int n = 0; n < entry.getCount(); ++n)
+                list.add(entry.getElement());
+        Collections.sort(list);
         return list;
     }
 
-    public List<PieceInterface> getList() {
-        List<PieceInterface> value = this.piecesAsList;
+    public static PiecesBag from() {
+        return EMPTY_BAG;
+    }
+
+    public static PiecesBag from(final PieceTemplate piece) {
+        final Multiset<PieceTemplate> multiset = HashMultiset.create();
+        multiset.add(piece);
+        return new PiecesBag(multiset);
+    }
+
+    public static PiecesBag from(final Iterable<PieceTemplate> pieces) {
+        return new PiecesBag(HashMultiset.create(pieces));
+    }
+
+    public static PiecesBag from(final PieceTemplate... pieces) {
+        final Multiset<PieceTemplate> multiset = HashMultiset.create();
+        for (final PieceTemplate piece : pieces) {
+            multiset.add(piece);
+        }
+        return new PiecesBag(multiset);
+    }
+
+    private final Multiset<PieceTemplate> data;
+
+    private transient volatile List<PieceTemplate> piecesAsList;
+
+    private PiecesBag(final Multiset<PieceTemplate> data) {
+        this.data = data;
+    }
+
+    public boolean isEmpty() {
+        return this.data.isEmpty();
+    }
+
+    public List<PieceTemplate> asList() {
+        List<PieceTemplate> value = this.piecesAsList;
         if (value == null)
             synchronized (this) {
-                if ((value = this.piecesAsList) == null) this.piecesAsList = value = this.computeList();
+                if ((value = this.piecesAsList) == null) this.piecesAsList = value = computeList(this.data);
             }
         return value;
     }
 
-    public boolean isEmpty() {
-        return this.getList().isEmpty();
+    @Override
+    public Iterator<PieceTemplate> iterator() {
+        return this.asList().iterator();
     }
 
-    public PiecesBag remove(final PieceInterface piece) {
-        Preconditions.checkArgument(piece != null);
-        final Integer instances = this.instanceOfPieces.get(piece);
-        Preconditions.checkArgument(instances != null);
-        Preconditions.checkArgument(instances > 0);
-        final Map<PieceInterface, Integer> map = Maps.newHashMap(this.instanceOfPieces);
-        map.put(piece, instances - 1);
-        return new PiecesBag(map);
+    public PiecesBag remove(final PieceTemplate piece) {
+        Preconditions.checkArgument(this.data.contains(piece));
+        final Multiset<PieceTemplate> copy = HashMultiset.create(this.data);
+        copy.remove(piece, 1);
+        return from(copy);
     }
 
     @Override
-    public Iterator<PieceInterface> iterator() {
-        return this.getList().iterator();
+    public String toString() {
+        return Objects.toStringHelper(this).addValue(this.asList()).toString();
     }
 
 }

@@ -20,12 +20,12 @@ package blockplus.player;
 import blockplus.color.Color;
 import blockplus.piece.PiecesBag;
 
+// TODO Player as composite pour les variantes de jeux
 public class Player {
 
     private final Color color;
     private final PiecesBag bagOfPieces;
 
-    // TODO ? Set<Color> colors pour les variantes de jeux
     public Player(final Color color, final PiecesBag bagOfPieces) {
         this.color = color;
         this.bagOfPieces = bagOfPieces;
@@ -35,7 +35,7 @@ public class Player {
         return this.color;
     }
 
-    public PiecesBag getBagOfPieces() {
+    public PiecesBag getAvailablePieces() {
         return this.bagOfPieces;
     }
 

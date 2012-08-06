@@ -23,6 +23,7 @@ import blockplus.board.Board;
 import blockplus.board.BoardRenderer;
 import blockplus.color.Color;
 import blockplus.move.Move;
+import blockplus.move.MoveHandler;
 import blockplus.piece.PieceComponent;
 import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
@@ -49,6 +50,8 @@ public class PieceTemplateDemo2 {
             final int n = 2 * boxingSquareSide + 1;
             final Board<Color> inputBoard = Board.from(n, n, Color.TRANSPARENT, Color.OPAQUE);
 
+            final MoveHandler moveHandler = new MoveHandler(inputBoard);
+
             final Set<PieceInterface> rotations = Sets.newHashSet();
 
             PieceInterface rotatedPiece = translatedPiece;
@@ -56,7 +59,9 @@ public class PieceTemplateDemo2 {
                 rotations.add(rotatedPiece);
                 System.out.println();
                 System.out.println("=================8<=================");
-                BoardRenderer.render(new Move(Color.White, rotatedPiece, inputBoard).getOutputBoard());
+                final Move move = new Move(Color.White, rotatedPiece);
+                final Board<Color> ouput = moveHandler.handle(move);
+                BoardRenderer.render(ouput);
                 System.out.println(rotatedPiece);
             }
             for (int i = 1; i < 4; ++i)
@@ -65,7 +70,9 @@ public class PieceTemplateDemo2 {
                 rotations.add(rotatedPiece);
                 System.out.println();
                 System.out.println("=================8<=================");
-                BoardRenderer.render(new Move(Color.White, rotatedPiece, inputBoard).getOutputBoard());
+                final Move move = new Move(Color.White, rotatedPiece);
+                final Board<Color> ouput = moveHandler.handle(move);
+                BoardRenderer.render(ouput);
                 System.out.println(rotatedPiece);
             }
             System.out.println("=================8<=================");
@@ -79,5 +86,4 @@ public class PieceTemplateDemo2 {
         System.out.println(PieceComposite.FACTORY);
 
     }
-
 }

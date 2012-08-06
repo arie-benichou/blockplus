@@ -167,7 +167,7 @@ public final class Board<T> {
 
     public Map<DirectionInterface, T> getNeighbours(final PositionInterface position, final int distance) {
         Preconditions.checkArgument(position != null);
-        Preconditions.checkArgument(distance >= 0);
+        //Preconditions.checkArgument(distance >= 0);
         final Map<DirectionInterface, T> neighbours = Maps.newHashMap();
         for (int i = -distance; i <= distance; ++i) {
             final int ii = Math.abs(i);

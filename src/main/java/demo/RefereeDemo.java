@@ -21,26 +21,23 @@ import static blockplus.board.BoardBuilder.parse;
 import static blockplus.board.BoardRenderer.render;
 
 import java.util.List;
-import java.util.Map;
 
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
 import blockplus.color.Color;
 import blockplus.move.Move;
+import blockplus.move.MoveHandler;
 import blockplus.piece.PieceComponent;
 import blockplus.piece.PieceComposite;
-import blockplus.piece.PieceInterface;
 import blockplus.piece.PieceTemplate;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.Maps;
 
 public class RefereeDemo {
 
     public static void main(final String[] args) {
-
         final String[][] data = {
                 { "Ø.........Ø" },
                 { "..........." },
@@ -54,45 +51,27 @@ public class RefereeDemo {
                 { "..........." },
                 { "Ø.........." }
         };
-
         final Board<Color> board = parse(data);
-        render(board);
-
-        final Map<PieceInterface, Integer> instanceOfPieces = Maps.newHashMap();
-        for (final PieceTemplate piece : PieceTemplate.values())
-            instanceOfPieces.put(piece.get(), 1); // tester avec 1000 ;)
-        //instanceOfPieces.put(PieceTemplate.get(0).get(), 0);
-        //instanceOfPieces.put(PieceTemplate.get(1).get(), 1);
-        //instanceOfPieces.put(PieceTemplate.get(7).get(), 1);
-
-        final PiecesBag bagOfPieces = new PiecesBag(instanceOfPieces);
-        final Player player = new Player(Color.White, bagOfPieces);
+        final MoveHandler moveHandler = new MoveHandler(board);
+        final Player player = new Player(Color.White, PiecesBag.from(PieceTemplate.values()));
         final Referee boardReferee = new Referee();
-
-        //System.out.println("-----------------------------8<-----------------------------");
-
-        if (!player.getBagOfPieces().isEmpty()) {
-
+        render(board);
+        if (!player.getAvailablePieces().isEmpty()) {
             final Stopwatch stopwatch = new Stopwatch();
-
             stopwatch.start();
             final List<Move> legalMoves = boardReferee.getOrderedLegalMoves(board, player);
             stopwatch.stop();
-
             System.out.println("-----------------------------8<-----------------------------");
-
-            for (final Move legalMove : legalMoves) {
-                render(legalMove.getOutputBoard());
-            }
-
+            for (final Move legalMove : legalMoves)
+                render(moveHandler.handle(legalMove)); // TODO ? MoveRenderer
             System.out.println("-----------------------------8<-----------------------------");
-            System.out.println("number of pieces      : " + player.getBagOfPieces().getList().size());
+            System.out.println("number of pieces      : " + player.getAvailablePieces().asList().size());
             System.out.println("number of legal moves : " + legalMoves.size());
             System.out.println("-----------------------------8<-----------------------------");
-            System.out.println(stopwatch.toString());
             System.out.println(PieceComponent.FACTORY);
             System.out.println(PieceComposite.FACTORY);
+            System.out.println(stopwatch.toString());
         }
-
     }
+
 }

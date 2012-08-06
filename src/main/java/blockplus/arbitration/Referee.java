@@ -28,6 +28,7 @@ import blockplus.color.Color;
 import blockplus.direction.DirectionInterface;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
+import blockplus.piece.PieceTemplate;
 import blockplus.player.Player;
 import blockplus.position.Position;
 import blockplus.position.PositionInterface;
@@ -50,6 +51,7 @@ public class Referee {
     }
 
     private boolean hasCornerOfSameColor(final Board<Color> board, final Color color, final PieceInterface piece) {
+        // TODO à revoir...
         for (final PositionInterface position : piece.getCorners()) {
             if (board.get(position).is(color)) return true;
             if (board.get(position).is(Color.White)) return true;
@@ -64,20 +66,23 @@ public class Referee {
 
     }
 
-    private List<Move> getLegalMovesByPiece(final Board<Color> board, final Color color, final PieceInterface piece) {
+    private List<Move> getLegalMovesByPiece(
+            final Board<Color> board,
+            final Color color,
+            final PieceTemplate pieceTemplate,
+            final PositionInterface position,
+            final DirectionInterface direction
+            ) {
         final List<Move> legalMovesByPiece = Lists.newArrayList();
-
-        // TODO ! obtenir le nombre de rotations par template de pieces
-        PieceInterface rotated = piece;
-        for (int i = 0; i < 4; ++i) {
-            final boolean isLegal = this.isLegal(board, color, rotated);
-            if (isLegal) {
-                final Move move = new Move(color, rotated, board);
-                legalMovesByPiece.add(move);
-            }
+        final int numberOfRotations = pieceTemplate.getNumberOfRotations();
+        final PieceInterface translated = pieceTemplate.get().translateTo(position.apply(direction)); // TODO !? façade
+        PieceInterface rotated = translated;
+        // TODO à revoir...
+        if (this.isLegal(board, color, rotated)) legalMovesByPiece.add(new Move(color, rotated));
+        for (int i = 1; i < numberOfRotations; ++i) {
             rotated = rotated.rotate();
+            if (this.isLegal(board, color, rotated)) legalMovesByPiece.add(new Move(color, rotated));
         }
-
         return legalMovesByPiece;
     }
 
@@ -91,32 +96,24 @@ public class Referee {
     private Set<Move> getDistinctLegalMovesByPiece(
             final Board<Color> board,
             final Color color,
-            final PieceInterface piece,
+            final PieceTemplate pieceTemplate,
             final PositionInterface position
             ) {
-
-        // TODO finir PieceTemplate
-        //final int distance = piece.getBoxingSquareSide() - 1;
-        final int distance = 5 - 1;
-
+        // TODO !! computer et utiliser plutot un radius
+        final int distance = pieceTemplate.getBoxingSquareSide() - 1;
         final Map<DirectionInterface, Color> neighbours = board.getAllNeighbours(position, distance);
         final List<DirectionInterface> potentialDirections = this.getPotentialDirections(neighbours);
         final Set<Move> distinctLegalMovesByPiece = Sets.newHashSet();
-        for (final DirectionInterface direction : potentialDirections) {
-            final PieceInterface translated = piece.translateTo(position.apply(direction));
-            final List<Move> legalMovesByPiece = this.getLegalMovesByPiece(board, color, translated);
-            distinctLegalMovesByPiece.addAll(legalMovesByPiece);
-        }
+        for (final DirectionInterface direction : potentialDirections)
+            distinctLegalMovesByPiece.addAll(this.getLegalMovesByPiece(board, color, pieceTemplate, position, direction));
         return distinctLegalMovesByPiece;
 
     }
 
     private List<Move> getLegalMovesByPosition(final Player player, final Board<Color> board, final PositionInterface position) {
         final List<Move> legalMovesByCell = Lists.newArrayList();
-        // TODO ????
-        for (final PieceInterface piece : player.getBagOfPieces()) {
-            legalMovesByCell.addAll(this.getDistinctLegalMovesByPiece(board, player.getColor(), piece, position));
-        }
+        for (final PieceTemplate pieceTemplate : player.getAvailablePieces())
+            legalMovesByCell.addAll(this.getDistinctLegalMovesByPiece(board, player.getColor(), pieceTemplate, position));
         return legalMovesByCell;
     }
 
@@ -135,12 +132,9 @@ public class Referee {
 
     public Set<Move> getLegalMoves(final Board<Color> board, final Player player) {
         final Set<Move> legalMoves = Sets.newHashSet();
-        if (!player.getBagOfPieces().isEmpty()) {
-            final List<PositionInterface> potentialPositions = this.getPotentialPositions(board, player.getColor());
-            for (final PositionInterface potentialPosition : potentialPositions) {
-                legalMoves.addAll(this.getLegalMovesByPosition(player, board, potentialPosition));
-            }
-        }
+        final List<PositionInterface> potentialPositions = this.getPotentialPositions(board, player.getColor());
+        for (final PositionInterface potentialPosition : potentialPositions)
+            legalMoves.addAll(this.getLegalMovesByPosition(player, board, potentialPosition));
         return legalMoves;
     }
 
