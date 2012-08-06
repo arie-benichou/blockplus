@@ -36,6 +36,7 @@ import blockplus.position.PositionInterface;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+// TODO !!! rechercher les coups PAR piece
 public class Referee {
 
     private boolean hasRoom(final Board<Color> board, final PieceInterface piece) {
@@ -51,10 +52,10 @@ public class Referee {
     }
 
     private boolean hasCornerOfSameColor(final Board<Color> board, final Color color, final PieceInterface piece) {
-        // TODO à revoir...
         for (final PositionInterface position : piece.getCorners()) {
-            if (board.get(position).is(color)) return true;
-            if (board.get(position).is(Color.White)) return true;
+            final Color c = board.get(position);
+            if (c.is(Color.White)) return true; // TODO à revoir...
+            if (c.is(color)) return true;
         }
         return false;
     }
@@ -99,9 +100,10 @@ public class Referee {
             final PieceTemplate pieceTemplate,
             final PositionInterface position
             ) {
-        // TODO !! computer et utiliser plutot un radius
-        final int distance = pieceTemplate.getBoxingSquareSide() - 1;
-        final Map<DirectionInterface, Color> neighbours = board.getAllNeighbours(position, distance);
+
+        final int radius = pieceTemplate.getRadius();
+
+        final Map<DirectionInterface, Color> neighbours = board.getAllNeighbours(position, radius);
         final List<DirectionInterface> potentialDirections = this.getPotentialDirections(neighbours);
         final Set<Move> distinctLegalMovesByPiece = Sets.newHashSet();
         for (final DirectionInterface direction : potentialDirections)
@@ -117,6 +119,7 @@ public class Referee {
         return legalMovesByCell;
     }
 
+    // TODO renommer en getPositionsHavingPotential()
     public List<PositionInterface> getPotentialPositions(final Board<Color> board, final Color color) {
         final Color potential = color.potential();
         final List<PositionInterface> potentialPositions = Lists.newArrayList();
@@ -138,10 +141,9 @@ public class Referee {
         return legalMoves;
     }
 
-    // TODO pouvoir passer un Ordering/Comparator de Move
     public List<Move> getOrderedLegalMoves(final Board<Color> board, final Player player) {
         final List<Move> moves = Lists.newArrayList(this.getLegalMoves(board, player));
-        Collections.sort(moves);
+        Collections.sort(moves); // TODO pouvoir passer un Ordering/Comparator de Move
         return moves;
     }
 

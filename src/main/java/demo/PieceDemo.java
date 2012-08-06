@@ -45,7 +45,6 @@ public final class PieceDemo {
             //final PositionInterface referential = Position.from(5, 5);
             final PositionInterface position = Position.from(5, 8);
             PieceInterface piece = pieceTemplate.get().translateTo(position);
-            // TODO !! pouvoir obtenir le nombre de rotations pour un template de piece
             for (int i = 0; i < 4; ++i) {
                 final Move move = new Move(Color.Blue, piece);
                 final Board<Color> ouput = moveHandler.handle(move);

@@ -19,15 +19,13 @@ package blockplus.piece.matrix;
 
 import java.util.Arrays;
 
-import blockplus.position.Position;
-import blockplus.position.PositionInterface;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-public class Matrix {
+// TODO définir la matrice null
+public final class Matrix {
 
     private final int numberOfRows;
 
@@ -41,26 +39,44 @@ public class Matrix {
         return this.numberOfColumns;
     }
 
+    private final int min;
+
+    public int min() {
+        return this.min;
+    }
+
+    private final int max;
+
+    public int max() {
+        return this.max;
+    }
+
     private final int[][] data;
 
-    private volatile Integer hashCode = null;
+    private transient volatile Integer hashCode = null;
 
+    // TODO plus de check sur data ou bien utiliser un builder
     public Matrix(final int numberOfRows, final int numberOfColumns, final int[][] data) {
         Preconditions.checkArgument(numberOfRows >= 0);
         Preconditions.checkArgument(numberOfColumns >= 0);
-        // TODO check sur data ou bien utiliser un builder
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
         this.data = new int[numberOfRows][numberOfColumns];
-        for (int i = 0; i < numberOfRows; ++i)
-            for (int j = 0; j < numberOfColumns; ++j)
-                this.data[i][j] = data[i][j];
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < numberOfRows; ++i) {
+            for (int j = 0; j < numberOfColumns; ++j) {
+                final int value = data[i][j];
+                this.data[i][j] = value;
+                min = Math.min(min, value);
+                max = Math.max(max, value);
+            }
+        }
+        this.min = min;
+        this.max = max;
     }
 
     public Matrix(final int numberOfRows, final int numberOfColumns, final int value) {
-        // TODO à revoir
-        //Preconditions.checkArgument(numberOfRows > 0);
-        //Preconditions.checkArgument(numberOfColumns > 0);
         Preconditions.checkArgument(numberOfRows >= 0);
         Preconditions.checkArgument(numberOfColumns >= 0);
         this.numberOfRows = numberOfRows;
@@ -69,6 +85,7 @@ public class Matrix {
         for (int i = 0; i < numberOfRows; ++i)
             for (int j = 0; j < numberOfColumns; ++j)
                 this.data[i][j] = value;
+        this.min = this.max = value;
     }
 
     public Matrix(final int numberOfRows, final int numberOfColumns) {
@@ -151,42 +168,33 @@ public class Matrix {
         return result;
     }
 
-    // TODO caching ou à computer lors de la construction
-    public PositionInterface getPositionHavingHighestValue() {
-        int max = Integer.MIN_VALUE;
-        PositionInterface positionHavingHighestValue = Position.from(-1, -1);
-        for (int i = 0; i < this.getNumberOfRows(); ++i)
-            for (int j = 0; j < this.getNumberOfColumns(); ++j) {
-                if (this.data[i][j] > max) {
-                    max = this.data[i][j];
-                    positionHavingHighestValue = Position.from(i, j);
-                }
-            }
-        return positionHavingHighestValue;
+    public int min(final int rowIndex) {
+        Preconditions.checkArgument(rowIndex < this.numberOfRows);
+        int min = Integer.MAX_VALUE;
+        final int[] row = this.data[rowIndex];
+        for (final int value : row) {
+            if (value == this.min()) return this.min();
+            if (value < min) min = value;
+        }
+        return min;
     }
 
-    // TODO caching ou à computer lors de la construction
-    public PositionInterface getPositionHavingLowestValue() {
-        int min = Integer.MAX_VALUE;
-        PositionInterface positionHavingLowestValue = Position.from(-1, -1);
-        for (int i = 0; i < this.getNumberOfRows(); ++i)
-            for (int j = 0; j < this.getNumberOfColumns(); ++j) {
-                if (this.data[i][j] < min) {
-                    min = this.data[i][j];
-                    positionHavingLowestValue = Position.from(i, j);
-                }
-            }
-        return positionHavingLowestValue;
+    public int max(final int rowIndex) {
+        Preconditions.checkArgument(rowIndex < this.numberOfRows);
+        int max = Integer.MIN_VALUE;
+        final int[] row = this.data[rowIndex];
+        for (final int value : row) {
+            if (value == this.max()) return this.max();
+            if (value > max) max = value;
+        }
+        return max;
     }
 
     public void debug() {
-        int max = 1;
-        for (int i = 0; i < this.getNumberOfRows(); ++i)
-            for (int j = 0; j < this.getNumberOfColumns(); ++j)
-                max = Math.max(max, String.valueOf(this.data[i][j]).length());
+        final int n = Math.max(String.valueOf(this.min()).length(), String.valueOf(this.max()).length());
         for (int i = 0; i < this.getNumberOfRows(); ++i) {
             for (int j = 0; j < this.getNumberOfColumns(); ++j)
-                System.out.print(Strings.padStart(String.valueOf(this.data[i][j]), max, '0') + " ");
+                System.out.print(Strings.padStart(String.valueOf(this.data[i][j]), n, '0') + " ");
             System.out.println();
         }
         System.out.println();

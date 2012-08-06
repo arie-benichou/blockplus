@@ -35,7 +35,7 @@ import blockplus.player.Player;
 
 import com.google.common.base.Stopwatch;
 
-public class RefereeDemo {
+public class RefereeDemo1 {
 
     public static void main(final String[] args) {
         final String[][] data = {

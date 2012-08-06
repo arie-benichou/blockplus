@@ -83,7 +83,7 @@ public final class PieceComposite implements PieceInterface {
         private final Map<Object, Object>[] cache = new Map[22]; // TODO extract constant
 
         public Factory(final boolean isCaching) {
-            System.out.println("Loading " + this.getClass().getCanonicalName() + "...");
+            //System.out.println("Loading " + this.getClass().getCanonicalName() + "...");
             for (int i = 0; i < 22; ++i) {// TODO extract constant
                 this.cache[i] = Maps.newConcurrentMap();
             }

@@ -80,9 +80,7 @@ public enum PieceTemplateData {
           -----
     */
 
-    // TODO !! choisir le référentiel (point d'ancrage) de manière
-    // à minimaliser le radius de la pièce (cf todo dans PieceTemplate)    
-    ENTRY5(new int[][] { { 0, 1, 2, 3 }, { 0, 0, 0, 0 } }),
+    ENTRY5(new int[][] { { 1, 0, 2, 3 }, { 0, 0, 0, 0 } }),
 
     /*      0   1  
           ---------
@@ -94,9 +92,7 @@ public enum PieceTemplateData {
           ---------
     */
 
-    // TODO !! choisir le référentiel (point d'ancrage) de manière
-    // à minimaliser le radius de la pièce (cf todo dans PieceTemplate)    
-    ENTRY6(new int[][] { { 0, 0, 1, 2 }, { 0, 1, 0, 0 } }),
+    ENTRY6(new int[][] { { 1, 0, 0, 2 }, { 0, 0, 1, 0 } }),
 
     /*      0   1  
           ---------
@@ -142,9 +138,7 @@ public enum PieceTemplateData {
           ---------
     */
 
-    // TODO !! choisir le référentiel (point d'ancrage) de manière
-    // à minimaliser le radius de la pièce (cf todo dans PieceTemplate)    
-    ENTRY10(new int[][] { { 0, 0, 1, 2, 3 }, { 0, 1, 0, 0, 0 } }),
+    ENTRY10(new int[][] { { 1, 0, 0, 2, 3 }, { 0, 0, 1, 0, 0 } }),
 
     /*      0  
           -----
@@ -170,9 +164,7 @@ public enum PieceTemplateData {
           -----------------
     */
 
-    // TODO !! choisir le référentiel (point d'ancrage) de manière
-    // à minimaliser le radius de la pièce (cf todo dans PieceTemplate)    
-    ENTRY12(new int[][] { { 0, 0, 1, 1, 1 }, { 0, 1, 1, 2, 3 } }),
+    ENTRY12(new int[][] { { 1, 0, 0, 1, 1 }, { 1, 0, 1, 2, 3 } }),
 
     /*      0   1   2  
           -------------
@@ -182,9 +174,7 @@ public enum PieceTemplateData {
           -------------
     */
 
-    // TODO !! choisir le référentiel (point d'ancrage) de manière
-    // à minimaliser le radius de la pièce (cf todo dans PieceTemplate)    
-    ENTRY13(new int[][] { { 0, 0, 0, 1, 1 }, { 0, 1, 2, 1, 2 } }),
+    ENTRY13(new int[][] { { 1, 0, 0, 0, 1 }, { 1, 0, 1, 2, 2 } }),
 
     /*      0   1  
           ---------
@@ -210,9 +200,7 @@ public enum PieceTemplateData {
           ---------
     */
 
-    // TODO !! choisir le référentiel (point d'ancrage) de manière
-    // à minimaliser le radius de la pièce (cf todo dans PieceTemplate)    
-    ENTRY15(new int[][] { { 0, 1, 1, 2, 3 }, { 0, 0, 1, 0, 0 } }),
+    ENTRY15(new int[][] { { 1, 0, 1, 2, 3 }, { 1, 0, 0, 0, 0 } }),
 
     /*      0   1   2  
           -------------
@@ -224,9 +212,7 @@ public enum PieceTemplateData {
           -------------
     */
 
-    // TODO !! choisir le référentiel (point d'ancrage) de manière
-    // à minimaliser le radius de la pièce (cf todo dans PieceTemplate)    
-    ENTRY16(new int[][] { { 1, 0, 1, 1, 2 }, { 0, 0, 1, 2, 0 } }),
+    ENTRY16(new int[][] { { 1, 1, 0, 1, 2 }, { 1, 0, 0, 2, 0 } }),
 
     /*      0   1   2  
           -------------
@@ -237,6 +223,7 @@ public enum PieceTemplateData {
         2 | x |   |   |
           -------------
     */
+    // TODO ?! pouvoir fournir un référentiel qui ne soit pas nécessairement la position d'un composant
 
     ENTRY17(new int[][] { { 0, 0, 0, 1, 2 }, { 0, 1, 2, 0, 0 } }),
 

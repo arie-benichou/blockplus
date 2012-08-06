@@ -79,6 +79,10 @@ public final class Position implements PositionInterface {
         return this.hashCode;
     }
 
+    public static PositionInterface from() {
+        return ORIGIN;
+    }
+
     public static PositionInterface from(final int row, final int column) {
         return ORIGIN.apply(row, column); // TODO utiliser directement la factory
     }

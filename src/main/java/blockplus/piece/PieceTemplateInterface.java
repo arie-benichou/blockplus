@@ -6,7 +6,7 @@ public interface PieceTemplateInterface {
 
     int getId();
 
-    int getBoxingSquareSide();
+    int getRadius();
 
     int getNumberOfRotations();
 

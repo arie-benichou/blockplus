@@ -17,14 +17,18 @@
 
 package blockplus.piece;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import blockplus.piece.matrix.Matrix;
+import blockplus.position.NullPosition;
 import blockplus.position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Supplier;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 // TODO !? Renommer en Pieces
@@ -34,18 +38,23 @@ public enum PieceTemplate implements Supplier<PieceInterface>, PieceTemplateInte
     ENTRY0 {
 
         @Override
-        public PieceInterface get() {
-            return NULL;
+        public PositionInterface getReferential() {
+            return NullPosition.getInstance();
         }
 
         @Override
-        public int getBoxingSquareSide() {
-            return 0; // TODO 0 -1
+        public int getRadius() {
+            return -1;
         }
 
         @Override
         public int getNumberOfRotations() {
             return 0;
+        }
+
+        @Override
+        public PieceInterface get() {
+            return NULL;
         }
 
     },
@@ -54,18 +63,23 @@ public enum PieceTemplate implements Supplier<PieceInterface>, PieceTemplateInte
     ENTRY1 {
 
         @Override
-        public PieceInterface get() {
-            return UNIT;
+        public PositionInterface getReferential() {
+            return Position.from();
         }
 
         @Override
-        public int getBoxingSquareSide() {
-            return 1; // TODO 0
+        public int getRadius() {
+            return 0;
         }
 
         @Override
         public int getNumberOfRotations() {
             return 1;
+        }
+
+        @Override
+        public PieceInterface get() {
+            return UNIT;
         }
 
     },
@@ -92,12 +106,26 @@ public enum PieceTemplate implements Supplier<PieceInterface>, PieceTemplateInte
     private final static int COUNTER_CLOCKWISE_ROTATION = 90;
     private final static int NUMBER_OF_ROTATIONS = FULL_ROTATION_UNIT / COUNTER_CLOCKWISE_ROTATION;
 
-    private static int computeBoxingSquareSide(final Matrix matrix) {
-        final PositionInterface p1 = matrix.getPositionHavingHighestValue(); // TODO !! Matrix.min();
-        final PositionInterface p2 = matrix.getPositionHavingLowestValue(); // TODO !! Matrix.max();
-        final int highestValue = matrix.get(p1.row(), p1.column());
-        final int lowestValue = matrix.get(p2.row(), p2.column());
-        return highestValue - lowestValue + 1;
+    private static PositionInterface extractReferential(final PieceTemplateData pieceData) {
+        final Matrix matrix = pieceData.getMatrix();
+        return Position.from(matrix.get(0, 0), matrix.get(0, 1)); // TODO extract constants
+    }
+
+    private static int computeRadius(final PieceTemplateData pieceData) {
+        final Matrix matrix = pieceData.getMatrix();
+        final int refY = matrix.get(0, 0); // TODO extract constant
+        final int refX = matrix.get(1, 0); // TODO extract constant
+        final int minY = matrix.min(0);
+        final int minX = matrix.min(1);
+        final int maxY = matrix.max(0);
+        final int maxX = matrix.max(1);
+        final List<Integer> deltas = Lists.newArrayList(
+                Math.abs(refY - minY),
+                Math.abs(refY - maxY),
+                Math.abs(refX - minX),
+                Math.abs(refX - maxX)
+                );
+        return Collections.max(deltas);
     }
 
     private static int computeNumberOfDistinctRotations(final PieceInterface pieceInterface) {
@@ -116,14 +144,16 @@ public enum PieceTemplate implements Supplier<PieceInterface>, PieceTemplateInte
     }
 
     private PieceInterface piece;
-    private int boxingSquareSide;
+    private int radius;
     private int numberOfRotations;
+    private PositionInterface referential;
 
     private PieceTemplate() {
         final int id = this.getId();
         if (id > 1) {
             final PieceTemplateData pieceData = PieceTemplateData.get(id);
-            this.boxingSquareSide = computeBoxingSquareSide(pieceData.getMatrix());
+            this.referential = extractReferential(pieceData);
+            this.radius = computeRadius(pieceData);
             this.piece = PieceComposite.from(pieceData);
             this.numberOfRotations = computeNumberOfDistinctRotations(this.piece);
         }
@@ -134,15 +164,13 @@ public enum PieceTemplate implements Supplier<PieceInterface>, PieceTemplateInte
         return this.ordinal();
     }
 
-    @Override
-    public PieceInterface get() {
-        return this.piece;
+    public PositionInterface getReferential() {
+        return this.referential;
     }
 
-    // TODO ! calculer un rayon plutot qu'un diametre
     @Override
-    public int getBoxingSquareSide() {
-        return this.boxingSquareSide;
+    public int getRadius() {
+        return this.radius;
     }
 
     @Override
@@ -153,10 +181,15 @@ public enum PieceTemplate implements Supplier<PieceInterface>, PieceTemplateInte
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("\n " + "diameter", this.getBoxingSquareSide())
+                .add("\n " + "radius", this.getRadius())
                 .add("\n " + "rotations", this.getNumberOfRotations())
                 .addValue("\n " + this.get() + "\n")
                 .toString();
+    }
+
+    @Override
+    public PieceInterface get() {
+        return this.piece;
     }
 
 }

@@ -165,21 +165,22 @@ public final class Board<T> {
         return sb.toString();
     }
 
-    public Map<DirectionInterface, T> getNeighbours(final PositionInterface position, final int distance) {
-        Preconditions.checkArgument(position != null);
-        //Preconditions.checkArgument(distance >= 0);
+    // TODO extract Neighbourhood feature and add some caching
+    public Map<DirectionInterface, T> getNeighbours(final PositionInterface position, final int radius) {
         final Map<DirectionInterface, T> neighbours = Maps.newHashMap();
-        for (int i = -distance; i <= distance; ++i) {
+        for (int i = -radius; i <= radius; ++i) {
             final int ii = Math.abs(i);
-            for (int j = -distance; j <= distance; ++j)
-                if (ii == distance || Math.abs(j) == distance)
+            for (int j = -radius; j <= radius; ++j)
+                if (ii == radius || Math.abs(j) == radius)
                     neighbours.put(Direction.from(i, j), this.get(Position.from(position.row() + i, position.column() + j)));
         }
         return neighbours;
     }
 
-    public Map<DirectionInterface, T> getAllNeighbours(final PositionInterface position, final int distance) {
-        int n = distance;
+    // TODO extract Neighbourhood feature and add some caching    
+    public Map<DirectionInterface, T> getAllNeighbours(final PositionInterface position, final int radius) {
+        Preconditions.checkArgument(position != null);
+        int n = radius;
         final Map<DirectionInterface, T> neighbours = Maps.newHashMap();
         do
             neighbours.putAll(this.getNeighbours(position, n));

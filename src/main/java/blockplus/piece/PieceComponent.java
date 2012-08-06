@@ -62,7 +62,7 @@ public final class PieceComponent implements PieceInterface {
         private final ConcurrentMap<PositionInterface, PieceComponent> cache = Maps.newConcurrentMap();
 
         public Factory(final boolean isCaching) {
-            System.out.println("Loading " + this.getClass().getCanonicalName() + "...");
+            //System.out.println("Loading " + this.getClass().getCanonicalName() + "...");
             this.isCaching = isCaching;
         }
 
