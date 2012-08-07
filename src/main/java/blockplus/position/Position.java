@@ -80,10 +80,20 @@ public final class Position implements PositionInterface {
     }
 
     public static PositionInterface from() {
-        return ORIGIN;
+        return ORIGIN; // TODO utiliser directement la factory
+    }
+
+    @SuppressWarnings("all")
+    public static PositionInterface Position() {
+        return ORIGIN; // TODO utiliser directement la factory
     }
 
     public static PositionInterface from(final int row, final int column) {
+        return ORIGIN.apply(row, column); // TODO utiliser directement la factory
+    }
+
+    @SuppressWarnings("all")
+    public static PositionInterface Position(final int row, final int column) {
         return ORIGIN.apply(row, column); // TODO utiliser directement la factory
     }
 
@@ -133,5 +143,10 @@ public final class Position implements PositionInterface {
     @Override
     public boolean isNull() {
         return false;
+    }
+
+    public static void main(final String[] args) {
+        final PositionInterface position = Position(1, 2);
+        System.out.println(position);
     }
 }

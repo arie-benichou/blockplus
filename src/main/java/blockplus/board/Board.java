@@ -18,17 +18,17 @@
 package blockplus.board;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import blockplus.direction.Direction;
-import blockplus.direction.DirectionInterface;
 import blockplus.position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public final class Board<T> {
@@ -165,26 +165,29 @@ public final class Board<T> {
         return sb.toString();
     }
 
-    // TODO extract Neighbourhood feature and add some caching
-    public Map<DirectionInterface, T> getNeighbours(final PositionInterface position, final int radius) {
-        final Map<DirectionInterface, T> neighbours = Maps.newHashMap();
+    // TODO ! à revoir
+    // TODO ! appartient à Position
+    // TODO ! caching
+    public List<PositionInterface> getNeighboursPositions(final PositionInterface position, final int radius) {
+        final List<PositionInterface> neighbours = Lists.newArrayList();
         for (int i = -radius; i <= radius; ++i) {
             final int ii = Math.abs(i);
             for (int j = -radius; j <= radius; ++j)
-                if (ii == radius || Math.abs(j) == radius)
-                    neighbours.put(Direction.from(i, j), this.get(Position.from(position.row() + i, position.column() + j)));
+                if (ii == radius || Math.abs(j) == radius) neighbours.add(position.apply(i, j));
         }
         return neighbours;
     }
 
-    // TODO extract Neighbourhood feature and add some caching    
-    public Map<DirectionInterface, T> getAllNeighbours(final PositionInterface position, final int radius) {
+    // TODO ! à revoir
+    // TODO ! appartient à Position
+    // TODO ! caching
+    public List<PositionInterface> getAllNeighboursPositions(final PositionInterface position, final int radius) {
         Preconditions.checkArgument(position != null);
         int n = radius;
-        final Map<DirectionInterface, T> neighbours = Maps.newHashMap();
-        do
-            neighbours.putAll(this.getNeighbours(position, n));
-        while (--n > -1);
+        final List<PositionInterface> neighbours = Lists.newArrayList();
+        do {
+            neighbours.addAll(this.getNeighboursPositions(position, n));
+        } while (--n > -1);
         return neighbours;
     }
 

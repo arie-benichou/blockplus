@@ -57,15 +57,20 @@ public class RefereeDemo1 {
         final Referee boardReferee = new Referee();
         render(board);
         if (!player.getAvailablePieces().isEmpty()) {
+            List<Move> legalMoves = null;
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
-            final List<Move> legalMoves = boardReferee.getOrderedLegalMoves(board, player);
+            {
+                //for (int i = 0; i < 8000; ++i)
+                // 10 s
+                legalMoves = boardReferee.getOrderedLegalMoves(board, player);
+            }
             stopwatch.stop();
             System.out.println("-----------------------------8<-----------------------------");
             for (final Move legalMove : legalMoves)
                 render(moveHandler.handle(legalMove)); // TODO ? MoveRenderer
             System.out.println("-----------------------------8<-----------------------------");
-            System.out.println("number of pieces      : " + player.getAvailablePieces().asList().size());
+            System.out.println("number of pieces      : " + player.getAvailablePieces().size());
             System.out.println("number of legal moves : " + legalMoves.size());
             System.out.println("-----------------------------8<-----------------------------");
             System.out.println(PieceComponent.FACTORY);

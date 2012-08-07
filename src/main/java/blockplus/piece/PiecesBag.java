@@ -86,9 +86,13 @@ public final class PiecesBag implements Iterable<PieceTemplate> {
         return value;
     }
 
+    public int size() {
+        return this.data.size();
+    }
+
     @Override
     public Iterator<PieceTemplate> iterator() {
-        return this.asList().iterator();
+        return this.asList().iterator(); // TODO ?! return this.data.iterator();
     }
 
     public PiecesBag remove(final PieceTemplate piece) {

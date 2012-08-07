@@ -35,23 +35,27 @@ import blockplus.player.Player;
 
 import com.google.common.base.Stopwatch;
 
-public class RefereeDemo2 {
+public class RefereeDemo4 {
 
     public static void main(final String[] args) {
         final String[][] data = {
-                { "ØØØØØØØØØ" },
-                { "Ø.......Ø" },
-                { "Ø.......Ø" },
-                { "Ø..o.o..Ø" },
-                { "Ø...B...Ø" },
-                { "Ø..o.o..Ø" },
-                { "Ø.......Ø" },
-                { "Ø.......Ø" },
-                { "ØØØØØØØØØ" }
+                { "ØØØØØØØØØØØØØ" },
+                { "Ø...........Ø" },
+                { "Ø...........Ø" },
+                { "Ø...........Ø" },
+                { "Ø...........Ø" },
+                { "Ø....o.o....Ø" },
+                { "Ø.....O.....Ø" },
+                { "Ø....o.o....Ø" },
+                { "Ø...........Ø" },
+                { "Ø...........Ø" },
+                { "Ø...........Ø" },
+                { "Ø...........Ø" },
+                { "ØØØØØØØØØØØØØ" }
         };
         final Board<Color> board = parse(data);
         final MoveHandler moveHandler = new MoveHandler(board);
-        final Player player = new Player(Color.Blue, PiecesBag.from(PieceTemplate.get(3)));
+        final Player player = new Player(Color.White, PiecesBag.from(PieceTemplate.values()));
         final Referee boardReferee = new Referee();
         render(board);
         if (!player.getAvailablePieces().isEmpty()) {
@@ -59,7 +63,7 @@ public class RefereeDemo2 {
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
             {
-                //for (int i = 0; i < 68400; ++i)
+                //for (int i = 0; i < 1200; ++i)
                 // 10 s
                 legalMoves = boardReferee.getOrderedLegalMoves(board, player);
             }
