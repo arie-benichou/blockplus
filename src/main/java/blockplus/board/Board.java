@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import blockplus.position.Position;
+import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Preconditions;
@@ -41,7 +41,7 @@ public final class Board<T> {
         final TreeMap<PositionInterface, T> data = Maps.newTreeMap();
         for (int i = 0; i < rows; ++i)
             for (int j = 0; j < columns; ++j)
-                data.put(Position.from(i, j), initialPositionvalue);
+                data.put(Position(i, j), initialPositionvalue);
         data.putAll(definedPosition);
         return data;
     }
@@ -157,7 +157,7 @@ public final class Board<T> {
             sb.append(lineSeparator);
             for (int j = 0; j < this.columns(); ++j) {
                 sb.append(columnSeparator);
-                sb.append(this.get(Position.from(i, j)));
+                sb.append(this.get(Position(i, j)));
             }
             sb.append(columnSeparator);
         }

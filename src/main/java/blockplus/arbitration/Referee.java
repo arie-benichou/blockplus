@@ -27,7 +27,7 @@ import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.PieceTemplate;
 import blockplus.player.Player;
-import blockplus.position.Position;
+import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Lists;
@@ -88,7 +88,7 @@ public class Referee {
         final List<PositionInterface> positionsHavingPotential = Lists.newArrayList();
         for (int i = 0; i < board.rows(); ++i) {
             for (int j = 0; j < board.columns(); ++j) {
-                final PositionInterface position = Position.from(i, j);
+                final PositionInterface position = Position(i, j);
                 final Color c = board.get(position);
                 if (c.hasTransparency() && c.contains(potential)) positionsHavingPotential.add(position);
             }

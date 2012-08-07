@@ -59,9 +59,9 @@ public class Move implements Comparable<Move> {
         if (object == this) return true;
         if (!(object instanceof Move)) return false;
         final Move that = (Move) object;
-        final boolean haveSameHashCode = this.hashCode() == that.hashCode(); // TODO à commenter
+        final boolean haveSameHashCode = this.hashCode() == that.hashCode();
         final boolean isEqual = this.getColor().equals(that.getColor()) && this.getPiece().equals(that.getPiece());
-        Preconditions.checkState(haveSameHashCode == isEqual); // TODO à commenter
+        Preconditions.checkState(haveSameHashCode == isEqual);
         return isEqual;
     }
 

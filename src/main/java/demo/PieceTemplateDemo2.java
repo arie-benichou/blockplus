@@ -28,7 +28,7 @@ import blockplus.piece.PieceComponent;
 import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.PieceTemplate;
-import blockplus.position.Position;
+import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Sets;
@@ -42,7 +42,7 @@ public class PieceTemplateDemo2 {
             final int radius = pieceTemplate.getRadius();
             final int n = 1 + 2 * (radius + 1);
             final Board<Color> inputBoard = Board.from(n, n, Color.TRANSPARENT, Color.OPAQUE);
-            final PositionInterface position = Position.from(n / 2, n / 2);
+            final PositionInterface position = Position(n / 2, n / 2);
             final PieceInterface translatedPiece = pieceInterface.translateTo(position);
             final MoveHandler moveHandler = new MoveHandler(inputBoard);
             final Set<PieceInterface> rotations = Sets.newHashSet();

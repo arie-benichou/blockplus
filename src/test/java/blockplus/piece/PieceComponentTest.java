@@ -9,7 +9,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import blockplus.position.Position;
+import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Sets;
@@ -38,20 +38,20 @@ public class PieceComponentTest {
     @Test
     public void testGetCorners() {
         final Set<PositionInterface> expected = Sets.newHashSet(
-                Position.from(-1, -1),
-                Position.from(-1, 1),
-                Position.from(1, -1),
-                Position.from(1, 1));
+                Position(-1, -1),
+                Position(-1, 1),
+                Position(1, -1),
+                Position(1, 1));
         assertEquals(expected, this.pieceComponent.getCorners());
     }
 
     @Test
     public void testGetSides() {
         final Set<PositionInterface> expected = Sets.newHashSet(
-                Position.from(0, -1),
-                Position.from(0, 1),
-                Position.from(1, 0),
-                Position.from(-1, 0));
+                Position(0, -1),
+                Position(0, 1),
+                Position(1, 0),
+                Position(-1, 0));
         assertEquals(expected, this.pieceComponent.getSides());
     }
 
@@ -59,10 +59,10 @@ public class PieceComponentTest {
     public void testGetExtensions() {
 
         final Set<PositionInterface> expected = Sets.newHashSet(
-                Position.from(-1, -1),
-                Position.from(-1, 1),
-                Position.from(1, -1),
-                Position.from(1, 1));
+                Position(-1, -1),
+                Position(-1, 1),
+                Position(1, -1),
+                Position(1, 1));
         assertEquals(expected, this.pieceComponent.getPotentialPositions());
     }
 

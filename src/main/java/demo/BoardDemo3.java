@@ -22,7 +22,7 @@ import java.util.List;
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
 import blockplus.color.Color;
-import blockplus.position.Position;
+import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Stopwatch;
@@ -43,7 +43,7 @@ public final class BoardDemo3 {
         };
 
         final Board<Color> board = BoardBuilder.parse(data);
-        final PositionInterface position = Position.from(3, 3);
+        final PositionInterface position = Position(3, 3);
 
         System.out.println();
         System.out.println("-----------------------------8<-----------------------------");

@@ -17,6 +17,8 @@
 
 package blockplus.piece;
 
+import static blockplus.position.Position.Position;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -64,7 +66,7 @@ public enum PieceTemplate implements Supplier<PieceInterface>, PieceTemplateInte
 
         @Override
         public PositionInterface getReferential() {
-            return Position.from();
+            return Position();
         }
 
         @Override
@@ -108,7 +110,7 @@ public enum PieceTemplate implements Supplier<PieceInterface>, PieceTemplateInte
 
     private static PositionInterface extractReferential(final PieceTemplateData pieceData) {
         final Matrix matrix = pieceData.getMatrix();
-        return Position.from(matrix.get(0, 0), matrix.get(0, 1)); // TODO extract constants
+        return Position(matrix.get(0, 0), matrix.get(0, 1)); // TODO extract constants
     }
 
     private static int computeRadius(final PieceTemplateData pieceData) {

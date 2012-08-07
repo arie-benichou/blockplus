@@ -4,7 +4,7 @@ package blockplus.board;
 import java.util.Map;
 
 import blockplus.color.Color;
-import blockplus.position.Position;
+import static blockplus.position.Position.Position;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -31,7 +31,7 @@ public final class BoardRenderer {
             sb.append(lineSeparator);
             for (int j = 0; j < board.columns(); ++j) {
                 sb.append(columnSeparator);
-                sb.append(COLOR_BY_STRING.get(board.get(Position.from(i, j))));
+                sb.append(COLOR_BY_STRING.get(board.get(Position(i, j))));
             }
             sb.append(columnSeparator);
         }

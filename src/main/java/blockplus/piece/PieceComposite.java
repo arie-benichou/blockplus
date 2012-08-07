@@ -8,12 +8,13 @@ import java.util.Set;
 import blockplus.direction.Direction;
 import blockplus.direction.DirectionInterface;
 import blockplus.piece.matrix.Matrix;
-import blockplus.position.Position;
+import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
@@ -50,7 +51,7 @@ public final class PieceComposite implements PieceInterface {
     }
 
     private static PositionInterface extractPosition(final Matrix matrix, final int n) {
-        return Position.from(matrix.get(0, n), matrix.get(1, n));
+        return Position(matrix.get(0, n), matrix.get(1, n));
     }
 
     private static PositionInterface check(final PositionInterface position) {
@@ -73,7 +74,7 @@ public final class PieceComposite implements PieceInterface {
 
     /*----------------------------------------8<----------------------------------------*/
 
-    public final static class Factory {
+    public final static class Factory { // FIXME
 
         private final boolean isCaching;
 
@@ -108,7 +109,19 @@ public final class PieceComposite implements PieceInterface {
                 instance = this.getFromNew(id, components);
                 if (this.isCaching) this.cache[id].put(components, instance);
             }
-            else ++this.cacheHit;
+            else {
+                if (!instance.getReferential().equals(components.iterator().next().getReferential())) {
+                    System.out.println();
+                    System.out.println("###########################################");
+                    System.out.println(instance);
+                    System.out.println("-------------------------------------------");
+                    System.out.println(components);
+                    System.out.println("###########################################");
+                    System.out.println();
+                    instance = this.getFromNew(id, components);
+                }
+                ++this.cacheHit;
+            }
             return instance;
         }
 
@@ -118,15 +131,8 @@ public final class PieceComposite implements PieceInterface {
 
         public int size() {
             int size = 0;
-            for (final Map<?, ?> map : this.cache) {
-                /*
-                System.out.println(map.size());
-                for (final Entry<?, ?> entry : map.entrySet()) {
-                    System.out.println(entry);
-                }
-                */
+            for (final Map<?, ?> map : this.cache)
                 size += map.size();
-            }
             return size;
         }
 
@@ -209,9 +215,9 @@ public final class PieceComposite implements PieceInterface {
 
     private PieceComposite(final int id, final Set<PieceInterface> components) {
         this.id = id;
-        //this.components = ImmutableSet.copyOf(components); // LinkedHashSet iteration order is kept
-        this.components = components; // LinkedHashSet iteration order is kept
-        this.anchorPoint = components.iterator().next(); // TODO ? à passer en argument au constructeur
+        this.components = ImmutableSet.copyOf(components); // LinkedHashSet iteration order is kept
+        //this.components = components;
+        this.anchorPoint = components.iterator().next(); // TODO !!! à passer au constructeur la position
     }
 
     @Override
@@ -300,14 +306,17 @@ public final class PieceComposite implements PieceInterface {
     }
 
     @Override
-    public boolean equals(final Object object) { // TODO tester hashcode
+    public boolean equals(final Object object) {
         if (object == null) return false;
         if (object == this) return true;
         if (!(object instanceof PieceInterface)) return false;
         final PieceInterface that = (PieceInterface) object;
-        if (this.getId() != that.getId()) return false;
-        if (!this.getReferential().equals(that.getReferential())) return false;
-        return this.components.equals(that.get());
+        final boolean haveSameHashCode = this.hashCode() == that.hashCode();
+        final boolean isEqual = this.getId() == that.getId()
+                && this.getReferential().equals(that.getReferential())
+                && this.get().equals(that.get());
+        Preconditions.checkState(haveSameHashCode == isEqual);
+        return isEqual;
     }
 
     @Override

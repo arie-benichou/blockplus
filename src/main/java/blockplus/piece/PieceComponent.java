@@ -1,6 +1,8 @@
 
 package blockplus.piece;
 
+import static blockplus.position.Position.Position;
+
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
@@ -45,7 +47,7 @@ public final class PieceComponent implements PieceInterface {
     private final static Matrix ROTATION_MATRIX = new Matrix(2, 2, new int[][] { { 0, -1 }, { 1, 0 } });
 
     private static PositionInterface extractPosition(final Matrix matrix) {
-        return Position.from(matrix.get(0, 0), matrix.get(1, 0));
+        return Position(matrix.get(0, 0), matrix.get(1, 0));
     }
 
     private static PositionInterface check(final PositionInterface position) {
@@ -247,7 +249,10 @@ public final class PieceComponent implements PieceInterface {
         if (object == this) return true;
         if (!(object instanceof PieceComponent)) return false;
         final PieceComponent that = (PieceComponent) object;
-        return this.getReferential().equals(that.getReferential());
+        final boolean haveSameHashCode = this.hashCode() == that.hashCode();
+        final boolean isEqual = this.getReferential().equals(that.getReferential());
+        Preconditions.checkState(haveSameHashCode == isEqual);
+        return isEqual;
     }
 
     @Override

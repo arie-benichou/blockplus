@@ -24,7 +24,7 @@ import blockplus.move.Move;
 import blockplus.move.MoveHandler;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.PieceTemplate;
-import blockplus.position.Position;
+import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
 public class PieceTemplateDemo3 {
@@ -36,7 +36,7 @@ public class PieceTemplateDemo3 {
             final int n = 1 + 2 * (radius + 1);
             final Board<Color> inputBoard = Board.from(n, n, Color.TRANSPARENT, Color.OPAQUE);
             final MoveHandler moveHandler = new MoveHandler(inputBoard);
-            final PositionInterface position = Position.from(n / 2, n / 2);
+            final PositionInterface position = Position(n / 2, n / 2);
             final PieceInterface translatedPiece = pieceInterface.translateTo(position);
             System.out.println();
             System.out.println("=================8<=================");
