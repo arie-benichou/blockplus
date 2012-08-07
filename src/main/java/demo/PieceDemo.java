@@ -17,6 +17,7 @@
 
 package demo;
 
+import static blockplus.position.Position.Position;
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
 import blockplus.board.BoardRenderer;
@@ -27,7 +28,6 @@ import blockplus.piece.PieceComponent;
 import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.PieceTemplate;
-import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Stopwatch;
@@ -38,24 +38,24 @@ public final class PieceDemo {
 
         final MoveHandler moveHandler = new MoveHandler(board);
 
-        for (final PieceTemplate pieceTemplate : PieceTemplate.values()) {
-            //pieceTemplate = PieceTemplate.get(7);
-            System.out.println("======================8<======================\n");
-            System.out.println(pieceTemplate.name());
-            //final PositionInterface referential = Position(5, 5);
-            final PositionInterface position = Position(5, 8);
-            PieceInterface piece = pieceTemplate.get().translateTo(position);
-            for (int i = 0; i < 4; ++i) {
-                final Move move = new Move(Color.Blue, piece);
-                final Board<Color> ouput = moveHandler.handle(move);
-                BoardRenderer.render(ouput);
-                System.out.println();
-                piece = piece.rotate();
-                //piece = piece.rotateAround(referential);
-                System.out.println();
-            }
-            //break;
+        //for (final PieceTemplate pieceTemplate : PieceTemplate.values()) {
+        final PieceTemplate pieceTemplate = PieceTemplate.get(7);
+        System.out.println("======================8<======================\n");
+        System.out.println(pieceTemplate.name());
+        final PositionInterface referential = Position(5, 5);
+        final PositionInterface position = Position(5, 8);
+        PieceInterface piece = pieceTemplate.get().translateTo(position);
+        for (int i = 0; i < 4; ++i) {
+            final Move move = new Move(Color.Blue, piece);
+            final Board<Color> ouput = moveHandler.handle(move);
+            BoardRenderer.render(ouput);
+            System.out.println();
+            //piece = piece.rotate();
+            piece = piece.rotateAround(referential);
+            System.out.println();
         }
+        //break;
+        //}
     }
 
     public static void main(final String[] args) {

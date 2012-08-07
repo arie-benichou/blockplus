@@ -1,6 +1,8 @@
 
 package blockplus.piece;
 
+import static blockplus.position.Position.Position;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -8,7 +10,6 @@ import java.util.Set;
 import blockplus.direction.Direction;
 import blockplus.direction.DirectionInterface;
 import blockplus.piece.matrix.Matrix;
-import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Joiner;
@@ -23,7 +24,7 @@ import com.google.common.collect.Sets;
 public final class PieceComposite implements PieceInterface {
 
     // use ONLY on debug purpose
-    private final static boolean IS_FACTORY_CACHING = true;
+    private final static boolean IS_FACTORY_CACHING = false;
 
     private final static int DIMENSION = 2;
 
@@ -96,7 +97,8 @@ public final class PieceComposite implements PieceInterface {
         }
 
         private PieceInterface getFromNew(final int id, final Set<PieceInterface> components) {
-            return new PieceComposite(id, components);
+            //return new PieceComposite(id, components);
+            return null;
         }
 
         private PieceInterface getFromCache(final int id, final Set<PieceInterface> components) {
@@ -156,33 +158,48 @@ public final class PieceComposite implements PieceInterface {
         final int id = check(pieceData).ordinal();
         final int numberOfCells = check(pieceData.getNumberOfCells());
         final Matrix matrix = check(pieceData.getMatrix());
+        final PositionInterface referential = extractPosition(matrix, 0); // TODO !!!
         final Set<PieceInterface> distinctComponents = check(matrix, numberOfCells);
-        return FACTORY.get(id, distinctComponents);
+        //return FACTORY.get(id, distinctComponents); // TODO !!!
+        return new PieceComposite(id, referential, distinctComponents);
     }
 
     /*----------------------------------------8<----------------------------------------*/
 
     private static PieceInterface from(final PieceInterface pieceInterface, final DirectionInterface direction) {
+
         final int id = pieceInterface.getId();
-        final Set<PieceInterface> orderedComponents = Sets.newLinkedHashSet();
+        final PositionInterface referential = pieceInterface.getReferential().apply(direction);
+
+        final Set<PieceInterface> components = Sets.newLinkedHashSet(); // TODO !!! à revoir
         for (final PieceInterface component : pieceInterface) {
-            orderedComponents.add(component.translateBy(direction));
+            components.add(component.translateBy(direction));
         }
-        return FACTORY.get(id, orderedComponents);
+
+        //return FACTORY.get(id, components);
+        return new PieceComposite(id, referential, components);
     }
 
     // TODO !? à revoir
     // TODO !? utiliser un rotationOrdinal
     private static PieceInterface from(final PieceInterface pieceInterface, final PositionInterface referential) {
+
         final int id = pieceInterface.getId();
-        final Set<PieceInterface> orderedComponents = Sets.newLinkedHashSet();
+
+        final Set<PieceInterface> components = Sets.newLinkedHashSet(); // TODO !!! à revoir
         for (final PieceInterface component : pieceInterface) {
-            orderedComponents.add(component.rotateAround(referential));
+            components.add(component.rotateAround(referential));
         }
-        final PieceInterface rotated = FACTORY.get(id, orderedComponents);
+
+        //final PieceInterface rotated = FACTORY.get(id, components); // TODO !!!
+        return new PieceComposite(id, referential, components);
+
+        /*
+        // TODO à revoir
         final PositionInterface rotationReferential = rotated.getReferential();
         final DirectionInterface direction = Direction.from(rotationReferential, referential);
         return rotated.translateBy(direction);
+        */
     }
 
     /*----------------------------------------8<----------------------------------------*/
@@ -204,20 +221,18 @@ public final class PieceComposite implements PieceInterface {
     }
 
     private final int id;
-    private final PieceInterface anchorPoint;
-
+    private final PositionInterface referential;
     private final Set<PieceInterface> components;
 
     private transient volatile Set<PositionInterface> corners;
     private transient volatile Set<PositionInterface> sides;
     private transient volatile Set<PositionInterface> potentialPositions;
-    private transient volatile PieceInterface rotateAround;
+    private transient volatile PieceInterface rotated;
 
-    private PieceComposite(final int id, final Set<PieceInterface> components) {
+    private PieceComposite(final int id, final PositionInterface referential, final Set<PieceInterface> components) {
         this.id = id;
-        this.components = ImmutableSet.copyOf(components); // LinkedHashSet iteration order is kept
-        //this.components = components;
-        this.anchorPoint = components.iterator().next(); // TODO !!! à passer au constructeur la position
+        this.referential = referential;
+        this.components = ImmutableSet.copyOf(components);
     }
 
     @Override
@@ -237,7 +252,7 @@ public final class PieceComposite implements PieceInterface {
 
     @Override
     public PositionInterface getReferential() {
-        return this.anchorPoint.getReferential(); // TODO !? renommer en getAnchorPosition()
+        return this.referential;
     }
 
     @Override
@@ -291,13 +306,13 @@ public final class PieceComposite implements PieceInterface {
 
     @Override
     public PieceInterface rotate() {
-        PieceInterface rotateAround = this.rotateAround;
-        if (rotateAround == null) {
+        PieceInterface rotated = this.rotated;
+        if (rotated == null) {
             synchronized (this) {
-                if ((rotateAround = this.rotateAround) == null) this.rotateAround = rotateAround = this.rotateAround(this.getReferential());
+                if ((rotated = this.rotated) == null) this.rotated = rotated = this.rotateAround(this.getReferential());
             }
         }
-        return rotateAround;
+        return rotated;
     }
 
     @Override
