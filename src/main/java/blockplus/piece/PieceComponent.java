@@ -24,7 +24,7 @@ import com.google.common.collect.Ordering;
 public final class PieceComponent implements PieceInterface {
 
     // use on debug purpose 
-    private final static boolean IS_FACTORY_CACHING = true;
+    private final static boolean IS_FACTORY_CACHING = false;
 
     private final static int ID = 1;
 
@@ -64,7 +64,6 @@ public final class PieceComponent implements PieceInterface {
         private final ConcurrentMap<PositionInterface, PieceComponent> cache = Maps.newConcurrentMap();
 
         public Factory(final boolean isCaching) {
-            //System.out.println("Loading " + this.getClass().getCanonicalName() + "...");
             this.isCaching = isCaching;
         }
 
@@ -108,13 +107,28 @@ public final class PieceComponent implements PieceInterface {
 
     }
 
-    public final static Factory FACTORY = new Factory();
+    public final static PieceComponent.Factory FACTORY = new Factory();
 
     public static PieceComponent from(final PositionInterface position) {
         return FACTORY.get(position);
     }
 
     public static PieceComponent from() {
+        return from(ORIGIN);
+    }
+
+    @SuppressWarnings("all")
+    public static PieceComponent PieceComponent(final PositionInterface position) {
+        return FACTORY.get(position);
+    }
+
+    @SuppressWarnings("all")
+    public static PieceComponent PieceComponent(final int row, final int column) {
+        return FACTORY.get(Position(row, column));
+    }
+
+    @SuppressWarnings("all")
+    public static PieceComponent PieceComponent() {
         return from(ORIGIN);
     }
 
@@ -139,6 +153,7 @@ public final class PieceComponent implements PieceInterface {
     }
 
     private final PositionInterface position;
+
     private transient volatile Set<PositionInterface> sides;
     private transient volatile Set<PositionInterface> corners;
     private transient volatile Set<PieceInterface> components;
@@ -218,6 +233,7 @@ public final class PieceComponent implements PieceInterface {
         return this;
     }
 
+    /*
     private PieceComponent rotateUnit() {
         PieceComponent rotationAroundOrigin = this.rotationAroundOrigin;
         if (rotationAroundOrigin == null) {
@@ -231,11 +247,46 @@ public final class PieceComponent implements PieceInterface {
         }
         return rotationAroundOrigin;
     }
+    */
 
+    /*
     @Override
     public PieceComponent rotateAround(final PositionInterface parentReferential) { // TODO !? à revoir
         final int k = Math.min(Math.abs(parentReferential.row()), Math.abs(parentReferential.column()));
         return this.translateBy(Direction.from(-k, -k)).rotateUnit().translateBy(Direction.from(k, k));
+    }
+    */
+
+    /*
+    @Override
+    public PieceComponent rotateAround(final PositionInterface referential) {
+        final int k = Math.min(Math.abs(referential.row()), Math.abs(referential.column()));
+        final DirectionInterface delta1 = Direction.from(-k, -k);
+        final DirectionInterface delta2 = Direction.from(k, k);
+        final PieceComponent translated = this.translateBy(delta1);
+        final PieceComponent rotated = translated.rotateUnit();
+        return rotated.translateBy(delta2);
+    }
+    */
+
+    @Override
+    public PieceComponent rotateAround(final PositionInterface referential) {
+        /////////////////////////////////////////////////////////////////////
+        final DirectionInterface delta1 = Direction.from(referential, ORIGIN);
+        /////////////////////////////////////////////////////////////////////
+        final PieceComponent translated1 = this.translateBy(delta1);
+        /////////////////////////////////////////////////////////////////////
+        final Matrix matrix = computeMatrix(translated1.getReferential());
+        //matrix.debug();
+        final Matrix newMatrix = ROTATION_MATRIX.multiply(matrix);
+        final PositionInterface newPosition = extractPosition(newMatrix);
+        /////////////////////////////////////////////////////////////////////
+        final PieceComponent rotated = translated1.translateTo(newPosition);
+        /////////////////////////////////////////////////////////////////////
+        final DirectionInterface delta2 = Direction.from(ORIGIN, referential);
+        final PieceComponent translated2 = rotated.translateBy(delta2);
+        /////////////////////////////////////////////////////////////////////
+        return translated2;
     }
 
     @Override

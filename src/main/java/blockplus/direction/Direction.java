@@ -195,6 +195,11 @@ public final class Direction implements DirectionInterface {
         return NULL.apply(rowDelta, columnDelta);
     }
 
+    @SuppressWarnings("all")
+    public static DirectionInterface Direction(final int rowDelta, final int columnDelta) {
+        return NULL.apply(rowDelta, columnDelta);
+    }
+
     public static DirectionInterface from(final PositionInterface referential, final PositionInterface position) {
         return from(position.row() - referential.row(), position.column() - referential.column());
     }

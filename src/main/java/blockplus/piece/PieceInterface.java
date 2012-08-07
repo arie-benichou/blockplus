@@ -24,10 +24,8 @@ public interface PieceInterface extends Iterable<PieceInterface>, Supplier<Set<P
 
     PieceInterface translateBy(DirectionInterface direction);
 
-    // TODO ! ajouter rotateOn
+    PieceInterface rotate();
 
     PieceInterface rotateAround(PositionInterface referential);
-
-    PieceInterface rotate();
 
 }
