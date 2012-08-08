@@ -15,6 +15,7 @@ public final class NullPieceComponent implements PieceInterface {
     private final static int ID = 0;
     private final static PositionInterface REFERENTIAL = NullPosition.getInstance();
     private final static Set<PieceInterface> COMPONENTS = ImmutableSet.of();
+    private final static Set<PositionInterface> POSITIONS = ImmutableSet.of();
     private final static Set<PositionInterface> CORNERS = ImmutableSet.of();
     private final static Set<PositionInterface> SIDES = ImmutableSet.of();
     private final static Set<PositionInterface> POTENTIAL_POSITIONS = ImmutableSet.of();
@@ -55,6 +56,11 @@ public final class NullPieceComponent implements PieceInterface {
     @Override
     public Set<PieceInterface> get() {
         return COMPONENTS;
+    }
+
+    @Override
+    public Set<PositionInterface> getPositions() {
+        return POSITIONS;
     }
 
     @Override

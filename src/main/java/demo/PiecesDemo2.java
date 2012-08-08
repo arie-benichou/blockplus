@@ -17,6 +17,8 @@
 
 package demo;
 
+import static blockplus.position.Position.Position;
+
 import java.util.Set;
 
 import blockplus.board.Board;
@@ -24,22 +26,22 @@ import blockplus.board.BoardRenderer;
 import blockplus.color.Color;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
+import blockplus.piece.Piece;
 import blockplus.piece.PieceComponent;
-import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
-import blockplus.piece.PieceTemplate;
-import static blockplus.position.Position.Position;
+import blockplus.piece.Pieces;
 import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Sets;
 
-public class PieceTemplateDemo2 {
+public class PiecesDemo2 {
 
     public static void main(final String[] args) {
 
-        for (final PieceTemplate pieceTemplate : PieceTemplate.values()) {
-            final PieceInterface pieceInterface = pieceTemplate.get();
-            final int radius = pieceTemplate.getRadius();
+        for (final Pieces piece : Pieces.values()) {
+            final PieceInterface pieceInterface = piece.get();
+            final Piece piece2 = (Piece) pieceInterface; // TODO à revoir
+            final int radius = piece2.getPieceData().radius();
             final int n = 1 + 2 * (radius + 1);
             final Board<Color> inputBoard = Board.from(n, n, Color.TRANSPARENT, Color.OPAQUE);
             final PositionInterface position = Position(n / 2, n / 2);
@@ -51,7 +53,7 @@ public class PieceTemplateDemo2 {
                 rotations.add(rotatedPiece);
                 System.out.println();
                 System.out.println("=================8<=================");
-                final Move move = new Move(Color.White, rotatedPiece);
+                final Move move = new Move(Color.WHITE, rotatedPiece);
                 final Board<Color> ouput = moveHandler.handle(move);
                 BoardRenderer.render(ouput);
             }
@@ -60,7 +62,7 @@ public class PieceTemplateDemo2 {
                 rotatedPiece = rotatedPiece.rotate();
                 rotations.add(rotatedPiece);
                 System.out.println();
-                final Move move = new Move(Color.White, rotatedPiece);
+                final Move move = new Move(Color.WHITE, rotatedPiece);
                 final Board<Color> ouput = moveHandler.handle(move);
                 BoardRenderer.render(ouput);
             }
@@ -70,7 +72,6 @@ public class PieceTemplateDemo2 {
 
         }
         System.out.println(PieceComponent.FACTORY);
-        System.out.println(PieceComposite.FACTORY);
+        //System.out.println(PieceComposite.FACTORY);
     }
-
 }

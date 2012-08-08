@@ -57,7 +57,7 @@ public enum Color {
 
     },
 
-    Blue(blue),
+    BLUE(blue),
 
     yellow(-3, "y") {
 
@@ -68,7 +68,7 @@ public enum Color {
 
     },
 
-    Yellow(yellow),
+    YELLOW(yellow),
 
     red(-5, "r") {
 
@@ -79,7 +79,7 @@ public enum Color {
 
     },
 
-    Red(red),
+    RED(red),
 
     green(-7, "g") {
 
@@ -90,12 +90,12 @@ public enum Color {
 
     },
 
-    Green(green),
+    GREEN(green),
 
     white(-Math.abs(blue.value() * yellow.value() * red.value() * green.value()), "o"),
 
     //WHITE(Blue.value() * Yellow.value() * Red.value() * Green.value(), "O");
-    White(white);
+    WHITE(white);
 
     private final int value;
     private final String literal;
@@ -133,7 +133,7 @@ public enum Color {
         if (this.is(Color.OPAQUE)) return true;
         //if (this.is(Color.TRANSPARENT)) return false;
         if (this.value() <= 1) return false;
-        if (this.value() > Green.value()) return false;
+        if (this.value() > GREEN.value()) return false;
         return true;
     }
 

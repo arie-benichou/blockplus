@@ -17,29 +17,29 @@
 
 package blockplus.piece;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multiset.Entry;
 
-public final class PiecesBag implements Iterable<PieceTemplate> {
+public final class PiecesBag implements Iterable<Piece> {
 
-    private final static Multiset<PieceTemplate> EMPTY_MULTI_SET = ImmutableMultiset.of();
+    private final static Multiset<Piece> EMPTY_MULTI_SET = ImmutableMultiset.of();
     private final static PiecesBag EMPTY_BAG = new PiecesBag(EMPTY_MULTI_SET);
 
-    private static List<PieceTemplate> computeList(final Multiset<PieceTemplate> data) {
-        final List<PieceTemplate> list = Lists.newArrayList();
-        for (final Entry<PieceTemplate> entry : data.entrySet())
+    private static List<Piece> computeList(final Multiset<Piece> data) {
+        final List<Piece> list = Lists.newArrayList();
+        for (final Entry<Piece> entry : data.entrySet())
             for (int n = 0; n < entry.getCount(); ++n)
                 list.add(entry.getElement());
-        Collections.sort(list);
+        //Collections.sort(list); // TODO comparator
         return list;
     }
 
@@ -47,29 +47,33 @@ public final class PiecesBag implements Iterable<PieceTemplate> {
         return EMPTY_BAG;
     }
 
-    public static PiecesBag from(final PieceTemplate piece) {
-        final Multiset<PieceTemplate> multiset = HashMultiset.create();
+    public static PiecesBag from(final Piece piece) {
+        final Multiset<Piece> multiset = HashMultiset.create();
         multiset.add(piece);
         return new PiecesBag(multiset);
     }
 
-    public static PiecesBag from(final Iterable<PieceTemplate> pieces) {
+    public static PiecesBag from(final Supplier<Piece> pieceSupplier) {
+        return from(pieceSupplier.get());
+    }
+
+    public static PiecesBag from(final Iterable<Piece> pieces) {
         return new PiecesBag(HashMultiset.create(pieces));
     }
 
-    public static PiecesBag from(final PieceTemplate... pieces) {
-        final Multiset<PieceTemplate> multiset = HashMultiset.create();
-        for (final PieceTemplate piece : pieces) {
+    public static PiecesBag from(final Piece... pieces) {
+        final Multiset<Piece> multiset = HashMultiset.create();
+        for (final Piece piece : pieces) {
             multiset.add(piece);
         }
         return new PiecesBag(multiset);
     }
 
-    private final Multiset<PieceTemplate> data;
+    private final Multiset<Piece> data;
 
-    private transient volatile List<PieceTemplate> piecesAsList;
+    private transient volatile List<Piece> piecesAsList;
 
-    private PiecesBag(final Multiset<PieceTemplate> data) {
+    private PiecesBag(final Multiset<Piece> data) {
         this.data = data;
     }
 
@@ -77,8 +81,8 @@ public final class PiecesBag implements Iterable<PieceTemplate> {
         return this.data.isEmpty();
     }
 
-    public List<PieceTemplate> asList() {
-        List<PieceTemplate> value = this.piecesAsList;
+    public List<Piece> asList() {
+        List<Piece> value = this.piecesAsList;
         if (value == null)
             synchronized (this) {
                 if ((value = this.piecesAsList) == null) this.piecesAsList = value = computeList(this.data);
@@ -91,13 +95,13 @@ public final class PiecesBag implements Iterable<PieceTemplate> {
     }
 
     @Override
-    public Iterator<PieceTemplate> iterator() {
+    public Iterator<Piece> iterator() {
         return this.asList().iterator(); // TODO ?! return this.data.iterator();
     }
 
-    public PiecesBag remove(final PieceTemplate piece) {
+    public PiecesBag remove(final Piece piece) {
         Preconditions.checkArgument(this.data.contains(piece));
-        final Multiset<PieceTemplate> copy = HashMultiset.create(this.data);
+        final Multiset<Piece> copy = HashMultiset.create(this.data);
         copy.remove(piece, 1);
         return from(copy);
     }

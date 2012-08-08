@@ -21,10 +21,10 @@ public class BoardDemo1 {
         final int columns = n;
 
         final Map<PositionInterface, Color> definedPositions = Maps.newHashMap();
-        definedPositions.put(Position(-1, -1), Color.White);
-        definedPositions.put(Position(-1, columns), Color.White);
-        definedPositions.put(Position(rows, -1), Color.White);
-        definedPositions.put(Position(rows, columns), Color.White);
+        definedPositions.put(Position(-1, -1), Color.WHITE);
+        definedPositions.put(Position(-1, columns), Color.WHITE);
+        definedPositions.put(Position(rows, -1), Color.WHITE);
+        definedPositions.put(Position(rows, columns), Color.WHITE);
 
         final Board<Color> board = Board.from(rows, columns, Color.TRANSPARENT, Color.OPAQUE, definedPositions);
 
@@ -38,14 +38,14 @@ public class BoardDemo1 {
         System.out.println(board.get(Position(0, 0)).name());
 
         final Map<PositionInterface, Color> updatedPositions = Maps.newHashMap();
-        updatedPositions.put(Position(0, 0), Color.Blue);
-        updatedPositions.put(Position(1, 0), Color.Yellow);
-        updatedPositions.put(Position(2, 0), Color.Red);
-        updatedPositions.put(Position(3, 0), Color.Green);
+        updatedPositions.put(Position(0, 0), Color.BLUE);
+        updatedPositions.put(Position(1, 0), Color.YELLOW);
+        updatedPositions.put(Position(2, 0), Color.RED);
+        updatedPositions.put(Position(3, 0), Color.GREEN);
 
         updatedPositions.put(Position(0, columns - 1), Color.UNKNOWN);
         updatedPositions.put(Position(1, columns - 1), Color.OPAQUE);
-        updatedPositions.put(Position(2, columns - 1), Color.White);
+        updatedPositions.put(Position(2, columns - 1), Color.WHITE);
 
         System.out.println(board.update(updatedPositions));
         System.out.println(board);

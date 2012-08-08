@@ -5,7 +5,6 @@ import java.util.Map;
 
 import blockplus.board.Board;
 import blockplus.color.Color;
-import blockplus.piece.PieceInterface;
 import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Maps;
@@ -22,9 +21,10 @@ public class MoveHandler {
     // TODO générer un objet BoardMutation (puis par la suite, un GameMutation...)
     public Board<Color> handle(final Move move) {
         final Map<PositionInterface, Color> cells = Maps.newHashMap();
-        for (final PieceInterface component : move.getPiece()) {
-            cells.put(component.getReferential(), move.getColor());
+        for (final PositionInterface component : move.getPiece().getPositions()) {
+            cells.put(component, move.getColor());
         }
+
         // TODO !!! gérer les positions potentielles: tester les positions et prendre en compte les potential colors dejà présente sur le board
         for (final PositionInterface potentialPosition : move.getPiece().getPotentialPositions()) {
             cells.put(potentialPosition, move.getColor().potential());

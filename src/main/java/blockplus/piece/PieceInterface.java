@@ -14,6 +14,8 @@ public interface PieceInterface extends Iterable<PieceInterface>, Supplier<Set<P
 
     PositionInterface getReferential();
 
+    Set<PositionInterface> getPositions();
+
     Set<PositionInterface> getCorners();
 
     Set<PositionInterface> getSides();

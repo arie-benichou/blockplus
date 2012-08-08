@@ -17,16 +17,31 @@
 
 package blockplus.piece;
 
+import static blockplus.position.Position.Position;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import blockplus.piece.matrix.Matrix;
+import blockplus.position.NullPosition;
+import blockplus.position.PositionInterface;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.ImmutableSortedSet.Builder;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 
 // TODO ?! à renommer en PieceData
-public enum PieceTemplateData {
+public enum PieceData {
 
     /*      
           NULL OBJECT
     */
 
-    ENTRY0(new int[][] { {} }),
+    ENTRY0(NullPosition.getInstance(), new int[0][0]),
 
     /*      0  
           -----
@@ -200,7 +215,7 @@ public enum PieceTemplateData {
           ---------
     */
 
-    ENTRY15(new int[][] { { 1, 0, 1, 2, 3 }, { 1, 0, 0, 0, 0 } }),
+    ENTRY15(new int[][] { { 1, 0, 1, 2, 3 }, { 0, 0, 1, 0, 0 } }),
 
     /*      0   1   2  
           -------------
@@ -223,9 +238,11 @@ public enum PieceTemplateData {
         2 | x |   |   |
           -------------
     */
-    // TODO ?! pouvoir fournir un référentiel qui ne soit pas nécessairement la position d'un composant
 
-    ENTRY17(new int[][] { { 0, 0, 0, 1, 2 }, { 0, 1, 2, 0, 0 } }),
+    ENTRY17(
+            Position(1, 1),
+            new int[][] { { 0, 0, 0, 1, 2 }, { 0, 1, 2, 0, 0 } }
+    ),
 
     /*      0   1   2  
           -------------
@@ -280,32 +297,121 @@ public enum PieceTemplateData {
     private static final String ENTRY_NAME_PATTERN = "ENTRY";
     private final static int DIMENSION = 2;
 
-    public final static PieceTemplateData get(final int ordinal) {
-        return PieceTemplateData.valueOf(ENTRY_NAME_PATTERN + ordinal);
+    private static PositionInterface extractPosition(final int[][] data, final int n) {
+        return Position(data[0][n], data[1][n]);
     }
 
+    private static Set<PositionInterface> extractPositions(final int[][] data, final int size) {
+        final Builder<PositionInterface> builder = new ImmutableSortedSet.Builder<PositionInterface>(Ordering.natural());
+        for (int i = 0; i < size; ++i) {
+            builder.add(extractPosition(data, i));
+        }
+        return builder.build();
+    }
+
+    private static PositionInterface extractImplicitReferential(final int[][] data) {
+        return extractPosition(data, 0);
+    }
+
+    private static int computeRadius(final PositionInterface referential, final Matrix matrix) {
+        if (referential.isNull()) return -1;
+        final int refY = referential.row(), refX = referential.column();
+        final int minY = matrix.min(0), minX = matrix.min(1);
+        final int maxY = matrix.max(0), maxX = matrix.max(1);
+        final List<Integer> deltas = Lists.newArrayList(
+                Math.abs(refY - minY), Math.abs(refY - maxY),
+                Math.abs(refX - minX), Math.abs(refX - maxX));
+        return Collections.max(deltas);
+    }
+
+    @SuppressWarnings("all")
+    public final static PieceData PieceData(final int ordinal) {
+        return PieceData.valueOf(ENTRY_NAME_PATTERN + ordinal);
+    }
+
+    public final static PieceData get(final int ordinal) {
+        return PieceData.valueOf(ENTRY_NAME_PATTERN + ordinal);
+    }
+
+    private final PositionInterface referential;
+    private final Set<PositionInterface> positions;
     private final Matrix matrix;
-    private int numberOfCells;
+    private int radius;
+    private int size;
 
     /**
      * PieceData constructor.
      * 
+     * @param referential
+     *            The fixed point in rotation
+     * 
      * @param data
      *            The first data row contains row indexes and the second data
-     *            row contains column indexes. The first [row][column] always
-     *            contains the referential.
+     *            row contains column indexes.
      */
-    private PieceTemplateData(final int[][] data) {
-        this.numberOfCells = data[0].length;
-        this.matrix = new Matrix(DIMENSION, this.getNumberOfCells(), data);
+    private PieceData(final PositionInterface referential, final int[][] data) {
+        this.size = data.length == 0 ? 0 : data[0].length;
+        this.positions = extractPositions(data, this.size());
+        Preconditions.checkArgument(this.positions().size() == this.size());
+        this.referential = referential;
+        this.matrix = new Matrix(DIMENSION, this.size(), data);
+        this.radius = computeRadius(this.referential(), this.matrix());
     }
 
-    public Matrix getMatrix() {
+    /**
+     * Alternative of PieceData constructor.
+     * 
+     * @param data
+     *            The first data row contains row indexes and the second data
+     *            row contains column indexes. The referential will be extracted
+     *            from the first [row][column].
+     */
+    private PieceData(final int[][] data) {
+        this(extractImplicitReferential(data), data);
+    }
+
+    public int id() {
+        return this.ordinal();
+    }
+
+    public int size() {
+        return this.size;
+    }
+
+    public PositionInterface referential() {
+        return this.referential;
+    }
+
+    public Set<PositionInterface> positions() {
+        return this.positions;
+    }
+
+    public Matrix matrix() {
         return this.matrix;
     }
 
-    public int getNumberOfCells() {
-        return this.numberOfCells;
+    public int radius() {
+        return this.radius;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("\n id", this.id())
+                .add("\n size", this.size())
+                .add("\n radius", this.radius())
+                .add("\n positions", this.positions())
+                .add("\n matrix", this.matrix())
+                .add("\n referential", this.referential())
+                .addValue("\n")
+                .toString();
+    }
+
+    public static void main(final String[] args) {
+        for (final PieceData data : PieceData.values()) {
+            System.out.println(data);
+            System.out.println();
+        }
     }
 
 }

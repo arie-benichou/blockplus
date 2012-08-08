@@ -214,6 +214,11 @@ public final class PieceComponent implements PieceInterface {
     }
 
     @Override
+    public Set<PositionInterface> getPositions() { // TODO ! à revoir
+        return ImmutableSet.of(this.getReferential());
+    }
+
+    @Override
     public Iterator<PieceInterface> iterator() {
         return this.get().iterator();
     }
@@ -270,6 +275,7 @@ public final class PieceComponent implements PieceInterface {
     */
 
     @Override
+    // TODO !!
     public PieceComponent rotateAround(final PositionInterface referential) {
         /////////////////////////////////////////////////////////////////////
         final DirectionInterface delta1 = Direction.from(referential, ORIGIN);

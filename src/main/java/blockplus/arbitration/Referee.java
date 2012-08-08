@@ -17,6 +17,8 @@
 
 package blockplus.arbitration;
 
+import static blockplus.position.Position.Position;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -24,10 +26,9 @@ import java.util.Set;
 import blockplus.board.Board;
 import blockplus.color.Color;
 import blockplus.move.Move;
+import blockplus.piece.Piece;
 import blockplus.piece.PieceInterface;
-import blockplus.piece.PieceTemplate;
 import blockplus.player.Player;
-import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Lists;
@@ -53,7 +54,7 @@ public class Referee {
     private boolean hasCornerOfSameColor(final Board<Color> board, final Color color, final PieceInterface piece) {
         for (final PositionInterface position : piece.getCorners()) {
             final Color c = board.get(position);
-            if (c.is(Color.White)) return true; // TODO à revoir...
+            if (c.is(Color.WHITE)) return true; // TODO à revoir...
             if (c.is(color)) return true;
         }
         return false;
@@ -70,22 +71,19 @@ public class Referee {
     private List<Move> getLegalMoves(
             final Board<Color> board,
             final Color color,
-            final PieceTemplate pieceTemplate,
+            final Piece pieceTemplate,
             final PositionInterface potentialPosition
             ) {
-        final PieceInterface piece = pieceTemplate.get();
-        PieceInterface rotatedPiece = piece.translateTo(potentialPosition);
         final List<Move> legalMoves = Lists.newArrayList();
-        if (this.isLegal(board, color, rotatedPiece)) legalMoves.add(new Move(color, rotatedPiece));
-        for (int i = 1; i < pieceTemplate.getNumberOfRotations(); ++i) {
-            rotatedPiece = rotatedPiece.rotate();
-            if (this.isLegal(board, color, rotatedPiece)) legalMoves.add(new Move(color, rotatedPiece));
-        }
+        final PieceInterface translatedTo = pieceTemplate.translateTo(potentialPosition);
+        for (final PieceInterface piece : translatedTo)
+            if (this.isLegal(board, color, piece)) legalMoves.add(new Move(color, piece));
         return legalMoves;
     }
 
-    private List<PositionInterface> getPositionsHavingPotential(final Board<Color> board, final Color potential) {
+    private List<PositionInterface> getPositionsHavingPotential(final Board<Color> board, final Color color) {
         final List<PositionInterface> positionsHavingPotential = Lists.newArrayList();
+        final Color potential = color.potential();
         for (int i = 0; i < board.rows(); ++i) {
             for (int j = 0; j < board.columns(); ++j) {
                 final PositionInterface position = Position(i, j);
@@ -100,8 +98,8 @@ public class Referee {
             final Board<Color> board,
             final Color color,
             final List<PositionInterface> positionsHavingPotential,
-            final PieceTemplate pieceTemplate) {
-        final int radius = pieceTemplate.getRadius();
+            final Piece pieceTemplate) {
+        final int radius = pieceTemplate.getPieceData().radius();
         final Set<PositionInterface> potentialPositions = Sets.newHashSet();
         for (final PositionInterface positionHavingPotential : positionsHavingPotential) {
             for (final PositionInterface neighbour : board.getAllNeighboursPositions(positionHavingPotential, radius)) {
@@ -114,9 +112,9 @@ public class Referee {
     // TODO pouvoir passer un Ordering/Comparator de Move
     public Set<Move> getLegalMoves(final Board<Color> board, final Player player) {
         final Color color = player.getColor();
-        final List<PositionInterface> positionsHavingPotential = this.getPositionsHavingPotential(board, color.potential());
+        final List<PositionInterface> positionsHavingPotential = this.getPositionsHavingPotential(board, color);
         final Set<Move> legalMoves = Sets.newHashSet();
-        for (final PieceTemplate pieceTemplate : player.getAvailablePieces()) {
+        for (final Piece pieceTemplate : player.getAvailablePieces()) {
             final Set<PositionInterface> distinctPotentialPositions = this.getDistinctPotentialPositions(board, color, positionsHavingPotential, pieceTemplate);
             for (final PositionInterface uniquePotentialPosition : distinctPotentialPositions) {
                 legalMoves.addAll(this.getLegalMoves(board, color, pieceTemplate, uniquePotentialPosition));

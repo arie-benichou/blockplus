@@ -18,21 +18,22 @@
 package demo;
 
 import static blockplus.board.BoardRenderer.render;
+import static blockplus.position.Position.Position;
 import blockplus.board.Board;
 import blockplus.color.Color;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
+import blockplus.piece.Piece;
 import blockplus.piece.PieceInterface;
-import blockplus.piece.PieceTemplate;
-import static blockplus.position.Position.Position;
+import blockplus.piece.Pieces;
 import blockplus.position.PositionInterface;
 
 public class PieceTemplateDemo3 {
 
     public static void main(final String[] args) {
-        for (final PieceTemplate pieceTemplate : PieceTemplate.values()) {
-            final PieceInterface pieceInterface = pieceTemplate.get();
-            final int radius = pieceTemplate.getRadius();
+        for (final Pieces piece : Pieces.values()) {
+            final PieceInterface pieceInterface = piece.get();
+            final int radius = ((Piece) piece.get()).getPieceData().radius(); // TODO à revoir
             final int n = 1 + 2 * (radius + 1);
             final Board<Color> inputBoard = Board.from(n, n, Color.TRANSPARENT, Color.OPAQUE);
             final MoveHandler moveHandler = new MoveHandler(inputBoard);
@@ -40,7 +41,7 @@ public class PieceTemplateDemo3 {
             final PieceInterface translatedPiece = pieceInterface.translateTo(position);
             System.out.println();
             System.out.println("=================8<=================");
-            final Move move = new Move(Color.White, translatedPiece);
+            final Move move = new Move(Color.WHITE, translatedPiece);
             final Board<Color> ouput = moveHandler.handle(move);
             render(ouput);
             System.out.println("radius : " + radius);

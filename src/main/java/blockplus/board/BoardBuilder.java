@@ -44,10 +44,10 @@ public final class BoardBuilder {
         if (definedPositions.get(p4).equals(Color.TRANSPARENT))
             definedPositions.put(p4, Color.white);
 
-        definedPositions.put(Position(-1, -1), Color.White);
-        definedPositions.put(Position(-1, columns), Color.White);
-        definedPositions.put(Position(rows, -1), Color.White);
-        definedPositions.put(Position(rows, columns), Color.White);
+        definedPositions.put(Position(-1, -1), Color.WHITE);
+        definedPositions.put(Position(-1, columns), Color.WHITE);
+        definedPositions.put(Position(rows, -1), Color.WHITE);
+        definedPositions.put(Position(rows, columns), Color.WHITE);
 
         return definedPositions;
     }

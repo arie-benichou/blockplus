@@ -17,22 +17,18 @@
 
 package demo;
 
-import blockplus.piece.PieceComponent;
-import blockplus.piece.PieceComposite;
-import blockplus.piece.PieceTemplate;
+import blockplus.piece.Pieces;
 
-public class PieceTemplateDemo1 {
+public class PiecesDemo1 {
 
     public static void main(final String[] args) {
 
-        for (final PieceTemplate pieces : PieceTemplate.values()) {
-            System.out.println(pieces.name());
+        for (final Pieces pieces : Pieces.values()) {
             System.out.println(pieces);
-            System.out.println();
         }
 
-        System.out.println(PieceComponent.FACTORY);
-        System.out.println(PieceComposite.FACTORY);
+        //System.out.println(PieceComponent.FACTORY);
+        //System.out.println(PieceComposite.FACTORY);
 
     }
 

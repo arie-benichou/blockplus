@@ -13,7 +13,7 @@ import blockplus.board.BoardBuilder;
 import blockplus.board.BoardRenderer;
 import blockplus.color.Color;
 import blockplus.move.Move;
-import blockplus.piece.PieceTemplate;
+import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 
@@ -54,14 +54,14 @@ public class RefereeTest {
 
     @Test
     public void testGetLegalMovesWithEmptyBagOfPieces() {
-        final Player player = new Player(Color.White, PiecesBag.from());
+        final Player player = new Player(Color.WHITE, PiecesBag.from());
         final Set<Move> legalMoves = this.referee.getLegalMoves(this.board, player);
         Assert.assertTrue(legalMoves.isEmpty());
     }
 
     @Test
     public void testGetLegalMovesWithBagOfPiecesHavingOnePiece() {
-        final Player player = new Player(Color.White, PiecesBag.from(PieceTemplate.get(1)));
+        final Player player = new Player(Color.WHITE, PiecesBag.from(Pieces.get(1)));
         final Set<Move> legalMoves = this.referee.getLegalMoves(this.board, player);
         Assert.assertTrue(!legalMoves.isEmpty());
         // TODO à compléter

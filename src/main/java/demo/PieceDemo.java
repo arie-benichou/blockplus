@@ -24,34 +24,32 @@ import blockplus.board.BoardRenderer;
 import blockplus.color.Color;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
-import blockplus.piece.PieceComponent;
-import blockplus.piece.PieceComposite;
+import blockplus.piece.Piece;
+import blockplus.piece.PieceData;
 import blockplus.piece.PieceInterface;
-import blockplus.piece.PieceTemplate;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Stopwatch;
 
+// TODO à revoir
 public final class PieceDemo {
 
     private static void TestAllPieces(final Board<Color> board) {
 
         final MoveHandler moveHandler = new MoveHandler(board);
-
         //for (final PieceTemplate pieceTemplate : PieceTemplate.values()) {
-        final PieceTemplate pieceTemplate = PieceTemplate.get(7);
+        final Piece piece = new Piece(PieceData.get(7));
         System.out.println("======================8<======================\n");
-        System.out.println(pieceTemplate.name());
-        final PositionInterface referential = Position(5, 5);
+        //final PositionInterface referential = Position(5, 5);
         final PositionInterface position = Position(5, 8);
-        PieceInterface piece = pieceTemplate.get().translateTo(position);
+        PieceInterface movedPiece = piece.translateTo(position);
         for (int i = 0; i < 4; ++i) {
-            final Move move = new Move(Color.Blue, piece);
+            final Move move = new Move(Color.BLUE, movedPiece);
             final Board<Color> ouput = moveHandler.handle(move);
             BoardRenderer.render(ouput);
             System.out.println();
-            //piece = piece.rotate();
-            piece = piece.rotateAround(referential);
+            movedPiece = movedPiece.rotate();
+            //piece = piece.rotateAround(referential);
             System.out.println();
         }
         //break;
@@ -80,8 +78,8 @@ public final class PieceDemo {
         }
         stopwatch.stop();
         System.out.println(stopwatch.toString());
-        System.out.println(PieceComponent.FACTORY);
-        System.out.println(PieceComposite.FACTORY);
+        //System.out.println(PieceComponent.FACTORY);
+        //System.out.println(PieceComposite.FACTORY);
     }
 
 }

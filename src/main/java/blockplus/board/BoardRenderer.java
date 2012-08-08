@@ -1,10 +1,11 @@
 
 package blockplus.board;
 
+import static blockplus.position.Position.Position;
+
 import java.util.Map;
 
 import blockplus.color.Color;
-import static blockplus.position.Position.Position;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;

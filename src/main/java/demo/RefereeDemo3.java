@@ -27,9 +27,7 @@ import blockplus.board.Board;
 import blockplus.color.Color;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
-import blockplus.piece.PieceComponent;
-import blockplus.piece.PieceComposite;
-import blockplus.piece.PieceTemplate;
+import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 
@@ -55,7 +53,7 @@ public class RefereeDemo3 {
         };
         final Board<Color> board = parse(data);
         final MoveHandler moveHandler = new MoveHandler(board);
-        final Player player = new Player(Color.Blue, PiecesBag.from(PieceTemplate.get(15)));
+        final Player player = new Player(Color.BLUE, PiecesBag.from(Pieces.get(15)));
         final Referee boardReferee = new Referee();
         render(board);
         if (!player.getAvailablePieces().isEmpty()) {
@@ -76,8 +74,8 @@ public class RefereeDemo3 {
             System.out.println("number of pieces      : " + player.getAvailablePieces().size());
             System.out.println("number of legal moves : " + legalMoves.size());
             System.out.println("-----------------------------8<-----------------------------");
-            System.out.println(PieceComponent.FACTORY);
-            System.out.println(PieceComposite.FACTORY);
+            //System.out.println(PieceComponent.FACTORY);
+            //System.out.println(PieceComposite.FACTORY);
             System.out.println(stopwatch.toString());
         }
     }
