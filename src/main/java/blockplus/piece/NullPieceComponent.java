@@ -100,7 +100,7 @@ public final class NullPieceComponent implements PieceInterface {
 
     @Override
     public boolean equals(final Object object) {
-        if (object == null) return false;
+        if (object == null) return false; // TODO ? retourner true
         if (object == this) return true;
         return false;
     }
