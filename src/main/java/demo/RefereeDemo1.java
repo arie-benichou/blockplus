@@ -39,7 +39,6 @@ public class RefereeDemo1 {
 
     public static void main(final String[] args) {
         final String[][] data = {
-                { "Ø.........Ø" },
                 { "..........." },
                 { "..........." },
                 { "..........." },
@@ -49,7 +48,8 @@ public class RefereeDemo1 {
                 { "..........." },
                 { "..........." },
                 { "..........." },
-                { "Ø.........." }
+                { "..........." },
+                { "..........." }
         };
         final Board<Color> board = parse(data);
         final MoveHandler moveHandler = new MoveHandler(board);

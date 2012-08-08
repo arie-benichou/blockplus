@@ -60,7 +60,7 @@ public enum Pieces implements Supplier<Piece> {
     }
 
     public static void main(final String[] args) {
-        System.out.println(Pieces.get(7).get());
+        System.out.println(Pieces.get(2).get());
     }
 
 }

@@ -319,7 +319,6 @@ public final class PieceComposite implements PieceInterface {
 
     @Override
     public int hashCode() { // TODO ! caching
-        //System.out.println(this.toString().replace("\n", ""));
         return this.toString().hashCode();
     }
 
@@ -330,7 +329,9 @@ public final class PieceComposite implements PieceInterface {
         if (!(object instanceof PieceInterface)) return false;
         final PieceInterface that = (PieceInterface) object;
         final boolean haveSameHashCode = this.hashCode() == that.hashCode();
-        final boolean isEqual = this.getId() == that.getId() && this.getReferential().equals(that.getReferential()) && this.get().equals(that.get());
+        final boolean isEqual = this.getId() == that.getId()
+                //&& this.getReferential().equals(that.getReferential())
+                && this.get().equals(that.get());
         Preconditions.checkState(haveSameHashCode == isEqual, "this: " + this + "\nthat: " + that);
         return isEqual;
     }
@@ -339,7 +340,7 @@ public final class PieceComposite implements PieceInterface {
     public String toString() {
         return Objects.toStringHelper(this)
                 .addValue("\n  " + this.getId())
-                .addValue("\n  " + this.getReferential())
+                //.addValue("\n  " + this.getReferential())
                 .addValue("\n  " + Joiner.on("\n  ").join(this.get()) + " \n  ")
                 .toString();
     }
