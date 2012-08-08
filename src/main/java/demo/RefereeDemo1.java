@@ -82,10 +82,10 @@ public class RefereeDemo1 {
             System.out.println("number of pieces      : " + player.getAvailablePieces().size());
             System.out.println("number of legal moves : " + legalMoves.size());
             System.out.println("-----------------------------8<-----------------------------");
+
             System.out.println(PieceComponent.FACTORY);
             System.out.println(PieceComposite.FACTORY);
             System.out.println(Piece.FACTORY);
-            System.out.println(Piece.counter);
             System.out.println(stopwatch.toString());
         }
     }

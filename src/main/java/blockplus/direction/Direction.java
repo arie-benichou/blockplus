@@ -163,7 +163,7 @@ public final class Direction implements DirectionInterface {
         // TODO avoir une instance constante de la factory
         public static String asString() {
             return Objects.toStringHelper(Factory.class)
-                    .add("cacheHit", cacheHits())
+                    .add("cacheHits", cacheHits())
                     .add("size", Factory.size())
                     .toString();
         }

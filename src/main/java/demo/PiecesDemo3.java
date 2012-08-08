@@ -28,7 +28,7 @@ import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
 import blockplus.position.PositionInterface;
 
-public class PieceTemplateDemo3 {
+public class PiecesDemo3 {
 
     public static void main(final String[] args) {
         for (final Pieces piece : Pieces.values()) {

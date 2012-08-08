@@ -17,12 +17,13 @@
 
 package demo;
 
+import static blockplus.position.Position.Position;
+
 import java.util.List;
 
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
 import blockplus.color.Color;
-import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Stopwatch;

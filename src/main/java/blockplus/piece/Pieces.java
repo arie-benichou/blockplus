@@ -1,8 +1,6 @@
 
 package blockplus.piece;
 
-import blockplus.position.Position;
-
 import com.google.common.base.Supplier;
 
 public enum Pieces implements Supplier<PieceInterface> {
@@ -29,13 +27,10 @@ public enum Pieces implements Supplier<PieceInterface> {
     private final static String PIECE_NAME_PATTERN = "PIECE";
     private final PieceInterface piece;
 
-    //private final static PieceInterface NULL = NullPieceComponent.getInstance();
-    //private final static PieceInterface UNIT = PieceComponent.from(Position.ORIGIN);
+    //private final static PieceInterface NULL = NullPieceComponent.getInstance(); // TODO à revoir...
+    //private final static PieceInterface UNIT = PieceComponent.from(Position.ORIGIN); // TODO à revoir...
 
     public final static PieceInterface get(final int ordinal) {
-        //System.out.println(PIECE_NAME_PATTERN + ordinal);
-        //System.out.println(Pieces.valueOf(PIECE_NAME_PATTERN + ordinal));
-        //return Pieces.PIECE2;
         return Pieces.valueOf(PIECE_NAME_PATTERN + ordinal).get();
     }
 
@@ -46,14 +41,6 @@ public enum Pieces implements Supplier<PieceInterface> {
     @Override
     public PieceInterface get() {
         return this.piece;
-    }
-
-    public static void main(final String[] args) {
-        System.out.println(Pieces.get(2));
-        System.out.println(Pieces.get(2));
-        System.out.println(Pieces.get(2).translateTo(Position.from(5, 5)));
-        System.out.println(Pieces.get(2).translateTo(Position.from(5, 5)));
-        System.out.println(Piece.FACTORY);
     }
 
 }

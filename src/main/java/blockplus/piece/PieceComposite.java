@@ -73,7 +73,7 @@ public final class PieceComposite implements PieceInterface {
         public String toString() {
             return Objects.toStringHelper(this.getClass().getCanonicalName())
                     .add("size", this.size())
-                    .add("cacheHit", this.cacheHits())
+                    .add("cacheHits", this.cacheHits())
                     .toString();
         }
 

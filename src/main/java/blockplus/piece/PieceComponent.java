@@ -4,8 +4,8 @@ package blockplus.piece;
 import static blockplus.position.Position.Position;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
 import blockplus.direction.Direction;
 import blockplus.direction.DirectionInterface;
@@ -23,52 +23,25 @@ import com.google.common.collect.Ordering;
 
 public final class PieceComponent implements PieceInterface {
 
-    // use on debug purpose 
-    private final static boolean IS_FACTORY_CACHING = true;
-
-    private final static int ID = 1;
-
-    private final static PositionInterface ORIGIN = Position.ORIGIN;
-
-    public final static Set<DirectionInterface> SIDES_DIRECTIONS = new ImmutableSortedSet.Builder<DirectionInterface>(Ordering.natural())
-            .add(Direction.TOP)
-            .add(Direction.LEFT)
-            .add(Direction.RIGHT)
-            .add(Direction.BOTTOM)
-            .build();
-
-    public final static Set<DirectionInterface> CORNERS_DIRECTIONS = new ImmutableSortedSet.Builder<DirectionInterface>(Ordering.natural())
-            .add(Direction.TOP_LEFT)
-            .add(Direction.TOP_RIGHT)
-            .add(Direction.BOTTOM_LEFT)
-            .add(Direction.BOTTOM_RIGHT)
-            .build();
-
-    private final static Matrix ROTATION_MATRIX = new Matrix(2, 2, new int[][] { { 0, -1 }, { 1, 0 } });
-
-    private static PositionInterface extractPosition(final Matrix matrix) {
-        return Position(matrix.get(0, 0), matrix.get(1, 0));
-    }
-
-    private static PositionInterface check(final PositionInterface position) {
-        Preconditions.checkArgument(position != null);
-        return position;
-    }
-
     public final static class Factory {
 
-        private final boolean isCaching;
+        private boolean isCaching = true;
 
-        private long cacheHit = 0;
+        private long cacheHits = 0;
 
-        private final ConcurrentMap<PositionInterface, PieceComponent> cache = Maps.newConcurrentMap();
+        private final Map<PositionInterface, PieceComponent> cache = Maps.newConcurrentMap();
+
+        private static PositionInterface check(final PositionInterface position) {
+            Preconditions.checkArgument(position != null);
+            return position;
+        }
 
         public Factory(final boolean isCaching) {
             this.isCaching = isCaching;
         }
 
         public Factory() {
-            this(IS_FACTORY_CACHING);
+            this(true);
         }
 
         private PieceComponent getFromNew(final PositionInterface position) {
@@ -85,12 +58,12 @@ public final class PieceComponent implements PieceInterface {
                 instance = this.getFromNew(position);
                 if (this.isCaching) this.cache.put(check(position), instance);
             }
-            else ++this.cacheHit;
+            else ++this.cacheHits;
             return instance;
         }
 
         public long cacheHits() {
-            return this.cacheHit;
+            return this.cacheHits;
         }
 
         public int size() {
@@ -101,7 +74,7 @@ public final class PieceComponent implements PieceInterface {
         public String toString() {
             return Objects.toStringHelper(this.getClass().getCanonicalName())
                     .add("size", this.size())
-                    .add("cacheHit", this.cacheHits())
+                    .add("cacheHits", this.cacheHits())
                     .toString();
         }
 
@@ -109,12 +82,12 @@ public final class PieceComponent implements PieceInterface {
 
     public final static PieceComponent.Factory FACTORY = new Factory();
 
-    public static PieceComponent from(final PositionInterface position) {
-        return FACTORY.get(position);
-    }
+    private final static PositionInterface ORIGIN = Position.ORIGIN;
+    private final static PieceComponent UNIT = FACTORY.get(ORIGIN);
 
-    public static PieceComponent from() {
-        return from(ORIGIN);
+    @SuppressWarnings("all")
+    public static PieceComponent PieceComponent() {
+        return UNIT;
     }
 
     @SuppressWarnings("all")
@@ -124,12 +97,25 @@ public final class PieceComponent implements PieceInterface {
 
     @SuppressWarnings("all")
     public static PieceComponent PieceComponent(final int row, final int column) {
-        return FACTORY.get(Position(row, column));
+        return PieceComponent(Position(row, column));
     }
 
-    @SuppressWarnings("all")
-    public static PieceComponent PieceComponent() {
-        return from(ORIGIN);
+    private final static int ID = 1; // TODO ? à revoir
+
+    private final static Matrix ROTATION_MATRIX = new Matrix(2, 2, new int[][] { { 0, -1 }, { 1, 0 } });
+
+    public final static Set<DirectionInterface> SIDES_DIRECTIONS = new ImmutableSortedSet.Builder<DirectionInterface>(Ordering.natural())
+            .add(Direction.TOP).add(Direction.LEFT).add(Direction.RIGHT).add(Direction.BOTTOM).build();
+
+    public final static Set<DirectionInterface> CORNERS_DIRECTIONS = new ImmutableSortedSet.Builder<DirectionInterface>(Ordering.natural())
+            .add(Direction.TOP_LEFT).add(Direction.TOP_RIGHT).add(Direction.BOTTOM_LEFT).add(Direction.BOTTOM_RIGHT).build();
+
+    private static Matrix computeMatrix(final PositionInterface position) {
+        return new Matrix(2, 1, new int[][] { { position.row() }, { position.column() } });
+    }
+
+    private static PositionInterface extractPosition(final Matrix matrix) {
+        return Position(matrix.get(0, 0), matrix.get(1, 0));
     }
 
     private static Set<PositionInterface> computeSides(final PieceComponent pieceInterface) {
@@ -148,20 +134,17 @@ public final class PieceComponent implements PieceInterface {
         return cornersBuilder.build();
     }
 
-    private static Matrix computeMatrix(final PositionInterface position) {
-        return new Matrix(2, 1, new int[][] { { position.row() }, { position.column() } });
-    }
-
-    private final PositionInterface position;
+    private final PositionInterface referential;
+    private final Set<PositionInterface> positions;
 
     private transient volatile Set<PositionInterface> sides;
     private transient volatile Set<PositionInterface> corners;
     private transient volatile Set<PieceInterface> components;
 
-    //private transient volatile PieceComponent rotationAroundOrigin;
-
+    // TODO ? envisager de pouvoir passer un référentiel
     private PieceComponent(final PositionInterface position) {
-        this.position = position;
+        this.referential = position;
+        this.positions = ImmutableSet.of(position);
     }
 
     @Override
@@ -171,7 +154,7 @@ public final class PieceComponent implements PieceInterface {
 
     @Override
     public PositionInterface getReferential() {
-        return this.position;
+        return this.referential;
     }
 
     @Override
@@ -208,15 +191,18 @@ public final class PieceComponent implements PieceInterface {
         Set<PieceInterface> components = this.components;
         if (components == null) {
             synchronized (this) {
-                if ((components = this.components) == null) this.components = components = ImmutableSet.of((PieceInterface) this);
+                if ((components = this.components) == null) {
+                    final ImmutableSet.Builder<PieceInterface> builder = ImmutableSet.builder();
+                    this.components = components = builder.add(this).build();
+                }
             }
         }
         return this.components;
     }
 
     @Override
-    public Set<PositionInterface> getPositions() { // TODO ! à revoir
-        return ImmutableSet.of(this.getReferential());
+    public Set<PositionInterface> getPositions() {
+        return this.positions;
     }
 
     @Override
@@ -226,12 +212,12 @@ public final class PieceComponent implements PieceInterface {
 
     @Override
     public PieceComponent translateTo(final PositionInterface position) {
-        return from(position);
+        return PieceComponent(position);
     }
 
     @Override
     public PieceComponent translateBy(final DirectionInterface direction) {
-        return from(this.position.apply(direction));
+        return PieceComponent(this.getReferential().apply(direction));
     }
 
     @Override
@@ -239,61 +225,18 @@ public final class PieceComponent implements PieceInterface {
         return this;
     }
 
-    /*
-    private PieceComponent rotateUnit() {
-        PieceComponent rotationAroundOrigin = this.rotationAroundOrigin;
-        if (rotationAroundOrigin == null) {
-            synchronized (this) {
-                if ((rotationAroundOrigin = this.rotationAroundOrigin) == null) {
-                    final Matrix newMatrix = ROTATION_MATRIX.multiply(computeMatrix(this.getReferential()));
-                    final PositionInterface newPosition = extractPosition(newMatrix);
-                    this.rotationAroundOrigin = rotationAroundOrigin = this.translateTo(newPosition);
-                }
-            }
-        }
-        return rotationAroundOrigin;
-    }
-    */
-
-    /*
-    @Override
-    public PieceComponent rotateAround(final PositionInterface parentReferential) { // TODO !? à revoir
-        final int k = Math.min(Math.abs(parentReferential.row()), Math.abs(parentReferential.column()));
-        return this.translateBy(Direction.from(-k, -k)).rotateUnit().translateBy(Direction.from(k, k));
-    }
-    */
-
-    /*
     @Override
     public PieceComponent rotateAround(final PositionInterface referential) {
-        final int k = Math.min(Math.abs(referential.row()), Math.abs(referential.column()));
-        final DirectionInterface delta1 = Direction.from(-k, -k);
-        final DirectionInterface delta2 = Direction.from(k, k);
-        final PieceComponent translated = this.translateBy(delta1);
-        final PieceComponent rotated = translated.rotateUnit();
-        return rotated.translateBy(delta2);
-    }
-    */
-
-    @Override
-    // TODO !!
-    public PieceComponent rotateAround(final PositionInterface referential) {
-        /////////////////////////////////////////////////////////////////////
-        final DirectionInterface delta1 = Direction.from(referential, ORIGIN);
-        /////////////////////////////////////////////////////////////////////
-        final PieceComponent translated1 = this.translateBy(delta1);
-        /////////////////////////////////////////////////////////////////////
-        final Matrix matrix = computeMatrix(translated1.getReferential());
-        //matrix.debug();
-        final Matrix newMatrix = ROTATION_MATRIX.multiply(matrix);
-        final PositionInterface newPosition = extractPosition(newMatrix);
-        /////////////////////////////////////////////////////////////////////
-        final PieceComponent rotated = translated1.translateTo(newPosition);
-        /////////////////////////////////////////////////////////////////////
-        final DirectionInterface delta2 = Direction.from(ORIGIN, referential);
-        final PieceComponent translated2 = rotated.translateBy(delta2);
-        /////////////////////////////////////////////////////////////////////
-        return translated2;
+        final DirectionInterface directionFromReferentialToOrigin = Direction.from(referential, ORIGIN);
+        final PieceComponent relativelyTranslatedToOrigin = this.translateBy(directionFromReferentialToOrigin);
+        final PositionInterface relativePositionToOrigin = relativelyTranslatedToOrigin.getReferential();
+        // TODO ? extract unit constants
+        final Matrix matrix = computeMatrix(relativePositionToOrigin);
+        final PositionInterface rotatedRelativePositionToOrigin = extractPosition(ROTATION_MATRIX.multiply(matrix));
+        final PieceComponent rotatedAroundOrigin = relativelyTranslatedToOrigin.translateTo(rotatedRelativePositionToOrigin);
+        // TODO Direction.opposite(direction)
+        final DirectionInterface directionFromOriginToReferential = Direction.from(ORIGIN, referential);
+        return rotatedAroundOrigin.translateBy(directionFromOriginToReferential);
     }
 
     @Override

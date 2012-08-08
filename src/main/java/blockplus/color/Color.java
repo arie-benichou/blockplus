@@ -94,7 +94,6 @@ public enum Color {
 
     white(-Math.abs(blue.value() * yellow.value() * red.value() * green.value()), "o"),
 
-    //WHITE(Blue.value() * Yellow.value() * Red.value() * Green.value(), "O");
     WHITE(white);
 
     private final int value;

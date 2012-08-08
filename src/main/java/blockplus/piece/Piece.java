@@ -96,7 +96,7 @@ public class Piece implements PieceInterface {
         public String toString() {
             return Objects.toStringHelper(this.getClass().getCanonicalName())
                     .add("size", this.size())
-                    .add("cacheHit", this.cacheHits())
+                    .add("cacheHits", this.cacheHits())
                     .toString();
         }
 
@@ -141,10 +141,7 @@ public class Piece implements PieceInterface {
     private final int rotationOrdinal;
     private final Set<PieceInterface> components;
 
-    public static long counter = 0;
-
     public Piece(final PieceData pieceData, final int rotationOrdinal, final Iterable<PieceInterface> components) {
-        ++counter;
         this.pieceData = pieceData;
         this.rotationOrdinal = rotationOrdinal;
         this.components = ImmutableSet.copyOf(components);
