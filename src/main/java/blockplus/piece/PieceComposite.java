@@ -4,6 +4,7 @@ package blockplus.piece;
 import static blockplus.piece.PieceComponent.PieceComponent;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import blockplus.direction.Direction;
@@ -16,79 +17,23 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
 import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 public final class PieceComposite implements PieceInterface {
 
-    // use ONLY on debug purpose
-    private final static boolean IS_FACTORY_CACHING = false;
+    private final static boolean IS_FACTORY_CACHING = true;
 
-    //    private final static int DIMENSION = 2;
-    //    private final static int MINIMAL_NUMBER_OF_COMPONENTS = 2;
-    //    private final static int MAXIMAL_NUMBER_OF_COMPONENTS = 5;
-    //    private final static int MINIMAL_INDEX = 0;
-    //    private final static int MAXIMAL_INDEX = MAXIMAL_NUMBER_OF_COMPONENTS - 1;
-
-    /*
-    private static PieceData check(final PieceData pieceData) {
-        Preconditions.checkArgument(pieceData != null);
-        return pieceData;
-    }
-
-    private static int check(final int numberOfCells) {
-        Preconditions.checkArgument(numberOfCells >= MINIMAL_NUMBER_OF_COMPONENTS);
-        Preconditions.checkArgument(numberOfCells <= MAXIMAL_NUMBER_OF_COMPONENTS);
-        return numberOfCells;
-    }
-
-    private static Matrix check(final Matrix matrix) {
-        Preconditions.checkArgument(matrix != null);
-        Preconditions.checkArgument(matrix.getNumberOfRows() == DIMENSION);
-        return matrix;
-    }
-    */
-
-    /*
-    private static PositionInterface extractPosition(final Matrix matrix, final int n) {
-        return Position(matrix.get(0, n), matrix.get(1, n));
-    }
-
-    private static PositionInterface check(final PositionInterface position) {
-        Preconditions.checkArgument(position.row() >= MINIMAL_INDEX);
-        Preconditions.checkArgument(position.row() <= MAXIMAL_INDEX);
-        Preconditions.checkArgument(position.column() >= MINIMAL_INDEX);
-        Preconditions.checkArgument(position.column() <= MAXIMAL_INDEX);
-        return position;
-    }
-
-    private static Set<PieceInterface> check(final Matrix matrix, final int numberOfCells) {
-        final Set<PieceInterface> distinctComponents = Sets.newLinkedHashSet();
-        for (int n = 0; n < numberOfCells; ++n) {
-            final PieceComponent component = PieceComponent.from(check(extractPosition(matrix, n)));
-            Preconditions.checkArgument(!distinctComponents.contains(component));
-            distinctComponents.add(component);
-        }
-        return distinctComponents;
-    }
-    */
-
-    /*----------------------------------------8<----------------------------------------*
-
-    public final static class Factory { // FIXME
+    public final static class Factory {
 
         private final boolean isCaching;
 
         private long cacheHit = 0;
 
-        @SuppressWarnings("unchecked")
-        private final Map<Object, Object>[] cache = new Map[22]; // TODO extract constant
+        private final Map<Set<PositionInterface>, PieceComposite> cache = Maps.newConcurrentMap();
 
         public Factory(final boolean isCaching) {
-            //System.out.println("Loading " + this.getClass().getCanonicalName() + "...");
-            for (int i = 0; i < 22; ++i) {// TODO extract constant
-                this.cache[i] = Maps.newConcurrentMap();
-            }
             this.isCaching = isCaching;
         }
 
@@ -96,34 +41,23 @@ public final class PieceComposite implements PieceInterface {
             this(IS_FACTORY_CACHING);
         }
 
-        private PieceInterface getFromNew(final int id, final Set<PieceInterface> components) {
-            //return new PieceComposite(id, components);
-            return null;
+        private PieceComposite getFromNew(final int id, final PositionInterface referential, final Set<PositionInterface> positions) {
+            return new PieceComposite(id, referential, positions);
         }
 
-        private PieceInterface getFromCache(final int id, final Set<PieceInterface> components) {
-            return (PieceComposite) this.cache[id].get(components);
+        private PieceComposite getFromCache(final int id, final PositionInterface referential, final Set<PositionInterface> positions) {
+            return this.cache.get(positions);
         }
 
-        public PieceInterface get(final int id, final Set<PieceInterface> components) {
-            PieceInterface instance = this.getFromCache(id, components);
+        public PieceComposite get(final int id, final PositionInterface referential, final Set<PositionInterface> positions) {
+            PieceComposite instance = this.getFromCache(id, referential, positions);
             if (instance == null) {
-                instance = this.getFromNew(id, components);
-                if (this.isCaching) this.cache[id].put(components, instance);
-            }
-            else {
-                if (!instance.getReferential().equals(components.iterator().next().getReferential())) {
-                    System.out.println();
-                    System.out.println("###########################################");
-                    System.out.println(instance);
-                    System.out.println("-------------------------------------------");
-                    System.out.println(components);
-                    System.out.println("###########################################");
-                    System.out.println();
-                    instance = this.getFromNew(id, components);
+                instance = this.getFromNew(id, referential, positions);
+                if (this.isCaching) {
+                    this.cache.put(positions, instance);
                 }
-                ++this.cacheHit;
             }
+            else ++this.cacheHit;
             return instance;
         }
 
@@ -132,10 +66,7 @@ public final class PieceComposite implements PieceInterface {
         }
 
         public int size() {
-            int size = 0;
-            for (final Map<?, ?> map : this.cache)
-                size += map.size();
-            return size;
+            return this.cache.size();
         }
 
         @Override
@@ -148,33 +79,19 @@ public final class PieceComposite implements PieceInterface {
 
     }
 
-    *----------------------------------------8<----------------------------------------*/
-
-    //public final static Factory FACTORY = new Factory();
-
     /*----------------------------------------8<----------------------------------------*/
 
-    /*
-    public static PieceInterface from(final PieceData pieceData) {
-        final int id = check(pieceData).ordinal();
-        final int numberOfCells = check(pieceData.size());
-        final Matrix matrix = check(pieceData.positions());
-        final PositionInterface referential = extractPosition(matrix, 0); // TODO !!!
-        final Set<PieceInterface> distinctComponents = check(matrix, numberOfCells);
-        //return FACTORY.get(id, distinctComponents); // TODO !!!
-        return new PieceComposite(id, referential, distinctComponents);
-    }
-    */
+    public final static Factory FACTORY = new Factory();
 
     /*----------------------------------------8<----------------------------------------*/
 
     @SuppressWarnings("all")
     public static PieceInterface PieceComposite(final int id, final PositionInterface referential, final Set<PositionInterface> positions) {
-        return new PieceComposite(id, referential, positions);
+        return FACTORY.get(id, referential, positions);
     }
 
     public static PieceInterface from(final int id, final PositionInterface referential, final Set<PositionInterface> positions) {
-        return new PieceComposite(id, referential, positions);
+        return FACTORY.get(id, referential, positions);
     }
 
     /*----------------------------------------8<----------------------------------------*/
@@ -229,7 +146,7 @@ public final class PieceComposite implements PieceInterface {
     private transient volatile Set<PositionInterface> potentialPositions;
     private transient volatile PieceInterface rotated;
 
-    public PieceComposite(final int id, final PositionInterface referential, final Set<PositionInterface> positions) {
+    private PieceComposite(final int id, final PositionInterface referential, final Set<PositionInterface> positions) {
         this.id = id;
         this.referential = referential;
         this.positions = ImmutableSortedSet.copyOf(positions);

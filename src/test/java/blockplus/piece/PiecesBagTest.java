@@ -27,40 +27,40 @@ public class PiecesBagTest {
 
         {
             final PiecesBag bagOfPiece = PiecesBag.from();
-            Piece lastPiece = null;
-            for (final Piece piece : bagOfPiece)
+            PieceInterface lastPiece = null;
+            for (final PieceInterface piece : bagOfPiece)
                 lastPiece = piece;
             assertTrue(lastPiece == null);
         }
 
         {
             final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1));
-            final List<Piece> expectedPiece = new ArrayList<Piece>();
+            final List<PieceInterface> expectedPiece = new ArrayList<PieceInterface>();
             expectedPiece.add(Pieces.get(1));
-            final List<Piece> actualPiece = Lists.newArrayList(bagOfPiece);
+            final List<PieceInterface> actualPiece = Lists.newArrayList(bagOfPiece);
             assertEquals(expectedPiece, actualPiece);
         }
 
         {
             final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1), Pieces.get(1));
-            final List<Piece> expectedPiece = new ArrayList<Piece>();
+            final List<PieceInterface> expectedPiece = new ArrayList<PieceInterface>();
             expectedPiece.add(Pieces.get(1));
             expectedPiece.add(Pieces.get(1));
-            final List<Piece> actualPiece = Lists.newArrayList(bagOfPiece);
+            final List<PieceInterface> actualPiece = Lists.newArrayList(bagOfPiece);
             assertEquals(expectedPiece, actualPiece);
         }
 
         {
             final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1), Pieces.get(1), Pieces.get(2));
-            final Set<Piece> expectedPiece = Sets.newHashSet(Pieces.get(1), Pieces.get(1), Pieces.get(2));
-            final Set<Piece> actualPiece = Sets.newHashSet(bagOfPiece);
+            final Set<PieceInterface> expectedPiece = Sets.newHashSet(Pieces.get(1), Pieces.get(1), Pieces.get(2));
+            final Set<PieceInterface> actualPiece = Sets.newHashSet(bagOfPiece);
             assertEquals(expectedPiece, actualPiece);
         }
 
         {
             final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1), Pieces.get(1), Pieces.get(2), Pieces.get(3));
-            final Set<Piece> expectedPiece = Sets.newHashSet(Pieces.get(1), Pieces.get(1), Pieces.get(2), Pieces.get(3));
-            final Set<Piece> actualPiece = Sets.newHashSet(bagOfPiece);
+            final Set<PieceInterface> expectedPiece = Sets.newHashSet(Pieces.get(1), Pieces.get(1), Pieces.get(2), Pieces.get(3));
+            final Set<PieceInterface> actualPiece = Sets.newHashSet(bagOfPiece);
             assertEquals(expectedPiece, actualPiece);
         }
 

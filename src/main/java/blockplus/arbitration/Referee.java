@@ -71,7 +71,7 @@ public class Referee {
     private List<Move> getLegalMoves(
             final Board<Color> board,
             final Color color,
-            final Piece pieceTemplate,
+            final PieceInterface pieceTemplate,
             final PositionInterface potentialPosition
             ) {
         final List<Move> legalMoves = Lists.newArrayList();
@@ -98,8 +98,8 @@ public class Referee {
             final Board<Color> board,
             final Color color,
             final List<PositionInterface> positionsHavingPotential,
-            final Piece pieceTemplate) {
-        final int radius = pieceTemplate.getPieceData().radius();
+            final PieceInterface pieceTemplate) {
+        final int radius = ((Piece) pieceTemplate).getPieceData().radius();
         final Set<PositionInterface> potentialPositions = Sets.newHashSet();
         for (final PositionInterface positionHavingPotential : positionsHavingPotential) {
             for (final PositionInterface neighbour : board.getAllNeighboursPositions(positionHavingPotential, radius)) {
@@ -114,7 +114,7 @@ public class Referee {
         final Color color = player.getColor();
         final List<PositionInterface> positionsHavingPotential = this.getPositionsHavingPotential(board, color);
         final Set<Move> legalMoves = Sets.newHashSet();
-        for (final Piece pieceTemplate : player.getAvailablePieces()) {
+        for (final PieceInterface pieceTemplate : player.getAvailablePieces()) {
             final Set<PositionInterface> distinctPotentialPositions = this.getDistinctPotentialPositions(board, color, positionsHavingPotential, pieceTemplate);
             for (final PositionInterface uniquePotentialPosition : distinctPotentialPositions) {
                 legalMoves.addAll(this.getLegalMoves(board, color, pieceTemplate, uniquePotentialPosition));

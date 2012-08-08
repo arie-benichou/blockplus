@@ -1,25 +1,11 @@
-/*
- * Copyright 2012 Arie Benichou
- * 
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- */
 
 package blockplus.piece;
 
+import blockplus.position.Position;
+
 import com.google.common.base.Supplier;
 
-public enum Pieces implements Supplier<Piece> {
+public enum Pieces implements Supplier<PieceInterface> {
 
     // null object
     PIECE0,
@@ -41,26 +27,33 @@ public enum Pieces implements Supplier<Piece> {
     PIECE17, PIECE18, PIECE19, PIECE20, PIECE21;
 
     private final static String PIECE_NAME_PATTERN = "PIECE";
-    private Piece piece;
+    private final PieceInterface piece;
 
     //private final static PieceInterface NULL = NullPieceComponent.getInstance();
     //private final static PieceInterface UNIT = PieceComponent.from(Position.ORIGIN);
 
-    public final static Piece get(final int ordinal) {
+    public final static PieceInterface get(final int ordinal) {
+        //System.out.println(PIECE_NAME_PATTERN + ordinal);
+        //System.out.println(Pieces.valueOf(PIECE_NAME_PATTERN + ordinal));
+        //return Pieces.PIECE2;
         return Pieces.valueOf(PIECE_NAME_PATTERN + ordinal).get();
     }
 
     private Pieces() {
-        this.piece = new Piece(PieceData.get(this.ordinal()));
+        this.piece = Piece.Piece(PieceData.get(this.ordinal()));
     }
 
     @Override
-    public Piece get() {
+    public PieceInterface get() {
         return this.piece;
     }
 
     public static void main(final String[] args) {
-        System.out.println(Pieces.get(2).get());
+        System.out.println(Pieces.get(2));
+        System.out.println(Pieces.get(2));
+        System.out.println(Pieces.get(2).translateTo(Position.from(5, 5)));
+        System.out.println(Pieces.get(2).translateTo(Position.from(5, 5)));
+        System.out.println(Piece.FACTORY);
     }
 
 }

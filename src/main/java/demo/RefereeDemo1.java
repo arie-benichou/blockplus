@@ -28,6 +28,9 @@ import blockplus.color.Color;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
 import blockplus.piece.Piece;
+import blockplus.piece.PieceComponent;
+import blockplus.piece.PieceComposite;
+import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
@@ -39,6 +42,7 @@ public class RefereeDemo1 {
 
     public static void main(final String[] args) {
         final String[][] data = {
+                { "Ø.........Ø" },
                 { "..........." },
                 { "..........." },
                 { "..........." },
@@ -48,14 +52,13 @@ public class RefereeDemo1 {
                 { "..........." },
                 { "..........." },
                 { "..........." },
-                { "..........." },
-                { "..........." }
+                { "Ø.........o" }
         };
         final Board<Color> board = parse(data);
         final MoveHandler moveHandler = new MoveHandler(board);
 
         // TODO à revoir
-        final List<Piece> list = Lists.newArrayList();
+        final List<PieceInterface> list = Lists.newArrayList();
         for (final Pieces piece : Pieces.values())
             list.add(piece.get());
 
@@ -67,9 +70,9 @@ public class RefereeDemo1 {
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
             {
-                //for (int i = 0; i < 8000; ++i)
-                // 10 s
-                legalMoves = boardReferee.getOrderedLegalMoves(board, player);
+                for (int i = 0; i < 8000; ++i)
+                    // 10 s
+                    legalMoves = boardReferee.getOrderedLegalMoves(board, player);
             }
             stopwatch.stop();
             System.out.println("-----------------------------8<-----------------------------");
@@ -79,8 +82,10 @@ public class RefereeDemo1 {
             System.out.println("number of pieces      : " + player.getAvailablePieces().size());
             System.out.println("number of legal moves : " + legalMoves.size());
             System.out.println("-----------------------------8<-----------------------------");
-            //System.out.println(PieceComponent.FACTORY);
-            //System.out.println(PieceComposite.FACTORY);
+            System.out.println(PieceComponent.FACTORY);
+            System.out.println(PieceComposite.FACTORY);
+            System.out.println(Piece.FACTORY);
+            System.out.println(Piece.counter);
             System.out.println(stopwatch.toString());
         }
     }

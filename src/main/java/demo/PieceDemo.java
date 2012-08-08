@@ -17,6 +17,7 @@
 
 package demo;
 
+import static blockplus.piece.Piece.Piece;
 import static blockplus.position.Position.Position;
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
@@ -24,7 +25,6 @@ import blockplus.board.BoardRenderer;
 import blockplus.color.Color;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
-import blockplus.piece.Piece;
 import blockplus.piece.PieceData;
 import blockplus.piece.PieceInterface;
 import blockplus.position.PositionInterface;
@@ -38,7 +38,7 @@ public final class PieceDemo {
 
         final MoveHandler moveHandler = new MoveHandler(board);
         //for (final PieceTemplate pieceTemplate : PieceTemplate.values()) {
-        final Piece piece = new Piece(PieceData.get(7));
+        final PieceInterface piece = Piece(PieceData.get(7));
         System.out.println("======================8<======================\n");
         //final PositionInterface referential = Position(5, 5);
         final PositionInterface position = Position(5, 8);

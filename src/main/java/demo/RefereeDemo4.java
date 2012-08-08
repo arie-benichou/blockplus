@@ -27,7 +27,7 @@ import blockplus.board.Board;
 import blockplus.color.Color;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
-import blockplus.piece.Piece;
+import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
@@ -57,7 +57,7 @@ public class RefereeDemo4 {
         final MoveHandler moveHandler = new MoveHandler(board);
 
         // TODO à revoir
-        final List<Piece> list = Lists.newArrayList();
+        final List<PieceInterface> list = Lists.newArrayList();
         for (final Pieces piece : Pieces.values())
             list.add(piece.get());
 

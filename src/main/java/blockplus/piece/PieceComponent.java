@@ -24,7 +24,7 @@ import com.google.common.collect.Ordering;
 public final class PieceComponent implements PieceInterface {
 
     // use on debug purpose 
-    private final static boolean IS_FACTORY_CACHING = false;
+    private final static boolean IS_FACTORY_CACHING = true;
 
     private final static int ID = 1;
 
@@ -157,7 +157,8 @@ public final class PieceComponent implements PieceInterface {
     private transient volatile Set<PositionInterface> sides;
     private transient volatile Set<PositionInterface> corners;
     private transient volatile Set<PieceInterface> components;
-    private transient volatile PieceComponent rotationAroundOrigin;
+
+    //private transient volatile PieceComponent rotationAroundOrigin;
 
     private PieceComponent(final PositionInterface position) {
         this.position = position;

@@ -65,8 +65,8 @@ public class RefereeDemo5 {
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
             {
-                //for (int i = 0; i < 1200; ++i)
-                // 10 s
+                //for (int i = 0; i < 95000; ++i)
+                // 10 s 
                 legalMoves = boardReferee.getOrderedLegalMoves(board, player);
             }
             stopwatch.stop();
