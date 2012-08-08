@@ -27,6 +27,9 @@ import blockplus.board.Board;
 import blockplus.color.Color;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
+import blockplus.piece.Piece;
+import blockplus.piece.PieceComponent;
+import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
@@ -69,11 +72,9 @@ public class RefereeDemo4 {
             List<Move> legalMoves = null;
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
-            {
-                //for (int i = 0; i < 1200; ++i)
-                // 10 s
-                legalMoves = boardReferee.getOrderedLegalMoves(board, player);
-            }
+            //for (int i = 0; i < 1200; ++i)
+            // 10 s
+            legalMoves = boardReferee.getOrderedLegalMoves(board, player);
             stopwatch.stop();
             System.out.println("-----------------------------8<-----------------------------");
             for (final Move legalMove : legalMoves)
@@ -82,8 +83,10 @@ public class RefereeDemo4 {
             System.out.println("number of pieces      : " + player.getAvailablePieces().size());
             System.out.println("number of legal moves : " + legalMoves.size());
             System.out.println("-----------------------------8<-----------------------------");
-            //System.out.println(PieceComponent.FACTORY);
-            //System.out.println(PieceComposite.FACTORY);
+            System.out.println(PieceComponent.FACTORY);
+            System.out.println(PieceComposite.FACTORY);
+            System.out.println(Piece.FACTORY);
+            System.out.println("-----------------------------8<-----------------------------");
             System.out.println(stopwatch.toString());
         }
     }

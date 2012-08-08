@@ -24,7 +24,7 @@ import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-// TODO définir la matrice null
+// TODO ? définir la matrice null
 public final class Matrix {
 
     private final int numberOfRows;
@@ -55,7 +55,7 @@ public final class Matrix {
 
     private transient volatile Integer hashCode = null;
 
-    // TODO plus de check sur data ou bien utiliser un builder
+    // TODO ! plus de check sur data ou bien utiliser un builder
     public Matrix(final int numberOfRows, final int numberOfColumns, final int[][] data) {
         Preconditions.checkArgument(numberOfRows >= 0);
         Preconditions.checkArgument(numberOfColumns >= 0);

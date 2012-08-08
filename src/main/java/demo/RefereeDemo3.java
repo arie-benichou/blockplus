@@ -19,6 +19,7 @@ package demo;
 
 import static blockplus.board.BoardBuilder.parse;
 import static blockplus.board.BoardRenderer.render;
+import static blockplus.piece.Piece.Piece;
 
 import java.util.List;
 
@@ -27,7 +28,9 @@ import blockplus.board.Board;
 import blockplus.color.Color;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
-import blockplus.piece.Pieces;
+import blockplus.piece.Piece;
+import blockplus.piece.PieceComponent;
+import blockplus.piece.PieceComposite;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 
@@ -53,19 +56,16 @@ public class RefereeDemo3 {
         };
         final Board<Color> board = parse(data);
         final MoveHandler moveHandler = new MoveHandler(board);
-        final Player player = new Player(Color.BLUE, PiecesBag.from(Pieces.get(15)));
+        final Player player = new Player(Color.BLUE, PiecesBag.from(Piece(15)));
         final Referee boardReferee = new Referee();
         render(board);
         if (!player.getAvailablePieces().isEmpty()) {
             List<Move> legalMoves = null;
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
-            {
-                //for (int i = 0; i < 15250; ++i)
-                // 10 s
-                legalMoves = boardReferee.getOrderedLegalMoves(board, player);
-
-            }
+            //for (int i = 0; i < 15250; ++i)
+            // 10 s
+            legalMoves = boardReferee.getOrderedLegalMoves(board, player);
             stopwatch.stop();
             System.out.println("-----------------------------8<-----------------------------");
             for (final Move legalMove : legalMoves)
@@ -74,9 +74,12 @@ public class RefereeDemo3 {
             System.out.println("number of pieces      : " + player.getAvailablePieces().size());
             System.out.println("number of legal moves : " + legalMoves.size());
             System.out.println("-----------------------------8<-----------------------------");
-            //System.out.println(PieceComponent.FACTORY);
-            //System.out.println(PieceComposite.FACTORY);
+            System.out.println(PieceComponent.FACTORY);
+            System.out.println(PieceComposite.FACTORY);
+            System.out.println(Piece.FACTORY);
+            System.out.println("-----------------------------8<-----------------------------");
             System.out.println(stopwatch.toString());
         }
     }
+
 }

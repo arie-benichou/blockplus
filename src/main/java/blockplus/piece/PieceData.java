@@ -34,7 +34,6 @@ import com.google.common.collect.ImmutableSortedSet.Builder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
-// TODO ?! à renommer en PieceData
 public enum PieceData {
 
     /*      
@@ -329,10 +328,6 @@ public enum PieceData {
         return PieceData.valueOf(ENTRY_NAME_PATTERN + ordinal);
     }
 
-    public final static PieceData get(final int ordinal) {
-        return PieceData.valueOf(ENTRY_NAME_PATTERN + ordinal);
-    }
-
     private final PositionInterface referential;
     private final Set<PositionInterface> positions;
     private final Matrix matrix;
@@ -405,13 +400,6 @@ public enum PieceData {
                 .add("\n referential", this.referential())
                 .addValue("\n")
                 .toString();
-    }
-
-    public static void main(final String[] args) {
-        for (final PieceData data : PieceData.values()) {
-            System.out.println(data);
-            System.out.println();
-        }
     }
 
 }

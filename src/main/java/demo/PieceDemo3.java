@@ -17,7 +17,6 @@
 
 package demo;
 
-import static blockplus.piece.Piece.Piece;
 import static blockplus.position.Position.Position;
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
@@ -25,35 +24,29 @@ import blockplus.board.BoardRenderer;
 import blockplus.color.Color;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
-import blockplus.piece.PieceData;
+import blockplus.piece.PieceComponent;
+import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
-import blockplus.position.PositionInterface;
+import blockplus.piece.Pieces;
 
 import com.google.common.base.Stopwatch;
 
 // TODO à revoir
-public final class PieceDemo {
+public final class PieceDemo3 {
 
-    private static void TestAllPieces(final Board<Color> board) {
-
+    private static void RotateAllPieces(final Board<Color> board) {
         final MoveHandler moveHandler = new MoveHandler(board);
-        //for (final PieceTemplate pieceTemplate : PieceTemplate.values()) {
-        final PieceInterface piece = Piece(PieceData.get(7));
-        System.out.println("======================8<======================\n");
-        //final PositionInterface referential = Position(5, 5);
-        final PositionInterface position = Position(5, 8);
-        PieceInterface movedPiece = piece.translateTo(position);
-        for (int i = 0; i < 4; ++i) {
-            final Move move = new Move(Color.BLUE, movedPiece);
-            final Board<Color> ouput = moveHandler.handle(move);
-            BoardRenderer.render(ouput);
-            System.out.println();
-            movedPiece = movedPiece.rotate();
-            //piece = piece.rotateAround(referential);
-            System.out.println();
+        for (final Pieces piece : Pieces.values()) {
+            System.out.println("======================8<======================\n");
+            PieceInterface movedPiece = piece.get().translateTo(Position(5, 5)); // TODO à revoir
+            for (int i = 0; i < 4; ++i) {
+                final Move move = new Move(Color.BLUE, movedPiece);
+                final Board<Color> ouput = moveHandler.handle(move);
+                BoardRenderer.render(ouput);
+                movedPiece = movedPiece.rotate();
+                System.out.println();
+            }
         }
-        //break;
-        //}
     }
 
     public static void main(final String[] args) {
@@ -74,12 +67,12 @@ public final class PieceDemo {
         final Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
         for (int i = 0; i < 1; ++i) {
-            TestAllPieces(board);
+            RotateAllPieces(board);
         }
         stopwatch.stop();
+        System.out.println(PieceComponent.FACTORY);
+        System.out.println(PieceComposite.FACTORY);
         System.out.println(stopwatch.toString());
-        //System.out.println(PieceComponent.FACTORY);
-        //System.out.println(PieceComposite.FACTORY);
     }
 
 }

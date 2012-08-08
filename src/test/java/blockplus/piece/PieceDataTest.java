@@ -15,7 +15,7 @@ import com.google.common.collect.Sets;
 public class PieceDataTest {
 
     @Test
-    public void testGet() {
+    public void testPieceData() {
         assertSame(PieceData.ENTRY0, PieceData(0));
         assertSame(PieceData.ENTRY1, PieceData(1));
         assertSame(PieceData.ENTRY2, PieceData(2));
@@ -38,6 +38,58 @@ public class PieceDataTest {
         assertSame(PieceData.ENTRY19, PieceData(19));
         assertSame(PieceData.ENTRY20, PieceData(20));
         assertSame(PieceData.ENTRY21, PieceData(21));
+    }
+
+    @Test
+    public void testId() {
+        assertSame(PieceData.ENTRY0.ordinal(), PieceData(0).id());
+        assertSame(PieceData.ENTRY1.ordinal(), PieceData(1).id());
+        assertSame(PieceData.ENTRY2.ordinal(), PieceData(2).id());
+        assertSame(PieceData.ENTRY3.ordinal(), PieceData(3).id());
+        assertSame(PieceData.ENTRY4.ordinal(), PieceData(4).id());
+        assertSame(PieceData.ENTRY5.ordinal(), PieceData(5).id());
+        assertSame(PieceData.ENTRY6.ordinal(), PieceData(6).id());
+        assertSame(PieceData.ENTRY7.ordinal(), PieceData(7).id());
+        assertSame(PieceData.ENTRY8.ordinal(), PieceData(8).id());
+        assertSame(PieceData.ENTRY9.ordinal(), PieceData(9).id());
+        assertSame(PieceData.ENTRY10.ordinal(), PieceData(10).id());
+        assertSame(PieceData.ENTRY11.ordinal(), PieceData(11).id());
+        assertSame(PieceData.ENTRY12.ordinal(), PieceData(12).id());
+        assertSame(PieceData.ENTRY13.ordinal(), PieceData(13).id());
+        assertSame(PieceData.ENTRY14.ordinal(), PieceData(14).id());
+        assertSame(PieceData.ENTRY15.ordinal(), PieceData(15).id());
+        assertSame(PieceData.ENTRY16.ordinal(), PieceData(16).id());
+        assertSame(PieceData.ENTRY17.ordinal(), PieceData(17).id());
+        assertSame(PieceData.ENTRY18.ordinal(), PieceData(18).id());
+        assertSame(PieceData.ENTRY19.ordinal(), PieceData(19).id());
+        assertSame(PieceData.ENTRY20.ordinal(), PieceData(20).id());
+        assertSame(PieceData.ENTRY21.ordinal(), PieceData(21).id());
+    }
+
+    @Test
+    public void testSize() {
+        assertEquals(0, PieceData(0).size());
+        assertEquals(1, PieceData(1).size());
+        assertEquals(2, PieceData(2).size());
+        assertEquals(3, PieceData(3).size());
+        assertEquals(3, PieceData(4).size());
+        assertEquals(4, PieceData(5).size());
+        assertEquals(4, PieceData(6).size());
+        assertEquals(4, PieceData(7).size());
+        assertEquals(4, PieceData(8).size());
+        assertEquals(4, PieceData(9).size());
+        assertEquals(5, PieceData(10).size());
+        assertEquals(5, PieceData(11).size());
+        assertEquals(5, PieceData(12).size());
+        assertEquals(5, PieceData(13).size());
+        assertEquals(5, PieceData(14).size());
+        assertEquals(5, PieceData(15).size());
+        assertEquals(5, PieceData(16).size());
+        assertEquals(5, PieceData(17).size());
+        assertEquals(5, PieceData(18).size());
+        assertEquals(5, PieceData(19).size());
+        assertEquals(5, PieceData(20).size());
+        assertEquals(5, PieceData(21).size());
     }
 
     @Test
@@ -153,6 +205,41 @@ public class PieceDataTest {
         assertEquals(
                 Sets.newHashSet(Position(0, 1), Position(1, 0), Position(1, 1), Position(1, 2), Position(2, 1)),
                 PieceData(21).positions());
+    }
+
+    @Test
+    public void testRadius() {
+
+        assertEquals(-1, PieceData(0).radius());
+
+        assertEquals(0, PieceData(1).radius());
+
+        assertEquals(1, PieceData(2).radius());
+        assertEquals(1, PieceData(3).radius());
+        assertEquals(1, PieceData(4).radius());
+
+        assertEquals(2, PieceData(5).radius());
+
+        assertEquals(1, PieceData(6).radius());
+        assertEquals(1, PieceData(7).radius());
+        assertEquals(1, PieceData(8).radius());
+        assertEquals(1, PieceData(9).radius());
+
+        assertEquals(2, PieceData(10).radius());
+        assertEquals(2, PieceData(11).radius());
+        assertEquals(2, PieceData(12).radius());
+
+        assertEquals(1, PieceData(13).radius());
+        assertEquals(1, PieceData(14).radius());
+
+        assertEquals(2, PieceData(15).radius());
+
+        assertEquals(1, PieceData(16).radius());
+        assertEquals(1, PieceData(17).radius());
+        assertEquals(1, PieceData(18).radius());
+        assertEquals(1, PieceData(19).radius());
+        assertEquals(1, PieceData(20).radius());
+        assertEquals(1, PieceData(21).radius());
     }
 
 }

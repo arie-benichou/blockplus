@@ -1,13 +1,15 @@
 
 package blockplus.piece;
 
+import static blockplus.piece.PieceComponent.PieceComponent;
+import static blockplus.piece.PieceData.PieceData;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import blockplus.direction.Direction;
 import blockplus.direction.DirectionInterface;
-import blockplus.position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Objects;
@@ -126,6 +128,11 @@ public class Piece implements PieceInterface {
     }
 
     @SuppressWarnings("all")
+    public static PieceInterface Piece(final int id) {
+        return Piece(PieceData(id));
+    }
+
+    @SuppressWarnings("all")
     public static PieceInterface Piece(final Piece piece) {
         final Set<PieceInterface> rotations = piece.get();
         final int rotationOrdinal = (piece.getRotationOrdinal() + 1) % rotations.size();
@@ -213,65 +220,13 @@ public class Piece implements PieceInterface {
     }
 
     @Override
-    public PieceInterface rotateAround(final PositionInterface referential) {
-        return null; // TODO
+    public PieceInterface rotateAround(final PositionInterface referential) { // TODO à revoir
+        return this.rotate().translateTo(PieceComponent(this.getReferential()).rotateAround(referential).getReferential());
     }
 
     @Override
     public String toString() {
         return asString(this.getId(), this.getReferential(), this.getRotationOrdinal());
-    }
-
-    public static void main(final String[] args) {
-
-        final PieceInterface rotated0 = Piece(PieceData.get(5));
-
-        System.out.println("--------------------------------------");
-        System.out.println();
-        System.out.println(rotated0);
-        for (final PieceInterface pieceInterface : rotated0)
-            System.out.println(pieceInterface);
-        System.out.println();
-        System.out.println("--------------------------------------");
-        System.out.println();
-        final PieceInterface rotated1 = rotated0.rotate();
-        System.out.println(rotated1);
-        for (final PieceInterface pieceInterface : rotated1)
-            System.out.println(pieceInterface);
-        System.out.println();
-        System.out.println("--------------------------------------");
-        System.out.println();
-        final PieceInterface rotated2 = rotated1.rotate();
-        System.out.println(rotated2);
-        for (final PieceInterface pieceInterface : rotated2)
-            System.out.println(pieceInterface);
-        System.out.println();
-        System.out.println("--------------------------------------");
-        System.out.println();
-        final PieceInterface rotated3 = rotated2.rotate();
-        System.out.println(rotated3);
-        for (final PieceInterface pieceInterface : rotated3)
-            System.out.println(pieceInterface);
-        System.out.println();
-        System.out.println("--------------------------------------");
-        System.out.println();
-        System.out.println();
-        final PieceInterface rotated4 = rotated3.rotate();
-        System.out.println(rotated4);
-        for (final PieceInterface pieceInterface : rotated4)
-            System.out.println(pieceInterface);
-        System.out.println();
-        System.out.println("--------------------------------------");
-        System.out.println();
-
-        final PieceInterface translateTo = rotated4.translateTo(Position.from(5, 5));
-        System.out.println(translateTo.get());
-        System.out.println(translateTo);
-
-        rotated3.rotate().rotate().rotate().rotate().rotate();
-        rotated4.translateTo(Position.from(5, 5));
-        System.out.println(FACTORY);
-
     }
 
 }

@@ -17,61 +17,37 @@
 
 package demo;
 
+import static blockplus.board.BoardRenderer.render;
 import static blockplus.position.Position.Position;
-
-import java.util.Set;
-
 import blockplus.board.Board;
-import blockplus.board.BoardRenderer;
 import blockplus.color.Color;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
 import blockplus.piece.Piece;
-import blockplus.piece.PieceComponent;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
 import blockplus.position.PositionInterface;
 
-import com.google.common.collect.Sets;
-
 public class PiecesDemo2 {
 
     public static void main(final String[] args) {
-
         for (final Pieces piece : Pieces.values()) {
             final PieceInterface pieceInterface = piece.get();
-            final Piece piece2 = (Piece) pieceInterface; // TODO à revoir
-            final int radius = piece2.getPieceData().radius();
+            final int radius = ((Piece) piece.get()).getPieceData().radius(); // TODO à revoir
             final int n = 1 + 2 * (radius + 1);
             final Board<Color> inputBoard = Board.from(n, n, Color.TRANSPARENT, Color.OPAQUE);
+            final MoveHandler moveHandler = new MoveHandler(inputBoard);
             final PositionInterface position = Position(n / 2, n / 2);
             final PieceInterface translatedPiece = pieceInterface.translateTo(position);
-            final MoveHandler moveHandler = new MoveHandler(inputBoard);
-            final Set<PieceInterface> rotations = Sets.newHashSet();
-            PieceInterface rotatedPiece = translatedPiece;
-            {
-                rotations.add(rotatedPiece);
-                System.out.println();
-                System.out.println("=================8<=================");
-                final Move move = new Move(Color.WHITE, rotatedPiece);
-                final Board<Color> ouput = moveHandler.handle(move);
-                BoardRenderer.render(ouput);
-            }
-            for (int i = 1; i < 4; ++i)
-            {
-                rotatedPiece = rotatedPiece.rotate();
-                rotations.add(rotatedPiece);
-                System.out.println();
-                final Move move = new Move(Color.WHITE, rotatedPiece);
-                final Board<Color> ouput = moveHandler.handle(move);
-                BoardRenderer.render(ouput);
-            }
+            System.out.println();
             System.out.println("=================8<=================");
-            System.out.println("Nombre de rotations distinctes: " + rotations.size());
-            System.out.println("=================8<=================");
-
+            final Move move = new Move(Color.WHITE, translatedPiece);
+            final Board<Color> ouput = moveHandler.handle(move);
+            render(ouput);
+            System.out.println("radius : " + radius);
         }
-        System.out.println(PieceComponent.FACTORY);
-        //System.out.println(PieceComposite.FACTORY);
+        System.out.println();
+        System.out.println("=================8<=================");
     }
+
 }

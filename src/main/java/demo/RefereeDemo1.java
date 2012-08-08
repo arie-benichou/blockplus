@@ -69,11 +69,9 @@ public class RefereeDemo1 {
             List<Move> legalMoves = null;
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
-            {
-                for (int i = 0; i < 8000; ++i)
-                    // 10 s
-                    legalMoves = boardReferee.getOrderedLegalMoves(board, player);
-            }
+            //for (int i = 0; i < 8000; ++i)
+            // 10 s
+            legalMoves = boardReferee.getOrderedLegalMoves(board, player);
             stopwatch.stop();
             System.out.println("-----------------------------8<-----------------------------");
             for (final Move legalMove : legalMoves)
@@ -82,10 +80,10 @@ public class RefereeDemo1 {
             System.out.println("number of pieces      : " + player.getAvailablePieces().size());
             System.out.println("number of legal moves : " + legalMoves.size());
             System.out.println("-----------------------------8<-----------------------------");
-
             System.out.println(PieceComponent.FACTORY);
             System.out.println(PieceComposite.FACTORY);
             System.out.println(Piece.FACTORY);
+            System.out.println("-----------------------------8<-----------------------------");
             System.out.println(stopwatch.toString());
         }
     }
