@@ -47,7 +47,7 @@ public class RefereeDemo3 {
                 { "Ø...........Ø" },
                 { "Ø...........Ø" },
                 { "Ø....o.o....Ø" },
-                { "Ø.....B.....Ø" },
+                { "Ø.....O.....Ø" },
                 { "Ø....o.o....Ø" },
                 { "Ø...........Ø" },
                 { "Ø...........Ø" },
@@ -57,20 +57,21 @@ public class RefereeDemo3 {
         };
         final Board<Color> board = parse(data);
         final MoveHandler moveHandler = new MoveHandler(board);
-        final Player player = new Player(Color.BLUE, PiecesBag.from(Piece(15)));
+        final Player player = new Player(Color.WHITE, PiecesBag.from(Piece(15))); //FIXME
         final Referee boardReferee = new Referee();
         render(board);
         if (!player.getAvailablePieces().isEmpty()) {
             List<Move> legalMoves = null;
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
-            //for (int i = 0; i < 15250; ++i)
-            // 10 s
-            legalMoves = boardReferee.getOrderedLegalMoves(board, player);
+
+            final int loop = 15250;
+            for (int i = -1; i < loop * 0; ++i) { // ~10 s
+                legalMoves = boardReferee.getOrderedLegalMoves(board, player);
+                Preconditions.checkState(legalMoves.size() == 24); // TODO ! write tests
+            }
+
             stopwatch.stop();
-
-            Preconditions.checkArgument(legalMoves.size() == 24); // TODO ! write tests
-
             System.out.println("-----------------------------8<-----------------------------");
             for (final Move legalMove : legalMoves)
                 render(moveHandler.handle(legalMove)); // TODO ? MoveRenderer

@@ -40,7 +40,7 @@ public final class PieceDemo3 {
             System.out.println("======================8<======================\n");
             PieceInterface movedPiece = piece.get().translateTo(Position(5, 5)); // TODO à revoir
             for (int i = 0; i < 4; ++i) {
-                final Move move = new Move(Color.BLUE, movedPiece);
+                final Move move = new Move(Color.WHITE, movedPiece);
                 final Board<Color> ouput = moveHandler.handle(move);
                 BoardRenderer.render(ouput);
                 movedPiece = movedPiece.rotate();

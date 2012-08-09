@@ -38,7 +38,7 @@ public final class PieceDemo1 {
         PieceInterface movedPiece = piece.translateTo(Position(5, 5));
         final MoveHandler moveHandler = new MoveHandler(board);
         for (int i = 0; i < 4; ++i) {
-            final Move move = new Move(Color.BLUE, movedPiece);
+            final Move move = new Move(Color.WHITE, movedPiece);
             final Board<Color> ouput = moveHandler.handle(move);
             BoardRenderer.render(ouput);
             movedPiece = movedPiece.rotate();

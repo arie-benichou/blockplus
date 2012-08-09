@@ -70,13 +70,14 @@ public class RefereeDemo1 {
             List<Move> legalMoves = null;
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
-            //for (int i = 0; i < 8000; ++i)
-            // 10 s
-            legalMoves = boardReferee.getOrderedLegalMoves(board, player);
+
+            final int loop = 8000;
+            for (int i = -1; i < loop * 0; ++i) { // ~10 s
+                legalMoves = boardReferee.getOrderedLegalMoves(board, player);
+                Preconditions.checkState(legalMoves.size() == 42); // TODO ! write tests
+            }
+
             stopwatch.stop();
-
-            Preconditions.checkArgument(legalMoves.size() == 42); // TODO ! write tests
-
             System.out.println("-----------------------------8<-----------------------------");
             for (final Move legalMove : legalMoves)
                 render(moveHandler.handle(legalMove)); // TODO ? MoveRenderer

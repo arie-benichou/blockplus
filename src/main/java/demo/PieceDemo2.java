@@ -40,7 +40,7 @@ public final class PieceDemo2 {
         PieceInterface movedPiece = piece.translateTo(Position(5, 8));
         final PositionInterface externalReferential = Position(5, 5);
         for (int i = 0; i < 4; ++i) {
-            final Move move = new Move(Color.BLUE, movedPiece);
+            final Move move = new Move(Color.WHITE, movedPiece);
             final Board<Color> ouput = moveHandler.handle(move);
             BoardRenderer.render(ouput);
             movedPiece = movedPiece.rotateAround(externalReferential);
