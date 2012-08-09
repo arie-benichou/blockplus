@@ -43,10 +43,7 @@ public class PiecesBagTest {
 
         {
             final PiecesBag bagOfPiece = PiecesBag.from();
-            PieceInterface lastPiece = null;
-            for (final PieceInterface piece : bagOfPiece)
-                lastPiece = piece;
-            assertTrue(lastPiece == null);
+            assertFalse(bagOfPiece.iterator().hasNext());
         }
 
         {

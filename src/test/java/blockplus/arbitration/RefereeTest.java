@@ -77,7 +77,7 @@ public class RefereeTest {
     public void testGetLegalMovesWithBagOfPiecesHavingOnePiece() {
         final Player player = new Player(Color.WHITE, PiecesBag.from(Pieces.get(1)));
         final Set<Move> legalMoves = this.referee.getLegalMoves(this.board, player);
-        Assert.assertTrue(!legalMoves.isEmpty());
+        Assert.assertFalse(legalMoves.isEmpty());
         // TODO à compléter
     }
 

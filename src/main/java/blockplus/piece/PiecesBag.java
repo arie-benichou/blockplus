@@ -96,7 +96,7 @@ public final class PiecesBag implements Iterable<PieceInterface> {
 
     @Override
     public Iterator<PieceInterface> iterator() {
-        return this.asList().iterator(); // TODO ?! return this.data.iterator();
+        return this.asList().iterator();
     }
 
     public PiecesBag remove(final PieceInterface piece) {

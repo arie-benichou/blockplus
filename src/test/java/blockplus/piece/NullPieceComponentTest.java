@@ -20,6 +20,7 @@ package blockplus.piece;
 import static blockplus.direction.Direction.Direction;
 import static blockplus.position.Position.Position;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import junit.framework.Assert;
 
@@ -30,7 +31,6 @@ import org.junit.Test;
 import blockplus.position.NullPosition;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterators;
 
 public class NullPieceComponentTest {
 
@@ -94,7 +94,7 @@ public class NullPieceComponentTest {
 
     @Test
     public void testIterator() {
-        assertEquals(Iterators.emptyIterator(), this.nullPieceComponent.iterator());
+        assertFalse(this.nullPieceComponent.iterator().hasNext());
     }
 
     @Test
