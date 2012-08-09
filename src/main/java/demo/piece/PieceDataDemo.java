@@ -15,21 +15,22 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package demo;
+package demo.piece;
 
-import blockplus.direction.Direction;
+import blockplus.piece.PieceData;
 
-public final class DirectionDemo {
+public class PieceDataDemo {
 
     public static void main(final String[] args) {
-
-        System.out.println(Direction.from(0, 0));
-        System.out.println(Direction.from(1, -1));
-        System.out.println(Direction.from(-1, 1));
-        System.out.println(Direction.NULL.apply(1, 2).apply(Direction.from(1, 2)));
-
-        System.out.println(Direction.Factory.asString());
-
+        for (final PieceData data : PieceData.values()) {
+            System.out.println("-----------------------------8<-----------------------------");
+            System.out.println();
+            System.out.println(data.name() + ": ");
+            System.out.println();
+            System.out.println(data);
+            System.out.println();
+        }
+        System.out.println("-----------------------------8<-----------------------------");
     }
 
 }

@@ -15,19 +15,20 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package demo;
+package demo.board;
 
-import java.util.Set;
+import static blockplus.position.Position.Position;
+
+import java.util.List;
 
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
 import blockplus.color.Color;
-import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
-import com.google.common.collect.Sets;
+import com.google.common.base.Stopwatch;
 
-public final class BoardDemo2 {
+public final class BoardDemo3 {
 
     public static void main(final String[] args) {
 
@@ -43,25 +44,35 @@ public final class BoardDemo2 {
         };
 
         final Board<Color> board = BoardBuilder.parse(data);
-        System.out.println(board);
-
         final PositionInterface position = Position(3, 3);
-        System.out.println(position);
 
-        for (int radius = -1; radius < 4; ++radius) {
-            System.out.println();
-            System.out.println("-----------------------------8<-----------------------------");
-            System.out.println();
-            System.out.println("radius: " + radius);
-            final Set<PositionInterface> neighbours = Sets.newTreeSet(board.getNeighboursPositions(position, radius));
-            for (final PositionInterface neighbour : neighbours) {
-                System.out.println(neighbour + ": " + board.get(neighbour));
-            }
-            System.out.println(neighbours.size());
-        }
         System.out.println();
         System.out.println("-----------------------------8<-----------------------------");
         System.out.println();
+
+        final int radius = 1000;
+        System.out.println("radius: " + radius);
+
+        List<PositionInterface> neighbours = null;
+
+        final Stopwatch stopwatch = new Stopwatch();
+        stopwatch.start();
+
+        {
+            //for (int i = 1; i < 1000; ++i)
+            // 5.75 s
+            neighbours = board.getNeighboursPositions(position, radius);
+        }
+
+        stopwatch.stop();
+
+        System.out.println("number of neighbours : " + neighbours.size());
+
+        System.out.println();
+        System.out.println("-----------------------------8<-----------------------------");
+        System.out.println();
+
+        System.out.println(stopwatch);
     }
 
 }

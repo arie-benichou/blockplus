@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package demo;
+package demo.board;
 
 import static blockplus.board.BoardBuilder.parse;
 import blockplus.board.Board;

@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package demo;
+package demo.arbitration;
 
 import static blockplus.board.BoardBuilder.parse;
 import static blockplus.board.BoardRenderer.render;
@@ -39,34 +39,32 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
-public class RefereeDemo4 {
+public class RefereeDemo6 {
 
     public static void main(final String[] args) {
         final String[][] data = {
-                { "ØØØØØØØØØØØØØ" },
-                { "Ø...........Ø" },
-                { "Ø...........Ø" },
-                { "Ø...........Ø" },
-                { "Ø...........Ø" },
-                { "Ø....o.o....Ø" },
-                { "Ø.....O.....Ø" },
-                { "Ø....o.o....Ø" },
-                { "Ø...........Ø" },
-                { "Ø...........Ø" },
-                { "Ø...........Ø" },
-                { "Ø...........Ø" },
-                { "ØØØØØØØØØØØØØ" }
+                { "o...........o" },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "o...........o" }
         };
         final Board<Color> board = parse(data);
         final MoveHandler moveHandler = new MoveHandler(board);
-
         // TODO à revoir
         final List<PieceInterface> list = Lists.newArrayList();
         for (final Pieces piece : Pieces.values())
             list.add(piece.get());
 
         final Player player = new Player(Color.WHITE, PiecesBag.from(list));
-
         final Referee boardReferee = new Referee();
         render(board);
         if (!player.getAvailablePieces().isEmpty()) {
@@ -74,10 +72,10 @@ public class RefereeDemo4 {
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
 
-            final int loop = 1200;
+            final int loop = 2000;
             for (int i = -1; i < loop * 0; ++i) { // ~10 s
                 legalMoves = boardReferee.getOrderedLegalMoves(board, player);
-                Preconditions.checkState(legalMoves.size() == 344); // TODO ! write tests
+                Preconditions.checkState(legalMoves.size() == 168); // TODO ! write tests
             }
 
             stopwatch.stop();

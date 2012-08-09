@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package demo;
+package demo.arbitration;
 
 import static blockplus.board.BoardBuilder.parse;
 import static blockplus.board.BoardRenderer.render;

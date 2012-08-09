@@ -15,7 +15,7 @@
  * this program. If not, see <http:www.gnu.org/licenses/>.
  */
 
-package demo;
+package demo.piece;
 
 import static blockplus.piece.Piece.Piece;
 import blockplus.piece.PieceInterface;
