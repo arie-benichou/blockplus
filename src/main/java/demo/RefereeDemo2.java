@@ -34,6 +34,7 @@ import blockplus.piece.PieceComposite;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
 public class RefereeDemo2 {
@@ -63,6 +64,9 @@ public class RefereeDemo2 {
             // 10 s
             legalMoves = boardReferee.getOrderedLegalMoves(board, player);
             stopwatch.stop();
+
+            Preconditions.checkArgument(legalMoves.size() == 8); // TODO ! write tests
+
             System.out.println("-----------------------------8<-----------------------------");
             for (final Move legalMove : legalMoves)
                 render(moveHandler.handle(legalMove)); // TODO ? MoveRenderer

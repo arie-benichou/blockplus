@@ -19,7 +19,6 @@ package demo;
 
 import static blockplus.board.BoardBuilder.parse;
 import static blockplus.board.BoardRenderer.render;
-import static blockplus.piece.Piece.Piece;
 
 import java.util.List;
 
@@ -31,45 +30,53 @@ import blockplus.move.MoveHandler;
 import blockplus.piece.Piece;
 import blockplus.piece.PieceComponent;
 import blockplus.piece.PieceComposite;
+import blockplus.piece.PieceInterface;
+import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
 
-public class RefereeDemo3 {
+public class RefereeDemo6 {
 
     public static void main(final String[] args) {
         final String[][] data = {
-                { "ØØØØØØØØØØØØØ" },
-                { "Ø...........Ø" },
-                { "Ø...........Ø" },
-                { "Ø...........Ø" },
-                { "Ø...........Ø" },
-                { "Ø....o.o....Ø" },
-                { "Ø.....B.....Ø" },
-                { "Ø....o.o....Ø" },
-                { "Ø...........Ø" },
-                { "Ø...........Ø" },
-                { "Ø...........Ø" },
-                { "Ø...........Ø" },
-                { "ØØØØØØØØØØØØØ" }
+                { "o...........o" },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "o...........o" }
         };
         final Board<Color> board = parse(data);
         final MoveHandler moveHandler = new MoveHandler(board);
-        final Player player = new Player(Color.BLUE, PiecesBag.from(Piece(15)));
+        // TODO à revoir
+        final List<PieceInterface> list = Lists.newArrayList();
+        for (final Pieces piece : Pieces.values())
+            list.add(piece.get());
+
+        final Player player = new Player(Color.WHITE, PiecesBag.from(list));
         final Referee boardReferee = new Referee();
         render(board);
         if (!player.getAvailablePieces().isEmpty()) {
             List<Move> legalMoves = null;
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
-            //for (int i = 0; i < 15250; ++i)
-            // 10 s
+            //for (int i = 0; i < 95000; ++i)
+            // 10 s 
             legalMoves = boardReferee.getOrderedLegalMoves(board, player);
             stopwatch.stop();
 
-            Preconditions.checkArgument(legalMoves.size() == 24); // TODO ! write tests
+            Preconditions.checkArgument(legalMoves.size() == 168); // TODO ! write tests
 
             System.out.println("-----------------------------8<-----------------------------");
             for (final Move legalMove : legalMoves)
@@ -85,5 +92,4 @@ public class RefereeDemo3 {
             System.out.println(stopwatch.toString());
         }
     }
-
 }
