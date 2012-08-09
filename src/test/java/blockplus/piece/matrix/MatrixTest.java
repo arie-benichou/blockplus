@@ -188,4 +188,96 @@ public class MatrixTest {
 
         }
     }
+
+    @Test
+    public void testMin() {
+        {
+            final Matrix matrix = new Matrix(1, 1, -1);
+            final int expected = -1;
+            final int actual = matrix.min();
+            assertEquals(expected, actual);
+        }
+        {
+            final Matrix matrix = new Matrix(1, 1, 0);
+            final int expected = 0;
+            final int actual = matrix.min();
+            assertEquals(expected, actual);
+        }
+        {
+            final Matrix matrix = new Matrix(1, 1, 1);
+            final int expected = 1;
+            final int actual = matrix.min();
+            assertEquals(expected, actual);
+        }
+        {
+            final Matrix matrix = new Matrix(2, 1, new int[][] { { 0 }, { 1 } });
+            final int expected = 0;
+            final int actual = matrix.min();
+            assertEquals(expected, actual);
+        }
+        {
+            final Matrix matrix = new Matrix(2, 1, new int[][] { { 1 }, { 0 } });
+            final int expected = 0;
+            final int actual = matrix.min();
+            assertEquals(expected, actual);
+        }
+        {
+            final Matrix matrix = new Matrix(2, 2, new int[][] { { 0, 1 }, { 1, 0 } });
+            final int expected = 0;
+            final int actual = matrix.min();
+            assertEquals(expected, actual);
+        }
+        {
+            final Matrix matrix = new Matrix(2, 2, new int[][] { { 1, 0 }, { 0, 1 } });
+            final int expected = 0;
+            final int actual = matrix.min();
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    public void testMax() {
+        {
+            final Matrix matrix = new Matrix(1, 1, -1);
+            final int expected = -1;
+            final int actual = matrix.max();
+            assertEquals(expected, actual);
+        }
+        {
+            final Matrix matrix = new Matrix(1, 1, 0);
+            final int expected = 0;
+            final int actual = matrix.max();
+            assertEquals(expected, actual);
+        }
+        {
+            final Matrix matrix = new Matrix(1, 1, 1);
+            final int expected = 1;
+            final int actual = matrix.max();
+            assertEquals(expected, actual);
+        }
+        {
+            final Matrix matrix = new Matrix(2, 1, new int[][] { { 0 }, { 1 } });
+            final int expected = 1;
+            final int actual = matrix.max();
+            assertEquals(expected, actual);
+        }
+        {
+            final Matrix matrix = new Matrix(2, 1, new int[][] { { 1 }, { 0 } });
+            final int expected = 1;
+            final int actual = matrix.max();
+            assertEquals(expected, actual);
+        }
+        {
+            final Matrix matrix = new Matrix(2, 2, new int[][] { { 0, 1 }, { 1, 0 } });
+            final int expected = 1;
+            final int actual = matrix.max();
+            assertEquals(expected, actual);
+        }
+        {
+            final Matrix matrix = new Matrix(2, 2, new int[][] { { 1, 0 }, { 0, 1 } });
+            final int expected = 1;
+            final int actual = matrix.max();
+            assertEquals(expected, actual);
+        }
+    }
 }

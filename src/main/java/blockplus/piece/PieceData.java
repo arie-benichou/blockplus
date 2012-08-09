@@ -40,7 +40,7 @@ public enum PieceData {
           NULL OBJECT
     */
 
-    ENTRY0(NullPosition.getInstance(), new int[0][0]),
+    ENTRY0(NullPosition.getInstance(), new int[2][0]),
 
     /*      0  
           -----

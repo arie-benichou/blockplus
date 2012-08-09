@@ -26,7 +26,6 @@ import org.junit.Test;
 
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
-import blockplus.board.BoardRenderer;
 import blockplus.color.Color;
 import blockplus.move.Move;
 import blockplus.piece.Pieces;
@@ -57,7 +56,6 @@ public class RefereeTest {
         };
 
         this.board = BoardBuilder.parse(data);
-        BoardRenderer.render(this.board);
         this.referee = new Referee();
 
     }

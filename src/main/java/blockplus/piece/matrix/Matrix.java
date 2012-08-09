@@ -24,8 +24,9 @@ import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-// TODO ? définir la matrice null
 public final class Matrix {
+
+    public final static Matrix NULL = new Matrix(0, 0);
 
     private final int numberOfRows;
 
@@ -55,15 +56,25 @@ public final class Matrix {
 
     private transient volatile Integer hashCode = null;
 
-    // TODO ! plus de check sur data ou bien utiliser un builder
+    // TODO retourner la matrice nulle si numberOfRows * numberOfColumns = 0
     public Matrix(final int numberOfRows, final int numberOfColumns, final int[][] data) {
+
         Preconditions.checkArgument(numberOfRows >= 0);
         Preconditions.checkArgument(numberOfColumns >= 0);
+
+        final int rows = data.length;
+        Preconditions.checkArgument(numberOfRows == rows, numberOfRows + " != " + rows);
+
+        final int columns = rows > 0 ? data[0].length : 0;
+        Preconditions.checkArgument(numberOfColumns == columns, numberOfColumns + " != " + columns);
+
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
         this.data = new int[numberOfRows][numberOfColumns];
+
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
+
         for (int i = 0; i < numberOfRows; ++i) {
             for (int j = 0; j < numberOfColumns; ++j) {
                 final int value = data[i][j];
@@ -72,19 +83,25 @@ public final class Matrix {
                 max = Math.max(max, value);
             }
         }
+
         this.min = min;
         this.max = max;
+
     }
 
     public Matrix(final int numberOfRows, final int numberOfColumns, final int value) {
+
         Preconditions.checkArgument(numberOfRows >= 0);
         Preconditions.checkArgument(numberOfColumns >= 0);
+
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
         this.data = new int[numberOfRows][numberOfColumns];
+
         for (int i = 0; i < numberOfRows; ++i)
             for (int j = 0; j < numberOfColumns; ++j)
                 this.data[i][j] = value;
+
         this.min = this.max = value;
     }
 

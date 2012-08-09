@@ -19,10 +19,9 @@ package blockplus.board;
 
 import static blockplus.board.BoardBuilder.parse;
 import static blockplus.position.Position.Position;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
-
-import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
@@ -67,14 +66,14 @@ public class BoardTest {
             final int radius = -1;
             final List<PositionInterface> expected = Lists.newArrayList();
             final List<PositionInterface> neighboursPositions = this.board.getNeighboursPositions(this.referential, radius);
-            Assert.assertEquals(expected, neighboursPositions);
+            assertEquals(expected, neighboursPositions);
         }
 
         {
             final int radius = 0;
             final List<PositionInterface> expected = Lists.newArrayList(this.referential); // TODO ? à revoir...
             final List<PositionInterface> neighboursPositions = this.board.getNeighboursPositions(this.referential, radius);
-            Assert.assertEquals(expected, neighboursPositions);
+            assertEquals(expected, neighboursPositions);
         }
 
         {
@@ -91,7 +90,7 @@ public class BoardTest {
 
                     );
             final List<PositionInterface> neighboursPositions = this.board.getNeighboursPositions(this.referential, radius);
-            Assert.assertEquals(expected, neighboursPositions);
+            assertEquals(expected, neighboursPositions);
         }
 
         {
@@ -115,7 +114,7 @@ public class BoardTest {
                     Position(5, 5)
                     );
             final List<PositionInterface> neighboursPositions = this.board.getNeighboursPositions(this.referential, radius);
-            Assert.assertEquals(expected, neighboursPositions);
+            assertEquals(expected, neighboursPositions);
         }
 
         {
@@ -147,7 +146,7 @@ public class BoardTest {
                     Position(6, 6)
                     );
             final List<PositionInterface> neighboursPositions = this.board.getNeighboursPositions(this.referential, radius);
-            Assert.assertEquals(expected, neighboursPositions);
+            assertEquals(expected, neighboursPositions);
         }
 
     }
@@ -158,13 +157,13 @@ public class BoardTest {
             final int radius = -1;
             final List<PositionInterface> expected = Lists.newArrayList();
             final List<PositionInterface> neighboursPositions = this.board.getAllNeighboursPositions(this.referential, radius);
-            Assert.assertEquals(expected, neighboursPositions);
+            assertEquals(expected, neighboursPositions);
         }
         {
             final int radius = 0;
             final List<PositionInterface> expected = Lists.newArrayList(this.referential); // TODO ? à revoir...
             final List<PositionInterface> neighboursPositions = this.board.getAllNeighboursPositions(this.referential, radius);
-            Assert.assertEquals(expected, neighboursPositions);
+            assertEquals(expected, neighboursPositions);
         }
         {
             final int radius = 1;
@@ -183,8 +182,7 @@ public class BoardTest {
 
                     );
             final List<PositionInterface> neighboursPositions = this.board.getAllNeighboursPositions(this.referential, radius);
-            System.out.println(neighboursPositions);
-            Assert.assertEquals(expected, neighboursPositions);
+            assertEquals(expected, neighboursPositions);
         }
         {
             final int radius = 2;
@@ -220,7 +218,7 @@ public class BoardTest {
 
                     );
             final List<PositionInterface> neighboursPositions = this.board.getAllNeighboursPositions(this.referential, radius);
-            Assert.assertEquals(expected, neighboursPositions);
+            assertEquals(expected, neighboursPositions);
         }
         {
             final int radius = 3;
@@ -280,7 +278,7 @@ public class BoardTest {
 
                     );
             final List<PositionInterface> neighboursPositions = this.board.getAllNeighboursPositions(this.referential, radius);
-            Assert.assertEquals(expected, neighboursPositions);
+            assertEquals(expected, neighboursPositions);
         }
     }
 }
