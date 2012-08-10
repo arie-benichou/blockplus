@@ -17,13 +17,14 @@
 
 package blockplus.board;
 
+import static blockplus.position.Position.Position;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Preconditions;

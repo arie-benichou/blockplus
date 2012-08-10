@@ -21,7 +21,7 @@ import java.util.Set;
 
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import static blockplus.position.Position.Position;
 import blockplus.position.PositionInterface;
 
@@ -42,7 +42,7 @@ public final class BoardDemo2 {
                 { 3, 3, 3, 3, 3, 3, 3 } // 6
         };
 
-        final Board<Color> board = BoardBuilder.parse(data);
+        final Board<ColorInterface> board = BoardBuilder.parse(data);
         System.out.println(board);
 
         final PositionInterface position = Position(3, 3);

@@ -27,14 +27,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Lists;
 
 public class BoardTest {
 
-    private Board<Color> board;
+    private Board<ColorInterface> board;
     private PositionInterface referential;
 
     @Before

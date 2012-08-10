@@ -21,31 +21,35 @@ import java.util.Map;
 
 import blockplus.board.Board;
 import blockplus.color.Color;
+import blockplus.color.ColorInterface;
+import blockplus.piece.PieceComponent;
 import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Maps;
 
+// TODO ? générer un objet BoardMutation (puis par la suite, un GameMutation...)
 public class MoveHandler {
 
-    private final Board<Color> board;
-
-    // TODO !? use guava bus event    
-    public MoveHandler(final Board<Color> board) {
-        this.board = board;
-    }
-
-    // TODO générer un objet BoardMutation (puis par la suite, un GameMutation...)
-    public Board<Color> handle(final Move move) {
-        final Map<PositionInterface, Color> cells = Maps.newHashMap();
-        for (final PositionInterface component : move.getPiece().getPositions()) {
-            cells.put(component, move.getColor());
+    public Board<ColorInterface> handle(final Board<ColorInterface> board, final Move move) {
+        final Map<PositionInterface, ColorInterface> cells = Maps.newHashMap();
+        for (final PositionInterface position : move.getPiece().getPositions()) {
+            cells.put(position, move.getColor());
         }
-
-        // TODO !!! gérer les positions potentielles: tester les positions et prendre en compte les potential colors dejà présente sur le board
         for (final PositionInterface potentialPosition : move.getPiece().getPotentialPositions()) {
-            cells.put(potentialPosition, move.getColor().potential());
+            final ColorInterface color1 = board.get(potentialPosition);
+            if (color1.hasTransparency()) {
+                final PieceComponent pieceComponent = PieceComponent.PieceComponent(potentialPosition);
+                boolean isConcretisable = true;
+                for (final PositionInterface position : pieceComponent.getSides()) {
+                    if (board.get(position).is(move.getColor())) {
+                        isConcretisable = false;
+                        break;
+                    }
+                }
+                if (isConcretisable) cells.put(potentialPosition, new Color(color1, move.getColor().potential())); // TODO factory
+            }
         }
-        return Board.from(this.board, cells);
+        return Board.from(board, cells);
     }
 
 }

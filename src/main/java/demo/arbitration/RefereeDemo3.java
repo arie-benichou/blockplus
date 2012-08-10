@@ -25,7 +25,7 @@ import java.util.List;
 
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
 import blockplus.piece.Piece;
@@ -55,9 +55,9 @@ public class RefereeDemo3 {
                 { "Ø...........Ø" },
                 { "ØØØØØØØØØØØØØ" }
         };
-        final Board<Color> board = parse(data);
-        final MoveHandler moveHandler = new MoveHandler(board);
-        final Player player = new Player(Color.WHITE, PiecesBag.from(Piece(15))); //FIXME
+        final Board<ColorInterface> board = parse(data);
+        final MoveHandler moveHandler = new MoveHandler();
+        final Player player = new Player(ColorInterface.WHITE, PiecesBag.from(Piece(15))); //FIXME
         final Referee boardReferee = new Referee();
         render(board);
         if (!player.getAvailablePieces().isEmpty()) {
@@ -66,7 +66,7 @@ public class RefereeDemo3 {
             stopwatch.start();
 
             final int loop = 15250;
-            for (int i = -1; i < loop * 0; ++i) { // ~10 s
+            for (int i = -1; i < loop * 1; ++i) { // ~10 s
                 legalMoves = boardReferee.getOrderedLegalMoves(board, player);
                 Preconditions.checkState(legalMoves.size() == 24); // TODO ! write tests
             }
@@ -74,7 +74,7 @@ public class RefereeDemo3 {
             stopwatch.stop();
             System.out.println("-----------------------------8<-----------------------------");
             for (final Move legalMove : legalMoves)
-                render(moveHandler.handle(legalMove)); // TODO ? MoveRenderer
+                render(moveHandler.handle(board, legalMove)); // TODO ? MoveRenderer
             System.out.println("-----------------------------8<-----------------------------");
             System.out.println("number of pieces      : " + player.getAvailablePieces().size());
             System.out.println("number of legal moves : " + legalMoves.size());

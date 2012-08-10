@@ -22,7 +22,7 @@ import static blockplus.position.Position.Position;
 import java.util.Map;
 
 import blockplus.board.Board;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Maps;
@@ -36,13 +36,13 @@ public class BoardDemo1 {
         final int rows = n;
         final int columns = n;
 
-        final Map<PositionInterface, Color> definedPositions = Maps.newHashMap();
-        definedPositions.put(Position(-1, -1), Color.WHITE);
-        definedPositions.put(Position(-1, columns), Color.WHITE);
-        definedPositions.put(Position(rows, -1), Color.WHITE);
-        definedPositions.put(Position(rows, columns), Color.WHITE);
+        final Map<PositionInterface, ColorInterface> definedPositions = Maps.newHashMap();
+        definedPositions.put(Position(-1, -1), ColorInterface.WHITE);
+        definedPositions.put(Position(-1, columns), ColorInterface.WHITE);
+        definedPositions.put(Position(rows, -1), ColorInterface.WHITE);
+        definedPositions.put(Position(rows, columns), ColorInterface.WHITE);
 
-        final Board<Color> board = Board.from(rows, columns, Color.TRANSPARENT, Color.OPAQUE, definedPositions);
+        final Board<ColorInterface> board = Board.from(rows, columns, ColorInterface.TRANSPARENT, ColorInterface.OPAQUE, definedPositions);
 
         System.out.println(board);
 
@@ -53,15 +53,15 @@ public class BoardDemo1 {
         System.out.println(board.get(Position(rows, columns)).name());
         System.out.println(board.get(Position(0, 0)).name());
 
-        final Map<PositionInterface, Color> updatedPositions = Maps.newHashMap();
-        updatedPositions.put(Position(0, 0), Color.BLUE);
-        updatedPositions.put(Position(1, 0), Color.YELLOW);
-        updatedPositions.put(Position(2, 0), Color.RED);
-        updatedPositions.put(Position(3, 0), Color.GREEN);
+        final Map<PositionInterface, ColorInterface> updatedPositions = Maps.newHashMap();
+        updatedPositions.put(Position(0, 0), ColorInterface.BLUE);
+        updatedPositions.put(Position(1, 0), ColorInterface.YELLOW);
+        updatedPositions.put(Position(2, 0), ColorInterface.RED);
+        updatedPositions.put(Position(3, 0), ColorInterface.GREEN);
 
-        updatedPositions.put(Position(0, columns - 1), Color.UNKNOWN);
-        updatedPositions.put(Position(1, columns - 1), Color.OPAQUE);
-        updatedPositions.put(Position(2, columns - 1), Color.WHITE);
+        updatedPositions.put(Position(0, columns - 1), ColorInterface.UNKNOWN);
+        updatedPositions.put(Position(1, columns - 1), ColorInterface.OPAQUE);
+        updatedPositions.put(Position(2, columns - 1), ColorInterface.WHITE);
 
         System.out.println(board.update(updatedPositions));
         System.out.println(board);

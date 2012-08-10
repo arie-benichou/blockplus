@@ -22,7 +22,7 @@ import static blockplus.position.Position.Position;
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
 import blockplus.board.BoardRenderer;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
 import blockplus.piece.PieceComponent;
@@ -34,14 +34,14 @@ import com.google.common.base.Stopwatch;
 
 public final class PieceDemo2 {
 
-    private static void rotatePieceAroundExternalReferential(final Board<Color> board) {
-        final MoveHandler moveHandler = new MoveHandler(board);
+    private static void rotatePieceAroundExternalReferential(final Board<ColorInterface> board) {
+        final MoveHandler moveHandler = new MoveHandler();
         final PieceInterface piece = Piece(7);
         PieceInterface movedPiece = piece.translateTo(Position(5, 8));
         final PositionInterface externalReferential = Position(5, 5);
         for (int i = 0; i < 4; ++i) {
-            final Move move = new Move(Color.WHITE, movedPiece);
-            final Board<Color> ouput = moveHandler.handle(move);
+            final Move move = new Move(ColorInterface.WHITE, movedPiece);
+            final Board<ColorInterface> ouput = moveHandler.handle(board, move);
             BoardRenderer.render(ouput);
             movedPiece = movedPiece.rotateAround(externalReferential);
         }
@@ -61,7 +61,7 @@ public final class PieceDemo2 {
                 { "..........." },
                 { "o.........o" }
         };
-        final Board<Color> board = BoardBuilder.parse(data);
+        final Board<ColorInterface> board = BoardBuilder.parse(data);
         final Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
         for (int i = 0; i < 1; ++i) {

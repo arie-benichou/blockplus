@@ -17,7 +17,7 @@
 
 package blockplus.move;
 
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.piece.PieceInterface;
 import blockplus.position.PositionInterface;
 
@@ -27,15 +27,15 @@ import com.google.common.base.Preconditions;
 // TODO extract Comparator(s)
 public class Move implements Comparable<Move> {
 
-    private final Color color;
+    private final ColorInterface color;
     private final PieceInterface piece;
 
-    public Move(final Color color, final PieceInterface piece) {
+    public Move(final ColorInterface color, final PieceInterface piece) {
         this.color = color;
         this.piece = piece;
     }
 
-    public Color getColor() {
+    public ColorInterface getColor() {
         return this.color;
     }
 

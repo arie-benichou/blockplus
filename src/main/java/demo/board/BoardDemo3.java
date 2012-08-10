@@ -23,7 +23,7 @@ import java.util.List;
 
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.position.PositionInterface;
 
 import com.google.common.base.Stopwatch;
@@ -43,7 +43,7 @@ public final class BoardDemo3 {
                 { 3, 3, 3, 3, 3, 3, 3 } // 6
         };
 
-        final Board<Color> board = BoardBuilder.parse(data);
+        final Board<ColorInterface> board = BoardBuilder.parse(data);
         final PositionInterface position = Position(3, 3);
 
         System.out.println();

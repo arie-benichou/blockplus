@@ -25,7 +25,7 @@ import java.util.List;
 
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
 import blockplus.piece.Piece;
@@ -55,10 +55,10 @@ public class RefereeDemo5 {
                 { "............." },
                 { "Ø...........o" }
         };
-        final Board<Color> board = parse(data);
-        final MoveHandler moveHandler = new MoveHandler(board);
+        final Board<ColorInterface> board = parse(data);
+        final MoveHandler moveHandler = new MoveHandler();
         final PiecesBag bagOfPieces = PiecesBag.from(Piece(1), Piece(2));
-        final Player player = new Player(Color.WHITE, bagOfPieces);
+        final Player player = new Player(ColorInterface.WHITE, bagOfPieces);
         final Referee boardReferee = new Referee();
         render(board);
         if (!player.getAvailablePieces().isEmpty()) {
@@ -67,7 +67,7 @@ public class RefereeDemo5 {
             stopwatch.start();
 
             final int loop = 95000;
-            for (int i = -1; i < loop * 0; ++i) { // ~10 s
+            for (int i = -1; i < loop * 1; ++i) { // ~10 s
                 legalMoves = boardReferee.getOrderedLegalMoves(board, player);
                 Preconditions.checkState(legalMoves.size() == 3); // TODO ! write tests
             }
@@ -75,7 +75,7 @@ public class RefereeDemo5 {
             stopwatch.stop();
             System.out.println("-----------------------------8<-----------------------------");
             for (final Move legalMove : legalMoves)
-                render(moveHandler.handle(legalMove)); // TODO ? MoveRenderer
+                render(moveHandler.handle(board, legalMove)); // TODO ? MoveRenderer
             System.out.println("-----------------------------8<-----------------------------");
             System.out.println("number of pieces      : " + player.getAvailablePieces().size());
             System.out.println("number of legal moves : " + legalMoves.size());

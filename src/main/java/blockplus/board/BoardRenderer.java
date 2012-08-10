@@ -21,26 +21,28 @@ import static blockplus.position.Position.Position;
 
 import java.util.Map;
 
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
+import blockplus.color.PrimeColors;
+import blockplus.piece.matrix.Matrix;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 public final class BoardRenderer {
 
-    private final static Map<Color, Character> COLOR_BY_STRING = Maps.newTreeMap();
+    private final static Map<ColorInterface, Character> COLOR_BY_STRING = Maps.newHashMap();
 
     static {
-        for (final Color color : Color.values())
+        for (final ColorInterface color : PrimeColors.values())
             COLOR_BY_STRING.put(color, color.toString().charAt(0));
-        COLOR_BY_STRING.put(Color.blue, '.');
-        COLOR_BY_STRING.put(Color.red, '.');
-        COLOR_BY_STRING.put(Color.yellow, '.');
-        COLOR_BY_STRING.put(Color.green, '.');
-        COLOR_BY_STRING.put(Color.white, '*');
+        COLOR_BY_STRING.put(ColorInterface.blue, '.');
+        COLOR_BY_STRING.put(ColorInterface.red, '.');
+        COLOR_BY_STRING.put(ColorInterface.yellow, '.');
+        COLOR_BY_STRING.put(ColorInterface.green, '.');
+        COLOR_BY_STRING.put(ColorInterface.white, '*');
     }
 
-    public static <T> String getRendering(final Board<T> board) {
+    public static String getRendering(final Board<ColorInterface> board) {
         final String lineSeparator = "\n" + " " + Strings.repeat("----", board.columns()) + "-" + "\n";
         final String columnSeparator = " | ";
         final StringBuilder sb = new StringBuilder();
@@ -48,7 +50,10 @@ public final class BoardRenderer {
             sb.append(lineSeparator);
             for (int j = 0; j < board.columns(); ++j) {
                 sb.append(columnSeparator);
-                sb.append(COLOR_BY_STRING.get(board.get(Position(i, j))));
+                final ColorInterface color = board.get(Position(i, j)); // TODO ? isMixed()
+                Character c = COLOR_BY_STRING.get(color);
+                if (c == null) c = '#';
+                sb.append(c);
             }
             sb.append(columnSeparator);
         }
@@ -56,8 +61,21 @@ public final class BoardRenderer {
         return sb.toString();
     }
 
-    public static <T> void render(final Board<T> board) {
+    public static void debug(final Board<ColorInterface> board) {
+        final int[][] data = new int[board.rows()][board.columns()];
+        for (int i = 0; i < board.rows(); ++i) {
+            for (int j = 0; j < board.columns(); ++j) {
+                final ColorInterface color = board.get(Position(i, j));
+                data[i][j] = color.value();
+            }
+        }
+        final Matrix matrix = new Matrix(board.rows(), board.columns(), data);
+        matrix.debug();
+    }
+
+    public static void render(final Board<ColorInterface> board) {
         System.out.println(getRendering(board));
+        //System.out.println(IO.render(board)); // TODO pouvoir passer un mapping des symboles
     }
 
     private BoardRenderer() {}

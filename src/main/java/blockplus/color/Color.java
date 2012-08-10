@@ -1,148 +1,59 @@
-/*
- * Copyright 2012 Arie Benichou
- * 
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- */
 
 package blockplus.color;
 
-// TODO ? NotBlue
-// TODO ? NotYellow
-// TODO ? NotRed
-// TODO ? NotGreen
-public enum Color {
+public class Color implements ColorInterface {
 
-    OPAQUE(-1, "Ø") {
-
-        @Override
-        public Color potential() {
-            return this;
-        }
-    },
-
-    UNKNOWN(0, "?") {
-
-        @Override
-        public Color potential() {
-            return this;
-        }
-    },
-
-    TRANSPARENT(1, " ") {
-
-        @Override
-        public Color potential() {
-            return this;
-        }
-
-    },
-
-    blue(-2, "b") {
-
-        @Override
-        public Color potential() {
-            return this;
-        }
-
-    },
-
-    BLUE(blue),
-
-    yellow(-3, "y") {
-
-        @Override
-        public Color potential() {
-            return this;
-        }
-
-    },
-
-    YELLOW(yellow),
-
-    red(-5, "r") {
-
-        @Override
-        public Color potential() {
-            return this;
-        }
-
-    },
-
-    RED(red),
-
-    green(-7, "g") {
-
-        @Override
-        public Color potential() {
-            return this;
-        }
-
-    },
-
-    GREEN(green),
-
-    white(-Math.abs(blue.value() * yellow.value() * red.value() * green.value()), "o"),
-
-    WHITE(white);
-
+    private final String name;
     private final int value;
-    private final String literal;
-    private final Color potential;
 
-    private Color(final int value, final String literal) {
-        this.potential = null;
-        this.value = value;
-        this.literal = literal;
+    public Color(final ColorInterface color1, final ColorInterface color2) {
+        this.name = color1.name() + " * " + color2.name();
+        this.value = -Math.abs(color1.value() * color2.value());
     }
 
-    private Color(final Color potential) {
-        this.potential = potential;
-        this.value = -potential.value();
-        this.literal = potential.toString().toUpperCase();
+    public Color(final int value) {
+        this.name = "" + value;
+        this.value = -value;
     }
 
-    public Color potential() {
-        return this.potential;
-    }
-
+    @Override
     public int value() {
         return this.value;
     }
 
-    public boolean is(final Color color) {
-        return this.equals(color);
+    @Override
+    public boolean is(final ColorInterface color) {
+        return this.value() == color.value();
     }
 
-    public boolean contains(final Color color) {
+    @Override
+    public String name() {
+        return this.name;
+    }
+
+    @Override
+    public ColorInterface potential() {
+        throw new RuntimeException(); // TODO à revoir
+    }
+
+    @Override
+    public boolean contains(final ColorInterface color) {
         return Math.abs(this.value()) % Math.abs(color.value()) == 0;
     }
 
+    @Override
     public boolean hasOpacity() {
-        if (this.is(Color.OPAQUE)) return true;
-        //if (this.is(Color.TRANSPARENT)) return false;
-        if (this.value() <= 1) return false;
-        if (this.value() > GREEN.value()) return false;
-        return true;
+        return false;
     }
 
+    @Override
     public boolean hasTransparency() {
-        return !this.hasOpacity();
+        return true;
     }
 
     @Override
     public String toString() {
-        return this.literal;
+        return this.name();
     }
 
 }

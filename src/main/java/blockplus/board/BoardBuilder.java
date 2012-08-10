@@ -22,82 +22,104 @@ import static blockplus.position.Position.Position;
 import java.util.Map;
 
 import blockplus.color.Color;
+import blockplus.color.ColorInterface;
+import blockplus.color.PrimeColors;
 import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Maps;
 
 public final class BoardBuilder {
 
-    private final static Map<Character, Color> COLOR_BY_STRING = Maps.newTreeMap();
-    private final static Map<Integer, Color> COLOR_BY_VALUE = Maps.newTreeMap();
+    private final static Map<Character, ColorInterface> COLOR_BY_STRING = Maps.newTreeMap();
+    private final static Map<Integer, ColorInterface> COLOR_BY_VALUE = Maps.newTreeMap();
 
     static {
-        for (final Color color : Color.values()) {
+        for (final ColorInterface color : PrimeColors.values()) {
             COLOR_BY_STRING.put(color.toString().charAt(0), color);
             COLOR_BY_VALUE.put(color.value(), color);
         }
-        COLOR_BY_STRING.put('.', Color.TRANSPARENT);
+        COLOR_BY_STRING.put('.', ColorInterface.TRANSPARENT);
     }
 
     // TODO !? utiliser Move
-    private static Map<PositionInterface, Color> updatePreDefinedPositions(
-            final Map<PositionInterface, Color> definedPositions,
+    private static Map<PositionInterface, ColorInterface> updatePreDefinedPositions(
+            final Map<PositionInterface, ColorInterface> definedPositions,
             final int rows,
             final int columns) {
 
-        final PositionInterface p1 = Position(0, 0);
-        if (definedPositions.get(p1).equals(Color.TRANSPARENT))
-            definedPositions.put(p1, Color.white);
+        {
+            final PositionInterface p = Position(0, 0);
+            final ColorInterface color = definedPositions.get(p);
+            if (color == null || color.equals(ColorInterface.TRANSPARENT))
+                definedPositions.put(p, ColorInterface.white);
+        }
 
-        final PositionInterface p2 = Position(0, columns - 1);
-        if (definedPositions.get(p2).equals(Color.TRANSPARENT))
-            definedPositions.put(p2, Color.white);
+        {
+            final PositionInterface p = Position(0, columns - 1);
+            final ColorInterface color = definedPositions.get(p);
+            if (color == null || color.equals(ColorInterface.TRANSPARENT))
+                definedPositions.put(p, ColorInterface.white);
+        }
 
-        final PositionInterface p3 = Position(rows - 1, 0);
-        if (definedPositions.get(p3).equals(Color.TRANSPARENT))
-            definedPositions.put(p3, Color.white);
+        {
+            final PositionInterface p = Position(rows - 1, 0);
+            final ColorInterface color = definedPositions.get(p);
+            if (color == null || color.equals(ColorInterface.TRANSPARENT))
+                definedPositions.put(p, ColorInterface.white);
+        }
 
-        final PositionInterface p4 = Position(rows - 1, columns - 1);
-        if (definedPositions.get(p4).equals(Color.TRANSPARENT))
-            definedPositions.put(p4, Color.white);
+        {
+            final PositionInterface p = Position(rows - 1, columns - 1);
+            final ColorInterface color = definedPositions.get(p);
+            if (color == null || color.equals(ColorInterface.TRANSPARENT))
+                definedPositions.put(p, ColorInterface.white);
+        }
 
-        definedPositions.put(Position(-1, -1), Color.WHITE);
-        definedPositions.put(Position(-1, columns), Color.WHITE);
-        definedPositions.put(Position(rows, -1), Color.WHITE);
-        definedPositions.put(Position(rows, columns), Color.WHITE);
+        definedPositions.put(Position(-1, -1), ColorInterface.WHITE);
+        definedPositions.put(Position(-1, columns), ColorInterface.WHITE);
+        definedPositions.put(Position(rows, -1), ColorInterface.WHITE);
+        definedPositions.put(Position(rows, columns), ColorInterface.WHITE);
 
         return definedPositions;
     }
 
-    public static Board<Color> parse(final String[][] data) {
+    public static Board<ColorInterface> parse(final String[][] data) {
         final int rows = data.length;
         final int columns = data[0][0].length();
-        final Map<PositionInterface, Color> definedPositions = Maps.newHashMap();
+        final Map<PositionInterface, ColorInterface> definedPositions = Maps.newHashMap();
         for (int i = 0; i < rows; ++i)
             for (int j = 0; j < columns; ++j) {
                 final char c = data[i][0].charAt(j);
-                Color color = COLOR_BY_STRING.get(c);
-                if (color == null) color = Color.UNKNOWN;
+                ColorInterface color = COLOR_BY_STRING.get(c);
+                if (color == null) color = ColorInterface.UNKNOWN;
                 final PositionInterface position = Position(i, j);
                 definedPositions.put(position, color);
             }
         updatePreDefinedPositions(definedPositions, rows, columns);
-        return Board.from(rows, columns, Color.TRANSPARENT, Color.OPAQUE, definedPositions);
+        return Board.from(rows, columns, ColorInterface.TRANSPARENT, ColorInterface.OPAQUE, definedPositions);
     }
 
-    public static Board<Color> parse(final int[][] data) {
+    public static Board<ColorInterface> parse(final int[][] data) {
         final int rows = data.length;
         final int columns = data[0].length;
-        final Map<PositionInterface, Color> definedPositions = Maps.newHashMap();
+        final Map<PositionInterface, ColorInterface> definedPositions = Maps.newHashMap();
         for (int i = 0; i < rows; ++i)
             for (int j = 0; j < columns; ++j) {
-                Color color = COLOR_BY_VALUE.get(data[i][j]);
-                if (color == null) color = Color.UNKNOWN;
+                final int value = data[i][j];
+                ColorInterface color = COLOR_BY_VALUE.get(value);
+                //if (color == null) color = ColorInterface.UNKNOWN;
+                if (color == null) color = new Color(-value); // TODO à revoir
                 final PositionInterface position = Position(i, j);
                 definedPositions.put(position, color);
             }
         updatePreDefinedPositions(definedPositions, rows, columns);
-        return Board.from(rows, columns, Color.TRANSPARENT, Color.OPAQUE, definedPositions);
+        return Board.from(rows, columns, ColorInterface.TRANSPARENT, ColorInterface.OPAQUE, definedPositions);
+    }
+
+    public static Board<ColorInterface> from(final int rows, final int columns) {
+        final Map<PositionInterface, ColorInterface> definedPositions = Maps.newHashMap();
+        updatePreDefinedPositions(definedPositions, rows, columns);
+        return Board.from(rows, columns, ColorInterface.TRANSPARENT, ColorInterface.OPAQUE, definedPositions);
     }
 
     private BoardBuilder() {}

@@ -24,7 +24,7 @@ import java.util.List;
 
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
 import blockplus.piece.Piece;
@@ -57,15 +57,15 @@ public class RefereeDemo4 {
                 { "Ø...........Ø" },
                 { "ØØØØØØØØØØØØØ" }
         };
-        final Board<Color> board = parse(data);
-        final MoveHandler moveHandler = new MoveHandler(board);
+        final Board<ColorInterface> board = parse(data);
+        final MoveHandler moveHandler = new MoveHandler();
 
         // TODO à revoir
         final List<PieceInterface> list = Lists.newArrayList();
         for (final Pieces piece : Pieces.values())
             list.add(piece.get());
 
-        final Player player = new Player(Color.WHITE, PiecesBag.from(list));
+        final Player player = new Player(ColorInterface.WHITE, PiecesBag.from(list));
 
         final Referee boardReferee = new Referee();
         render(board);
@@ -75,7 +75,7 @@ public class RefereeDemo4 {
             stopwatch.start();
 
             final int loop = 1200;
-            for (int i = -1; i < loop * 0; ++i) { // ~10 s
+            for (int i = -1; i < loop * 1; ++i) { // ~10 s
                 legalMoves = boardReferee.getOrderedLegalMoves(board, player);
                 Preconditions.checkState(legalMoves.size() == 344); // TODO ! write tests
             }
@@ -83,7 +83,7 @@ public class RefereeDemo4 {
             stopwatch.stop();
             System.out.println("-----------------------------8<-----------------------------");
             for (final Move legalMove : legalMoves)
-                render(moveHandler.handle(legalMove)); // TODO ? MoveRenderer
+                render(moveHandler.handle(board, legalMove)); // TODO ? MoveRenderer
             System.out.println("-----------------------------8<-----------------------------");
             System.out.println("number of pieces      : " + player.getAvailablePieces().size());
             System.out.println("number of legal moves : " + legalMoves.size());

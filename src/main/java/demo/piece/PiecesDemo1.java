@@ -23,7 +23,7 @@ import java.util.Set;
 
 import blockplus.board.Board;
 import blockplus.board.BoardRenderer;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
 import blockplus.piece.Piece;
@@ -42,18 +42,18 @@ public class PiecesDemo1 {
             final Piece piece2 = (Piece) pieceInterface; // TODO à revoir
             final int radius = piece2.getPieceData().radius();
             final int n = 1 + 2 * (radius + 1);
-            final Board<Color> inputBoard = Board.from(n, n, Color.TRANSPARENT, Color.OPAQUE);
+            final Board<ColorInterface> board = Board.from(n, n, ColorInterface.TRANSPARENT, ColorInterface.OPAQUE); // TODO à revoir
             final PositionInterface position = Position(n / 2, n / 2);
             final PieceInterface translatedPiece = pieceInterface.translateTo(position);
-            final MoveHandler moveHandler = new MoveHandler(inputBoard);
+            final MoveHandler moveHandler = new MoveHandler();
             final Set<PieceInterface> rotations = Sets.newHashSet();
             PieceInterface rotatedPiece = translatedPiece;
             {
                 rotations.add(rotatedPiece);
                 System.out.println();
                 System.out.println("=================8<=================");
-                final Move move = new Move(Color.WHITE, rotatedPiece);
-                final Board<Color> ouput = moveHandler.handle(move);
+                final Move move = new Move(ColorInterface.WHITE, rotatedPiece);
+                final Board<ColorInterface> ouput = moveHandler.handle(board, move);
                 BoardRenderer.render(ouput);
             }
             for (int i = 1; i < 4; ++i)
@@ -61,8 +61,8 @@ public class PiecesDemo1 {
                 rotatedPiece = rotatedPiece.rotate();
                 rotations.add(rotatedPiece);
                 System.out.println();
-                final Move move = new Move(Color.WHITE, rotatedPiece);
-                final Board<Color> ouput = moveHandler.handle(move);
+                final Move move = new Move(ColorInterface.WHITE, rotatedPiece);
+                final Board<ColorInterface> ouput = moveHandler.handle(board, move);
                 BoardRenderer.render(ouput);
             }
             System.out.println("=================8<=================");

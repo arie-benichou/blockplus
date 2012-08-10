@@ -20,7 +20,7 @@ package demo.piece;
 import static blockplus.board.BoardRenderer.render;
 import static blockplus.position.Position.Position;
 import blockplus.board.Board;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
 import blockplus.piece.Piece;
@@ -35,14 +35,14 @@ public class PiecesDemo2 {
             final PieceInterface pieceInterface = piece.get();
             final int radius = ((Piece) piece.get()).getPieceData().radius(); // TODO à revoir
             final int n = 1 + 2 * (radius + 1);
-            final Board<Color> inputBoard = Board.from(n, n, Color.TRANSPARENT, Color.OPAQUE);
-            final MoveHandler moveHandler = new MoveHandler(inputBoard);
+            final Board<ColorInterface> board = Board.from(n, n, ColorInterface.TRANSPARENT, ColorInterface.OPAQUE);
+            final MoveHandler moveHandler = new MoveHandler();
             final PositionInterface position = Position(n / 2, n / 2);
             final PieceInterface translatedPiece = pieceInterface.translateTo(position);
             System.out.println();
             System.out.println("=================8<=================");
-            final Move move = new Move(Color.WHITE, translatedPiece);
-            final Board<Color> ouput = moveHandler.handle(move);
+            final Move move = new Move(ColorInterface.WHITE, translatedPiece);
+            final Board<ColorInterface> ouput = moveHandler.handle(board, move);
             render(ouput);
             System.out.println("radius : " + radius);
         }

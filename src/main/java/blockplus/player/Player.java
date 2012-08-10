@@ -17,26 +17,36 @@
 
 package blockplus.player;
 
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.piece.PiecesBag;
+
+import com.google.common.base.Objects;
 
 // TODO Player as composite pour les variantes de jeux
 public class Player {
 
-    private final Color color;
+    private final ColorInterface color;
     private final PiecesBag bagOfPieces;
 
-    public Player(final Color color, final PiecesBag bagOfPieces) {
+    public Player(final ColorInterface color, final PiecesBag bagOfPieces) {
         this.color = color;
         this.bagOfPieces = bagOfPieces;
     }
 
-    public Color getColor() {
+    public ColorInterface getColor() {
         return this.color;
     }
 
     public PiecesBag getAvailablePieces() {
         return this.bagOfPieces;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("color", this.getColor().name())
+                //.add("pieces", this.bagOfPieces)
+                .toString();
     }
 
 }

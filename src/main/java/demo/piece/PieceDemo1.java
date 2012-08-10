@@ -19,10 +19,13 @@ package demo.piece;
 
 import static blockplus.piece.Piece.Piece;
 import static blockplus.position.Position.Position;
+
+import java.util.List;
+
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
 import blockplus.board.BoardRenderer;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
 import blockplus.piece.PieceComponent;
@@ -30,22 +33,12 @@ import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
 
 public final class PieceDemo1 {
 
-    private static void rotatePieceOnItself(final Board<Color> board) {
-        final PieceInterface piece = Piece(7);
-        PieceInterface movedPiece = piece.translateTo(Position(5, 5));
-        final MoveHandler moveHandler = new MoveHandler(board);
-        for (int i = 0; i < 4; ++i) {
-            final Move move = new Move(Color.WHITE, movedPiece);
-            final Board<Color> ouput = moveHandler.handle(move);
-            BoardRenderer.render(ouput);
-            movedPiece = movedPiece.rotate();
-        }
-    }
-
     public static void main(final String[] args) {
+
         final String[][] data = {
                 { "o.........o" },
                 { "..........." },
@@ -59,15 +52,32 @@ public final class PieceDemo1 {
                 { "..........." },
                 { "o.........o" }
         };
-        final Board<Color> board = BoardBuilder.parse(data);
+
+        final Board<ColorInterface> board = BoardBuilder.parse(data);
+        final PieceInterface piece = Piece(20);
+        PieceInterface movedPiece = piece.translateTo(Position(5, 5));
+        final MoveHandler moveHandler = new MoveHandler();
         final Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
-        for (int i = 0; i < 1; ++i) {
-            rotatePieceOnItself(board);
+
+        final List<Move> rotations = Lists.newArrayListWithCapacity(4);
+        for (int i = -1; i < 1850000 * 1; ++i) { // ~ 10 s
+            rotations.clear();
+            for (int n = 0; n < 4; ++n) {
+                rotations.add(new Move(ColorInterface.WHITE, movedPiece));
+                movedPiece = movedPiece.rotate();
+            }
         }
+
         stopwatch.stop();
+        System.out.println("-----------------------------8<-----------------------------");
+        for (final Move move : rotations) {
+            BoardRenderer.render(moveHandler.handle(board, move));
+        }
+        System.out.println("-----------------------------8<-----------------------------");
         System.out.println(PieceComponent.FACTORY);
         System.out.println(PieceComposite.FACTORY);
+        System.out.println("-----------------------------8<-----------------------------");
         System.out.println(stopwatch.toString());
     }
 

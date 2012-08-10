@@ -17,6 +17,7 @@
 
 package blockplus.piece;
 
+import static blockplus.piece.Piece.Piece;
 import static blockplus.piece.PieceData.PieceData;
 
 import com.google.common.base.Supplier;
@@ -53,7 +54,7 @@ public enum Pieces implements Supplier<PieceInterface> {
     }
 
     private Pieces() {
-        this.piece = Piece.Piece(PieceData(this.ordinal()));
+        this.piece = Piece(PieceData(this.ordinal()));
     }
 
     @Override

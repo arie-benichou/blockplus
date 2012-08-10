@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
@@ -36,7 +36,7 @@ import blockplus.player.Player;
 public class RefereeTest {
 
     private Referee referee;
-    private Board<Color> board;
+    private Board<ColorInterface> board;
 
     @Before
     public void setUp() throws Exception {
@@ -68,14 +68,14 @@ public class RefereeTest {
 
     @Test
     public void testGetLegalMovesWithEmptyBagOfPieces() {
-        final Player player = new Player(Color.WHITE, PiecesBag.from());
+        final Player player = new Player(ColorInterface.WHITE, PiecesBag.from());
         final Set<Move> legalMoves = this.referee.getLegalMoves(this.board, player);
         Assert.assertTrue(legalMoves.isEmpty());
     }
 
     @Test
     public void testGetLegalMovesWithBagOfPiecesHavingOnePiece() {
-        final Player player = new Player(Color.WHITE, PiecesBag.from(Pieces.get(1)));
+        final Player player = new Player(ColorInterface.WHITE, PiecesBag.from(Pieces.get(1)));
         final Set<Move> legalMoves = this.referee.getLegalMoves(this.board, player);
         Assert.assertFalse(legalMoves.isEmpty());
         // TODO à compléter

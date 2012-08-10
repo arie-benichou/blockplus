@@ -20,7 +20,7 @@ package demo.board;
 import static blockplus.board.BoardBuilder.parse;
 import blockplus.board.Board;
 import blockplus.board.BoardRenderer;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 
 public class BoardBuilderDemo {
 
@@ -36,8 +36,8 @@ public class BoardBuilderDemo {
                     { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
                     { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
             };
-            final Board<Color> board = parse(data);
-            System.out.println(board);
+            final Board<ColorInterface> board = parse(data);
+            //System.out.println(board);
             BoardRenderer.render(board);
         }
 
@@ -51,8 +51,8 @@ public class BoardBuilderDemo {
                     { ".g.......r." },
                     { "..........." }
             };
-            final Board<Color> board = parse(data);
-            System.out.println(board);
+            final Board<ColorInterface> board = parse(data);
+            //System.out.println(board);
             BoardRenderer.render(board);
         }
 

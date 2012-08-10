@@ -185,6 +185,7 @@ public final class Matrix {
         return result;
     }
 
+    // TODO ! write tests
     public int min(final int rowIndex) {
         Preconditions.checkArgument(rowIndex < this.numberOfRows);
         int min = Integer.MAX_VALUE;
@@ -196,6 +197,7 @@ public final class Matrix {
         return min;
     }
 
+    // TODO ! write tests    
     public int max(final int rowIndex) {
         Preconditions.checkArgument(rowIndex < this.numberOfRows);
         int max = Integer.MIN_VALUE;
@@ -211,7 +213,7 @@ public final class Matrix {
         final int n = Math.max(String.valueOf(this.min()).length(), String.valueOf(this.max()).length());
         for (int i = 0; i < this.getNumberOfRows(); ++i) {
             for (int j = 0; j < this.getNumberOfColumns(); ++j)
-                System.out.print(Strings.padStart(String.valueOf(this.data[i][j]), n, '0') + " ");
+                System.out.print(Strings.padStart(String.valueOf(this.data[i][j]), n, ' ') + " ");
             System.out.println();
         }
         System.out.println();

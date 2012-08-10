@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import blockplus.board.Board;
-import blockplus.color.Color;
+import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.piece.Piece;
 import blockplus.piece.PieceInterface;
@@ -37,31 +37,31 @@ import com.google.common.collect.Sets;
 public class Referee {
 
     // TODO ! extract predicate
-    private boolean hasRoom(final Board<Color> board, final PieceInterface piece) {
+    private boolean hasRoom(final Board<ColorInterface> board, final PieceInterface piece) {
         for (final PieceInterface component : piece)
             if (board.get(component.getReferential()).hasOpacity()) return false;
         return true;
     }
 
     // TODO ! extract predicate    
-    private boolean hasSideOfSameColor(final Board<Color> board, final Color color, final PieceInterface piece) {
+    private boolean hasSideOfSameColor(final Board<ColorInterface> board, final ColorInterface color, final PieceInterface piece) {
         for (final PositionInterface position : piece.getSides())
             if (board.get(position).is(color)) return true;
         return false;
     }
 
     // TODO ! extract predicate    
-    private boolean hasCornerOfSameColor(final Board<Color> board, final Color color, final PieceInterface piece) {
+    private boolean hasCornerOfSameColor(final Board<ColorInterface> board, final ColorInterface color, final PieceInterface piece) {
         for (final PositionInterface position : piece.getCorners()) {
-            final Color c = board.get(position);
-            if (c.is(Color.WHITE)) return true; // TODO à revoir...
+            final ColorInterface c = board.get(position);
+            if (c.is(ColorInterface.WHITE)) return true; // TODO ! à revoir...
             if (c.is(color)) return true;
         }
         return false;
     }
 
     // TODO ! extract predicate    
-    private boolean isLegal(final Board<Color> board, final Color color, final PieceInterface piece) {
+    private boolean isLegal(final Board<ColorInterface> board, final ColorInterface color, final PieceInterface piece) {
         return this.hasRoom(board, piece)
                 && !this.hasSideOfSameColor(board, color, piece)
                 && this.hasCornerOfSameColor(board, color, piece);
@@ -69,8 +69,8 @@ public class Referee {
     }
 
     private List<Move> getLegalMoves(
-            final Board<Color> board,
-            final Color color,
+            final Board<ColorInterface> board,
+            final ColorInterface color,
             final PieceInterface pieceTemplate,
             final PositionInterface potentialPosition
             ) {
@@ -81,13 +81,13 @@ public class Referee {
         return legalMoves;
     }
 
-    private List<PositionInterface> getPositionsHavingPotential(final Board<Color> board, final Color color) {
+    private List<PositionInterface> getPositionsHavingPotential(final Board<ColorInterface> board, final ColorInterface color) {
         final List<PositionInterface> positionsHavingPotential = Lists.newArrayList();
-        final Color potential = color.potential();
+        final ColorInterface potential = color.potential();
         for (int i = 0; i < board.rows(); ++i) {
             for (int j = 0; j < board.columns(); ++j) {
                 final PositionInterface position = Position(i, j);
-                final Color c = board.get(position);
+                final ColorInterface c = board.get(position);
                 if (c.hasTransparency() && c.contains(potential)) positionsHavingPotential.add(position);
             }
         }
@@ -95,8 +95,8 @@ public class Referee {
     }
 
     private Set<PositionInterface> getDistinctPotentialPositions(
-            final Board<Color> board,
-            final Color color,
+            final Board<ColorInterface> board,
+            final ColorInterface color,
             final List<PositionInterface> positionsHavingPotential,
             final PieceInterface pieceTemplate) {
         final int radius = ((Piece) pieceTemplate).getPieceData().radius();
@@ -110,8 +110,8 @@ public class Referee {
     }
 
     // TODO pouvoir passer un Ordering/Comparator de Move
-    public Set<Move> getLegalMoves(final Board<Color> board, final Player player) {
-        final Color color = player.getColor();
+    public Set<Move> getLegalMoves(final Board<ColorInterface> board, final Player player) {
+        final ColorInterface color = player.getColor();
         final List<PositionInterface> positionsHavingPotential = this.getPositionsHavingPotential(board, color);
         final Set<Move> legalMoves = Sets.newHashSet();
         for (final PieceInterface pieceTemplate : player.getAvailablePieces()) {
@@ -123,7 +123,7 @@ public class Referee {
         return legalMoves;
     }
 
-    public List<Move> getOrderedLegalMoves(final Board<Color> board, final Player player) {
+    public List<Move> getOrderedLegalMoves(final Board<ColorInterface> board, final Player player) {
         final List<Move> moves = Lists.newArrayList(this.getLegalMoves(board, player));
         Collections.sort(moves);
         return moves;
