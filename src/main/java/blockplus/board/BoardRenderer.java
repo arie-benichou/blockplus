@@ -75,7 +75,6 @@ public final class BoardRenderer {
 
     public static void render(final Board<ColorInterface> board) {
         System.out.println(getRendering(board));
-        //System.out.println(IO.render(board)); // TODO pouvoir passer un mapping des symboles
     }
 
     private BoardRenderer() {}

@@ -3,6 +3,7 @@ package blockplus.color;
 
 public interface ColorInterface {
 
+    // TODO faire Colors
     final static ColorInterface OPAQUE = PrimeColors.OPAQUE;
     final static ColorInterface UNKNOWN = PrimeColors.UNKNOWN;
     final static ColorInterface TRANSPARENT = PrimeColors.TRANSPARENT;
