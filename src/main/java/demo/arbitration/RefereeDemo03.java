@@ -58,7 +58,7 @@ public class RefereeDemo03 {
         };
         final Board<ColorInterface> board = parse(data);
         final MoveHandler moveHandler = new MoveHandler();
-        final Player player = new Player(ColorInterface.YELLOW, PiecesBag.from(Piece(15))); //FIXME
+        final Player player = new Player(ColorInterface.YELLOW, PiecesBag.from(Piece(15)));
         final Referee boardReferee = new Referee();
         render(board);
         if (!player.getAvailablePieces().isEmpty()) {

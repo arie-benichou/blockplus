@@ -185,7 +185,6 @@ public final class Matrix {
         return result;
     }
 
-    // TODO ! write tests
     public int min(final int rowIndex) {
         Preconditions.checkArgument(rowIndex < this.numberOfRows);
         int min = Integer.MAX_VALUE;
@@ -197,7 +196,6 @@ public final class Matrix {
         return min;
     }
 
-    // TODO ! write tests    
     public int max(final int rowIndex) {
         Preconditions.checkArgument(rowIndex < this.numberOfRows);
         int max = Integer.MIN_VALUE;
