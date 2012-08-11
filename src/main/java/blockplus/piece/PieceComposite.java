@@ -274,7 +274,7 @@ public final class PieceComposite implements PieceInterface {
         return Objects.toStringHelper(this)
                 .addValue("\n  " + this.getId())
                 //.addValue("\n  " + this.getReferential())
-                .addValue("\n  " + Joiner.on("\n  ").join(this.get()) + " \n  ")
+                .addValue("\n  " + Joiner.on("\n  ").join(this.get()) + "\n")
                 .toString();
     }
 

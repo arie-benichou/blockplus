@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,6 +42,11 @@ public class PieceComponentTest {
     @Before
     public void setup() {
         this.pieceComponent = PieceComponent(0, 0);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        this.pieceComponent = null;
     }
 
     @Test

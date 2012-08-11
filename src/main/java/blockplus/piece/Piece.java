@@ -34,6 +34,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+// TODO à revoir
 public class Piece implements PieceInterface {
 
     private final static boolean IS_FACTORY_CACHING = true;

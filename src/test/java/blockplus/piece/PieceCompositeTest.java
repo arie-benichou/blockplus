@@ -7,18 +7,18 @@ import static blockplus.piece.PieceComposite.PieceComposite;
 import static blockplus.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import blockplus.position.PositionInterface;
 
 import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
 
 public class PieceCompositeTest {
 
@@ -35,6 +35,11 @@ public class PieceCompositeTest {
         this.pieceComposite = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 0), Position(0, 1)));
     }
 
+    @After
+    public void tearDown() throws Exception {
+        this.pieceComposite = null;
+    }
+
     @Test
     public void testGetId() {
         assertEquals(2, this.pieceComposite.getId());
@@ -42,42 +47,33 @@ public class PieceCompositeTest {
 
     @Test
     public void testGetCorners() {
-        final Set<PositionInterface> expected = Sets.newHashSet(
-                Position(-1, -1),
-                Position(-1, 1),
-                Position(1, -1),
-                Position(1, 1));
+        final Set<PieceInterface> components = this.pieceComposite.get();
+        final Set<PositionInterface> expected = Sets.newHashSet();
+        for (final PieceInterface component : components)
+            expected.addAll(component.getCorners());
         assertEquals(expected, this.pieceComposite.getCorners());
-        fail();
     }
 
     @Test
     public void testGetSides() {
-        final Set<PositionInterface> expected = Sets.newHashSet(
-                Position(0, -1),
-                Position(0, 1),
-                Position(1, 0),
-                Position(-1, 0));
+        final Set<PieceInterface> sides = this.pieceComposite.get();
+        final Set<PositionInterface> expected = Sets.newHashSet();
+        for (final PieceInterface component : sides)
+            expected.addAll(component.getSides());
         assertEquals(expected, this.pieceComposite.getSides());
-        fail();
     }
 
     @Test
-    public void testGetExtensions() {
-        final Set<PositionInterface> expected = Sets.newHashSet(
-                Position(-1, -1),
-                Position(-1, 1),
-                Position(1, -1),
-                Position(1, 1));
+    public void testgPotentialPositions() {
+        final SetView<PositionInterface> expected = Sets.difference(this.pieceComposite.getCorners(), this.pieceComposite.getSides());
         assertEquals(expected, this.pieceComposite.getPotentialPositions());
-        fail();
     }
 
     @Test
     public void testGet() {
-        assertEquals(1, this.pieceComposite.get().size());
-        assertSame(this.pieceComposite, this.pieceComposite.get().iterator().next());
-        fail();
+        final Set<PieceComponent> expected = Sets.newHashSet(PieceComponent(0, 0), PieceComponent(0, 1));
+        final Set<PieceInterface> actual = this.pieceComposite.get();
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -92,18 +88,26 @@ public class PieceCompositeTest {
 
     @Test
     public void testToString() {
-        final String expected = "PieceComponent{(0, 0)}";
+        final String expected = "" +
+                "PieceComposite{" + "\n" +
+                "  2, " + "\n" +
+                "  PieceComponent{(0, 0)}" + "\n" +
+                "  PieceComponent{(0, 1)}" + "\n" +
+                "}";
         final String actual = this.pieceComposite.toString();
         assertEquals(expected, actual);
-        fail();
     }
 
     @Test
     public void testHashCode() {
-        final int expected = "PieceComponent{(0, 0)}".hashCode();
+        final int expected = ("" +
+                "PieceComposite{" + "\n" +
+                "  2, " + "\n" +
+                "  PieceComponent{(0, 0)}" + "\n" +
+                "  PieceComponent{(0, 1)}" + "\n" +
+                "}").hashCode();
         final int actual = this.pieceComposite.toString().hashCode();
         assertEquals(expected, actual);
-        fail();
     }
 
     @Test
@@ -111,193 +115,131 @@ public class PieceCompositeTest {
         assertFalse(this.pieceComposite.equals(null));
         assertFalse(this.pieceComposite.equals(new Object()));
         assertTrue(this.pieceComposite.equals(this.pieceComposite));
-        assertFalse(this.pieceComposite.equals(PieceComponent(1, 0)));
-        assertFalse(this.pieceComposite.equals(PieceComponent(0, 1)));
-        assertFalse(this.pieceComposite.equals(PieceComponent(1, 1)));
-        assertTrue(this.pieceComposite.equals(PieceComponent(0, 0)));
-        assertTrue(PieceComponent(0, 0).equals(this.pieceComposite));
-        fail();
+        {
+            final PieceInterface pieceComposite = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 1), Position(0, 1)));
+            assertFalse(this.pieceComposite.equals(pieceComposite));
+        }
+        {
+            final PieceInterface pieceComposite = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 1), Position(1, 0)));
+            assertFalse(this.pieceComposite.equals(pieceComposite));
+        }
+        {
+            final PieceInterface pieceComposite = PieceComposite(2, Position(), Sets.newHashSet(Position(1, 0), Position(0, 0)));
+            assertFalse(this.pieceComposite.equals(pieceComposite));
+        }
+        {
+            final PieceInterface pieceComposite = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 0), Position(1, 0)));
+            assertFalse(this.pieceComposite.equals(pieceComposite));
+        }
+        {
+            final PieceInterface pieceComposite = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 1), Position(0, 0)));
+            assertTrue(this.pieceComposite.equals(pieceComposite));
+            assertTrue(pieceComposite.equals(this.pieceComposite));
+        }
+        {
+            final PieceInterface pieceComposite = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 0), Position(0, 1)));
+            assertTrue(this.pieceComposite.equals(pieceComposite));
+            assertTrue(pieceComposite.equals(this.pieceComposite));
+        }
     }
 
     @Test
     public void testTranslateTo() {
         {
-            final PieceInterface expected = PieceComponent(1, 0);
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(1, 0), Position(1, 1)));
             final PieceInterface actual = this.pieceComposite.translateTo(Position(1, 0));
             assertEquals(expected, actual);
         }
         {
-            final PieceInterface expected = PieceComponent(0, 1);
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 1), Position(0, 2)));
             final PieceInterface actual = this.pieceComposite.translateTo(Position(0, 1));
             assertEquals(expected, actual);
         }
         {
-            final PieceInterface expected = PieceComponent(1, 1);
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(1, 1), Position(1, 2)));
             final PieceInterface actual = this.pieceComposite.translateTo(Position(1, 1));
             assertEquals(expected, actual);
         }
-        fail();
     }
 
     @Test
     public void testTranslateBy() {
-        fail();
-        final PieceInterface pieceComponent = PieceComponent(0, 0);
+        final PieceInterface pieceComposite = this.pieceComposite;
         {
-            final PieceInterface expected = PieceComponent(1, 0);
-            final PieceInterface actual = pieceComponent.translateBy(Direction(1, 0));
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(1, 0), Position(1, 1)));
+            final PieceInterface actual = pieceComposite.translateBy(Direction(1, 0));
             assertEquals(expected, actual);
         }
         {
-            final PieceInterface expected = PieceComponent(0, 1);
-            final PieceInterface actual = pieceComponent.translateBy(Direction(0, 1));
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 1), Position(0, 2)));
+            final PieceInterface actual = pieceComposite.translateBy(Direction(0, 1));
             assertEquals(expected, actual);
         }
         {
-            final PieceInterface expected = PieceComponent(1, 1);
-            final PieceInterface actual = pieceComponent.translateBy(Direction(1, 1));
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(1, 1), Position(1, 2)));
+            final PieceInterface actual = pieceComposite.translateBy(Direction(1, 1));
             assertEquals(expected, actual);
         }
     }
 
     @Test
     public void testRotate() {
-        fail();
+        PieceInterface actual = this.pieceComposite;
         {
-            final PieceInterface pieceComponent = PieceComponent(0, 0);
-            final PieceInterface expected = pieceComponent;
-            final PieceInterface actual = pieceComponent.rotate();
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(-1, 0), Position(0, 0)));
+            actual = actual.rotate();
             assertEquals(expected, actual);
-            assertSame(expected, actual);
         }
         {
-            final PieceInterface pieceComponent = PieceComponent(0, 1);
-            final PieceInterface expected = pieceComponent;
-            final PieceInterface actual = pieceComponent.rotate();
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(0, -1), Position(0, 0)));
+            actual = actual.rotate();
             assertEquals(expected, actual);
-            assertSame(expected, actual);
         }
         {
-            final PieceInterface pieceComponent = PieceComponent(1, 0);
-            final PieceInterface expected = pieceComponent;
-            final PieceInterface actual = pieceComponent.rotate();
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 0), Position(1, 0)));
+            actual = actual.rotate();
             assertEquals(expected, actual);
-            assertSame(expected, actual);
         }
         {
-            final PieceInterface pieceComponent = PieceComponent(1, 1);
-            final PieceInterface expected = pieceComponent;
-            final PieceInterface actual = pieceComponent.rotate();
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 0), Position(0, 1)));
+            actual = actual.rotate();
             assertEquals(expected, actual);
-            assertSame(expected, actual);
         }
     }
 
     @Test
     public void testRotateAroundOrigin() {
-        fail();
         final PositionInterface referential = Position(0, 0);
+        PieceInterface actual = this.pieceComposite;
         {
-            final PieceInterface pieceComponent = PieceComponent(0, 0);
-            final PieceInterface expected = PieceComponent(0, 0);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
-            assertEquals(expected, actual);
-        }
-        {
-            final PieceInterface pieceComponent = PieceComponent(1, 0);
-            final PieceInterface expected = PieceComponent(0, 1);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(-1, 0), Position(0, 0)));
+            actual = actual.rotateAround(referential);
             assertEquals(expected, actual);
         }
         {
-            final PieceInterface pieceComponent = PieceComponent(0, 1);
-            final PieceInterface expected = PieceComponent(-1, 0);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(0, -1), Position(0, 0)));
+            actual = actual.rotateAround(referential);
             assertEquals(expected, actual);
         }
         {
-            final PieceInterface pieceComponent = PieceComponent(-1, 0);
-            final PieceInterface expected = PieceComponent(0, -1);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 0), Position(1, 0)));
+            actual = actual.rotateAround(referential);
             assertEquals(expected, actual);
         }
         {
-            final PieceInterface pieceComponent = PieceComponent(0, -1);
-            final PieceInterface expected = PieceComponent(1, 0);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 0), Position(0, 1)));
+            actual = actual.rotateAround(referential);
             assertEquals(expected, actual);
         }
-    }
-
-    @Test
-    public void testRotateAroundNotOrigin() {
-        fail();
-        final PieceInterface pieceComponent = PieceComponent(0, 0);
-        { //0
-            final PositionInterface referential = Position(-1, -1);
-            final PieceInterface expected = PieceComponent(-2, 0);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
-            assertEquals(expected, actual);
-        }
-        {//1
-            final PositionInterface referential = Position(-1, 0);
-            final PieceInterface expected = PieceComponent(-1, 1);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
-            assertEquals(expected, actual);
-        }
-        {//2
-            final PositionInterface referential = Position(-1, 1);
-            final PieceInterface expected = PieceComponent(0, 2);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
-            assertEquals(expected, actual);
-        }
-        {//3
-            final PositionInterface referential = Position(0, -1);
-            final PieceInterface expected = PieceComponent(-1, -1);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
-            assertEquals(expected, actual);
-        }
-        {//4
-            final PositionInterface referential = Position(0, 0);
-            final PieceInterface expected = PieceComponent(0, 0);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
-            assertEquals(expected, actual);
-        }
-        {//5
-            final PositionInterface referential = Position(0, 1);
-            final PieceInterface expected = PieceComponent(1, 1);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
-            assertEquals(expected, actual);
-        }
-        {//6
-            final PositionInterface referential = Position(1, -1);
-            final PieceInterface expected = PieceComponent(0, -2);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
-            assertEquals(expected, actual);
-        }
-        {//7
-            final PositionInterface referential = Position(1, 0);
-            final PieceInterface expected = PieceComponent(1, -1);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
-            assertEquals(expected, actual);
-        }
-        {//8
-            final PositionInterface referential = Position(1, 1);
-            final PieceInterface expected = PieceComponent(2, 0);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
-            assertEquals(expected, actual);
-        }
-
     }
 
     @Test
     public void testRotateAround() {
-        fail();
         final PositionInterface referential = Position(5, 5);
         {
-            final PieceInterface pieceComponent = PieceComponent(5, 6);
-            final PieceInterface expected = PieceComponent(4, 5);
-            final PieceInterface actual = pieceComponent.rotateAround(referential);
+            final PieceInterface pieceComposite = this.pieceComposite;
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(9, 0), Position(10, 0)));
+            final PieceInterface actual = pieceComposite.rotateAround(referential);
             assertEquals(expected, actual);
         }
     }

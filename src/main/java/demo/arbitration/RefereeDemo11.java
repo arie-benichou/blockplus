@@ -179,7 +179,6 @@ public class RefereeDemo11 {
                     System.out.println(numberOfLegalMoves);
                     final Move randomLegalMove = legalMoves.get(random.nextInt(numberOfLegalMoves));
                     /////////////////////////////////////////////////////////
-                    // TODO gérer les potentiels
                     board = moveHandler.handle(board, randomLegalMove);
                     /////////////////////////////////////////////////////////
                     // TODO faire Move(Piece, Position, rotationOrdinal)
