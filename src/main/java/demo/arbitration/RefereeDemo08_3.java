@@ -19,53 +19,46 @@ package demo.arbitration;
 
 import static blockplus.board.BoardBuilder.parse;
 import static blockplus.board.BoardRenderer.render;
-import static blockplus.position.Position.Position;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
+import blockplus.board.BoardRenderer;
 import blockplus.color.ColorInterface;
-import blockplus.io.IO;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
-import blockplus.piece.Piece;
-import blockplus.piece.PieceComponent;
-import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
-/**
- * Random game generator.
- */
-public class RefereeDemo7 {
+// TODO ! extract GameLoop
+public class RefereeDemo08_3 {
 
     public static void main(final String[] args) {
 
         //Board<Color> board = BoardBuilder.from(20, 20);
 
         final String[][] data = {
-                { "Ø..................Ø" },
-                { "...................." },
-                { "...................." },
-                { "..........Ø.Ø......." },
-                { ".......ØØØØB........" },
-                { ".......ØØØbØØ......." },
-                { ".......ØØ.ØØ........" },
-                { "......ØØyØØØ........" },
-                { ".......YØØØØ........" },
-                { "......Ø.Ø..........." },
-                { "...................." },
-                { "...................." },
-                { "Ø..................Ø" }
+                { "RB.R" },
+                { "ØRbØ" },
+                { "RØØ." },
+                { "BØØB" }
         };
+
+        /*
+        final int[][] data =
+        {
+                { -1, 1, -2 },
+                { 1, 1, 1 },
+                { -5, 1, -1 }
+        };
+        */
+
         Board<ColorInterface> board = parse(data);
 
         /////////////////////////////////////////////////////////
@@ -73,18 +66,32 @@ public class RefereeDemo7 {
         final MoveHandler moveHandler = new MoveHandler();
         final Referee referee = new Referee();
         /////////////////////////////////////////////////////////        
-        final Set<ColorInterface> colors = Sets.newLinkedHashSet();
-        colors.add(ColorInterface.BLUE);
-        colors.add(ColorInterface.YELLOW);
+        final List<ColorInterface> playerColors = Lists.newArrayList();
+        /////////////////////////////////////////////////////////      
+        playerColors.add(ColorInterface.BLUE);
+        playerColors.add(ColorInterface.RED);
         /////////////////////////////////////////////////////////
-        final List<PieceInterface> pieces = Lists.newArrayList(Pieces.get(1), Pieces.get(1));
+        // TODO à revoir
+        final List<PieceInterface> pieces = Lists.newArrayList(
+                Pieces.get(1),
+                Pieces.get(1),
+                Pieces.get(1),
+                Pieces.get(1),
+                Pieces.get(1),
+                Pieces.get(1),
+                Pieces.get(1),
+                Pieces.get(1)
+                );
         /////////////////////////////////////////////////////////        
         final List<Player> remainingPlayers = Lists.newArrayList();
-        for (final ColorInterface color : colors) {
+        for (final ColorInterface color : playerColors) {
             remainingPlayers.add(new Player(color, PiecesBag.from(pieces)));
         }
         /////////////////////////////////////////////////////////
+        final List<Player> noMorePlayers = Lists.newArrayList();
+        /////////////////////////////////////////////////////////
         render(board);
+        BoardRenderer.debug(board);
         System.out.println("-----------------------------8<-----------------------------");
         /////////////////////////////////////////////////////////
         while (!remainingPlayers.isEmpty()) {
@@ -97,32 +104,22 @@ public class RefereeDemo7 {
             for (final Player player : players) {
                 /////////////////////////////////////////////////////////
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(100);
                 }
                 catch (final InterruptedException e) {}
                 /////////////////////////////////////////////////////////
                 final List<Move> legalMoves = referee.getOrderedLegalMoves(board, player);
                 /////////////////////////////////////////////////////////
-
-                ColorInterface color1 = null;
-                ColorInterface color2 = null;
-
-                /////////////////////////////////////////////////////////
-                if (legalMoves.isEmpty()) System.out.println(player + " has no more move.");
+                if (legalMoves.isEmpty()) {
+                    System.out.println(player + " has no more move.");
+                    noMorePlayers.add(player);
+                }
                 else {
                     /////////////////////////////////////////////////////////
                     final int numberOfLegalMoves = legalMoves.size();
                     final Move randomLegalMove = legalMoves.get(random.nextInt(numberOfLegalMoves));
-
                     /////////////////////////////////////////////////////////
-                    color1 = board.get(Position(6, 9));
-                    /////////////////////////////////////////////////////////
-                    // TODO gérer les potentiels
                     board = moveHandler.handle(board, randomLegalMove);
-                    /////////////////////////////////////////////////////////
-                    color2 = board.get(Position(6, 9));
-                    /////////////////////////////////////////////////////////
-
                     /////////////////////////////////////////////////////////
                     // TODO faire Move(Piece, Position, rotationOrdinal)
                     // TODO ? définir les pièces avec référentiel à (0,0)
@@ -134,19 +131,12 @@ public class RefereeDemo7 {
                     /////////////////////////////////////////////////////////
                 }
                 /////////////////////////////////////////////////////////
-                System.out.println(color1 + " ---> " + color2);
                 render(board);
-                System.out.println();
+                BoardRenderer.debug(board);
                 /////////////////////////////////////////////////////////
+                System.out.println("-----------------------------8<-----------------------------");
             }
         }
-        /////////////////////////////////////////////////////////
-        IO.render(board);
-        System.out.println("-----------------------------8<-----------------------------");
-        System.out.println(PieceComponent.FACTORY);
-        System.out.println(PieceComposite.FACTORY);
-        System.out.println(Piece.FACTORY);
-        System.out.println("-----------------------------8<-----------------------------");
+        /////////////////////////////////////////////////////////        
     }
-
 }

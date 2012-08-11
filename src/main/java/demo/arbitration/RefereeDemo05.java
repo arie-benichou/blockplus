@@ -26,6 +26,7 @@ import java.util.List;
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
 import blockplus.color.ColorInterface;
+import blockplus.io.MainView;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
 import blockplus.piece.Piece;
@@ -37,23 +38,28 @@ import blockplus.player.Player;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
-public class RefereeDemo2 {
+public class RefereeDemo05 {
 
     public static void main(final String[] args) {
         final String[][] data = {
-                { "ØØØØØØØØØ" },
-                { "Ø.......Ø" },
-                { "Ø.......Ø" },
-                { "Ø..o.o..Ø" },
-                { "Ø...O...Ø" },
-                { "Ø..o.o..Ø" },
-                { "Ø.......Ø" },
-                { "Ø.......Ø" },
-                { "ØØØØØØØØØ" }
+                { "Ø...........Ø" },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "............." },
+                { "Ø...........o" }
         };
         final Board<ColorInterface> board = parse(data);
         final MoveHandler moveHandler = new MoveHandler();
-        final Player player = new Player(ColorInterface.WHITE, PiecesBag.from(Piece(3))); // FIXME
+        final PiecesBag bagOfPieces = PiecesBag.from(Piece(1), Piece(2));
+        final Player player = new Player(ColorInterface.GREEN, bagOfPieces);
         final Referee boardReferee = new Referee();
         render(board);
         if (!player.getAvailablePieces().isEmpty()) {
@@ -61,16 +67,19 @@ public class RefereeDemo2 {
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
 
-            final int loop = 68400;
-            for (int i = -1; i < loop * 1; ++i) { // ~10 s
+            final int loop = 95000;
+            for (int i = -1; i < loop * 0; ++i) { // ~10 s
                 legalMoves = boardReferee.getOrderedLegalMoves(board, player);
-                Preconditions.checkState(legalMoves.size() == 8); // TODO ! write tests
+                Preconditions.checkState(legalMoves.size() == 3); // TODO ! write tests
             }
 
             stopwatch.stop();
             System.out.println("-----------------------------8<-----------------------------");
-            for (final Move legalMove : legalMoves)
-                render(moveHandler.handle(board, legalMove)); // TODO ? MoveRenderer
+            for (final Move legalMove : legalMoves) {
+                final Board<ColorInterface> newBoard = moveHandler.handle(board, legalMove);
+                render(newBoard);
+                MainView.render(newBoard);
+            }
             System.out.println("-----------------------------8<-----------------------------");
             System.out.println("number of pieces      : " + player.getAvailablePieces().size());
             System.out.println("number of legal moves : " + legalMoves.size());

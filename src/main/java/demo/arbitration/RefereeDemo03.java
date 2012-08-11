@@ -19,52 +19,46 @@ package demo.arbitration;
 
 import static blockplus.board.BoardBuilder.parse;
 import static blockplus.board.BoardRenderer.render;
+import static blockplus.piece.Piece.Piece;
 
 import java.util.List;
 
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
 import blockplus.color.ColorInterface;
+import blockplus.io.MainView;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
 import blockplus.piece.Piece;
 import blockplus.piece.PieceComponent;
 import blockplus.piece.PieceComposite;
-import blockplus.piece.PieceInterface;
-import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
 
-public class RefereeDemo6 {
+public class RefereeDemo03 {
 
     public static void main(final String[] args) {
         final String[][] data = {
-                { "o...........o" },
-                { "............." },
-                { "............." },
-                { "............." },
-                { "............." },
-                { "............." },
-                { "............." },
-                { "............." },
-                { "............." },
-                { "............." },
-                { "............." },
-                { "............." },
-                { "o...........o" }
+                { "ØØØØØØØØØØØØØ" },
+                { "Ø...........Ø" },
+                { "Ø...........Ø" },
+                { "Ø...........Ø" },
+                { "Ø...........Ø" },
+                { "Ø....o.o....Ø" },
+                { "Ø.....Y.....Ø" },
+                { "Ø....o.o....Ø" },
+                { "Ø...........Ø" },
+                { "Ø...........Ø" },
+                { "Ø...........Ø" },
+                { "Ø...........Ø" },
+                { "ØØØØØØØØØØØØØ" }
         };
         final Board<ColorInterface> board = parse(data);
         final MoveHandler moveHandler = new MoveHandler();
-        // TODO à revoir
-        final List<PieceInterface> list = Lists.newArrayList();
-        for (final Pieces piece : Pieces.values())
-            list.add(piece.get());
-
-        final Player player = new Player(ColorInterface.WHITE, PiecesBag.from(list));
+        final Player player = new Player(ColorInterface.YELLOW, PiecesBag.from(Piece(15))); //FIXME
         final Referee boardReferee = new Referee();
         render(board);
         if (!player.getAvailablePieces().isEmpty()) {
@@ -72,16 +66,19 @@ public class RefereeDemo6 {
             final Stopwatch stopwatch = new Stopwatch();
             stopwatch.start();
 
-            final int loop = 2000;
-            for (int i = -1; i < loop * 1; ++i) { // ~10 s
+            final int loop = 15250;
+            for (int i = -1; i < loop * 0; ++i) { // ~10 s
                 legalMoves = boardReferee.getOrderedLegalMoves(board, player);
-                Preconditions.checkState(legalMoves.size() == 168); // TODO ! write tests
+                Preconditions.checkState(legalMoves.size() == 24); // TODO ! write tests
             }
 
             stopwatch.stop();
             System.out.println("-----------------------------8<-----------------------------");
-            for (final Move legalMove : legalMoves)
-                render(moveHandler.handle(board, legalMove)); // TODO ? MoveRenderer
+            for (final Move legalMove : legalMoves) {
+                final Board<ColorInterface> newBoard = moveHandler.handle(board, legalMove);
+                render(newBoard);
+                MainView.render(newBoard);
+            }
             System.out.println("-----------------------------8<-----------------------------");
             System.out.println("number of pieces      : " + player.getAvailablePieces().size());
             System.out.println("number of legal moves : " + legalMoves.size());
@@ -93,4 +90,5 @@ public class RefereeDemo6 {
             System.out.println(stopwatch.toString());
         }
     }
+
 }

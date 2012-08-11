@@ -40,20 +40,18 @@ import blockplus.player.Player;
 
 import com.google.common.collect.Lists;
 
-/**
- * Random game generator.
- */
-public class RefereeDemo9 {
+// TODO ! extract GameLoop
+public class RefereeDemo09 {
 
     public static void main(final String[] args) {
 
         //Board<Color> board = BoardBuilder.from(20, 20);
 
         final String[][] data = {
-                { "o..o" },
+                { "b..r" },
                 { "...." },
                 { "...." },
-                { "o..o" }
+                { "r..b" }
         };
 
         /*
@@ -125,7 +123,6 @@ public class RefereeDemo9 {
                     final int numberOfLegalMoves = legalMoves.size();
                     final Move randomLegalMove = legalMoves.get(random.nextInt(numberOfLegalMoves));
                     /////////////////////////////////////////////////////////
-                    // TODO gérer les potentiels
                     board = moveHandler.handle(board, randomLegalMove);
                     /////////////////////////////////////////////////////////
                     // TODO faire Move(Piece, Position, rotationOrdinal)

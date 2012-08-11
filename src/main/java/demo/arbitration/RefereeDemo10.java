@@ -39,59 +39,22 @@ import blockplus.player.Player;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-/**
- * Random game generator.
- */
+// TODO ! extract GameLoop
 public class RefereeDemo10 {
 
     public static void main(final String[] args) {
 
         //Board<Color> board = BoardBuilder.from(20, 20);
 
-        /*
         final String[][] data = {
-                { "o............................o" },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                { ".............................." },
-                
-                { ".............................." },
-                
-                { "o............................o" },
-        };        
-        */
-
-        final String[][] data = {
-                { "B.......R" },
-                { ".b.....r." },
+                { "b.......r" },
                 { "........." },
                 { "........." },
                 { "........." },
                 { "........." },
-                { ".y.....g." },
-                { "Y.......G" }
+                { "........." },
+                { "........." },
+                { "r.......b" }
         };
 
         Board<ColorInterface> board = parse(data);
@@ -109,20 +72,9 @@ public class RefereeDemo10 {
         /////////////////////////////////////////////////////////
         // TODO à revoir
         final List<PieceInterface> pieces = Lists.newArrayList(
-
-                Pieces.get(1),
-                Pieces.get(2),
-                Pieces.get(5),
-
-                Pieces.get(1),
-                Pieces.get(2),
-                Pieces.get(5),
-
-                Pieces.get(1),
-                Pieces.get(2),
-                Pieces.get(5)
-
-                );
+                Pieces.get(1), Pieces.get(2), Pieces.get(5),
+                Pieces.get(1), Pieces.get(2), Pieces.get(5),
+                Pieces.get(1), Pieces.get(2), Pieces.get(5));
         /////////////////////////////////////////////////////////        
         final List<Player> remainingPlayers = Lists.newArrayList();
         for (final ColorInterface color : playerColors) {
@@ -160,7 +112,6 @@ public class RefereeDemo10 {
                     final int numberOfLegalMoves = legalMoves.size();
                     final Move randomLegalMove = legalMoves.get(random.nextInt(numberOfLegalMoves));
                     /////////////////////////////////////////////////////////
-                    // TODO gérer les potentiels
                     board = moveHandler.handle(board, randomLegalMove);
                     /////////////////////////////////////////////////////////
                     // TODO faire Move(Piece, Position, rotationOrdinal)
@@ -180,9 +131,7 @@ public class RefereeDemo10 {
         }
 
         MainView.render(board);
-
         /////////////////////////////////////////////////////////        
-        //IO.render(board);
         /*
         System.out.println("-----------------------------8<-----------------------------");
         System.out.println(PieceComponent.FACTORY);

@@ -36,30 +36,19 @@ import blockplus.player.Player;
 
 import com.google.common.collect.Lists;
 
-/**
- * Random game generator.
- */
-public class RefereeDemo8_3 {
+// TODO extract GameLoop
+public class RefereeDemo08_1 {
 
     public static void main(final String[] args) {
 
         //Board<Color> board = BoardBuilder.from(20, 20);
 
-        final String[][] data = {
-                { "RB.R" },
-                { "ØRbØ" },
-                { "RØØ." },
-                { "BØØB" }
-        };
-
-        /*
         final int[][] data =
         {
-                { -1, 1, -2 },
-                { 1, 1, 1 },
-                { -5, 1, -1 }
+                { 2, 5, 2 },
+                { -10, 2, 1 },
+                { -2, -2, 2 }
         };
-        */
 
         Board<ColorInterface> board = parse(data);
 
@@ -74,16 +63,7 @@ public class RefereeDemo8_3 {
         playerColors.add(ColorInterface.RED);
         /////////////////////////////////////////////////////////
         // TODO à revoir
-        final List<PieceInterface> pieces = Lists.newArrayList(
-                Pieces.get(1),
-                Pieces.get(1),
-                Pieces.get(1),
-                Pieces.get(1),
-                Pieces.get(1),
-                Pieces.get(1),
-                Pieces.get(1),
-                Pieces.get(1)
-                );
+        final List<PieceInterface> pieces = Lists.newArrayList(Pieces.get(1), Pieces.get(1));
         /////////////////////////////////////////////////////////        
         final List<Player> remainingPlayers = Lists.newArrayList();
         for (final ColorInterface color : playerColors) {
@@ -121,7 +101,6 @@ public class RefereeDemo8_3 {
                     final int numberOfLegalMoves = legalMoves.size();
                     final Move randomLegalMove = legalMoves.get(random.nextInt(numberOfLegalMoves));
                     /////////////////////////////////////////////////////////
-                    // TODO gérer les potentiels
                     board = moveHandler.handle(board, randomLegalMove);
                     /////////////////////////////////////////////////////////
                     // TODO faire Move(Piece, Position, rotationOrdinal)
@@ -137,7 +116,6 @@ public class RefereeDemo8_3 {
                 render(board);
                 BoardRenderer.debug(board);
                 /////////////////////////////////////////////////////////
-                System.out.println("-----------------------------8<-----------------------------");
             }
         }
         /////////////////////////////////////////////////////////        

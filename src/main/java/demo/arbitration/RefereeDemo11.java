@@ -45,61 +45,12 @@ import com.google.common.collect.Sets;
 /**
  * Random game generator.
  */
+//TODO ! extract GameLoop
 public class RefereeDemo11 {
 
     public static void main(final String[] args) {
 
         //Board<Color> board = BoardBuilder.from(20, 20);
-
-        /*
-        final String[][] data = {
-                { "B..................R" },
-                { ".b................r." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { ".y................g." },
-                { "Y..................G" }
-        };
-        */
-
-        /*
-        final String[][] data = {
-                { "b..................r" },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "...................." },
-                { "y..................g" }
-        };
-        */
 
         final String[][] data = {
                 { "o..................o" },
@@ -163,7 +114,7 @@ public class RefereeDemo11 {
             for (final Player player : players) {
                 /////////////////////////////////////////////////////////
                 try {
-                    Thread.sleep(250);
+                    Thread.sleep(300);
                 }
                 catch (final InterruptedException e) {}
                 /////////////////////////////////////////////////////////
@@ -176,7 +127,7 @@ public class RefereeDemo11 {
                 else {
                     /////////////////////////////////////////////////////////
                     final int numberOfLegalMoves = legalMoves.size();
-                    System.out.println(numberOfLegalMoves);
+                    //System.out.println(numberOfLegalMoves);
                     final Move randomLegalMove = legalMoves.get(random.nextInt(numberOfLegalMoves));
                     /////////////////////////////////////////////////////////
                     board = moveHandler.handle(board, randomLegalMove);
@@ -191,15 +142,14 @@ public class RefereeDemo11 {
                     /////////////////////////////////////////////////////////
                 }
                 /////////////////////////////////////////////////////////
-                ///render(board);
-                ///BoardRenderer.debug(board);
-                ///MainView.render(board);
+                render(board);
+                BoardRenderer.debug(board);
+                MainView.render(board);
                 /////////////////////////////////////////////////////////
             }
         }
         /////////////////////////////////////////////////////////        
-        //IO.render(board);
-        MainView.render(board);
+        //MainView.render(board);
         System.out.println("-----------------------------8<-----------------------------");
         System.out.println(PieceComponent.FACTORY);
         System.out.println(PieceComposite.FACTORY);
