@@ -45,7 +45,6 @@ import com.google.common.collect.Sets;
 /**
  * Random game generator.
  */
-//TODO ! extract GameLoop
 public class RefereeDemo11 {
 
     public static void main(final String[] args) {

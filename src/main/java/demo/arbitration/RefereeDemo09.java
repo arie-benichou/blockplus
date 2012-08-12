@@ -40,7 +40,6 @@ import blockplus.player.Player;
 
 import com.google.common.collect.Lists;
 
-// TODO ! extract GameLoop
 public class RefereeDemo09 {
 
     public static void main(final String[] args) {
