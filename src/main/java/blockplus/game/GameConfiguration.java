@@ -9,6 +9,7 @@ import java.util.Set;
 import blockplus.board.Board;
 import blockplus.board.BoardBuilder;
 import blockplus.color.ColorInterface;
+import blockplus.piece.Piece;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
@@ -16,8 +17,8 @@ import blockplus.player.Player;
 import blockplus.player.Players;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 
 public final class GameConfiguration {
 
@@ -29,22 +30,21 @@ public final class GameConfiguration {
                 ColorInterface.RED,
                 ColorInterface.GREEN);
 
-        private final static ImmutableSet.Builder<PieceInterface> DEFAULT_LEGAL_PIECES_BUILDER = ImmutableSet.builder();
+        private final static ImmutableSet.Builder<Piece> DEFAULT_LEGAL_PIECES_BUILDER = ImmutableSet.builder();
         static {
             for (final Pieces piece : Pieces.values()) {
                 DEFAULT_LEGAL_PIECES_BUILDER.add(piece.get());
             }
 
         }
-        private final static Set<PieceInterface> DEFAULT_LEGAL_PIECES = DEFAULT_LEGAL_PIECES_BUILDER.build();
+        private final static Set<Piece> DEFAULT_LEGAL_PIECES = DEFAULT_LEGAL_PIECES_BUILDER.build();
 
-        private final static ImmutableList.Builder<Player> DEFAULT_PLAYERS_BUILDER = ImmutableList.builder();
+        private final static List<Player> DEFAULT_PLAYERS = Lists.newArrayList();
         static {
             for (final ColorInterface color : DEFAULT_LEGAL_COLORS) {
-                DEFAULT_PLAYERS_BUILDER.add(new Player(color, PiecesBag.from(DEFAULT_LEGAL_PIECES)));
+                DEFAULT_PLAYERS.add(new Player(color, PiecesBag.from(DEFAULT_LEGAL_PIECES)));
             }
         }
-        private final static List<Player> DEFAULT_PLAYERS = DEFAULT_PLAYERS_BUILDER.build();
 
         private final static Board<ColorInterface> DEFAULT_BOARD = BoardBuilder.parse(
                 new String[][] {
@@ -70,13 +70,13 @@ public final class GameConfiguration {
                         { "o..................o" }
                 });
 
-        private final Set<PieceInterface> pieces;
+        private final Set<Piece> pieces;
         private final Set<ColorInterface> colors;
 
         private final List<Player> players = DEFAULT_PLAYERS;
         private Board<ColorInterface> board = DEFAULT_BOARD;
 
-        public Builder(final Set<ColorInterface> legalColors, final Set<PieceInterface> legalPieces) {
+        public Builder(final Set<ColorInterface> legalColors, final Set<Piece> legalPieces) {
             Preconditions.checkArgument(!legalColors.isEmpty());
             Preconditions.checkArgument(!legalPieces.isEmpty());
             //Preconditions.checkArgument(legalColors.size() <= 4);
@@ -94,7 +94,7 @@ public final class GameConfiguration {
             return this;
         }
 
-        public Builder addPlayer(final Player player) {
+        private void addPlayer(final Player player) {
             final ColorInterface color = player.getColor();
             Preconditions.checkState(this.colors.contains(color), "Illegal color: " + color);
             final PiecesBag pieces = player.getAvailablePieces();
@@ -105,6 +105,13 @@ public final class GameConfiguration {
                 Preconditions.checkState(!addedPlayer.getColor().equals(color));
             }
             this.players.add(player);
+        }
+
+        public Builder setPlayers(final Player... players) {
+            this.players.clear();
+            for (final Player player : players) {
+                this.addPlayer(player);
+            }
             return this;
         }
 

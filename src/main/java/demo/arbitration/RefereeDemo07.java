@@ -34,7 +34,6 @@ import blockplus.move.MoveHandler;
 import blockplus.piece.Piece;
 import blockplus.piece.PieceComponent;
 import blockplus.piece.PieceComposite;
-import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
@@ -74,7 +73,7 @@ public class RefereeDemo07 {
         colors.add(ColorInterface.BLUE);
         colors.add(ColorInterface.YELLOW);
         /////////////////////////////////////////////////////////
-        final List<PieceInterface> pieces = Lists.newArrayList(Pieces.get(1), Pieces.get(1));
+        final List<Piece> pieces = Lists.newArrayList(Pieces.get(1), Pieces.get(1));
         /////////////////////////////////////////////////////////        
         final List<Player> remainingPlayers = Lists.newArrayList();
         for (final ColorInterface color : colors) {
@@ -116,7 +115,7 @@ public class RefereeDemo07 {
                     // TODO faire Move(Piece, Position, rotationOrdinal)
                     // TODO ? définir les pièces avec référentiel à (0,0)
                     //final PieceInterface piece = Piece(randomLegalMove.getPiece().getId());
-                    final PieceInterface piece = Pieces.get(randomLegalMove.getPiece().getId());
+                    final Piece piece = Pieces.get(randomLegalMove.getPiece().getId());
                     final PiecesBag remainingPieces = player.getAvailablePieces().remove(piece);
                     final Player p = new Player(player.getColor(), remainingPieces); // TODO ? NullPlayer
                     remainingPlayers.add(p);

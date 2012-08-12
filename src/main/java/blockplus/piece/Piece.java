@@ -57,7 +57,7 @@ public class Piece implements PieceInterface {
 
         private long cacheHit = 0;
 
-        private final Map<Integer, PieceInterface> cache = Maps.newConcurrentMap();
+        private final Map<Integer, Piece> cache = Maps.newConcurrentMap();
 
         public Factory(final boolean isCaching) {
             this.isCaching = isCaching;
@@ -67,16 +67,16 @@ public class Piece implements PieceInterface {
             this(IS_FACTORY_CACHING);
         }
 
-        public PieceInterface get(final int id, final PositionInterface referential, final int rotationOrdinal) {
+        public Piece get(final int id, final PositionInterface referential, final int rotationOrdinal) {
             final int hashCode = Piece.hashCode(id, referential, rotationOrdinal);
-            PieceInterface instance = this.cache.get(hashCode);
+            Piece instance = this.cache.get(hashCode);
             if (instance == null) {
 
                 if (rotationOrdinal != 0) {
                     instance = this.get(id, referential, 0);
                 }
 
-                final Piece piece = (Piece) Pieces.get(id);
+                final Piece piece = Pieces.get(id);
 
                 if (instance == null) {
                     final Set<PieceInterface> rotations = piece.get();
@@ -128,7 +128,7 @@ public class Piece implements PieceInterface {
     /*----------------------------------------8<----------------------------------------*/
 
     @SuppressWarnings("all")
-    public static PieceInterface Piece(final PieceData pieceData) {
+    public static Piece Piece(final PieceData pieceData) {
         final int rotationOrdinal = 0;
         final PieceInterface rotation0 = PieceComposite.from(pieceData.id(), pieceData.referential(), pieceData.positions());
         final PieceInterface rotation1 = rotation0.rotate();
@@ -145,19 +145,19 @@ public class Piece implements PieceInterface {
     }
 
     @SuppressWarnings("all")
-    public static PieceInterface Piece(final int id) {
+    public static Piece Piece(final int id) {
         return Piece(PieceData(id));
     }
 
     @SuppressWarnings("all")
-    public static PieceInterface Piece(final Piece piece) {
+    public static Piece Piece(final Piece piece) {
         final Set<PieceInterface> rotations = piece.get();
         final int rotationOrdinal = (piece.getRotationOrdinal() + 1) % rotations.size();
         return FACTORY.get(piece.getId(), piece.getReferential(), rotationOrdinal);
     }
 
     @SuppressWarnings("all")
-    public static PieceInterface Piece(final Piece piece, final DirectionInterface direction) {
+    public static Piece Piece(final Piece piece, final DirectionInterface direction) {
         return FACTORY.get(piece.getId(), piece.getReferential().apply(direction), piece.getRotationOrdinal());
     }
 
@@ -244,6 +244,20 @@ public class Piece implements PieceInterface {
     @Override
     public String toString() {
         return asString(this.getId(), this.getReferential(), this.getRotationOrdinal());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getId();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (object == null) return false;
+        if (object == this) return true;
+        if (!(object instanceof PieceInterface)) return false;
+        final PieceInterface that = (PieceInterface) object;
+        return this.getId() == that.getId();
     }
 
 }

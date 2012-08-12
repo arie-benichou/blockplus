@@ -37,6 +37,7 @@ import com.google.common.collect.ImmutableSortedSet.Builder;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 
+// TODO ? use Suppliers.memoize()
 public final class PieceComponent implements PieceInterface {
 
     public final static class Factory {

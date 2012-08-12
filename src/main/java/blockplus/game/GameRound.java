@@ -1,6 +1,8 @@
 
 package blockplus.game;
 
+import static blockplus.piece.Piece.Piece;
+
 import java.util.List;
 import java.util.Random;
 
@@ -10,8 +12,6 @@ import blockplus.board.BoardRenderer;
 import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.move.MoveHandler;
-import blockplus.piece.PieceInterface;
-import blockplus.piece.Pieces;
 import blockplus.player.Player;
 import blockplus.player.Players;
 import blockplus.player.PlayersInterface;
@@ -89,8 +89,7 @@ public class GameRound {
                 final Move randomLegalMove = legalMoves.get(this.random.nextInt(legalMoves.size()));
                 // TODO MoveHandler doit notifier le board et les players
                 board = this.moveHandler.handle(board, randomLegalMove);
-                final PieceInterface piece = Pieces.get(randomLegalMove.getPiece().getId());
-                alivePlayers.add(new Player(player.getColor(), player.getAvailablePieces().remove(piece)));
+                alivePlayers.add(new Player(player.getColor(), player.getAvailablePieces().remove(Piece(randomLegalMove.getPiece().getId()))));
             }
             // TODO MoveHandler doit notifier la vue
             BoardRenderer.render(board);

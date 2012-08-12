@@ -31,14 +31,12 @@ import blockplus.move.MoveHandler;
 import blockplus.piece.Piece;
 import blockplus.piece.PieceComponent;
 import blockplus.piece.PieceComposite;
-import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
 
 public class RefereeDemo01 {
 
@@ -59,12 +57,7 @@ public class RefereeDemo01 {
         final Board<ColorInterface> board = parse(data);
         final MoveHandler moveHandler = new MoveHandler();
 
-        // TODO à revoir
-        final List<PieceInterface> list = Lists.newArrayList();
-        for (final Pieces piece : Pieces.values())
-            list.add(piece.get());
-
-        final Player player = new Player(ColorInterface.WHITE, PiecesBag.from(list));
+        final Player player = new Player(ColorInterface.WHITE, PiecesBag.from(Pieces.set()));
         final Referee boardReferee = new Referee();
 
         render(board);
@@ -77,7 +70,7 @@ public class RefereeDemo01 {
             stopwatch.start();
 
             final int loop = 8000;
-            for (int i = -1; i < loop * 0; ++i) { // ~10 s
+            for (int i = -1; i < loop * 1; ++i) { // ~10 s
                 legalMoves = boardReferee.getOrderedLegalMoves(board, player);
                 Preconditions.checkState(legalMoves.size() == 42); // TODO ! write tests
             }

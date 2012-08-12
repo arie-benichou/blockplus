@@ -66,7 +66,7 @@ public class RefereeDemo02 {
             stopwatch.start();
 
             final int loop = 68400;
-            for (int i = -1; i < loop * 0; ++i) { // ~10 s
+            for (int i = -1; i < loop * 1; ++i) { // ~10 s
                 legalMoves = boardReferee.getOrderedLegalMoves(board, player);
                 Preconditions.checkState(legalMoves.size() == 8); // TODO ! write tests
             }

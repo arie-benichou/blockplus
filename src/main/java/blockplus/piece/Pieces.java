@@ -20,9 +20,11 @@ package blockplus.piece;
 import static blockplus.piece.Piece.Piece;
 import static blockplus.piece.PieceData.PieceData;
 
-import com.google.common.base.Supplier;
+import java.util.Set;
 
-public enum Pieces implements Supplier<PieceInterface> {
+import com.google.common.collect.Sets;
+
+public enum Pieces {
 
     // null object
     PIECE0,
@@ -44,21 +46,28 @@ public enum Pieces implements Supplier<PieceInterface> {
     PIECE17, PIECE18, PIECE19, PIECE20, PIECE21;
 
     private final static String PIECE_NAME_PATTERN = "PIECE";
-    private final PieceInterface piece;
+    private final Piece piece;
 
     //private final static PieceInterface NULL = NullPieceComponent.getInstance(); // TODO à revoir...
     //private final static PieceInterface UNIT = PieceComponent.from(Position.ORIGIN); // TODO à revoir...
 
-    public final static PieceInterface get(final int ordinal) {
+    public final static Piece get(final int ordinal) {
         return Pieces.valueOf(PIECE_NAME_PATTERN + ordinal).get();
+    }
+
+    public static Set<Piece> set() {
+        final Set<Piece> pieces = Sets.newLinkedHashSet();
+        for (final Pieces pieceHolder : Pieces.values()) {
+            pieces.add(pieceHolder.get());
+        }
+        return pieces;
     }
 
     private Pieces() {
         this.piece = Piece(PieceData(this.ordinal()));
     }
 
-    @Override
-    public PieceInterface get() {
+    public Piece get() {
         return this.piece;
     }
 

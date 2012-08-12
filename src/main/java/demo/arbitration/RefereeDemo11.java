@@ -87,14 +87,9 @@ public class RefereeDemo11 {
         playerColors.add(ColorInterface.RED);
         playerColors.add(ColorInterface.GREEN);
         /////////////////////////////////////////////////////////
-        // TODO à revoir
-        final List<PieceInterface> pieces = Lists.newArrayList();
-        for (final Pieces piece : Pieces.values())
-            pieces.add(piece.get());
-        /////////////////////////////////////////////////////////        
         final List<Player> remainingPlayers = Lists.newArrayList();
         for (final ColorInterface color : playerColors) {
-            remainingPlayers.add(new Player(color, PiecesBag.from(pieces)));
+            remainingPlayers.add(new Player(color, PiecesBag.from(Pieces.set())));
         }
         /////////////////////////////////////////////////////////
         final List<Player> noMorePlayers = Lists.newArrayList();
@@ -134,7 +129,7 @@ public class RefereeDemo11 {
                     // TODO faire Move(Piece, Position, rotationOrdinal)
                     // TODO ? définir les pièces avec référentiel à (0,0)
                     //final PieceInterface piece = Piece(randomLegalMove.getPiece().getId());
-                    final PieceInterface piece = Pieces.get(randomLegalMove.getPiece().getId());
+                    final Piece piece = Pieces.get(randomLegalMove.getPiece().getId());
                     final PiecesBag remainingPieces = player.getAvailablePieces().remove(piece);
                     final Player p = new Player(player.getColor(), remainingPieces); // TODO ? NullPlayer
                     remainingPlayers.add(p);

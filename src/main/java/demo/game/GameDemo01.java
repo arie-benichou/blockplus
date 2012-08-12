@@ -34,5 +34,4 @@ public class GameDemo01 {
         MainView.render(gameResult.getLoopResult().getLastRoundResult().getBoard()); // TODO
 
     }
-
 }
