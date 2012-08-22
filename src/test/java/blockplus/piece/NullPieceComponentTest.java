@@ -17,20 +17,24 @@
 
 package blockplus.piece;
 
-import static blockplus.direction.Direction.Direction;
-import static blockplus.position.Position.Position;
+import static components.direction.Direction.Direction;
+import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import junit.framework.Assert;
 
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import blockplus.position.NullPosition;
+
+import blockplus.model.piece.NullPieceComponent;
+import blockplus.model.piece.PieceInterface;
 
 import com.google.common.collect.ImmutableSet;
+import components.position.NullPosition;
 
 public class NullPieceComponentTest {
 
@@ -79,7 +83,7 @@ public class NullPieceComponentTest {
 
     @Test
     public void testGetPotentialPositions() {
-        assertEquals(ImmutableSet.of(), this.nullPieceComponent.getPotentialPositions());
+        assertEquals(ImmutableSet.of(), this.nullPieceComponent.getLightPositions());
     }
 
     @Test
@@ -89,7 +93,7 @@ public class NullPieceComponentTest {
 
     @Test
     public void testGetPositions() {
-        assertEquals(ImmutableSet.of(), this.nullPieceComponent.getPositions());
+        assertEquals(ImmutableSet.of(), this.nullPieceComponent.getSelfPositions());
     }
 
     @Test

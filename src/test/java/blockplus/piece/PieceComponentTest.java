@@ -17,9 +17,9 @@
 
 package blockplus.piece;
 
-import static blockplus.direction.Direction.Direction;
-import static blockplus.piece.PieceComponent.PieceComponent;
-import static blockplus.position.Position.Position;
+import static blockplus.model.piece.PieceComponent.*;
+import static components.direction.Direction.Direction;
+import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -27,13 +27,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import blockplus.position.PositionInterface;
+import blockplus.model.piece.PieceInterface;
 
 import com.google.common.collect.Sets;
+import components.position.PositionInterface;
 
 public class PieceComponentTest {
 
@@ -75,14 +77,25 @@ public class PieceComponentTest {
     }
 
     @Test
-    public void testGetExtensions() {
+    public void testGetLightPositions() {
 
         final Set<PositionInterface> expected = Sets.newHashSet(
                 Position(-1, -1),
                 Position(-1, 1),
                 Position(1, -1),
                 Position(1, 1));
-        assertEquals(expected, this.pieceComponent.getPotentialPositions());
+        assertEquals(expected, this.pieceComponent.getLightPositions());
+    }
+
+    @Test
+    public void testGetShadowPositions() {
+
+        final Set<PositionInterface> expected = Sets.newHashSet(
+                Position(0, -1),
+                Position(0, 1),
+                Position(1, 0),
+                Position(-1, 0));
+        assertEquals(expected, this.pieceComponent.getShadowPositions());
     }
 
     @Test

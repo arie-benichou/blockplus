@@ -17,45 +17,58 @@
 
 package blockplus.arbitration;
 
+import static blockplus.model.color.Colors.*;
+import static org.junit.Assert.*;
+
 import java.util.Set;
 
+
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import blockplus.board.Board;
-import blockplus.board.BoardBuilder;
-import blockplus.color.ColorInterface;
-import blockplus.move.Move;
-import blockplus.piece.Pieces;
-import blockplus.piece.PiecesBag;
-import blockplus.player.Player;
+import blockplus.model.arbitration.Referee;
+import blockplus.model.board.Board;
+import blockplus.model.board.BoardParser;
+import blockplus.model.move.Move;
+import blockplus.model.piece.Pieces;
+import blockplus.model.piece.PiecesBag;
+import blockplus.model.player.Player;
 
-// TODO à compléter
+
+// TODO ! tester avec un jeu à 0 cellules
+// TODO ? tester avec un jeu à 1 cellules
+// TODO ? tester avec un jeu à 2 cellules
+
+// TODO ! tester avec un jeu à 0 pièces
+// TODO ! tester avec un jeu à 1 pièce
+// TODO ! tester avec un jeu à 2 pièces
+
+// TODO ! tester avec un jeu à 0 joueur
+// TODO ! tester avec un jeu à 1 joueur
+// TODO ! tester avec un jeu à 2 joueur
 public class RefereeTest {
 
     private Referee referee;
-    private Board<ColorInterface> board;
+    private Board board;
 
     @Before
     public void setUp() throws Exception {
-
         final String[][] data = {
-                { "Ø.........Ø" },
+                { "b.........y" },
                 { "..........." },
                 { "..........." },
                 { "..........." },
                 { "..........." },
-                { ".....?....." },
                 { "..........." },
                 { "..........." },
                 { "..........." },
                 { "..........." },
-                { "Ø.........o" }
+                { "..........." },
+                { "g.........r" }
         };
-
-        this.board = BoardBuilder.parse(data);
+        final BoardParser boardParser = new BoardParser();
+        this.board = boardParser.parse(data);
         this.referee = new Referee();
 
     }
@@ -68,17 +81,34 @@ public class RefereeTest {
 
     @Test
     public void testGetLegalMovesWithEmptyBagOfPieces() {
-        final Player player = new Player(ColorInterface.WHITE, PiecesBag.from());
+        final Player player = new Player(Blue, PiecesBag.from(), null); // TODO Add construction alternative 
         final Set<Move> legalMoves = this.referee.getLegalMoves(this.board, player);
-        Assert.assertTrue(legalMoves.isEmpty());
+        assertTrue(legalMoves.size() == 1);
+        final Move move = legalMoves.iterator().next();
+        assertTrue(move.isNull());
     }
 
     @Test
     public void testGetLegalMovesWithBagOfPiecesHavingOnePiece() {
-        final Player player = new Player(ColorInterface.WHITE, PiecesBag.from(Pieces.get(1)));
+        final Player player = new Player(Blue, PiecesBag.from(Pieces.get(1)), null); // TODO Add construction alternative
         final Set<Move> legalMoves = this.referee.getLegalMoves(this.board, player);
-        Assert.assertFalse(legalMoves.isEmpty());
-        // TODO à compléter
+        assertTrue(legalMoves.size() == 1);
+        final Move actual = legalMoves.iterator().next();
+        assertFalse(actual.isNull());
+
+        /* 
+         * FIXME
+         * TODO !? aligner la factory de pièce sur la factory de couleurs
+         *      !! passer la position du référential à l'objet Move
+         *      
+        final Move expected = new Move(Blue, Pieces.get(1));
+        System.out.println(expected);
+        System.out.println(actual);
+        assertEquals(expected, actual);
+        */
+
+        final Move expected = new Move(Blue, Pieces.get(1).get().iterator().next());
+        assertEquals(expected, actual);
     }
 
 }

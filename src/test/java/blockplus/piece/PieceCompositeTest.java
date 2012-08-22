@@ -1,24 +1,27 @@
 
 package blockplus.piece;
 
-import static blockplus.direction.Direction.Direction;
-import static blockplus.piece.PieceComponent.PieceComponent;
-import static blockplus.piece.PieceComposite.PieceComposite;
-import static blockplus.position.Position.Position;
+import static blockplus.model.piece.PieceComponent.*;
+import static blockplus.model.piece.PieceComposite.*;
+import static components.direction.Direction.Direction;
+import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import blockplus.position.PositionInterface;
+import blockplus.model.piece.PieceComponent;
+import blockplus.model.piece.PieceInterface;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
+import components.position.PositionInterface;
 
 public class PieceCompositeTest {
 
@@ -51,7 +54,9 @@ public class PieceCompositeTest {
         final Set<PositionInterface> expected = Sets.newHashSet();
         for (final PieceInterface component : components)
             expected.addAll(component.getCorners());
-        assertEquals(expected, this.pieceComposite.getCorners());
+        final Set<PositionInterface> actual = this.pieceComposite.getCorners();
+        assertEquals(8, actual.size());
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -60,13 +65,25 @@ public class PieceCompositeTest {
         final Set<PositionInterface> expected = Sets.newHashSet();
         for (final PieceInterface component : sides)
             expected.addAll(component.getSides());
-        assertEquals(expected, this.pieceComposite.getSides());
+        final Set<PositionInterface> actual = this.pieceComposite.getSides();
+        assertEquals(8, actual.size());
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testgPotentialPositions() {
+    public void testGetLightPositions() {
         final SetView<PositionInterface> expected = Sets.difference(this.pieceComposite.getCorners(), this.pieceComposite.getSides());
-        assertEquals(expected, this.pieceComposite.getPotentialPositions());
+        final Set<PositionInterface> actual = this.pieceComposite.getLightPositions();
+        assertEquals(4, actual.size());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetShadowPositions() {
+        final SetView<PositionInterface> expected = Sets.difference(this.pieceComposite.getSides(), this.pieceComposite.getSelfPositions());
+        final Set<PositionInterface> actual = this.pieceComposite.getShadowPositions();
+        assertEquals(6, actual.size());
+        assertEquals(expected, actual);
     }
 
     @Test

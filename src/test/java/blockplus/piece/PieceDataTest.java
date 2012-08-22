@@ -17,16 +17,19 @@
 
 package blockplus.piece;
 
-import static blockplus.piece.PieceData.PieceData;
-import static blockplus.position.Position.Position;
+import static blockplus.model.piece.PieceData.*;
+import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+
 import org.junit.Test;
 
-import blockplus.position.NullPosition;
+
+import blockplus.model.piece.PieceData;
 
 import com.google.common.collect.Sets;
+import components.position.NullPosition;
 
 public class PieceDataTest {
 

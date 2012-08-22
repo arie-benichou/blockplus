@@ -25,7 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+
 import org.junit.Test;
+
+import blockplus.model.piece.Piece;
+import blockplus.model.piece.Pieces;
+import blockplus.model.piece.PiecesBag;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
