@@ -1,2 +1,5 @@
-+ flip d'une pièce
-+ abbatage des TODOs avec au moins un '!'
++ Pouvoir énumérer les instances distinctes d'une pièce.
++ Pouvoir énumérer les instances de pièces potentielles case par case lors de la saisie d'un coup par l'utilisateur
++ Utiliser cette énumération pas à pas pour tester la stratégie de l'IA pour 2 couleurs
+
+DEFAULT: abbatage des TODOs avec au moins un '!'
