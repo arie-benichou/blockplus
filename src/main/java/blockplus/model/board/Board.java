@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-
-
 import blockplus.model.color.Color;
 import blockplus.model.color.ColorInterface;
 import blockplus.model.piece.PieceInterface;
@@ -272,13 +270,6 @@ public final class Board implements Supplier<BoardInterface<? extends Symbol>> {
                         if (otherColor.contains(givenColor)) {
                             final ColorInterface newColor = new Color.Builder().add(otherColor).add(color).build();
                             mutations.put(position, newColor);
-                            /*
-                            System.out.println();
-                            System.out.println(givenColor);
-                            System.out.println(position);
-                            System.out.println(newColor);
-                            System.out.println();
-                            */
                         }
                     }
                 }
@@ -335,86 +326,6 @@ public final class Board implements Supplier<BoardInterface<? extends Symbol>> {
         for (final PositionInterface position : shadows.keySet())
             remainingSpace.put(position, Remaining.NONE);
 
-        /*
-        {
-            final Map<PositionInterface, State> lights = this.getLayer(givenColor).getLights();
-            for (final PositionInterface position : lights.keySet()) {
-                mutations.put(position, givenColor);
-            }
-        }
-        */
-
-        /*
-        for (final ColorInterface color : this.getColors()) {
-            if (!color.is(givenColor)) {
-                final Map<PositionInterface, State> lights = this.getLayer(color).getLights();
-                for (final PositionInterface position : lights.keySet()) {
-                    final ColorInterface otherColor = mutations.get(position);
-                    if (otherColor == null) mutations.put(position, color);
-                    else {
-                        if (otherColor.contains(givenColor)) {
-                            final ColorInterface newColor = new Color.Builder().add(otherColor).add(color).build();
-                            mutations.put(position, newColor);
-                        }
-                    }
-                }
-            }
-        }
-        */
-
-        /*
-        for (final ColorInterface color : this.getColors()) {
-            if (!color.is(givenColor)) {
-                final Map<PositionInterface, State> otherShadows = this.getLayer(color).getShadows();
-                for (final PositionInterface position : otherShadows.keySet()) {
-                    final ColorInterface otherColor = mutations.get(position);
-                    if (otherColor == null) mutations.put(position, color);
-                    else {
-                        if (!otherColor.contains(givenColor)) {
-                            System.out.println(position);
-                            final ColorInterface newColor = new Color.Builder().add(otherColor).add(color).build();
-                            mutations.put(position, newColor);
-                        }
-                    }
-                }
-            }
-        }
-        */
-
-        /*
-        final Map<PositionInterface, State> shadows = this.getLayer(givenColor).getShadows();
-        for (final PositionInterface position : shadows.keySet())
-            mutations.put(position, Black);
-
-        final Map<PositionInterface, State> selves = this.getLayer(givenColor).getSelves();
-        for (final PositionInterface position : selves.keySet())
-            mutations.put(position, Black);
-            
-        */
-
-        /*
-        {
-            final Map<PositionInterface, State> shadows = this.getLayer(givenColor).getShadows();
-            for (final PositionInterface position : shadows.keySet())
-                remainingSpace.put(position, Remaining.NONE); 
-        }
-
-        for (final ColorInterface color : this.getColors()) {
-            final Map<PositionInterface, State> selves = this.getLayer(color).getSelves();
-            for (final PositionInterface position : selves.keySet()) {
-                remainingSpace.put(position, Remaining.NONE);
-            }
-        }
-        final Set<Entry<PositionInterface, ColorInterface>> entrySet = mutations.entrySet();
-        for (final Entry<PositionInterface, ColorInterface> entry : entrySet) {
-            final ColorInterface color = entry.getValue();
-            final PositionInterface position = entry.getKey();
-            final int size = color.set().size();
-            final Remaining concurrency = Remaining.get(size);
-            remainingSpace.put(position, concurrency);
-        }
-        */
-
         return components.board.Board.from(this.rows(), this.columns(), Remaining.ALL, Remaining.NONE, remainingSpace);
     }
 
@@ -437,33 +348,6 @@ public final class Board implements Supplier<BoardInterface<? extends Symbol>> {
         for (final PositionInterface position : shadows.keySet())
             capacity.put(position, Capacity.NONE);
 
-        /*
-        {
-            final Map<PositionInterface, State> lights = this.getLayer(givenColor).getLights();
-            for (final PositionInterface position : lights.keySet()) {
-                mutations.put(position, givenColor);
-            }
-        }
-        */
-
-        /*
-        for (final ColorInterface color : this.getColors()) {
-            if (!color.is(givenColor)) {
-                final Map<PositionInterface, State> lights = this.getLayer(color).getLights();
-                for (final PositionInterface position : lights.keySet()) {
-                    final ColorInterface otherColor = mutations.get(position);
-                    if (otherColor == null) mutations.put(position, color);
-                    else {
-                        if (otherColor.contains(givenColor)) {
-                            final ColorInterface newColor = new Color.Builder().add(otherColor).add(color).build();
-                            mutations.put(position, newColor);
-                        }
-                    }
-                }
-            }
-        }
-        */
-
         final Map<PositionInterface, ColorInterface> mutations = Maps.newHashMap();
 
         for (final ColorInterface color : this.getColors()) {
@@ -472,12 +356,9 @@ public final class Board implements Supplier<BoardInterface<? extends Symbol>> {
                 for (final PositionInterface position : otherShadows.keySet()) {
                     final ColorInterface otherColor = mutations.get(position);
                     if (otherColor == null) mutations.put(position, color);
-                    else {
-                        if (!otherColor.contains(givenColor)) {
-                            System.out.println(position);
-                            final ColorInterface newColor = new Color.Builder().add(otherColor).add(color).build();
-                            mutations.put(position, newColor);
-                        }
+                    else if (!otherColor.contains(givenColor)) {
+                        final ColorInterface newColor = new Color.Builder().add(otherColor).add(color).build();
+                        mutations.put(position, newColor);
                     }
                 }
             }
@@ -492,40 +373,7 @@ public final class Board implements Supplier<BoardInterface<? extends Symbol>> {
                 capacity.put(position, Capacity.get(this.getColors().size() - size));
         }
 
-        /*
-        final Map<PositionInterface, State> shadows = this.getLayer(givenColor).getShadows();
-        for (final PositionInterface position : shadows.keySet())
-            mutations.put(position, Black);
-
-        final Map<PositionInterface, State> selves = this.getLayer(givenColor).getSelves();
-        for (final PositionInterface position : selves.keySet())
-            mutations.put(position, Black);
-            
-        */
-
-        /*
-        {
-            final Map<PositionInterface, State> shadows = this.getLayer(givenColor).getShadows();
-            for (final PositionInterface position : shadows.keySet())
-                remainingSpace.put(position, Remaining.NONE); 
-        }
-
-        for (final ColorInterface color : this.getColors()) {
-            final Map<PositionInterface, State> selves = this.getLayer(color).getSelves();
-            for (final PositionInterface position : selves.keySet()) {
-                remainingSpace.put(position, Remaining.NONE);
-            }
-        }
-        final Set<Entry<PositionInterface, ColorInterface>> entrySet = mutations.entrySet();
-        for (final Entry<PositionInterface, ColorInterface> entry : entrySet) {
-            final ColorInterface color = entry.getValue();
-            final PositionInterface position = entry.getKey();
-            final int size = color.set().size();
-            final Remaining concurrency = Remaining.get(size);
-            remainingSpace.put(position, concurrency);
-        }
-        */
-
+        // TODO initialiser à Capacity.NONE et créer Capacity.UNKNOWN / OTHER 
         return components.board.Board.from(this.rows(), this.columns(), Capacity.FOUR, Capacity.NONE, capacity);
     }
 
@@ -569,6 +417,7 @@ public final class Board implements Supplier<BoardInterface<? extends Symbol>> {
                 concurrency.put(position, Concurrency.get(size));
         }
 
+        // TODO créer Concurrency.UNKNOWN/OTHER
         return components.board.Board.from(this.rows(), this.columns(), Concurrency.NONE, Concurrency.NONE, concurrency);
     }
 
