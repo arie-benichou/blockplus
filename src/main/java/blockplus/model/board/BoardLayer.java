@@ -24,8 +24,6 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
-
-
 import blockplus.model.piece.PieceInterface;
 
 import com.google.common.base.Predicate;
@@ -96,12 +94,12 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
     private transient volatile Map<PositionInterface, State> shadows;
     private transient volatile Map<PositionInterface, State> lights;
 
-    // TODO static factory method, then make it private
     private BoardLayer(final BoardInterface<State> stateBoard) {
         this.stateBoard = stateBoard;
         this.isMutablePredicate = new IsMutablePredicate(stateBoard);
     }
 
+    // TODO static factory method, then make it private    
     public BoardLayer(final int rows, final int columns) {
         this(Board.from(rows, columns, None, Other));
     }

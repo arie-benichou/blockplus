@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
-
 import blockplus.model.board.Board;
 import blockplus.model.board.BoardLayer;
 import blockplus.model.board.State;
@@ -53,7 +51,9 @@ public class Referee {
 
     private Iterable<PositionInterface> getPotentialPositions(final Board board, final ColorInterface c, final Iterable<PositionInterface> p,
             final PieceInterface pc) {
-        final int radius = ((Piece) pc).getPieceData().radius(); // TODO à revoir
+
+        final int radius = ((Piece) pc).getPieceData().radius(); // TODO !! à revoir
+
         final BoardLayer layer = board.getLayer(c);
         final Set<PositionInterface> extendedLegalPositions = Sets.newLinkedHashSet();
         final Map<PositionInterface, Set<PositionInterface>> map = Maps.newLinkedHashMap();
@@ -72,8 +72,8 @@ public class Referee {
         return Iterables.concat(map.values());
     }
 
-    // TODO passer le contexte à l'arbitre
-    // TODO pouvoir passer un Ordering/Comparator de Move
+    // TODO !! passer le contexte à l'arbitre
+    // TODO ! pouvoir passer un Ordering/Comparator de Move
     public Set<Move> getLegalMoves(final Board board, final PlayerInterface player) {
         final ColorInterface color = player.getColor();
         final Map<PositionInterface, State> stillAlivePositionsByPriority = board.getLayer(color).getLights();
@@ -82,7 +82,11 @@ public class Referee {
         for (final PieceInterface piece : player.getPieces())
             for (final PositionInterface potentialPosition : this.getPotentialPositions(board, color, positionsHavingPotential, piece))
                 legalMoves.addAll(this.getLegalMoves(board, color, piece, potentialPosition));
+
+        // TODO ! enlever cette responsabilité de l'arbitre:
+        // autoriser le coup nul pour un jeu en ajoutant explicitement la piece nulle au set de pièces légales du jeu 
         if (legalMoves.isEmpty()) return ImmutableSet.of(new Move(player.getColor(), Pieces.get(0))); // TODO à revoir
+
         return legalMoves;
     }
 

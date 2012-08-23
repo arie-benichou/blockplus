@@ -33,7 +33,9 @@ import components.direction.Direction;
 import components.direction.DirectionInterface;
 import components.position.PositionInterface;
 
-// TODO à revoir
+// TODO !! prendre en compte le fait qu'une pièce peut être "retournée"
+// (symétries horizontale et verticale)
+// TODO à revoir...
 public class Piece implements PieceInterface {
 
     private final static boolean IS_FACTORY_CACHING = true;
