@@ -137,7 +137,7 @@ public final class PieceComposite implements PieceInterface {
     private final int id;
 
     @Override
-    public int getId() {
+    public int getId() { // TODO ! cette responsabilité doit appartenir à la future classe ConcretePiece
         return this.id;
     }
 
@@ -165,8 +165,7 @@ public final class PieceComposite implements PieceInterface {
 
     private transient volatile PieceInterface rotated;
     private transient volatile PieceInterface reflectedAlongVerticalAxis;
-
-    //private transient volatile PieceInterface reflectedAlongHorizontalAxis;
+    private transient volatile PieceInterface reflectedAlongHorizontalAxis;
 
     private PieceComposite(final int id, final PositionInterface referential, final Set<PositionInterface> positions) {
         this.id = id;
@@ -284,6 +283,24 @@ public final class PieceComposite implements PieceInterface {
                 this.reflectedAlongVerticalAxis = reflectedAlongVerticalAxis = this.reflectAlongVerticalAxis(this.getReferential());
         }
         return reflectedAlongVerticalAxis;
+    }
+
+    @Override
+    public PieceInterface reflectAlongHorizontalAxis(final PositionInterface referential) {
+        final Set<PositionInterface> positions = Sets.newHashSet();
+        for (final PieceInterface component : this)
+            positions.addAll(component.reflectAlongHorizontalAxis(referential).getSelfPositions());
+        return PieceComposite.from(this.getId(), referential, positions);
+    }
+
+    @Override
+    public PieceInterface reflectAlongHorizontalAxis() {
+        PieceInterface reflectedAlongHorizontalAxis = this.reflectedAlongHorizontalAxis;
+        if (reflectedAlongHorizontalAxis == null) synchronized (this) {
+            if ((reflectedAlongHorizontalAxis = this.reflectedAlongHorizontalAxis) == null)
+                this.reflectedAlongHorizontalAxis = reflectedAlongHorizontalAxis = this.reflectAlongHorizontalAxis(this.getReferential());
+        }
+        return reflectedAlongHorizontalAxis;
     }
 
     @Override

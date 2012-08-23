@@ -280,4 +280,16 @@ public class Piece implements PieceInterface {
         return null;
     }
 
+    @Override
+    public PieceInterface reflectAlongHorizontalAxis(final PositionInterface referential) {
+        // cf Class TODO
+        return null;
+    }
+
+    @Override
+    public PieceInterface reflectAlongHorizontalAxis() {
+        // cf Class TODO
+        return null;
+    }
+
 }

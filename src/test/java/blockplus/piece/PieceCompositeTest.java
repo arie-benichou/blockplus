@@ -279,4 +279,25 @@ public class PieceCompositeTest {
         }
     }
 
+    @Test
+    public void testReflectAlongHorizontalAxisWithReferential() {
+        final PositionInterface referential = Position(1, Integer.MAX_VALUE);
+        {
+            final PieceInterface pieceComposite = this.pieceComposite;
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(2, 0), Position(2, 1)));
+            final PieceInterface actual = pieceComposite.reflectAlongHorizontalAxis(referential);
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    public void testReflectAlongHorizontalAxis() {
+        {
+            final PieceInterface pieceComposite = PieceComposite(3, Position(2, 5), Sets.newHashSet(Position(3, 5), Position(2, 5), Position(2, 6)));
+            final PieceInterface expected = PieceComposite(2, Position(2, 5), Sets.newHashSet(Position(1, 5), Position(2, 5), Position(2, 6)));
+            final PieceInterface actual = pieceComposite.reflectAlongHorizontalAxis();
+            assertEquals(expected, actual);
+        }
+    }
+
 }

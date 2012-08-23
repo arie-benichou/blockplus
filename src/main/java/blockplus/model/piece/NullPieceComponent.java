@@ -140,4 +140,14 @@ public final class NullPieceComponent implements PieceInterface {
         return this;
     }
 
+    @Override
+    public PieceInterface reflectAlongHorizontalAxis(final PositionInterface referential) {
+        return this;
+    }
+
+    @Override
+    public PieceInterface reflectAlongHorizontalAxis() {
+        return this;
+    }
+
 }

@@ -271,13 +271,27 @@ public final class PieceComponent implements PieceInterface {
     }
 
     @Override
-    public int hashCode() {
-        return this.getReferential().hashCode();
+    public PieceInterface reflectAlongVerticalAxis() {
+        return this;
     }
 
     @Override
-    public PieceInterface reflectAlongVerticalAxis() {
+    public PieceInterface reflectAlongHorizontalAxis(final PositionInterface referential) {
+        final int axis = referential.row();
+        final PositionInterface currentPosition = this.getReferential();
+        final DirectionInterface direction = Direction.from(currentPosition, Position(axis, currentPosition.column()));
+        final PositionInterface newPosition = Position(referential.row() + direction.rowDelta(), currentPosition.column());
+        return this.translateTo(newPosition);
+    }
+
+    @Override
+    public PieceInterface reflectAlongHorizontalAxis() {
         return this;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getReferential().hashCode();
     }
 
     @Override

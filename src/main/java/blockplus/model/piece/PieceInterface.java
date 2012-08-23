@@ -51,4 +51,8 @@ public interface PieceInterface extends Iterable<PieceInterface>, Supplier<Set<P
 
     PieceInterface reflectAlongVerticalAxis();
 
+    PieceInterface reflectAlongHorizontalAxis(PositionInterface referential);
+
+    PieceInterface reflectAlongHorizontalAxis();
+
 }

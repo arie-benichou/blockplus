@@ -315,7 +315,7 @@ public class PieceComponentTest {
 
     @Test
     public void testReflectAlongVerticalAxisWithReferential() {
-        final PositionInterface referential = Position(0, 4);
+        final PositionInterface referential = Position(Integer.MAX_VALUE, 4);
         {
             final PieceInterface pieceComponent = PieceComponent(2, 5);
             final PieceInterface expected = PieceComponent(2, 3);
@@ -330,6 +330,27 @@ public class PieceComponentTest {
             final PieceInterface pieceComponent = PieceComponent(2, 5);
             final PieceInterface expected = pieceComponent;
             final PieceInterface actual = pieceComponent.reflectAlongVerticalAxis();
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    public void testReflectAlongHorizontalAxisWithReferential() {
+        final PositionInterface referential = Position(3, Integer.MAX_VALUE);
+        {
+            final PieceInterface pieceComponent = PieceComponent(2, 5);
+            final PieceInterface expected = PieceComponent(4, 5);
+            final PieceInterface actual = pieceComponent.reflectAlongHorizontalAxis(referential);
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    public void testReflectAlongHorizontalAxis() {
+        {
+            final PieceInterface pieceComponent = PieceComponent(2, 5);
+            final PieceInterface expected = pieceComponent;
+            final PieceInterface actual = pieceComponent.reflectAlongHorizontalAxis();
             assertEquals(expected, actual);
         }
     }
