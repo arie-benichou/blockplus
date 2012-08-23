@@ -47,4 +47,8 @@ public interface PieceInterface extends Iterable<PieceInterface>, Supplier<Set<P
 
     PieceInterface rotateAround(PositionInterface referential);
 
+    PieceInterface reflectAlongVerticalAxis(PositionInterface referential);
+
+    PieceInterface reflectAlongVerticalAxis();
+
 }

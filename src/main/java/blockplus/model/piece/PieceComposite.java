@@ -156,11 +156,17 @@ public final class PieceComposite implements PieceInterface {
     }
 
     private transient volatile Set<PieceInterface> components;
+
     private transient volatile Set<PositionInterface> corners;
     private transient volatile Set<PositionInterface> sides;
+
     private transient volatile Set<PositionInterface> lightPositions;
     private transient volatile Set<PositionInterface> shadowPositions;
+
     private transient volatile PieceInterface rotated;
+    private transient volatile PieceInterface reflectedAlongVerticalAxis;
+
+    //private transient volatile PieceInterface reflectedAlongHorizontalAxis;
 
     private PieceComposite(final int id, final PositionInterface referential, final Set<PositionInterface> positions) {
         this.id = id;
@@ -260,6 +266,24 @@ public final class PieceComposite implements PieceInterface {
             }
         }
         return rotated;
+    }
+
+    @Override
+    public PieceInterface reflectAlongVerticalAxis(final PositionInterface referential) {
+        final Set<PositionInterface> positions = Sets.newHashSet();
+        for (final PieceInterface component : this)
+            positions.addAll(component.reflectAlongVerticalAxis(referential).getSelfPositions());
+        return PieceComposite.from(this.getId(), referential, positions);
+    }
+
+    @Override
+    public PieceInterface reflectAlongVerticalAxis() {
+        PieceInterface reflectedAlongVerticalAxis = this.reflectedAlongVerticalAxis;
+        if (reflectedAlongVerticalAxis == null) synchronized (this) {
+            if ((reflectedAlongVerticalAxis = this.reflectedAlongVerticalAxis) == null)
+                this.reflectedAlongVerticalAxis = reflectedAlongVerticalAxis = this.reflectAlongVerticalAxis(this.getReferential());
+        }
+        return reflectedAlongVerticalAxis;
     }
 
     @Override

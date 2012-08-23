@@ -3,14 +3,11 @@ package blockplus.piece;
 
 import static blockplus.model.piece.PieceComponent.*;
 import static blockplus.model.piece.PieceComposite.*;
-import static components.direction.Direction.Direction;
-import static components.position.Position.Position;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static components.direction.Direction.*;
+import static components.position.Position.*;
+import static org.junit.Assert.*;
 
 import java.util.Set;
-
 
 import org.junit.After;
 import org.junit.Before;
@@ -257,6 +254,27 @@ public class PieceCompositeTest {
             final PieceInterface pieceComposite = this.pieceComposite;
             final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(9, 0), Position(10, 0)));
             final PieceInterface actual = pieceComposite.rotateAround(referential);
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    public void testReflectAlongVerticalAxisWithReferential() {
+        final PositionInterface referential = Position(Integer.MAX_VALUE, 2);
+        {
+            final PieceInterface pieceComposite = this.pieceComposite;
+            final PieceInterface expected = PieceComposite(2, Position(), Sets.newHashSet(Position(0, 3), Position(0, 4)));
+            final PieceInterface actual = pieceComposite.reflectAlongVerticalAxis(referential);
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    public void testReflectAlongVerticalAxis() {
+        {
+            final PieceInterface pieceComposite = PieceComposite(3, Position(2, 5), Sets.newHashSet(Position(3, 5), Position(2, 5), Position(2, 6)));
+            final PieceInterface expected = PieceComposite(2, Position(2, 5), Sets.newHashSet(Position(3, 5), Position(2, 5), Position(2, 4)));
+            final PieceInterface actual = pieceComposite.reflectAlongVerticalAxis();
             assertEquals(expected, actual);
         }
     }

@@ -17,13 +17,11 @@
 
 package blockplus.model.piece;
 
-import static components.position.Position.Position;
+import static components.position.Position.*;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-
 
 import blockplus.model.piece.matrix.Matrix;
 
@@ -264,8 +262,22 @@ public final class PieceComponent implements PieceInterface {
     }
 
     @Override
+    public PieceComponent reflectAlongVerticalAxis(final PositionInterface referential) {
+        final int axis = referential.column();
+        final PositionInterface currentPosition = this.getReferential();
+        final DirectionInterface direction = Direction.from(currentPosition, Position(currentPosition.row(), axis));
+        final PositionInterface newPosition = Position(currentPosition.row(), referential.column() + direction.columnDelta());
+        return this.translateTo(newPosition);
+    }
+
+    @Override
     public int hashCode() {
         return this.getReferential().hashCode();
+    }
+
+    @Override
+    public PieceInterface reflectAlongVerticalAxis() {
+        return this;
     }
 
     @Override

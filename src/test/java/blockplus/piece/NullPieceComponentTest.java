@@ -17,18 +17,14 @@
 
 package blockplus.piece;
 
-import static components.direction.Direction.Direction;
-import static components.position.Position.Position;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
+import static components.direction.Direction.*;
+import static components.position.Position.*;
+import static org.junit.Assert.*;
 import junit.framework.Assert;
-
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 
 import blockplus.model.piece.NullPieceComponent;
 import blockplus.model.piece.PieceInterface;
@@ -119,6 +115,16 @@ public class NullPieceComponentTest {
     @Test
     public void testRotateAround() {
         assertEquals(this.nullPieceComponent, this.nullPieceComponent.rotateAround(Position(1, 1)));
+    }
+
+    @Test
+    public void testReflectAlongVerticalAxis() {
+        assertEquals(this.nullPieceComponent, this.nullPieceComponent.reflectAlongVerticalAxis());
+    }
+
+    @Test
+    public void testReflectAlongVerticalAxisWithReferential() {
+        assertEquals(this.nullPieceComponent, this.nullPieceComponent.reflectAlongVerticalAxis(Position(1, 1)));
     }
 
     @Test

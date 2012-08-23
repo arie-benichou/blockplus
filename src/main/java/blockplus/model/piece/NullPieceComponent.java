@@ -130,4 +130,14 @@ public final class NullPieceComponent implements PieceInterface {
         System.out.println(new NullPieceComponent());
     }
 
+    @Override
+    public PieceInterface reflectAlongVerticalAxis(final PositionInterface referential) {
+        return this;
+    }
+
+    @Override
+    public PieceInterface reflectAlongVerticalAxis() {
+        return this;
+    }
+
 }

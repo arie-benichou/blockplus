@@ -18,15 +18,11 @@
 package blockplus.piece;
 
 import static blockplus.model.piece.PieceComponent.*;
-import static components.direction.Direction.Direction;
-import static components.position.Position.Position;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static components.direction.Direction.*;
+import static components.position.Position.*;
+import static org.junit.Assert.*;
 
 import java.util.Set;
-
 
 import org.junit.After;
 import org.junit.Before;
@@ -313,6 +309,27 @@ public class PieceComponentTest {
             final PieceInterface pieceComponent = PieceComponent(5, 6);
             final PieceInterface expected = PieceComponent(4, 5);
             final PieceInterface actual = pieceComponent.rotateAround(referential);
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    public void testReflectAlongVerticalAxisWithReferential() {
+        final PositionInterface referential = Position(0, 4);
+        {
+            final PieceInterface pieceComponent = PieceComponent(2, 5);
+            final PieceInterface expected = PieceComponent(2, 3);
+            final PieceInterface actual = pieceComponent.reflectAlongVerticalAxis(referential);
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    public void testReflectAlongVerticalAxis() {
+        {
+            final PieceInterface pieceComponent = PieceComponent(2, 5);
+            final PieceInterface expected = pieceComponent;
+            final PieceInterface actual = pieceComponent.reflectAlongVerticalAxis();
             assertEquals(expected, actual);
         }
     }

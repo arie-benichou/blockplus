@@ -33,9 +33,10 @@ import components.direction.Direction;
 import components.direction.DirectionInterface;
 import components.position.PositionInterface;
 
-// TODO !! prendre en compte le fait qu'une pièce peut être "retournée"
-// (symétries horizontale et verticale)
-// TODO à revoir...
+// TODO !! Piece doit rester un symbole
+// TODO !! Introduire ConcretePiece: une pièce translated et/ou rotated et/ou
+// reflected
+
 public class Piece implements PieceInterface {
 
     private final static boolean IS_FACTORY_CACHING = true;
@@ -265,6 +266,18 @@ public class Piece implements PieceInterface {
         if (!(object instanceof PieceInterface)) return false;
         final PieceInterface that = (PieceInterface) object;
         return this.getId() == that.getId();
+    }
+
+    @Override
+    public PieceInterface reflectAlongVerticalAxis(final PositionInterface referential) {
+        // cf Class TODO
+        return null;
+    }
+
+    @Override
+    public PieceInterface reflectAlongVerticalAxis() {
+        // cf Class TODO
+        return null;
     }
 
 }
