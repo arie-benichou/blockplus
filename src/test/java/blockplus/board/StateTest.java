@@ -1,5 +1,5 @@
 
-package state;
+package blockplus.board;
 
 import static blockplus.model.board.State.*;
 import static org.junit.Assert.*;
