@@ -5,16 +5,21 @@
 	<groupId>fr.designpattern</groupId>
 	<artifactId>blockplus</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+
+	<packaging>war</packaging>
 
 	<name>blockplus</name>
 	<url>https://code.google.com/p/blockplus/</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<blockplus.server.contextpath>blockplus</blockplus.server.contextpath>
 	</properties>
 
 	<build>
+
+		<finalName>blockplus</finalName>
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -24,24 +29,63 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.25</version>
+				<configuration>
+					<contextPath>${blockplus.server.contextpath}</contextPath>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<webXml>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</webXml>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
+	<repositories>
+		<repository>
+			<id>maven-restlet</id>
+			<name>Public online Restlet repository</name>
+			<url>http://maven.restlet.org</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>11.0.2</version>
-			<scope>import</scope>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet</artifactId>
+			<version>2.0.15</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.servlet</artifactId>
+			<version>2.0.15</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.spring</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+
 	</dependencies>
+
+
 </project>
