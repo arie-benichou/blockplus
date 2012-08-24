@@ -18,19 +18,16 @@
 package blockplus.demo.board;
 
 import static blockplus.model.board.State.*;
-import static blockplus.model.piece.Piece.*;
 import static components.position.Position.*;
 
 import java.util.Map;
 
-
-
 import blockplus.model.board.BoardLayer;
 import blockplus.model.board.State;
+import blockplus.model.piece.Pieces;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableMap;
-
 import components.board.rendering.StringRendering;
 
 public final class BoardLayerDemo05 {
@@ -40,7 +37,7 @@ public final class BoardLayerDemo05 {
         final BoardLayer boardLayer = new BoardLayer(9, 9);
         final StringRendering boardLayerConsoleView = new StringRendering(stateBoardSymbols);
         boardLayerConsoleView.apply(boardLayer.get());
-        BoardLayer newBoardLayer = boardLayer.apply(Piece(1).translateTo(Position(4, 4)));
+        BoardLayer newBoardLayer = boardLayer.apply(Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(4, 4)));
         newBoardLayer = newBoardLayer.apply(Position(1, 1), State.Other);
         boardLayerConsoleView.apply(newBoardLayer.get());
         {

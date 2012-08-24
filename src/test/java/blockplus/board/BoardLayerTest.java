@@ -2,13 +2,11 @@
 package blockplus.board;
 
 import static blockplus.model.board.State.*;
-import static blockplus.model.piece.Piece.*;
 import static components.position.Position.*;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,6 +14,7 @@ import org.junit.Test;
 
 import blockplus.model.board.BoardLayer;
 import blockplus.model.board.State;
+import blockplus.model.piece.Pieces;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -149,7 +148,7 @@ public class BoardLayerTest {
 
     @Test
     public void testApplyPieceInterface() {
-        final BoardLayer newBoardLayer = this.boardLayer.apply(Piece(1).translateTo(Position(1, 1)));
+        final BoardLayer newBoardLayer = this.boardLayer.apply(Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(1, 1)));
         {
             final State expected = Shadow;
             final State actual = newBoardLayer.get().get(Position(0, 1));
@@ -206,7 +205,8 @@ public class BoardLayerTest {
             assertEquals(expected, actual);
         }
         {
-            final BoardLayer newBoardLayer = this.boardLayer.apply(Piece(1).translateTo(Position(1, 1)));
+            // TODO ! à revoir
+            final BoardLayer newBoardLayer = this.boardLayer.apply(Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(1, 1)));
             final Map<PositionInterface, State> actual = newBoardLayer.getSelves();
             final Map<PositionInterface, State> expected = Maps.newHashMap();
             expected.put(Position(1, 1), Self);
@@ -238,7 +238,7 @@ public class BoardLayerTest {
             assertEquals(expected, actual);
         }
         {
-            final BoardLayer newBoardLayer = this.boardLayer.apply(Piece(1).translateTo(Position(1, 1)));
+            final BoardLayer newBoardLayer = this.boardLayer.apply(Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(1, 1)));
             final Map<PositionInterface, State> actual = newBoardLayer.getShadows();
             final Map<PositionInterface, State> expected = Maps.newHashMap();
             expected.put(Position(0, 1), Shadow);
@@ -257,7 +257,7 @@ public class BoardLayerTest {
             assertEquals(expected, actual);
         }
         {
-            final BoardLayer newBoardLayer = this.boardLayer.apply(Piece(1).translateTo(Position(1, 1)));
+            final BoardLayer newBoardLayer = this.boardLayer.apply(Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(1, 1)));
             final Map<PositionInterface, State> actual = newBoardLayer.getLights();
             final Map<PositionInterface, State> expected = Maps.newHashMap();
             expected.put(Position(0, 0), Light);

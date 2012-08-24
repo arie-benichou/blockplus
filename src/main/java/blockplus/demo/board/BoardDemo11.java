@@ -18,11 +18,11 @@
 package blockplus.demo.board;
 
 import static blockplus.model.color.Colors.*;
-import static blockplus.model.piece.Piece.*;
 import static components.position.Position.*;
 import blockplus.model.board.Board;
 import blockplus.model.board.BoardLayer;
 import blockplus.model.board.State;
+import blockplus.model.piece.Pieces;
 import blockplus.view.View;
 import blockplus.view.console.BoardView;
 
@@ -48,16 +48,16 @@ public final class BoardDemo11 {
         final BoardView consoleBoardView = View.as(blockplus.view.console.BoardView.class).show(board).up();
 
         Board newBoard = board;
-        newBoard = newBoard.apply(Blue, Piece(1).translateTo(Position(4, 3)));
+        newBoard = newBoard.apply(Blue, Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(4, 3)));
         consoleBoardView.apply(newBoard);
 
-        newBoard = newBoard.apply(Yellow, Piece(1).translateTo(Position(3, 4)));
+        newBoard = newBoard.apply(Yellow, Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(3, 4)));
         consoleBoardView.apply(newBoard);
 
-        newBoard = newBoard.apply(Red, Piece(1).translateTo(Position(4, 5)));
+        newBoard = newBoard.apply(Red, Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(4, 5)));
         consoleBoardView.apply(newBoard);
 
-        newBoard = newBoard.apply(Green, Piece(1).translateTo(Position(5, 4)));
+        newBoard = newBoard.apply(Green, Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(5, 4)));
         consoleBoardView.apply(newBoard);
 
         View.as(blockplus.view.window.BoardView.class).show(newBoard).up();

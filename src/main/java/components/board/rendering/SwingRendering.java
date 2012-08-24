@@ -85,11 +85,12 @@ public class SwingRendering extends JComponent {
         this.canvas = new BoardView(colorBySymbol);
         this.window.getContentPane().add(this.getCanvas());
         this.window.setLocation(750, 300);
-        this.window.setUndecorated(true);
+        //this.window.setUndecorated(true);
     }
 
     public void apply(final BoardInterface<?> board) {
-        this.window.setPreferredSize(new Dimension(board.columns() * BoardView.SIZE, board.rows() * BoardView.SIZE));
+        //this.window.setPreferredSize(new Dimension(board.columns() * BoardView.SIZE, board.rows() * BoardView.SIZE));
+        this.window.setPreferredSize(new Dimension(board.columns() * BoardView.SIZE + 10, board.rows() * BoardView.SIZE + 35));
         this.getCanvas().setBoard(board);
         this.window.repaint();
         this.window.setVisible(true);

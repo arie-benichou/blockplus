@@ -17,15 +17,16 @@
 
 package blockplus.model.move;
 
-import static blockplus.model.piece.Piece.*;
 import blockplus.model.board.Board;
 import blockplus.model.game.GameContext;
+import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
 import blockplus.model.player.DeadPlayer;
 import blockplus.model.player.Player;
 import blockplus.model.player.PlayerInterface;
 import blockplus.model.player.PlayersInterface;
 
+// TODO ! à revoir
 public class MoveHandler {
 
     private Board getNewBoard(final Board board, final Move move) {
@@ -35,7 +36,7 @@ public class MoveHandler {
 
     private PlayerInterface getNewPlayer(final PlayerInterface player, final Move move) {
         if (move.getPiece().getId() == 0) return new DeadPlayer(player);
-        final PiecesBag newBagOfPieces = player.getPieces().remove(Piece(move.getPiece().getId()));
+        final PiecesBag newBagOfPieces = player.getPieces().remove(Pieces.get(move.getPiece().getId()));
         return new Player(player.getColor(), newBagOfPieces, player.getOpponentColor(), player.getStrategy());
     }
 

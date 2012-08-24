@@ -28,7 +28,6 @@ import blockplus.model.color.ColorInterface;
 import blockplus.model.game.Game;
 import blockplus.model.game.GameContext;
 import blockplus.model.game.GameContextBuilder;
-import blockplus.model.piece.PieceInterface;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
 import blockplus.model.player.Player;
@@ -76,7 +75,7 @@ public class GameDemo02 {
             else {
                 System.out.println(pieces.getWeight());
             }
-            for (final PieceInterface remainingPiece : pieces) {
+            for (final Pieces remainingPiece : pieces) {
                 System.out.println(" * " + remainingPiece);
             }
         }

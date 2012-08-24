@@ -28,14 +28,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multiset.Entry;
 
-public final class PiecesBag implements Iterable<Piece> {
+public final class PiecesBag implements Iterable<Pieces> {
 
-    private final static Multiset<Piece> EMPTY_MULTI_SET = ImmutableMultiset.of();
+    private final static Multiset<Pieces> EMPTY_MULTI_SET = ImmutableMultiset.of();
     private final static PiecesBag EMPTY_BAG = new PiecesBag(EMPTY_MULTI_SET);
 
-    private static List<Piece> computeList(final Multiset<Piece> data) {
-        final List<Piece> list = Lists.newArrayList();
-        for (final Entry<Piece> entry : data.entrySet())
+    private static List<Pieces> computeList(final Multiset<Pieces> data) {
+        final List<Pieces> list = Lists.newArrayList();
+        for (final Entry<Pieces> entry : data.entrySet())
             for (int n = 0; n < entry.getCount(); ++n)
                 list.add(entry.getElement());
         //Collections.sort(list); // TODO comparator
@@ -46,56 +46,29 @@ public final class PiecesBag implements Iterable<Piece> {
         return EMPTY_BAG;
     }
 
-    public static PiecesBag from(final Piece piece) {
-        final Multiset<Piece> multiset = HashMultiset.create();
+    public static PiecesBag from(final Pieces piece) {
+        final Multiset<Pieces> multiset = HashMultiset.create();
         multiset.add(piece);
         return new PiecesBag(multiset);
     }
 
-    public static PiecesBag from(final Iterable<Piece> pieces) {
+    public static PiecesBag from(final Iterable<Pieces> pieces) {
         return new PiecesBag(HashMultiset.create(pieces));
     }
 
-    /*
-    public static PiecesBag from(final Supplier<Piece> pieceSupplier) {
-        return from(pieceSupplier.get());
-    }
-
-    public static PiecesBag from(final List<Supplier<Piece>> pieceSuppliers) {
-        return from(Lists.transform(pieceSuppliers, new Function<Supplier<Piece>, Piece>() {
-
-            @Override
-            public Piece apply(@Nullable final Supplier<Piece> input) {
-                return input.get();
-            }
-
-        }));
-    }
-
-    public static PiecesBag from(final Set<Supplier<Piece>> pieceSuppliers) {
-        return from(Lists.newArrayList(pieceSuppliers));
-    }
-    */
-
-    /*
-    public static PiecesBag from(final Supplier<Piece>[] pieceSuppliers) {
-        return from(Lists.newArrayList(pieceSuppliers));
-    }
-    */
-
-    public static PiecesBag from(final Piece... pieces) {
-        final Multiset<Piece> multiset = HashMultiset.create();
-        for (final Piece piece : pieces) {
+    public static PiecesBag from(final Pieces... pieces) {
+        final Multiset<Pieces> multiset = HashMultiset.create();
+        for (final Pieces piece : pieces) {
             multiset.add(piece);
         }
         return new PiecesBag(multiset);
     }
 
-    private final Multiset<Piece> data;
+    private final Multiset<Pieces> data;
 
-    private transient volatile List<Piece> piecesAsList;
+    private transient volatile List<Pieces> piecesAsList;
 
-    private PiecesBag(final Multiset<Piece> data) {
+    private PiecesBag(final Multiset<Pieces> data) {
         this.data = data;
     }
 
@@ -104,8 +77,8 @@ public final class PiecesBag implements Iterable<Piece> {
     }
 
     // TODO ! immutable list
-    public List<Piece> asList() {
-        List<Piece> value = this.piecesAsList;
+    public List<Pieces> asList() {
+        List<Pieces> value = this.piecesAsList;
         if (value == null)
             synchronized (this) {
                 if ((value = this.piecesAsList) == null) this.piecesAsList = value = computeList(this.data);
@@ -118,22 +91,24 @@ public final class PiecesBag implements Iterable<Piece> {
     }
 
     @Override
-    public Iterator<Piece> iterator() {
+    public Iterator<Pieces> iterator() {
         return this.asList().iterator();
     }
 
-    public PiecesBag remove(final Piece piece) {
+    public PiecesBag remove(final Pieces piece) {
         Preconditions.checkArgument(this.data.contains(piece));
-        final Multiset<Piece> copy = HashMultiset.create(this.data);
+        final Multiset<Pieces> copy = HashMultiset.create(this.data);
         copy.remove(piece, 1);
         return from(copy);
     }
 
-    public int getWeight() { // TODO caching
+    // TODO ! à revoir
+    // TODO !? Piece.getNumberOfCells()
+    // TODO ? caching
+    public int getWeight() {
         int sum = 0;
-        for (final Piece piece : this) {
-            sum += piece.getSelfPositions().size();
-        }
+        for (final Pieces piece : this)
+            sum += piece.getInstances().getDistinctInstance(0).getSelfPositions().size();
         return sum;
     }
 

@@ -18,16 +18,16 @@
 package blockplus.demo.piece;
 
 import blockplus.model.piece.PieceInstances;
-import blockplus.model.piece.PieceInstancesFactory;
 import blockplus.model.piece.PieceInterface;
+import blockplus.model.piece.Pieces;
 
-public class PieceInstancesFactoryDemo {
+public class PiecesDemo4 {
 
     public static void main(final String[] args) {
         {
 
             System.out.println("----------------------------8<----------------------------");
-            final PieceInstances pieceInstances = PieceInstancesFactory.get(7);
+            final PieceInstances pieceInstances = Pieces.get(7).getInstances();
             final int n = pieceInstances.getNumberOfDistinctInstances();
             System.out.println("\n" + n + " instance(s): \n");
             for (final PieceInterface pieceInstance : pieceInstances)
@@ -35,7 +35,7 @@ public class PieceInstancesFactoryDemo {
             System.out.println("----------------------------8<----------------------------");
         }
         {
-            final PieceInstances pieceInstances = PieceInstancesFactory.get(7);
+            final PieceInstances pieceInstances = Pieces.get(7).getInstances();
             final int n = pieceInstances.getNumberOfDistinctInstances();
             System.out.println("\n" + n + " instance(s): \n");
             for (final PieceInterface pieceInstance : pieceInstances)

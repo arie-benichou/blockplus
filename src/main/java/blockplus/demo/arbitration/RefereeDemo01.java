@@ -31,7 +31,6 @@ import blockplus.model.color.ColorInterface;
 import blockplus.model.move.Move;
 import blockplus.model.piece.PieceComponent;
 import blockplus.model.piece.PieceComposite;
-import blockplus.model.piece.PieceInstancesFactory;
 import blockplus.model.piece.PieceInterface;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
@@ -101,7 +100,6 @@ public final class RefereeDemo01 {
             System.out.println("-----------------------------8<-----------------------------");
             System.out.println(PieceComponent.FACTORY);
             System.out.println(PieceComposite.FACTORY);
-            System.out.println(PieceInstancesFactory.asString());
             System.out.println("-----------------------------8<-----------------------------");
         }
 

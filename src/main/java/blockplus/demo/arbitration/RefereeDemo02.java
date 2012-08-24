@@ -27,6 +27,8 @@ import blockplus.model.arbitration.Referee;
 import blockplus.model.board.Board;
 import blockplus.model.board.BoardLayer;
 import blockplus.model.board.State;
+import blockplus.model.piece.PieceComponent;
+import blockplus.model.piece.PieceComposite;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
 import blockplus.model.player.Player;
@@ -64,6 +66,11 @@ public final class RefereeDemo02 {
                 System.out.println(stopwatch);
             }
         }
+
+        System.out.println("-----------------------------8<-----------------------------");
+        System.out.println(PieceComponent.FACTORY);
+        System.out.println(PieceComposite.FACTORY);
+        System.out.println("-----------------------------8<-----------------------------");
 
     }
 }

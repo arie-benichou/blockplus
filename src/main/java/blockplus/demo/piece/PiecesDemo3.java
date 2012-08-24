@@ -26,8 +26,9 @@ import java.util.Set;
 
 import blockplus.model.color.ColorInterface;
 import blockplus.model.color.Colors;
-import blockplus.model.piece.Piece;
+import blockplus.model.piece.PieceData;
 import blockplus.model.piece.PieceInterface;
+import blockplus.model.piece.Pieces;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -51,12 +52,12 @@ public class PiecesDemo3 {
                 .build();
         final StringRendering rendering = new StringRendering(symbols);
 
-        final Piece piece = Piece.Piece(10);
-        final int radius = piece.getPieceData().radius();
+        final Pieces piece = Pieces.get(10);
+        final int radius = PieceData.PieceData(piece.ordinal()).radius(); // TODO !! à revoir
         final int n = 1 + 2 * (radius + 1);
         final BoardInterface<ColorInterface> board = Board.from(n, n, Colors.White, Colors.Black);
         final PositionInterface position = Position(n / 2, n / 2);
-        final PieceInterface translatedPiece = piece.translateTo(position);
+        final PieceInterface translatedPiece = piece.getInstances().getDistinctInstance(0).translateTo(position);
         final Set<BoardInterface<ColorInterface>> planes = Sets.newHashSet();
         final Set<PieceInterface> rotations = Sets.newHashSet();
 

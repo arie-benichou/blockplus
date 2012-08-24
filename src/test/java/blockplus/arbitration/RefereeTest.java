@@ -22,7 +22,6 @@ import static org.junit.Assert.*;
 
 import java.util.Set;
 
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +33,6 @@ import blockplus.model.move.Move;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
 import blockplus.model.player.Player;
-
 
 // TODO ! tester avec un jeu à 0 cellules
 // TODO ? tester avec un jeu à 1 cellules
@@ -107,7 +105,8 @@ public class RefereeTest {
         assertEquals(expected, actual);
         */
 
-        final Move expected = new Move(Blue, Pieces.get(1).get().iterator().next());
+        // TODO ! à revoir: intoduire finalement PieceInstance(PieceId, PieceInstanceId, PieceInterface) ?
+        final Move expected = new Move(Blue, Pieces.get(1).getInstances().getDistinctInstance(0));
         assertEquals(expected, actual);
     }
 

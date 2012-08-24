@@ -17,16 +17,14 @@
 
 package blockplus.model.piece;
 
-import static blockplus.model.piece.Piece.*;
-import static blockplus.model.piece.PieceData.*;
-
+import java.util.Iterator;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
 
-public enum Pieces {
+public enum Pieces implements Iterable<PieceInterface> {
 
-    // null object
+    // null piece
     PIECE0,
 
     // monominoes
@@ -41,34 +39,37 @@ public enum Pieces {
     // tetrominoes
     PIECE5, PIECE6, PIECE7, PIECE8, PIECE9,
 
-    //pentominoes
+    // pentominoes
     PIECE10, PIECE11, PIECE12, PIECE13, PIECE14, PIECE15, PIECE16,
     PIECE17, PIECE18, PIECE19, PIECE20, PIECE21;
 
-    public final static String PIECE_NAME_PATTERN = "PIECE";
-    private final Piece piece;
+    private final static String PIECE_NAME_PATTERN = "PIECE";
+    private final static Pieces[] VALUES = Pieces.values();
 
-    //private final static PieceInterface NULL = NullPieceComponent.getInstance(); // TODO à revoir...
-    //private final static PieceInterface UNIT = PieceComponent.from(Position.ORIGIN); // TODO à revoir...
-
-    public final static Piece get(final int ordinal) {
-        return Pieces.valueOf(PIECE_NAME_PATTERN + ordinal).get();
+    public final static Pieces get(final int ordinal) {
+        return Pieces.valueOf(PIECE_NAME_PATTERN + ordinal);
     }
 
-    public static Set<Piece> set() {
-        final Set<Piece> pieces = Sets.newLinkedHashSet();
-        for (final Pieces pieceHolder : Pieces.values()) {
-            pieces.add(pieceHolder.get());
-        }
+    public static Set<Pieces> set() {
+        final Set<Pieces> pieces = Sets.newLinkedHashSet();
+        for (final Pieces piece : VALUES)
+            pieces.add(piece);
         return pieces;
     }
 
+    private final PieceInstances pieceInstances;
+
     private Pieces() {
-        this.piece = Piece(PieceData(this.ordinal()));
+        this.pieceInstances = new PieceInstances(this.ordinal());
     }
 
-    public Piece get() {
-        return this.piece;
+    public PieceInstances getInstances() {
+        return this.pieceInstances;
+    }
+
+    @Override
+    public Iterator<PieceInterface> iterator() {
+        return this.getInstances().iterator();
     }
 
 }

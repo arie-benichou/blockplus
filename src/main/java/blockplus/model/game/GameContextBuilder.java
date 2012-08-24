@@ -8,13 +8,9 @@ import static components.position.Position.*;
 import java.util.List;
 import java.util.Set;
 
-
-
 import blockplus.model.board.Board;
 import blockplus.model.board.BoardLayer;
 import blockplus.model.color.ColorInterface;
-import blockplus.model.piece.Piece;
-import blockplus.model.piece.PieceInterface;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
 import blockplus.model.player.Player;
@@ -27,6 +23,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+// TODO ! à revoir
 public final class GameContextBuilder {
 
     private final static Set<ColorInterface> DEFAULT_LEGAL_COLORS = ImmutableSet.of(
@@ -35,14 +32,14 @@ public final class GameContextBuilder {
             Red,
             Green);
 
-    private final static ImmutableSet.Builder<Piece> DEFAULT_LEGAL_PIECES_BUILDER = ImmutableSet.builder();
+    private final static ImmutableSet.Builder<Pieces> DEFAULT_LEGAL_PIECES_BUILDER = ImmutableSet.builder();
     static {
         for (final Pieces piece : Pieces.values()) {
-            DEFAULT_LEGAL_PIECES_BUILDER.add(piece.get());
+            DEFAULT_LEGAL_PIECES_BUILDER.add(piece);
         }
 
     }
-    private final static Set<Piece> DEFAULT_LEGAL_PIECES = DEFAULT_LEGAL_PIECES_BUILDER.build();
+    private final static Set<Pieces> DEFAULT_LEGAL_PIECES = DEFAULT_LEGAL_PIECES_BUILDER.build();
 
     private final static List<PlayerInterface> DEFAULT_PLAYERS = Lists.newArrayList();
     static {
@@ -57,13 +54,13 @@ public final class GameContextBuilder {
         DEFAULT_PLAYERS.add(greenPlayer);
     }
 
-    private final Set<Piece> pieces;
+    private final Set<Pieces> pieces;
     private final Set<ColorInterface> colors;
 
     private final List<PlayerInterface> players = DEFAULT_PLAYERS;
     private Board board = null;
 
-    public GameContextBuilder(final Set<ColorInterface> legalColors, final Set<Piece> legalPieces) {
+    public GameContextBuilder(final Set<ColorInterface> legalColors, final Set<Pieces> legalPieces) {
         Preconditions.checkArgument(!legalColors.isEmpty());
         Preconditions.checkArgument(!legalPieces.isEmpty());
         this.colors = ImmutableSet.copyOf(legalColors);
@@ -83,7 +80,7 @@ public final class GameContextBuilder {
         final ColorInterface color = player.getColor();
         Preconditions.checkState(this.colors.contains(color), "Illegal color: " + color);
         final PiecesBag pieces = player.getPieces();
-        for (final PieceInterface piece : pieces) {
+        for (final Pieces piece : pieces) {
             Preconditions.checkState(this.pieces.contains(piece), "Illegal piece: " + piece);
         }
         for (final PlayerInterface addedPlayer : this.players) {

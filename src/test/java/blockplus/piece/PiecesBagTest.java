@@ -17,18 +17,14 @@
 
 package blockplus.piece;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-
 import org.junit.Test;
 
-import blockplus.model.piece.Piece;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
 
@@ -53,32 +49,32 @@ public class PiecesBagTest {
 
         {
             final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1));
-            final List<Piece> expectedPiece = new ArrayList<Piece>();
+            final List<Pieces> expectedPiece = new ArrayList<Pieces>();
             expectedPiece.add(Pieces.get(1));
-            final List<Piece> actualPiece = Lists.newArrayList(bagOfPiece);
+            final List<Pieces> actualPiece = Lists.newArrayList(bagOfPiece);
             assertEquals(expectedPiece, actualPiece);
         }
 
         {
             final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1), Pieces.get(1));
-            final List<Piece> expectedPiece = new ArrayList<Piece>();
+            final List<Pieces> expectedPiece = new ArrayList<Pieces>();
             expectedPiece.add(Pieces.get(1));
             expectedPiece.add(Pieces.get(1));
-            final List<Piece> actualPiece = Lists.newArrayList(bagOfPiece);
+            final List<Pieces> actualPiece = Lists.newArrayList(bagOfPiece);
             assertEquals(expectedPiece, actualPiece);
         }
 
         {
             final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1), Pieces.get(1), Pieces.get(2));
-            final Set<Piece> expectedPiece = Sets.newHashSet(Pieces.get(1), Pieces.get(1), Pieces.get(2));
-            final Set<Piece> actualPiece = Sets.newHashSet(bagOfPiece);
+            final Set<Pieces> expectedPiece = Sets.newHashSet(Pieces.get(1), Pieces.get(1), Pieces.get(2));
+            final Set<Pieces> actualPiece = Sets.newHashSet(bagOfPiece);
             assertEquals(expectedPiece, actualPiece);
         }
 
         {
             final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1), Pieces.get(1), Pieces.get(2), Pieces.get(3));
-            final Set<Piece> expectedPiece = Sets.newHashSet(Pieces.get(1), Pieces.get(1), Pieces.get(2), Pieces.get(3));
-            final Set<Piece> actualPiece = Sets.newHashSet(bagOfPiece);
+            final Set<Pieces> expectedPiece = Sets.newHashSet(Pieces.get(1), Pieces.get(1), Pieces.get(2), Pieces.get(3));
+            final Set<Pieces> actualPiece = Sets.newHashSet(bagOfPiece);
             assertEquals(expectedPiece, actualPiece);
         }
 

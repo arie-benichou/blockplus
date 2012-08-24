@@ -40,9 +40,11 @@ import components.position.PositionInterface;
 // TODO ? use Suppliers.memoize()
 public final class PieceComponent implements PieceInterface {
 
+    private final static boolean IS_FACTORY_CACHING = true;
+
     public final static class Factory {
 
-        private boolean isCaching = true;
+        private final boolean isCaching;
 
         private long cacheHits = 0;
 
@@ -58,7 +60,7 @@ public final class PieceComponent implements PieceInterface {
         }
 
         public Factory() {
-            this(true);
+            this(IS_FACTORY_CACHING);
         }
 
         private PieceComponent getFromNew(final PositionInterface position) {

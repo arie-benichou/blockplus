@@ -18,25 +18,22 @@
 package blockplus.demo.board;
 
 import static blockplus.model.color.Colors.*;
-import static blockplus.model.piece.Piece.*;
 import static components.position.Position.*;
 
 import java.awt.Color;
 import java.util.Map;
 
-
-
 import blockplus.model.board.Board;
 import blockplus.model.board.BoardLayer;
 import blockplus.model.board.State;
 import blockplus.model.color.ColorInterface;
+import blockplus.model.piece.Pieces;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Sets;
-
-import components.board.rendering.SwingRendering;
 import components.board.rendering.StringRendering;
+import components.board.rendering.SwingRendering;
 
 /**
  * Black color
@@ -67,10 +64,10 @@ public final class BoardDemo10 {
                 .build();
 
         Board newBoard = board;
-        newBoard = newBoard.apply(Blue, Piece(1).translateTo(Position(4, 3)));
-        newBoard = newBoard.apply(Yellow, Piece(1).translateTo(Position(3, 4)));
-        newBoard = newBoard.apply(Red, Piece(1).translateTo(Position(4, 5)));
-        newBoard = newBoard.apply(Green, Piece(1).translateTo(Position(5, 4)));
+        newBoard = newBoard.apply(Blue, Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(4, 3)));
+        newBoard = newBoard.apply(Yellow, Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(3, 4)));
+        newBoard = newBoard.apply(Red, Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(4, 5)));
+        newBoard = newBoard.apply(Green, Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(5, 4)));
         boardConsoleView.apply(newBoard);
 
         boardConsoleView.apply(newBoard);

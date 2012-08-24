@@ -26,7 +26,7 @@ import java.util.Set;
 
 import blockplus.model.color.ColorInterface;
 import blockplus.model.color.Colors;
-import blockplus.model.piece.Piece;
+import blockplus.model.piece.PieceData;
 import blockplus.model.piece.PieceInterface;
 import blockplus.model.piece.Pieces;
 
@@ -52,10 +52,9 @@ public class PiecesDemo1 {
                 .build();
         final StringRendering rendering = new StringRendering(symbols);
 
-        for (final Pieces piece : Pieces.values()) {
-            final PieceInterface pieceInterface = piece.get();
-            final Piece piece2 = (Piece) pieceInterface; // TODO à revoir
-            final int radius = piece2.getPieceData().radius();
+        for (final Pieces piece : Pieces.set()) {
+            final PieceInterface pieceInterface = piece.getInstances().getDistinctInstance(0); // TODO !! à revoir
+            final int radius = PieceData.PieceData(piece.ordinal()).radius(); // TODO !! à revoir
             final int n = 1 + 2 * (radius + 1);
             final BoardInterface<ColorInterface> board = Board.from(n, n, Colors.White, Colors.Black);
             final PositionInterface position = Position(n / 2, n / 2);

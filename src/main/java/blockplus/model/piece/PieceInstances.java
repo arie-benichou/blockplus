@@ -29,7 +29,7 @@ public final class PieceInstances implements Iterable<PieceInterface> {
 
     private static Set<PieceInterface> computeDistinctInstancesForEachSide(final int piece) {
         final Set<PieceInterface> distinctInstances = Sets.newLinkedHashSet();
-        final PieceData pieceData = PieceData.PieceData(piece);
+        final PieceData pieceData = PieceData.PieceData(piece); // TODO à revoir
         final PieceInterface thisSide = PieceComposite.from(pieceData.id(), pieceData.referential(), pieceData.positions());
         distinctInstances.addAll(computeDistinctRotation(thisSide));
         final PieceInterface thatSide = thisSide.reflectAlongVerticalAxis(); // TODO ! PieceInterface.flip();
