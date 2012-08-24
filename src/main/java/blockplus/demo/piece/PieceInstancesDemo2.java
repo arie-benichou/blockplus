@@ -26,7 +26,7 @@ public class PieceInstancesDemo2 {
 
         System.out.println("----------------------------8<----------------------------");
         final PieceInstances pieceInstances = new PieceInstances(7);
-        final int n = pieceInstances.getNumberOfDistinctIntances();
+        final int n = pieceInstances.getNumberOfDistinctInstances();
         System.out.println("\n" + n + " instance(s): \n");
         for (final PieceInterface pieceInstance : pieceInstances)
             System.out.println(pieceInstance);

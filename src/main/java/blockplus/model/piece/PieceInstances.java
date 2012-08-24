@@ -68,7 +68,7 @@ public final class PieceInstances implements Iterable<PieceInterface> {
         return this.distinctInstances;
     }
 
-    public int getNumberOfDistinctIntances() {
+    public int getNumberOfDistinctInstances() {
         return this.getDistinctInstances().size();
     }
 
