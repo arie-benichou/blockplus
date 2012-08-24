@@ -3,31 +3,23 @@
 <web-app id="restlet-blockplus" version="2.4"
 	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-	
+
 	<display-name>Blockplus</display-name>
 
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-
-	<context-param>
-		<param-name>org.restlet.component</param-name>
-		<param-value>blockplusComponent</param-value>
-	</context-param>
-	
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>WEB-INF/context.xml</param-value>
-	</context-param>
-
+	<!-- Restlet adapter -->
 	<servlet>
-		<servlet-name>blockplus</servlet-name>
-		<servlet-class>org.restlet.ext.spring.SpringServerServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
+		<servlet-name>RestletServlet</servlet-name>
+		<servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
+		<init-param>
+			<!-- Application class name -->
+			<param-name>org.restlet.application</param-name>
+			<param-value>rest.application.BlockplusApplication</param-value>
+		</init-param>
 	</servlet>
 
+	<!-- Catch all requests -->
 	<servlet-mapping>
-		<servlet-name>blockplus</servlet-name>
+		<servlet-name>RestletServlet</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 

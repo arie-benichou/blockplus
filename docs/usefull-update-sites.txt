@@ -1,5 +1,4 @@
 name	:	ShellEd
 url		:	https://downloads.sourceforge.net/project/shelled/shelled/ShellEd%202.0.2/update
 notes	:	Once installation is done, select you project and add shell script support to it.
-			Then in Eclipse preferences, get your usual environnement by making the shell interpreter interactive (add argument -i for bash)
 			Now you should be able to run shell scripts from Eclipse.
