@@ -28,6 +28,8 @@ import blockplus.model.board.State;
 import blockplus.model.color.ColorInterface;
 import blockplus.model.move.Move;
 import blockplus.model.piece.Piece;
+import blockplus.model.piece.PieceInstances;
+import blockplus.model.piece.PieceInstancesFactory;
 import blockplus.model.piece.PieceInterface;
 import blockplus.model.piece.Pieces;
 import blockplus.model.player.PlayerInterface;
@@ -44,8 +46,11 @@ public class Referee {
 
     private List<Move> getLegalMoves(final Board board, final ColorInterface color, final PieceInterface piece, final PositionInterface position) {
         final List<Move> legalMoves = Lists.newArrayList();
-        for (final PieceInterface rotatedPiece : piece.translateTo(position))
-            if (board.isLegal(color, rotatedPiece)) legalMoves.add(new Move(color, rotatedPiece));
+        final PieceInstances pieceInstances = PieceInstancesFactory.get(piece.getId());
+        for (final PieceInterface pieceInstance : pieceInstances) {
+            final PieceInterface translatedPieceInstance = pieceInstance.translateTo(position);
+            if (board.isLegal(color, translatedPieceInstance)) legalMoves.add(new Move(color, translatedPieceInstance));
+        }
         return legalMoves;
     }
 
