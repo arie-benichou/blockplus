@@ -12,6 +12,7 @@ import org.restlet.resource.Directory;
 import org.restlet.routing.Router;
 import org.restlet.service.ConnectorService;
 
+import rest.resource.BlockplusEventStreamResource;
 import rest.resource.BlockplusResource;
 import freemarker.template.Configuration;
 
@@ -57,15 +58,31 @@ public class BlockplusApplication extends Application {
         final Router router = new Router(this.getContext());
         router.attach("/", BlockplusResource.class);
 
-        // Add route for image resources
-        final LocalReference localReference1 = LocalReference.createFileReference(new File(WEB_ROOT_PATH, "images"));
-        final Directory imgDirectory = new Directory(this.getContext(), localReference1);
-        router.attach("/images", imgDirectory);
+        {
+            // Add route for image resources
+            final LocalReference localReference = LocalReference.createFileReference(new File(WEB_ROOT_PATH, "images"));
+            final Directory imgDirectory = new Directory(this.getContext(), localReference);
+            router.attach("/images", imgDirectory);
+        }
 
-        // Add route for stylesheets resources
-        final LocalReference localReference2 = LocalReference.createFileReference(new File(WEB_ROOT_PATH, "stylesheets"));
-        final Directory cssDirectory = new Directory(this.getContext(), localReference2);
-        router.attach("/stylesheets", cssDirectory);
+        {
+            // Add route for stylesheets resources
+            final LocalReference localReference = LocalReference.createFileReference(new File(WEB_ROOT_PATH, "stylesheets"));
+            final Directory cssDirectory = new Directory(this.getContext(), localReference);
+            router.attach("/stylesheets", cssDirectory);
+        }
+
+        {
+            // Add route for static html content
+            final LocalReference localReference = LocalReference.createFileReference(new File(WEB_ROOT_PATH, "static"));
+            final Directory staticDirectory = new Directory(this.getContext(), localReference);
+            router.attach("/static", staticDirectory);
+        }
+
+        {
+            // Add route for server sent-event mock
+            router.attach("/data", BlockplusEventStreamResource.class);
+        }
 
         return router;
     }
