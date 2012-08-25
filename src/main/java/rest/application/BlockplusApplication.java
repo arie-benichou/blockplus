@@ -13,6 +13,7 @@ import org.restlet.routing.Router;
 import org.restlet.service.ConnectorService;
 
 import rest.resource.BlockplusEventStreamResource;
+import rest.resource.BlockplusNewBoardEventStreamResource;
 import rest.resource.BlockplusResource;
 import freemarker.template.Configuration;
 
@@ -81,7 +82,12 @@ public class BlockplusApplication extends Application {
 
         {
             // Add route for server sent-event mock
-            router.attach("/data", BlockplusEventStreamResource.class);
+            router.attach("/data1", BlockplusEventStreamResource.class);
+        }
+
+        {
+            // Add route for new board server sent-event mock
+            router.attach("/data2", BlockplusNewBoardEventStreamResource.class);
         }
 
         return router;

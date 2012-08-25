@@ -14,6 +14,7 @@ public class Main {
 
     /**
      * http://localhost:8080/blockplus/
+     * http://localhost:8080/blockplus/static/new-board-server-sent-event.html
      */
     public static void main(final String[] args) throws Exception {
 

@@ -16,9 +16,12 @@ public class BlockplusEventStreamResource extends ServerResource {
     @Get
     public Representation getRepresentation() {
         this.setStatus(Status.SUCCESS_OK);
-        final Representation representation = new StringRepresentation("data: some message\n\n", TEXT_EVENT_STREAM);
+        final Representation representation = new StringRepresentation("" +
+                "retry: 4000\n" +
+                "data: some message1\n" +
+                "\n",
+                TEXT_EVENT_STREAM);
         representation.setCharacterSet(CharacterSet.UTF_8);
         return representation;
     }
-
 }

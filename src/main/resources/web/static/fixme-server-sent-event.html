@@ -4,10 +4,10 @@
 		<meta charset="utf-8" />
 	</head>
 	<body>
-		<script>  
-			var source = new EventSource('/blockplus/data1');
+		<script> 
+			var source = new EventSource('/blockplus/data');
 			source.addEventListener('open', function(event) {console.log("Event listening...");}, false);
-			source.addEventListener('message',function(event) {console.log(event.data);}, false);
+			source.addEventListener('message', function(event) {console.log("Should not happen!"); }, false);
 			source.addEventListener('error',
 				function(event) {
 					if (event.readyState == EventSource.CLOSED) console.log("Event handling error");
