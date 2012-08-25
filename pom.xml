@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.designpattern</groupId>
 	<artifactId>blockplus</artifactId>
@@ -48,11 +48,25 @@
 			<artifactId>guava</artifactId>
 			<version>11.0.2</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.restlet.jse</groupId>
 			<artifactId>org.restlet</artifactId>
 			<version>${restlet.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>org.restlet.ext.html</artifactId>
+			<version>${restlet.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>org.restlet.ext.freemarker</artifactId>
+			<version>${restlet.version}</version>
+		</dependency>
+
 	</dependencies>
 
 </project>
