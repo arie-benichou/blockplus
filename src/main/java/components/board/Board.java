@@ -159,6 +159,10 @@ public final class Board<T extends Symbol> implements BoardInterface<T> {
     @Override
     // TODO add unit test
     public Map<PositionInterface, T> filter(final Predicate<Entry<PositionInterface, T>> predicate) {
+        if (predicate == null) {
+            final Predicate<Entry<PositionInterface, T>> nullFilterPredicate = Predicates.alwaysTrue();
+            return Maps.filterEntries(this.boardMutation(), nullFilterPredicate);
+        }
         return Maps.filterEntries(this.boardMutation(), predicate);
     }
 
@@ -197,8 +201,7 @@ public final class Board<T extends Symbol> implements BoardInterface<T> {
                         if (this.undefinedSymbol.equals(other.undefinedSymbol())) {
                             @SuppressWarnings("unchecked")
                             final BoardInterface<T> that = other;
-                            final Predicate<Entry<PositionInterface, T>> nullFilterPredicate = Predicates.alwaysTrue();
-                            isEqual = this.boardMutation().equals(that.filter(nullFilterPredicate));
+                            isEqual = this.boardMutation().equals(that.filter(null));
                         }
                     }
                 }
