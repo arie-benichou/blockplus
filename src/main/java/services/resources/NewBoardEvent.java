@@ -1,5 +1,5 @@
 
-package rest.resource;
+package services.resources;
 
 import static blockplus.model.board.State.*;
 import static components.position.Position.*;
@@ -15,7 +15,7 @@ import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
-import rest.json.CellEncodingDemo;
+import serialization.CellEncodingDemo;
 import blockplus.model.board.State;
 
 import com.google.common.collect.Maps;
@@ -23,7 +23,8 @@ import components.board.Board;
 import components.board.BoardInterface;
 import components.position.PositionInterface;
 
-public class BlockplusNewBoardEventStreamResource extends ServerResource {
+// TODO à continuer...
+public class NewBoardEvent extends ServerResource {
 
     private final static MediaType TEXT_EVENT_STREAM = new MediaType("text/event-stream");
 
@@ -31,14 +32,14 @@ public class BlockplusNewBoardEventStreamResource extends ServerResource {
     public Representation getRepresentation() {
         this.setStatus(Status.SUCCESS_OK);
 
-        final BoardInterface<State> board = Board.from(3, 3, None, Other);
+        final BoardInterface<State> board = Board.from(20, 20, None, Other);
         final Map<PositionInterface, State> mutation = Maps.newHashMap();
         mutation.put(Position(0, 0), Shadow);
         mutation.put(Position(1, 1), Self);
         mutation.put(Position(2, 2), Other);
 
         final Random random = new Random();
-        mutation.put(Position(random.nextInt(1024) % 3, random.nextInt(1024) % 3), Light);
+        mutation.put(Position(random.nextInt(1024) % 20, random.nextInt(1024) % 20), Light);
 
         final BoardInterface<State> newBoard = board.apply(mutation);
         final String json = CellEncodingDemo.encode(newBoard);

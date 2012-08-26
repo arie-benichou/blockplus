@@ -1,5 +1,5 @@
 
-package rest.json;
+package serialization;
 
 import static blockplus.model.board.State.*;
 import static components.position.Position.*;
