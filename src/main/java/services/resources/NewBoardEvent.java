@@ -1,12 +1,6 @@
 
 package services.resources;
 
-import static blockplus.model.board.State.*;
-import static components.position.Position.*;
-
-import java.util.Map;
-import java.util.Random;
-
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
@@ -15,13 +9,11 @@ import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
-import serialization.CellEncodingDemo;
-import blockplus.model.board.State;
-
-import com.google.common.collect.Maps;
-import components.board.Board;
-import components.board.BoardInterface;
-import components.position.PositionInterface;
+import serialization.CellEncoding;
+import services.applications.Main;
+import blockplus.model.board.Board;
+import blockplus.model.game.Game;
+import blockplus.model.game.GameContext;
 
 // TODO à continuer...
 public class NewBoardEvent extends ServerResource {
@@ -30,19 +22,17 @@ public class NewBoardEvent extends ServerResource {
 
     @Get
     public Representation getRepresentation() {
+
         this.setStatus(Status.SUCCESS_OK);
 
-        final BoardInterface<State> board = Board.from(20, 20, None, Other);
-        final Map<PositionInterface, State> mutation = Maps.newHashMap();
-        mutation.put(Position(0, 0), Shadow);
-        mutation.put(Position(1, 1), Self);
-        mutation.put(Position(2, 2), Other);
+        final Main application = (Main) this.getApplication();
+        final Game game = application.getGame();
 
-        final Random random = new Random();
-        mutation.put(Position(random.nextInt(1024) % 20, random.nextInt(1024) % 20), Light);
+        final GameContext newGameContext = game.start(1);
+        application.setGame(new Game(newGameContext));
 
-        final BoardInterface<State> newBoard = board.apply(mutation);
-        final String json = CellEncodingDemo.encode(newBoard);
+        final Board board = newGameContext.getBoard();
+        final String json = CellEncoding.encode(board.colorize());
 
         final Representation representation = new StringRepresentation("" +
                 "retry:1000\n" +

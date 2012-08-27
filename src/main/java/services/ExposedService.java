@@ -8,6 +8,7 @@ import org.restlet.util.ClientList;
 import org.restlet.util.ServerList;
 
 import services.applications.Main;
+import blockplus.model.game.Game;
 
 import com.google.common.base.Supplier;
 
@@ -29,10 +30,11 @@ public final class ExposedService {
             final ClientList clients = component.getClients();
             clients.add(Protocol.FILE);
             final VirtualHost defaultHost = component.getDefaultHost();
-            defaultHost.attach("/blockplus", new Main("src/main/resources/web/public/components/blockplus"));
+            final Main application = new Main("src/main/resources/web/public/components/blockplus");
+            application.setGame(new Game());
+            defaultHost.attach("/blockplus", application);
             return component;
         }
-
     }
 
     private final Component component;

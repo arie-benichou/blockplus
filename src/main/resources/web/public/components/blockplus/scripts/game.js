@@ -65,19 +65,19 @@ var CellRendering = Class.create({
 	},
 	update : function(position, state) {
 		switch (state) {
-		case "Self":
+		case "Blue":
 			this.getContext().fillStyle = "blue";
 			break;
-		case "Light":
+		case "Yellow":
 			this.getContext().fillStyle = "yellow";
 			break;
-		case "Shadow":
+		case "Green":
 			this.getContext().fillStyle = "green";
 			break;
-		case "Other":
+		case "Red":
 			this.getContext().fillStyle = "red";
 			break;
-		case "None":
+		case "White":
 			this.getContext().fillStyle = "gray";
 			break;
 		default:
@@ -142,7 +142,20 @@ source.addEventListener('open', function(event) {
 	console.log("Event listening...");
 }, false);
 source.addEventListener('message', function(event) {
+	
 	boardRendering.update(JSON.parse(event.data));
+	
+	var music = $("music");
+	music.loop=true;
+	music.play();
+	
+	event.target.removeEventListener('message', this);
+	
+	event.target.addEventListener('message', function(event) {
+		boardRendering.update(JSON.parse(event.data));
+		//event.target.close();
+	}, false);
+	
 }, false);
 source.addEventListener('error', function(event) {
 	if (event.readyState == EventSource.CLOSED)

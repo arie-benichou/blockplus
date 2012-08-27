@@ -13,12 +13,15 @@ import org.restlet.routing.Router;
 import org.restlet.service.ConnectorService;
 
 import services.resources.NewBoardEvent;
+import blockplus.model.game.Game;
 
 import com.google.common.base.Preconditions;
 
 public class Main extends Application {
 
     private final File root;
+
+    private Game game;
 
     public File getRoot() {
         return this.root;
@@ -45,6 +48,14 @@ public class Main extends Application {
         final Directory staticDirectory = new Directory(this.getContext(), localReference);
         router.attach("/", staticDirectory); //Add route for home directory
         return router;
+    }
+
+    public synchronized Game getGame() {
+        return this.game;
+    }
+
+    public synchronized void setGame(final Game game) {
+        this.game = game;
     }
 
 }

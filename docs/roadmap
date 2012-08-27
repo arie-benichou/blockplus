@@ -5,6 +5,8 @@
 -----------------------------------------------------------8<-----------------------------------------------------------
  - Tester Vagrant 
  - Tester http://underscorejs.org/
+ - Game Over => toutes les cellules vides doivent être noircies.
+ - Pouvoir typer les événements envoyés par la source
 -----------------------------------------------------------8<-----------------------------------------------------------
  + Pouvoir énumérer les instances de pièces potentielles case par case lors de la saisie d'un coup par l'utilisateur
  + Utiliser cette énumération pas à pas pour tester la stratégie de l'IA pour 2 couleurs
