@@ -1,1 +1,25 @@
-Just launch the RUNME script to have a quick overview of what you can expect from this.
+Run the following commands from the root of the project:  
+---------------------------8<--------------------------- 
+Open a new terminal:
+
+	1) Let's build the maven project:
+	   ./scripts/BUILDME.sh
+	   
+	2) Now let's run the embedded server:
+	   ./scripts/RUNME.sh   
+---------------------------8<---------------------------
+Open a new terminal:
+
+	3) Finally, let's start a new client:
+	   ./scripts/VIEWME.sh   
+---------------------------8<---------------------------
+The prerequisites are:
+
+	 * JAVA >= 6
+ 	   http://java.com/en/download/
+ 	
+ 	 * MAVEN >= 2
+ 	   http://maven.apache.org/download.html
+ 	   
+	 * Google Chrome :p
+ 	   http://google.com/intl/en/chrome/
