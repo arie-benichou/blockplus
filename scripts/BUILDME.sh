@@ -1,11 +1,9 @@
 #!/bin/sh
-if [ "$MVN_HOME" = "" ] ; then
-{
-	echo "System variable 'MVN_HOME' is not set.";
-}
-else	
-{
+
+WHICH_MAVEN=$(which mvn);
+
+if $WHICH_MAVEN >/dev/null ; then
+	echo "Maven not found.";
+else
 	mvn clean package;
-}
 fi
-echo "DONE"
