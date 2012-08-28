@@ -137,40 +137,36 @@ boardRendering.getCanvas().addEventListener("click", function(event) {
 		boardRendering.updateCell(offsetToPositionBuilder.build(event.offsetX, event.offsetY), "black");
 }, false);
 /*--------------------------------------------------8<--------------------------------------------------*/
+// TODO check origin & integrity of messages
 var source = new EventSource('/blockplus/data');
 source.addEventListener('open', function(event) {
 	console.log("Event listening...");
 }, false);
 
-/*
+// TODO ajouter une zone de notifications dans la page
 source.addEventListener('message', function(event) {
-	boardRendering.update(JSON.parse(event.data));
-	// event.target.removeEventListener('message', this);
-	source.removeEventListener('message', this);
-	event.target.close();
-
-	event.target.addEventListener('message', function(event) {
-		// TODO check origin & integrity
-		boardRendering.update(JSON.parse(event.data));
-		// event.target.close();
-	}, false);
+	console.log(event.data);
 }, false);
-*/
 
 source.addEventListener('error', function(event) {
 	if (event.readyState == EventSource.CLOSED)
 		console.log("Event handling error");
 }, false);
 
+// TODO émettre l'événement newgame
 source.addEventListener('gamenotover', function(event) {
+	
 	console.log("Game is not over");
+	
+	boardRendering.update(JSON.parse(event.data));
+	
 	if ($("audio-game") == undefined) {
+		$("board").className = 'styles2';
 		var music = document.createElement('audio');
 		music.setAttribute('id', 'audio-game');
-		//music.setAttribute('controls', 'controls');
 		music.setAttribute('loop', 'loop');
 		var musicSource = document.createElement('source');
-		musicSource.setAttribute('src', './audio/game.mp3');
+		musicSource.setAttribute('src', './audio/game-not-over.mp3');
 		musicSource.setAttribute('type', 'audio/mp3');
 		music.appendChild(musicSource);
 		music.play();
@@ -178,13 +174,19 @@ source.addEventListener('gamenotover', function(event) {
 		document.getElementsByTagName("body")[0].appendChild(music);
 		console.log(document.getElementById('audio-game'));
 	}
-	boardRendering.update(JSON.parse(event.data));
+	
 }, false);
 source.addEventListener('gameover', function(event) {
+	
 	console.log("Game is over.");
-	boardRendering.update(JSON.parse(event.data));	
-	if ($("audio-game") != undefined) $("audio-game").pause();
+	
+	boardRendering.update(JSON.parse(event.data));
+	
+	if ($("audio-game") != undefined)
+		$("audio-game").pause();
+	
 	if ($("audio-game-over") == undefined) {
+		$("board").className = 'styles1';
 		var music = document.createElement('audio');
 		music.setAttribute('id', 'audio-game-over');
 		var musicSource = document.createElement('source');
@@ -193,6 +195,8 @@ source.addEventListener('gameover', function(event) {
 		music.appendChild(musicSource);
 		music.play();
 	}
+	
 	event.target.close();
+	
 }, false);
 /*--------------------------------------------------8<--------------------------------------------------*/

@@ -1,0 +1,13 @@
+#board.styles1 {
+	opacity: 0.30;
+	margin-top: 0;
+}
+
+#board.styles2 {
+	opacity: 1;
+	margin-top: 90px;
+}
+
+#board {
+	-webkit-transition: all 1s ease-out;
+}

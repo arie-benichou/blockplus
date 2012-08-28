@@ -56,13 +56,6 @@ public class NewBoardEvent extends ServerResource {
 
         // TODO EventStreamRepresentation
         if (isGameNotOver) {
-            /*
-            representation = new StringRepresentation("" +
-                    "retry:800\n" +
-                    "data:" + json + "\n" +
-                    "\n",
-                    TEXT_EVENT_STREAM);
-            */
             representation = new StringRepresentation("" +
                     "retry:1000\n" +
                     "data:" + "" + "\n" +
