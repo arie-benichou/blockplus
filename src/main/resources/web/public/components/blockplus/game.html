@@ -9,14 +9,18 @@
 	</head>
 	<body>
 		<div>
-			<audio id="music"  preload="auto">
-				<source src="./audio/game.ogg" type="audio/ogg"></source>			
-	  			<source src="./audio/game.mp3" type="audio/mp3"></source>
-			</audio>
+			<div>
+				<!--
+				<audio id="music">
+					<source src="./audio/game.mp3" type="audio/mp3"></source>
+					<source src="./audio/game.ogg" type="audio/ogg"></source>
+				</audio>
+				-->
+			</div>
+			<div>
+				<canvas id="board" width="679px" height="679px"></canvas>
+			</div>
 		</div>
-		<div>
-			<canvas id="board" width="679px" height="679px"></canvas>
-			<script src="./scripts/game.js"></script>
-		</div>
+		<script src="./scripts/game.js"></script>
 	</body>
 </html>

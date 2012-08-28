@@ -46,6 +46,7 @@ public final class CellEncoding {
         @Override
         public JsonElement serialize(final ColorInterface color, final Type typeOfSrc, final JsonSerializationContext context) {
             if (color.is(White)) return new JsonPrimitive("White"); // TODO ! pouvoir définir le nom d'une couleur
+            if (color.is(Black)) return new JsonPrimitive("Black"); // TODO ! pouvoir définir le nom d'une couleur
             return new JsonPrimitive(((PrimeColors) color.list().get(0)).name());
         }
     }
@@ -61,7 +62,7 @@ public final class CellEncoding {
         final int columns = board.columns();
         final ColorInterface[][] data = new ColorInterface[rows][columns];
         for (final ColorInterface[] row : data) {
-            Arrays.fill(row, White);
+            Arrays.fill(row, board.initialSymbol());
         }
         for (final Entry<PositionInterface, ColorInterface> entry : board.filter(null).entrySet()) {
             final PositionInterface position = entry.getKey();

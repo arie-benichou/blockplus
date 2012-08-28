@@ -141,24 +141,58 @@ var source = new EventSource('/blockplus/data');
 source.addEventListener('open', function(event) {
 	console.log("Event listening...");
 }, false);
+
+/*
 source.addEventListener('message', function(event) {
-	
 	boardRendering.update(JSON.parse(event.data));
-	
-	var music = $("music");
-	music.loop=true;
-	music.play();
-	
-	event.target.removeEventListener('message', this);
-	
+	// event.target.removeEventListener('message', this);
+	source.removeEventListener('message', this);
+	event.target.close();
+
 	event.target.addEventListener('message', function(event) {
+		// TODO check origin & integrity
 		boardRendering.update(JSON.parse(event.data));
-		//event.target.close();
+		// event.target.close();
 	}, false);
-	
 }, false);
+*/
+
 source.addEventListener('error', function(event) {
 	if (event.readyState == EventSource.CLOSED)
 		console.log("Event handling error");
+}, false);
+
+source.addEventListener('gamenotover', function(event) {
+	console.log("Game is not over");
+	if ($("audio-game") == undefined) {
+		var music = document.createElement('audio');
+		music.setAttribute('id', 'audio-game');
+		//music.setAttribute('controls', 'controls');
+		music.setAttribute('loop', 'loop');
+		var musicSource = document.createElement('source');
+		musicSource.setAttribute('src', './audio/game.mp3');
+		musicSource.setAttribute('type', 'audio/mp3');
+		music.appendChild(musicSource);
+		music.play();
+		console.log(music);
+		document.getElementsByTagName("body")[0].appendChild(music);
+		console.log(document.getElementById('audio-game'));
+	}
+	boardRendering.update(JSON.parse(event.data));
+}, false);
+source.addEventListener('gameover', function(event) {
+	console.log("Game is over.");
+	boardRendering.update(JSON.parse(event.data));	
+	if ($("audio-game") != undefined) $("audio-game").pause();
+	if ($("audio-game-over") == undefined) {
+		var music = document.createElement('audio');
+		music.setAttribute('id', 'audio-game-over');
+		var musicSource = document.createElement('source');
+		musicSource.setAttribute('src', './audio/game-over.mp3');
+		musicSource.setAttribute('type', 'audio/mp3');
+		music.appendChild(musicSource);
+		music.play();
+	}
+	event.target.close();
 }, false);
 /*--------------------------------------------------8<--------------------------------------------------*/
