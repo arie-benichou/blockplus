@@ -1,9 +1,9 @@
-#board.styles1 {
+#board.game-is-over {
 	opacity: 0.30;
 	margin-top: 0;
 }
 
-#board.styles2 {
+#board.game-is-not-over {
 	opacity: 1;
 	margin-top: 90px;
 }
