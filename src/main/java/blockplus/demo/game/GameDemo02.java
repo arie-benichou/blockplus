@@ -46,10 +46,10 @@ public class GameDemo02 {
 
         final PiecesBag bagOfPieces = PiecesBag.from(Pieces.set());
 
-        final Player bluePlayer = new Player(Blue, bagOfPieces, Yellow, new FirstOptionStrategy());
-        final Player yellowPlayer = new Player(Yellow, bagOfPieces, Red, new FirstOptionStrategy());
-        final Player redPlayer = new Player(Red, bagOfPieces, Green, new FirstOptionStrategy());
-        final Player greenPlayer = new Player(Green, bagOfPieces, Blue, new FirstOptionStrategy());
+        final PlayerInterface bluePlayer = new Player(Blue, bagOfPieces, Yellow, new FirstOptionStrategy());
+        final PlayerInterface yellowPlayer = new Player(Yellow, bagOfPieces, Red, new FirstOptionStrategy());
+        final PlayerInterface redPlayer = new Player(Red, bagOfPieces, Green, new FirstOptionStrategy());
+        final PlayerInterface greenPlayer = new Player(Green, bagOfPieces, Blue, new FirstOptionStrategy());
 
         final GameContext initialContext = new GameContextBuilder()
                 .setPlayers(bluePlayer, yellowPlayer, redPlayer, greenPlayer)
