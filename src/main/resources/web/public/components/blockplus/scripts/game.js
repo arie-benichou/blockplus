@@ -14,7 +14,7 @@ var Position = Class.create({
 		return this.column;
 	},
 	toString : function() {
-		return 'Position{' + 'row=' + this.getRow() + ', ' + 'column=' + this.getColumn() + '}';
+		return "Position{" + "row=" + this.getRow() + ", " + "column=" + this.getColumn() + "}";
 	},
 });
 /*--------------------------------------------------8<--------------------------------------------------*/
@@ -41,7 +41,7 @@ var OffsetToPositionBuilder = Class.create({
 
 	},
 	toString : function() {
-		return 'OffsetToPositionBuilder{' + 'offsetX=' + this.getOffsetX() + ', ' + 'offsetY=' + this.getOffsetY() + '}';
+		return "OffsetToPositionBuilder{" + "offsetX=" + this.getOffsetX() + ", " + "offsetY=" + this.getOffsetY() + "}";
 	},
 });
 /*--------------------------------------------------8<--------------------------------------------------*/
@@ -87,9 +87,9 @@ var CellRendering = Class.create({
 	},
 	// TODO ajouter canvas et context
 	toString : function() {
-		return 'CellRendering' + '{' + 'offsetY=' + this.offsetY + ', ' + 'offsetX=' + this.offsetX + ', ' + 'width=' + this.width + ', ' + 'length='
+		return "CellRendering" + "{" + "offsetY=" + this.offsetY + ", " + "offsetX=" + this.offsetX + ", " + "width=" + this.width + ", " + "length="
 				+ this.length;
-		'}';
+		"}";
 	},
 });
 /*--------------------------------------------------8<--------------------------------------------------*/
@@ -120,7 +120,7 @@ var BoardRendering = Class.create({
 		}
 	},
 	toString : function() {
-		return 'BoardRendering{' + 'cellRendering=' + this.cellRendering + '}';
+		return "BoardRendering{" + "cellRendering=" + this.cellRendering + "}";
 	},
 });
 /*--------------------------------------------------8<--------------------------------------------------*/
@@ -139,37 +139,45 @@ boardRendering.getCanvas().addEventListener("click", function(event) {
 // TODO ! extract EventManager
 // TODO ! ajouter une zone de notifications dans la page
 // TODO ! check origin & integrity of messages
-// TODO ! utiliser le local storage pour enregistrer le currentime de la musique, par exemple...
-//TODO ? émettre l'événement newgame
-var source = new EventSource('/blockplus/data');
+// TODO ! utiliser le local storage pour enregistrer le currentime de la
+// musique, par exemple...
+// TODO ? émettre l"événement newgame
+var source = new EventSource("/blockplus/data");
 
-source.addEventListener('open', function(event) {
-	console.log("Event listening...");
+source.addEventListener("open", function(event) {
+	console.log("Event listening");
 }, false);
 
-source.addEventListener('message', function(event) {
+source.addEventListener("message", function(event) {
 	console.log(event.data);
+	{
+		var newChild = document.createElement("div");
+		newChild.setAttribute("id", "last-message");
+		newChild.innerHTML = JSON.parse(event.data);
+		$("last-message").remove();
+		$("messages").appendChild(newChild);
+	}
 }, false);
 
-source.addEventListener('error', function(event) {
+source.addEventListener("error", function(event) {
 	if (event.readyState == EventSource.CLOSED)
 		console.log("Event handling error");
 }, false);
 
-source.addEventListener('gamenotover', function(event) {
+source.addEventListener("gamenotover", function(event) {
 	boardRendering.update(JSON.parse(event.data));
-	$("board").className = 'game-is-not-over';
+	$("board").className = "game-is-not-over";
 	if ($("game-is-not-over").currentTime == 0) {
 		$("game-is-not-over").loop = true;
 		$("game-is-not-over").play();
 	}
 }, false);
 
-source.addEventListener('gameover', function(event) {
+source.addEventListener("gameover", function(event) {
 	event.target.close();
 	boardRendering.update(JSON.parse(event.data));
-	$("game-is-not-over").pause();	
-	$("game-is-over").play();	
-	$("board").className = 'game-is-over';
+	$("game-is-not-over").pause();
+	$("game-is-over").play();
+	$("board").className = "game-is-over";
 }, false);
 /*--------------------------------------------------8<--------------------------------------------------*/

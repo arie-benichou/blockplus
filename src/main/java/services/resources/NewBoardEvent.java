@@ -38,6 +38,8 @@ public class NewBoardEvent extends ServerResource {
         final GameContext initialContext = game.getInitialContext();
         final boolean isGameNotOver = initialContext.hasNext();
 
+        final ColorInterface color = initialContext.getColor().iterator().next();
+
         final GameContext newGameContext = game.start(1);
         application.setGame(new Game(newGameContext));
 
@@ -58,18 +60,16 @@ public class NewBoardEvent extends ServerResource {
         if (isGameNotOver) {
             representation = new StringRepresentation("" +
                     "retry:1000\n" +
-                    "data:" + "" + "\n" +
+                    "data:" + "[[\"" + color + " has just played\"]]" + "\n\n" +
                     "event:gamenotover\n" +
-                    "data:" + json + "\n" +
-                    "\n",
+                    "data:" + json + "\n\n",
                     TEXT_EVENT_STREAM);
         }
         else {
             representation = new StringRepresentation("" +
-                    "data:" + "" + "\n" +
+                    "data:" + "[[\"Game is over\"]]" + "\n\n" +
                     "event:gameover\n" +
-                    "data:" + json + "\n" +
-                    "\n",
+                    "data:" + json + "\n\n",
                     TEXT_EVENT_STREAM);
         }
 

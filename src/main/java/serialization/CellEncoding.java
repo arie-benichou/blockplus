@@ -41,6 +41,7 @@ public final class CellEncoding {
     }
     */
 
+    // TODO ColorEncoding
     private final static class ColorInterfaceSerializer implements JsonSerializer<ColorInterface> {
 
         @Override
