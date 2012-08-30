@@ -5,13 +5,20 @@
 	<groupId>fr.designpattern</groupId>
 	<artifactId>blockplus</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
 	<name>blockplus</name>
 	<url>https://code.google.com/p/blockplus/</url>
+
+	<!-- 
+	<packaging>jar</packaging>
+	 -->
+	 
+	<packaging>war</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<restlet.version>2.1-RC6</restlet.version>
+		<webXml>${basedir}/src/main/resources/web/web.xml</webXml>
+		<sourceDirectory>${basedir}/src/main/resources/web/public/components/blockplus</sourceDirectory>
 	</properties>
 
 	<build>
@@ -19,17 +26,13 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>2.5.1</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
-			</plugin>
+			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -40,7 +43,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>services.ExposedService</mainClass>
+							<mainClass>services.RunBlockplusApplicationJSE</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -52,6 +55,26 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			 -->			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<webXml>${webXml}</webXml>
+					<warSourceDirectory>${sourceDirectory}</warSourceDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>8.1.5.v20120716</version>
+				<configuration>
+					<scanIntervalSeconds>2</scanIntervalSeconds>
+					<webXml>${webXml}</webXml>
+					<webAppSourceDirectory>${sourceDirectory}</webAppSourceDirectory>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -86,6 +109,18 @@
 		<dependency>
 			<groupId>org.restlet.jse</groupId>
 			<artifactId>org.restlet</artifactId>
+			<version>${restlet.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>org.restlet.ext.jetty</artifactId>
+			<version>${restlet.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.servlet</artifactId>
 			<version>${restlet.version}</version>
 			<scope>compile</scope>
 		</dependency>

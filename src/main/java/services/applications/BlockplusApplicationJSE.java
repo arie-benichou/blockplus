@@ -17,7 +17,8 @@ import blockplus.model.game.Game;
 
 import com.google.common.base.Preconditions;
 
-public class Main extends Application {
+// TODO uniformiser MainJEE et MainJSE
+public class BlockplusApplicationJSE extends Application implements BlockplusApplicationInterface {
 
     private final File root;
 
@@ -33,7 +34,7 @@ public class Main extends Application {
         return file;
     }
 
-    public Main(final String root) {
+    public BlockplusApplicationJSE(final String root) {
         this.root = checkRoot(root);
         final ConnectorService connectorService = this.getConnectorService();
         final List<Protocol> clientProtocols = connectorService.getClientProtocols();
@@ -50,10 +51,12 @@ public class Main extends Application {
         return router;
     }
 
+    @Override
     public synchronized Game getGame() {
         return this.game;
     }
 
+    @Override
     public synchronized void setGame(final Game game) {
         this.game = game;
     }

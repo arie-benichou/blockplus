@@ -3,16 +3,20 @@ package services.resources;
 
 import java.util.Map;
 
+import org.restlet.Context;
+import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
+import org.restlet.representation.Variant;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
 import serialization.CellEncoding;
-import services.applications.Main;
+import services.applications.BlockplusApplicationInterface;
 import blockplus.model.board.Board;
 import blockplus.model.color.ColorInterface;
 import blockplus.model.color.Colors;
@@ -27,12 +31,20 @@ public class NewBoardEvent extends ServerResource {
 
     private final static MediaType TEXT_EVENT_STREAM = new MediaType("text/event-stream");
 
+    public NewBoardEvent() {
+        super();
+    }
+
+    public NewBoardEvent(final Context context, final Request request, final Response response) {
+        this.getVariants().add(new Variant(TEXT_EVENT_STREAM));
+    }
+
     @Get
     public Representation getRepresentation() {
 
         this.setStatus(Status.SUCCESS_OK);
 
-        final Main application = (Main) this.getApplication();
+        final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
         final Game game = application.getGame();
 
         final GameContext initialContext = game.getInitialContext();

@@ -150,6 +150,7 @@ source.addEventListener("open", function(event) {
 
 source.addEventListener("message", function(event) {
 	console.log(event.data);
+	// TODO extract method
 	{
 		var newChild = document.createElement("div");
 		newChild.setAttribute("id", "last-message");
@@ -160,8 +161,17 @@ source.addEventListener("message", function(event) {
 }, false);
 
 source.addEventListener("error", function(event) {
-	if (event.readyState == EventSource.CLOSED)
+	console.log(event);
+	//console.log(event.data);
+	console.log(event.type);
+	//console.log(event.target);
+	console.log(event.readyState);
+	console.log(event.srcElement.readyState);
+	if (event.readyState == EventSource.CLOSED) {
 		console.log("Event handling error");
+		alert('error');
+	}
+		
 }, false);
 
 source.addEventListener("gamenotover", function(event) {
@@ -174,10 +184,10 @@ source.addEventListener("gamenotover", function(event) {
 }, false);
 
 source.addEventListener("gameover", function(event) {
+	$("game-is-over").play();
 	event.target.close();
 	boardRendering.update(JSON.parse(event.data));
-	$("game-is-not-over").pause();
-	$("game-is-over").play();
 	$("board").className = "game-is-over";
+	$("game-is-not-over").pause();
 }, false);
 /*--------------------------------------------------8<--------------------------------------------------*/
