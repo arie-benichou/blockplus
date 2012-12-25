@@ -112,7 +112,7 @@ new Ajax.Request("/pieces.xml", {onSuccess: function(response) {
 			var position = positions.snapshotItem(j);
 			var y = document.evaluate("y", position, null, XPathResult.NUMBER_TYPE, null );
 			var x = document.evaluate("x", position, null, XPathResult.NUMBER_TYPE, null );
-			boardRendering.updateCell(new Position(y.numberValue, x.numberValue), "Blue");
+			boardRendering.updateCell(new Position(y.numberValue, x.numberValue), "Green");
 		}
 		var imageDataURL = $("piece").toDataURL("image/png");
 		localStorage.setItem("piece" + (i + 1), imageDataURL);

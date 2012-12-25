@@ -3,6 +3,7 @@ package services.resources;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -18,12 +19,17 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.ImmutableSet.Builder;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
+import com.google.gson.Gson;
 
 import serialization.CellEncoding;
+import serialization.JSONSerializer;
 import serialization.PiecesBagEncoding;
 import services.applications.BlockplusApplicationInterface;
 import blockplus.model.board.Board;
@@ -31,6 +37,10 @@ import blockplus.model.color.ColorInterface;
 import blockplus.model.color.Colors;
 import blockplus.model.game.Game;
 import blockplus.model.game.GameContext;
+import blockplus.model.move.Move;
+import blockplus.model.piece.PieceComponent;
+import blockplus.model.piece.PieceComposite;
+import blockplus.model.piece.PieceInterface;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
 
@@ -63,8 +73,29 @@ public class NewBoardEvent extends ServerResource {
 
         final ColorInterface color = initialContext.getColor().iterator().next();
 
-        final GameContext newGameContext = game.start(1);
-        application.setGame(new Game(newGameContext));
+        String playablePositionsData = null;
+        GameContext newGameContext;
+        if (color.is(Colors.Green)) {
+            newGameContext = initialContext;
+            List<Move> options = initialContext.options();
+            final Map<PositionInterface, List<Move>> legalMovesByReferential = Maps.newTreeMap();
+            for (final Move move : options) {
+                final PieceInterface piece = move.getPiece();
+                PositionInterface referential = piece.getReferential();
+                List<Move> playablePositions = legalMovesByReferential.get(referential);
+                if (playablePositions == null) {
+                    playablePositions = Lists.newArrayList(move);
+                    legalMovesByReferential.put(referential, playablePositions);
+                }
+                playablePositions.add(move);
+            }
+            Gson gson = JSONSerializer.getInstance();
+            playablePositionsData = gson.toJson(legalMovesByReferential.keySet());
+        }
+        else {
+            newGameContext = game.start(1);
+            application.setGame(new Game(newGameContext));
+        }
 
         final Board board = newGameContext.getBoard();
         BoardInterface<ColorInterface> coloredBoard = board.colorize();
@@ -78,16 +109,15 @@ public class NewBoardEvent extends ServerResource {
 
         // TODO !!! à revoir complètement
         //if(color.is(Colors.Blue)) {
-            PiecesBag bag = newGameContext.getPlayers().get(Colors.Blue).getPieces();
-            ImmutableSet<Pieces> set1 = ImmutableSet.copyOf(bag.asList());
-            //TODO pouvoir interroger le bag de manière à connaitre les pièces utilisées 
-            ImmutableSet<Pieces> set2 = ImmutableSet.copyOf(PiecesBag.from(Pieces.values()).asList()); // TODO extract constant
-            SetView<Pieces> difference = Sets.difference(set2, set1);
-            System.out.println(difference);
-            PiecesBag piecesBagDiff = PiecesBag.from(difference);
-            String jsonBag = PiecesBagEncoding.encode(piecesBagDiff);
+        PiecesBag bag = newGameContext.getPlayers().get(Colors.Green).getPieces();
+        ImmutableSet<Pieces> set1 = ImmutableSet.copyOf(bag.asList());
+        //TODO pouvoir interroger le bag de manière à connaitre les pièces utilisées 
+        ImmutableSet<Pieces> set2 = ImmutableSet.copyOf(PiecesBag.from(Pieces.values()).asList()); // TODO extract constant
+        SetView<Pieces> difference = Sets.difference(set2, set1);
+        System.out.println(difference);
+        PiecesBag piecesBagDiff = PiecesBag.from(difference);
+        String jsonBag = PiecesBagEncoding.encode(piecesBagDiff);
         //}
-        
 
         // TODO no cache header
         Representation representation = null;
@@ -98,16 +128,18 @@ public class NewBoardEvent extends ServerResource {
                     "retry:1000\n" +
                     "data:" + "[[\"" + color + " has just played\"]]" + "\n\n" +
                     "event:bag\n" +
-                    "data:" + jsonBag + "\n\n" +                    
+                    "data:" + jsonBag + "\n\n" +
                     "event:gamenotover\n" +
-                    "data:" + json + "\n\n" ,
+                    "data:" + json + "\n\n"+
+                    "event:options\n" +
+                    "data:" + playablePositionsData + "\n\n",                    
                     TEXT_EVENT_STREAM);
         }
         else {
             representation = new StringRepresentation("" +
                     "data:" + "[[\"Game is over\"]]" + "\n\n" +
                     "event:bag\n" +
-                    "data:" + jsonBag + "\n\n" +                    
+                    "data:" + jsonBag + "\n\n" +
                     "event:gameover\n" +
                     "data:" + json + "\n\n",
                     TEXT_EVENT_STREAM);

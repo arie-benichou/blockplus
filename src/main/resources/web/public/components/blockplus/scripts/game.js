@@ -189,18 +189,44 @@ source.addEventListener("gamenotover", function(event) {
 source.addEventListener("bag", function(event) {
 	console.log(event.data);
 	var array = JSON.parse(event.data);	
-	/*
-	Element.update("available-pieces", "");
-	console.log(array);
-	for ( var i=0 ; i < array.length; ++i ) {
-		var retrievedObject = localStorage.getItem("piece" + array[i]);
-		var image = new Image();
-		image.src = retrievedObject;
-		$("available-pieces").appendChild(image);
-	}
-	*/
 	for ( var i=0 ; i < array.length; ++i ) {
 		$(("piece-" + array[i])).setAttribute("class", "not-available"); 
+	}
+}, false);
+
+source.addEventListener("options", function(event) {
+	console.log(event.data);
+	var array = JSON.parse(event.data);
+	console.log(array);
+	for ( var i=0 ; i < array.length; ++i ) {
+		
+		var position = new Position(array[i][0], array[i][1]);
+		//boardRendering.updateCell(new Position(array[i][0], array[i][1]), "Green");
+		
+		var canvas = boardRendering.getCanvas();
+		var context = boardRendering.getContext();
+		
+		//var centerX = canvas.width / 2;
+		//var centerY = canvas.height / 2;
+		var radius = 70;
+		
+		context.fillStyle = "rgba(0, 128, 0, 0.35)";
+		context.beginPath();
+		context.arc(34 * position.getColumn() + 34/2, 34 * position.getRow() + 34/2, 6, 0, Math.PI*2, true);
+		context.closePath();
+		context.fill();		
+		context.lineWidth = 1;
+		context.strokeStyle = "green";
+		context.stroke();
+		//break;
+		
+		/*
+		context.fill();
+		context.lineWidth = 5;
+		context.strokeStyle = '#003300';
+		context.stroke();
+		*/
+		
 	}
 }, false);
 
@@ -211,35 +237,6 @@ source.addEventListener("gameover", function(event) {
 	$("board").className = "game-is-over";
 	$("game-is-not-over").pause();
 }, false);
-/*--------------------------------------------------8<--------------------------------------------------*/
-/*
-var pieceRendering = new BoardRendering(new CellRendering("piece", 12, 12, 11, 11));
-new Ajax.Request("/pieces.xml", {onSuccess: function(response) {
-	var data = response.responseXML;
-	var pieces = data.evaluate("//piece", data, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null );
-	for ( var i=0 ; i < pieces.snapshotLength; ++i ) {
-		console.log(i);
-		var piece = pieces.snapshotItem(i);
-		var positions = document.evaluate("position", piece, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null );
-		for ( var j=0 ; j < positions.snapshotLength; ++j ) {
-			var position = positions.snapshotItem(j);
-			var y = document.evaluate("y", position, null, XPathResult.NUMBER_TYPE, null );
-			var x = document.evaluate("x", position, null, XPathResult.NUMBER_TYPE, null );
-			pieceRendering.updateCell(new Position(y.numberValue, x.numberValue), "black");
-		}
-		var imageDataURL = $("piece").toDataURL("image/png");
-		localStorage.setItem("piece" + i, imageDataURL);
-		var retrievedObject = localStorage.getItem("piece" + i);
-		var image = new Image();
-		image.src = retrievedObject;
-		$("available-pieces").appendChild(image);
-		pieceRendering.clear("piece");
-	}
-	console.log("ok1");
-	$("initialization").hide();
-	console.log("ok2");
-}});
-*/
 /*--------------------------------------------------8<--------------------------------------------------*/
 for ( var i=1 ; i <= 21; ++i ) {
 	var retrievedObject = localStorage.getItem("piece" + i);

@@ -5,6 +5,8 @@
  - Game Over => toutes les cellules vides doivent être noircies: DONE !
  - Pouvoir typer les événements envoyés par la source: DONE !
 -----------------------------------------------------------8<-----------------------------------------------------------
+ - ! pouvoir déterminer une pièce en fonction d'un ensemble de positions
+  -! pouvoir pauser les Server-Sent-Events
  - ! sérialiser l'état d'un jeu et respecter l'indempotence du GET
  - Tester Vagrant 
  - Tester http://underscorejs.org/
