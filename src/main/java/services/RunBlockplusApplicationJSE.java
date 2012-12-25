@@ -3,9 +3,12 @@ package services;
 
 import org.restlet.Component;
 import org.restlet.Restlet;
+import org.restlet.Server;
+import org.restlet.data.Parameter;
 import org.restlet.data.Protocol;
 import org.restlet.routing.VirtualHost;
 import org.restlet.util.ClientList;
+import org.restlet.util.Series;
 import org.restlet.util.ServerList;
 
 import services.applications.BlockplusApplicationInterface;
@@ -37,12 +40,11 @@ public final class RunBlockplusApplicationJSE {
             application.setGame(new Game());
             defaultHost.attach("/blockplus", (Restlet) application);
             servers.add(Protocol.HTTP, 8080);
-            /*
             for (final Server server : servers) {
                 final Series<Parameter> parameters = server.getContext().getParameters();
-                parameters.add("persistingConnections", "true");
+                //parameters.add("persistingConnections", "true");
+                //parameters.add("pipeliningConnections", "true");
             }
-            */
             return component;
         }
     }

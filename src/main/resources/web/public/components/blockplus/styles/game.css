@@ -3,6 +3,10 @@ body {
 	background-color: #d5d8df;
 }
 
+canvas {
+	border: 0px solid black;
+}
+
 #board.game-is-over {
 	opacity: 0.30;
 	margin-top: 0;
@@ -11,12 +15,42 @@ body {
 
 #board.game-is-not-over {
 	opacity: 1;
-	margin-top: 4%;
+	margin-top: 2%;
 	border: 1px solid white;
 }
 
 #board {
 	-webkit-transition: all 1s ease-out;
+	/*margin: 10px;*/
+}
+
+#available-pieces {
+	/*width: 400px;*/
+	/*float: right;*/
+	margin-top: 2%;
+	/*border: 1px solid red;*/
+}
+
+/*
+#available-pieces img {
+	opacity: 0.1;
+}
+*/
+
+.available {
+	opacity: 1;
+}
+
+.not-available {
+	opacity: 0.1;
+}
+
+#initialization {
+	/*border: 1px solid red;*/
+}
+
+img {
+	/*border: 1px solid gray;*/
 }
 
 #messages {

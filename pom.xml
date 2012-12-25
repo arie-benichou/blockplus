@@ -71,9 +71,21 @@
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>8.1.5.v20120716</version>
 				<configuration>
-					<scanIntervalSeconds>2</scanIntervalSeconds>
+					<!--  
+					<jettyXml>${basedir}/jetty.xml</jettyXml>
+					-->
+					<scanIntervalSeconds>0</scanIntervalSeconds>
 					<webXml>${webXml}</webXml>
 					<webAppSourceDirectory>${sourceDirectory}</webAppSourceDirectory>
+					<!-- 
+					<connectors>
+				       <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+				          <port>8080</port>
+				          <maxIdleTime>60000</maxIdleTime>
+				          <reuseAddress>true</reuseAddress>
+				       </connector>
+			     	</connectors>
+			     	 -->
 				</configuration>
 			</plugin>
 		</plugins>

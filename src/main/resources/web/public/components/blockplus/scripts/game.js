@@ -119,6 +119,9 @@ var BoardRendering = Class.create({
 			}
 		}
 	},
+	clear : function() {
+		this.getContext().clearRect(0, 0, this.getCanvas().width, this.getCanvas().height);
+	},	
 	toString : function() {
 		return "BoardRendering{" + "cellRendering=" + this.cellRendering + "}";
 	},
@@ -178,8 +181,26 @@ source.addEventListener("gamenotover", function(event) {
 	boardRendering.update(JSON.parse(event.data));
 	$("board").className = "game-is-not-over";
 	if ($("game-is-not-over").currentTime == 0) {
-		$("game-is-not-over").loop = true;
+		//$("game-is-not-over").loop = true;
 		$("game-is-not-over").play();
+	}
+}, false);
+
+source.addEventListener("bag", function(event) {
+	console.log(event.data);
+	var array = JSON.parse(event.data);	
+	/*
+	Element.update("available-pieces", "");
+	console.log(array);
+	for ( var i=0 ; i < array.length; ++i ) {
+		var retrievedObject = localStorage.getItem("piece" + array[i]);
+		var image = new Image();
+		image.src = retrievedObject;
+		$("available-pieces").appendChild(image);
+	}
+	*/
+	for ( var i=0 ; i < array.length; ++i ) {
+		$(("piece-" + array[i])).setAttribute("class", "not-available"); 
 	}
 }, false);
 
@@ -191,3 +212,40 @@ source.addEventListener("gameover", function(event) {
 	$("game-is-not-over").pause();
 }, false);
 /*--------------------------------------------------8<--------------------------------------------------*/
+/*
+var pieceRendering = new BoardRendering(new CellRendering("piece", 12, 12, 11, 11));
+new Ajax.Request("/pieces.xml", {onSuccess: function(response) {
+	var data = response.responseXML;
+	var pieces = data.evaluate("//piece", data, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null );
+	for ( var i=0 ; i < pieces.snapshotLength; ++i ) {
+		console.log(i);
+		var piece = pieces.snapshotItem(i);
+		var positions = document.evaluate("position", piece, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null );
+		for ( var j=0 ; j < positions.snapshotLength; ++j ) {
+			var position = positions.snapshotItem(j);
+			var y = document.evaluate("y", position, null, XPathResult.NUMBER_TYPE, null );
+			var x = document.evaluate("x", position, null, XPathResult.NUMBER_TYPE, null );
+			pieceRendering.updateCell(new Position(y.numberValue, x.numberValue), "black");
+		}
+		var imageDataURL = $("piece").toDataURL("image/png");
+		localStorage.setItem("piece" + i, imageDataURL);
+		var retrievedObject = localStorage.getItem("piece" + i);
+		var image = new Image();
+		image.src = retrievedObject;
+		$("available-pieces").appendChild(image);
+		pieceRendering.clear("piece");
+	}
+	console.log("ok1");
+	$("initialization").hide();
+	console.log("ok2");
+}});
+*/
+/*--------------------------------------------------8<--------------------------------------------------*/
+for ( var i=1 ; i <= 21; ++i ) {
+	var retrievedObject = localStorage.getItem("piece" + i);
+	var image = new Image();
+	image.setAttribute("id", "piece-" + i);
+	image.src = retrievedObject;
+	image.setAttribute("class", "available"); 
+	$("available-pieces").appendChild(image);
+}

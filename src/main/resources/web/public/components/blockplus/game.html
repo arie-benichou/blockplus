@@ -11,16 +11,22 @@
 		<div>
 			<div id="messages"><div id="last-message">Loading...</div></div>
 			<div>
-				<audio id="game-is-not-over" preload="auto">
+				<audio id="game-is-not-over" preload="auto" loop="loop">
 					<source src="./audio/game-is-not-over.mp3" type="audio/mp3"></source>
 				</audio>
-				<audio id="game-is-over" preload="auto">
+				<audio id="game-is-over" preload="auto" loop="loop">
 					<source src="./audio/game-is-over.mp3" type="audio/mp3"></source>
 				</audio>				
 			</div>
 			<div>
 				<canvas id="board" class="game-is-over" width="679px" height="679px"></canvas>
+				<div id="available-pieces"></div>
 			</div>
+			<!-- 
+			<div id="initialization">
+				<canvas id="piece" width="60px" height="60px"></canvas>
+			</div>
+			-->
 		</div>
 		<script src="./scripts/game.js"></script>
 	</body>

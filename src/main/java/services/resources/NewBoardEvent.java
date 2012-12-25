@@ -1,7 +1,10 @@
 
 package services.resources;
 
+import java.util.List;
 import java.util.Map;
+
+import javax.annotation.concurrent.Immutable;
 
 import org.restlet.Context;
 import org.restlet.Request;
@@ -15,13 +18,21 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSet.Builder;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
+
 import serialization.CellEncoding;
+import serialization.PiecesBagEncoding;
 import services.applications.BlockplusApplicationInterface;
 import blockplus.model.board.Board;
 import blockplus.model.color.ColorInterface;
 import blockplus.model.color.Colors;
 import blockplus.model.game.Game;
 import blockplus.model.game.GameContext;
+import blockplus.model.piece.Pieces;
+import blockplus.model.piece.PiecesBag;
 
 import components.board.BoardInterface;
 import components.position.PositionInterface;
@@ -65,6 +76,19 @@ public class NewBoardEvent extends ServerResource {
 
         final String json = CellEncoding.encode(coloredBoard);
 
+        // TODO !!! à revoir complètement
+        //if(color.is(Colors.Blue)) {
+            PiecesBag bag = newGameContext.getPlayers().get(Colors.Blue).getPieces();
+            ImmutableSet<Pieces> set1 = ImmutableSet.copyOf(bag.asList());
+            //TODO pouvoir interroger le bag de manière à connaitre les pièces utilisées 
+            ImmutableSet<Pieces> set2 = ImmutableSet.copyOf(PiecesBag.from(Pieces.values()).asList()); // TODO extract constant
+            SetView<Pieces> difference = Sets.difference(set2, set1);
+            System.out.println(difference);
+            PiecesBag piecesBagDiff = PiecesBag.from(difference);
+            String jsonBag = PiecesBagEncoding.encode(piecesBagDiff);
+        //}
+        
+
         // TODO no cache header
         Representation representation = null;
 
@@ -73,13 +97,17 @@ public class NewBoardEvent extends ServerResource {
             representation = new StringRepresentation("" +
                     "retry:1000\n" +
                     "data:" + "[[\"" + color + " has just played\"]]" + "\n\n" +
+                    "event:bag\n" +
+                    "data:" + jsonBag + "\n\n" +                    
                     "event:gamenotover\n" +
-                    "data:" + json + "\n\n",
+                    "data:" + json + "\n\n" ,
                     TEXT_EVENT_STREAM);
         }
         else {
             representation = new StringRepresentation("" +
                     "data:" + "[[\"Game is over\"]]" + "\n\n" +
+                    "event:bag\n" +
+                    "data:" + jsonBag + "\n\n" +                    
                     "event:gameover\n" +
                     "data:" + json + "\n\n",
                     TEXT_EVENT_STREAM);
