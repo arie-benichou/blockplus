@@ -10,7 +10,9 @@ import org.restlet.data.Protocol;
 import org.restlet.routing.Router;
 import org.restlet.service.ConnectorService;
 
+import services.resources.LegalMoves;
 import services.resources.NewBoardEvent;
+import services.resources.NewPositionsSubmit;
 import blockplus.model.game.Game;
 
 public class BlockplusApplicationJEE extends Application implements BlockplusApplicationInterface {
@@ -36,6 +38,8 @@ public class BlockplusApplicationJEE extends Application implements BlockplusApp
     public synchronized Restlet createInboundRoot() {
         final Router router = new Router(this.getContext());
         router.attach("/data", NewBoardEvent.class);
+        router.attach("/submit", NewPositionsSubmit.class);
+        router.attach("/options", LegalMoves.class);
         return router;
     }
 

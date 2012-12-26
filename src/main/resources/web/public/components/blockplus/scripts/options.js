@@ -159,7 +159,7 @@ var Options = Class.create({
 				var pieceInstanceObject = {};				
 				for ( var j = 0; j < size; ++j) {
 					var p = new Position(pieceInstance[j][0],pieceInstance[j][1]);
-					pieceInstanceObject[p] = true;
+					pieceInstanceObject[JSON.stringify(p)] = true;
 				}
 				pieceInstancesObject["instances"].push(pieceInstanceObject);
 			}
@@ -198,16 +198,59 @@ var Options = Class.create({
 		}
 		//console.log(matches);
 		//console.log("#####################");
-		return matches; // TODO prendre en compte le perfect matching
+		return matches;
 	},
+	perfectMatch : function(selectedPositions) {
+		//var matches = {};
+		var min = selectedPositions.getSize();
+		//console.log("#####################");
+		var n = this.data.length;
+		for ( var i = 0; i < n; ++i) {
+			var pieceInstances = this.data[i];
+			if(pieceInstances.size == min) {
+				//console.log(pieceInstances);
+				var instances = pieceInstances.instances;
+				for ( var j = 0; j < instances.length; ++j) {
+					var match = true;
+					for ( var position in selectedPositions.get()) {
+						if(!(position in instances[j])) {
+							match = false;
+							break;
+						}
+					}
+					if (match) {
+						//console.log(instances[j]);
+						//matches[pieceInstances.id] = true;
+						return pieceInstances.id;
+					}
+				}
+			}
+		}
+		//console.log(matches);
+		//console.log("#####################");
+		return 0;
+	},	
 	toString : function() {
 		return "Position{" + "data=" + this.get() + "}";
 	}
 });
 /*--------------------------------------------------8<--------------------------------------------------*/
+/*
 new Ajax.Request("/legal-positions-by-piece.json", {onSuccess: function(response) {
 	option = new Options(JSON.parse(response.responseText));
 }});
+*/
+new Ajax.Request("/blockplus/options", {
+	onSuccess: function(response) {
+		option = new Options(JSON.parse(response.responseText));
+		console.log(response.responseText);
+	},
+	onFailure: function(response) {
+		alert("failed!");
+	},		
+	method: 'get',
+});
+
 /*--------------------------------------------------8<--------------------------------------------------*/
 /**
  * SelectedPositions
@@ -225,16 +268,16 @@ var SelectedPositions = Class.create({
 	},	
 	add : function(position) {
 		//if(!this.contains(position)) {
-			this.data[position] = true;
+			this.data[JSON.stringify(position)] = true;
 			++this.size;
 		//}
 	},
 	remove : function(position) {
-			delete this.data[position];
+			delete this.data[JSON.stringify(position)];
 			--this.size;
 	},	
 	contains : function(position) {
-		return (position in this.data);
+		return (JSON.stringify(position) in this.data);
 	}	
 });
 /*--------------------------------------------------8<--------------------------------------------------*/
@@ -273,6 +316,34 @@ boardRendering.getCanvas().addEventListener("click", function(event) {
 		for ( var id in matches) {
 			$(("piece-" + id)).setAttribute("class", "available");
 		}
+	}
+}, false);
+/*--------------------------------------------------8<--------------------------------------------------*/
+$("submit").addEventListener("click", function(event) {
+	
+	var pieceId = option.perfectMatch(selectedPositions);
+	console.log(pieceId);
+	if(pieceId == 0) alert("Pas si vite mon coco...");
+	else {
+		var data = [];
+		for ( var position in selectedPositions.get()) {
+			var p = JSON.parse([position]);
+			data.push([p.row, p.column]);
+		}
+		console.log(JSON.stringify(data));
+		new Ajax.Request("/blockplus/submit", {
+			onSuccess: function(response) {
+				console.log(response.responseText);
+			},
+			onFailure: function(response) {
+				alert("failed!");
+			},		
+			method: 'get',
+			parameters: {
+				id: pieceId,
+				positions: JSON.stringify(data)
+			}
+		});
 	}
 }, false);
 /*--------------------------------------------------8<--------------------------------------------------*/
