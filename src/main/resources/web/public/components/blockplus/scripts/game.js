@@ -132,12 +132,52 @@ console.log(offsetToPositionBuilder.toString());
 var boardRendering = new BoardRendering(new CellRendering("board", 34, 34, 33, 33));
 console.log(boardRendering.toString());
 /*--------------------------------------------------8<--------------------------------------------------*/
+/*
 boardRendering.getCanvas().addEventListener("click", function(event) {
 	if (event.ctrlKey)
 		window.location = event.srcElement.toDataURL("image/png");
 	else
 		boardRendering.updateCell(offsetToPositionBuilder.build(event.offsetX, event.offsetY), "black");
 }, false);
+*/
+/*--------------------------------------------------8<--------------------------------------------------*/
+function EventSourceManager(url) {
+    this.url = url;
+    this.es = null;
+    this.listeners = {};
+}
+EventSourceManager.prototype = {
+    constructor: EventSourceManager,
+    connect: function() {
+        this.es = new EventSource(this.url);
+        this.bindEvents();
+    },
+    disconnect: function() {
+        this.es.close();
+        this.es = null;
+    },
+    bindEvents: function() {
+        for ( var type in this.listeners ) {
+            var evs = this.listeners[type];
+            for( var i = 0; i < evs.length; ++i ) {
+                this.es.addEventListener( type, evs[i], false );
+            }
+        }
+    },
+    addEventListener: function( type, fn ) {
+        if( !this.listeners[type] ) {
+            this.listeners[type] = [];
+        }
+        this.listeners[type].push( fn );
+        if( this.es ) {
+            this.bindEvents();
+        }
+    }
+};
+/*--------------------------------------------------8<--------------------------------------------------*/
+var source = new EventSourceManager("/blockplus/data");
+//source.addEventListener("something", somefunction, false);
+//source.disconnect();
 /*--------------------------------------------------8<--------------------------------------------------*/
 // TODO ! extract EventManager
 // TODO ! ajouter une zone de notifications dans la page
@@ -145,7 +185,7 @@ boardRendering.getCanvas().addEventListener("click", function(event) {
 // TODO ! utiliser le local storage pour enregistrer le currentime de la
 // musique, par exemple...
 // TODO ? émettre l"événement newgame
-var source = new EventSource("/blockplus/data");
+//var source = new EventSource("/blockplus/data");
 
 source.addEventListener("open", function(event) {
 	console.log("Event listening");
@@ -186,48 +226,71 @@ source.addEventListener("gamenotover", function(event) {
 	}
 }, false);
 
+/*
 source.addEventListener("bag", function(event) {
 	console.log(event.data);
-	var array = JSON.parse(event.data);	
+	var array = JSON.parse(event.data);
+	alert(array);
 	for ( var i=0 ; i < array.length; ++i ) {
-		$(("piece-" + array[i])).setAttribute("class", "not-available"); 
+		$(("piece-" + array[i])).setAttribute("class", "available"); 
 	}
 }, false);
+*/
+
+function showPotentialCells(position) {
+	var context = boardRendering.getContext();	
+	context.fillStyle = "rgba(0, 128, 0, 0.35)";
+	context.beginPath();
+	context.arc(34 * position.getColumn() + 34/2, 34 * position.getRow() + 34/2, 4, 0, Math.PI*2, true);
+	context.closePath();
+	context.fill();		
+	context.lineWidth = 1;
+	context.strokeStyle = "green";
+	context.stroke();
+}
 
 source.addEventListener("options", function(event) {
+	
 	console.log(event.data);
 	var array = JSON.parse(event.data);
+	
+	if(array == null) return // TODO
+	
 	console.log(array);
+	source.disconnect();
 	for ( var i=0 ; i < array.length; ++i ) {
-		
 		var position = new Position(array[i][0], array[i][1]);
-		//boardRendering.updateCell(new Position(array[i][0], array[i][1]), "Green");
-		
-		var canvas = boardRendering.getCanvas();
-		var context = boardRendering.getContext();
-		
-		//var centerX = canvas.width / 2;
-		//var centerY = canvas.height / 2;
-		var radius = 70;
-		
-		context.fillStyle = "rgba(0, 128, 0, 0.35)";
-		context.beginPath();
-		context.arc(34 * position.getColumn() + 34/2, 34 * position.getRow() + 34/2, 6, 0, Math.PI*2, true);
-		context.closePath();
-		context.fill();		
-		context.lineWidth = 1;
-		context.strokeStyle = "green";
-		context.stroke();
-		//break;
-		
-		/*
-		context.fill();
-		context.lineWidth = 5;
-		context.strokeStyle = '#003300';
-		context.stroke();
-		*/
-		
+		showPotentialCells(position);
 	}
+	
+	new Ajax.Request("/blockplus/pieces", {
+		onSuccess: function(response) {
+			var array = JSON.parse(response.responseText);
+			for ( var i = 1 ; i <= 21; ++i ) { // TODO
+				$("piece-" + i).setAttribute("class", "not-available"); 
+			}			
+			for ( var i=0 ; i < array.length; ++i ) {
+				$("piece-" + array[i]).setAttribute("class", "available"); 
+			}
+		},
+		onFailure: function(response) {
+			alert("failed!");
+		},		
+		method: 'get',
+	});	
+
+	new Ajax.Request("/blockplus/options", {
+		onSuccess: function(response) {
+			option = new Options(JSON.parse(response.responseText));
+			console.log(response.responseText);
+			$("submit").show();
+		},
+		onFailure: function(response) {
+			alert("failed!");
+		},		
+		method: 'get',
+	});
+	
 }, false);
 
 source.addEventListener("gameover", function(event) {
@@ -243,6 +306,194 @@ for ( var i=1 ; i <= 21; ++i ) {
 	var image = new Image();
 	image.setAttribute("id", "piece-" + i);
 	image.src = retrievedObject;
-	image.setAttribute("class", "available"); 
+	//image.setAttribute("class", "available"); 
+	image.setAttribute("class", "not-available");
 	$("available-pieces").appendChild(image);
 }
+/*--------------------------------------------------8<--------------------------------------------------*/
+source.connect();
+/*--------------------------------------------------8<--------------------------------------------------*/
+/**
+ * Options
+ */
+var Options = Class.create({
+	initialize : function(data) {
+		var tmpData = [];
+		for ( var p in data) {
+			var pieceInstances = data[p];
+			var pieceInstancesObject = {
+					id: parseInt(p.substring(5,7), 10),
+					size: pieceInstances[0].length,
+					instances: []
+			};
+			var n = pieceInstances.length;
+			for ( var i = 0; i < n; ++i) {
+				var pieceInstance = pieceInstances[i];
+				var size = pieceInstance.length;
+				var pieceInstanceObject = {};				
+				for ( var j = 0; j < size; ++j) {
+					var p = new Position(pieceInstance[j][0],pieceInstance[j][1]);
+					pieceInstanceObject[JSON.stringify(p)] = true;
+				}
+				pieceInstancesObject["instances"].push(pieceInstanceObject);
+			}
+			tmpData.push(pieceInstancesObject);
+		}
+		//console.log(tmpData);
+		this.data = tmpData;
+	},
+	get : function() {
+		return this.data;
+	},
+	matches : function(selectedPositions) {
+		var matches = {};
+		var min = selectedPositions.getSize();
+		//console.log("#####################");
+		var n = this.data.length;
+		for ( var i = 0; i < n; ++i) {
+			var pieceInstances = this.data[i];
+			if(pieceInstances.size >= min) {
+				//console.log(pieceInstances);
+				var instances = pieceInstances.instances;
+				for ( var j = 0; j < instances.length; ++j) {
+					var match = true;
+					for ( var position in selectedPositions.get()) {
+						if(!(position in instances[j])) {
+							match = false;
+							break;
+						}
+					}
+					if (match) {
+						//console.log(instances[j]);
+						matches[pieceInstances.id] = true;
+					}
+				}
+			}
+		}
+		//console.log(matches);
+		//console.log("#####################");
+		return matches;
+	},
+	perfectMatch : function(selectedPositions) {
+		//var matches = {};
+		var min = selectedPositions.getSize();
+		//console.log("#####################");
+		var n = this.data.length;
+		for ( var i = 0; i < n; ++i) {
+			var pieceInstances = this.data[i];
+			if(pieceInstances.size == min) {
+				//console.log(pieceInstances);
+				var instances = pieceInstances.instances;
+				for ( var j = 0; j < instances.length; ++j) {
+					var match = true;
+					for ( var position in selectedPositions.get()) {
+						if(!(position in instances[j])) {
+							match = false;
+							break;
+						}
+					}
+					if (match) {
+						//console.log(instances[j]);
+						//matches[pieceInstances.id] = true;
+						return pieceInstances.id;
+					}
+				}
+			}
+		}
+		//console.log(matches);
+		//console.log("#####################");
+		return 0;
+	}	
+});
+/*--------------------------------------------------8<--------------------------------------------------*/
+/**
+ * SelectedPositions
+ */
+var SelectedPositions = Class.create({
+	initialize : function() {
+		this.data = {};
+		this.size = 0;
+	},
+	get : function() {
+		return this.data;
+	},
+	getSize : function() {
+		return this.size;
+	},	
+	add : function(position) {
+		//if(!this.contains(position)) {
+			this.data[JSON.stringify(position)] = true;
+			++this.size;
+		//}
+	},
+	remove : function(position) {
+			delete this.data[JSON.stringify(position)];
+			--this.size;
+	},	
+	contains : function(position) {
+		return (JSON.stringify(position) in this.data);
+	},
+	clear : function(position) {
+		this.data = {};
+		this.size = 0;
+	}		
+});
+/*--------------------------------------------------8<--------------------------------------------------*/
+var selectedPositions = new SelectedPositions();
+/*--------------------------------------------------8<--------------------------------------------------*/
+boardRendering.getCanvas().addEventListener("click", function(event) {
+	if (event.ctrlKey)
+		window.location = event.srcElement.toDataURL("image/png");
+	else {
+		var position = offsetToPositionBuilder.build(event.offsetX, event.offsetY);
+		if(selectedPositions.contains(position)) {
+			boardRendering.updateCell(position, "White");
+			selectedPositions.remove(position);
+			showPotentialCells(position);
+		}
+		else {
+			boardRendering.updateCell(position, "black");
+			selectedPositions.add(position);
+		}
+		var matches = option.matches(selectedPositions);
+		console.log(matches);
+		for ( var i = 1 ; i <= 21; ++i ) {
+			$(("piece-" + i)).setAttribute("class", "not-available"); 
+		}
+		for ( var id in matches) {
+			$(("piece-" + id)).setAttribute("class", "available");
+		}
+	}
+}, false);
+/*--------------------------------------------------8<--------------------------------------------------*/
+$("submit").addEventListener("click", function(event) {
+	
+	var pieceId = option.perfectMatch(selectedPositions);
+	console.log(pieceId);
+	if(pieceId == 0) alert("Pas si vite mon coco...");
+	else {
+		var data = [];
+		for ( var position in selectedPositions.get()) {
+			var p = JSON.parse([position]);
+			data.push([p.row, p.column]);
+		}
+		console.log(JSON.stringify(data));
+		new Ajax.Request("/blockplus/submit", {
+			onSuccess: function(response) {
+				console.log(response.responseText);
+				$("submit").hide();
+				selectedPositions.clear();
+				source.connect(); // TODO ...
+			},
+			onFailure: function(response) {
+				alert("failed!");
+			},		
+			method: 'get',
+			parameters: {
+				id: pieceId,
+				positions: JSON.stringify(data)
+			}
+		});
+	}
+}, false);
+/*--------------------------------------------------8<--------------------------------------------------*/

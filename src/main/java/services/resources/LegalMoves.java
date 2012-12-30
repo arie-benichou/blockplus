@@ -35,14 +35,16 @@ public class LegalMoves extends ServerResource {
 
         final Map<Pieces, List<Set<PositionInterface>>> legalPositionsByPiece = Maps.newTreeMap();
         for (final Move move : legalMoves) {
-            final PieceInterface piece = move.getPiece();
-            Pieces key = Pieces.get(piece.getId());
-            List<Set<PositionInterface>> playablePositions = legalPositionsByPiece.get(key);
-            if (playablePositions == null) {
-                playablePositions = Lists.newArrayList();
-                legalPositionsByPiece.put(key, playablePositions);
+            if(!move.isNull()) { // TODO à revoir
+                final PieceInterface piece = move.getPiece();
+                Pieces key = Pieces.get(piece.getId());
+                List<Set<PositionInterface>> playablePositions = legalPositionsByPiece.get(key);
+                if (playablePositions == null) {
+                    playablePositions = Lists.newArrayList();
+                    legalPositionsByPiece.put(key, playablePositions);
+                }
+                playablePositions.add(piece.getSelfPositions());
             }
-            playablePositions.add(piece.getSelfPositions());
         }
 
         Gson gson = JSONSerializer.getInstance();

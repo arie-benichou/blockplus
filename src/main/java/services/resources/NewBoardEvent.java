@@ -4,6 +4,7 @@ package services.resources;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -75,22 +76,14 @@ public class NewBoardEvent extends ServerResource {
 
         String playablePositionsData = null;
         GameContext newGameContext;
+        
         if (color.is(Colors.Green)) {
             newGameContext = initialContext;
             List<Move> options = initialContext.options();
-            final Map<PositionInterface, List<Move>> legalMovesByReferential = Maps.newTreeMap();
-            for (final Move move : options) {
-                final PieceInterface piece = move.getPiece();
-                PositionInterface referential = piece.getReferential();
-                List<Move> playablePositions = legalMovesByReferential.get(referential);
-                if (playablePositions == null) {
-                    playablePositions = Lists.newArrayList(move);
-                    legalMovesByReferential.put(referential, playablePositions);
-                }
-                playablePositions.add(move);
-            }
+            Set<PositionInterface> potentialPositions = Sets.newHashSet();
+            for (final Move move : options) potentialPositions.addAll(move.getPiece().getSelfPositions());
             Gson gson = JSONSerializer.getInstance();
-            playablePositionsData = gson.toJson(legalMovesByReferential.keySet());
+            playablePositionsData = gson.toJson(potentialPositions);
         }
         else {
             newGameContext = game.start(1);
@@ -107,6 +100,7 @@ public class NewBoardEvent extends ServerResource {
 
         final String json = CellEncoding.encode(coloredBoard);
 
+        /*
         // TODO !!! à revoir complètement
         //if(color.is(Colors.Blue)) {
         PiecesBag bag = newGameContext.getPlayers().get(Colors.Green).getPieces();
@@ -118,6 +112,10 @@ public class NewBoardEvent extends ServerResource {
         PiecesBag piecesBagDiff = PiecesBag.from(difference);
         String jsonBag = PiecesBagEncoding.encode(piecesBagDiff);
         //}
+        */
+        
+        //PiecesBag bag = newGameContext.getPlayers().get(Colors.Green).getPieces();
+        //String jsonBag = PiecesBagEncoding.encode(bag);
 
         // TODO no cache header
         Representation representation = null;
@@ -127,8 +125,8 @@ public class NewBoardEvent extends ServerResource {
             representation = new StringRepresentation("" +
                     "retry:1000\n" +
                     "data:" + "[[\"" + color + " has just played\"]]" + "\n\n" +
-                    "event:bag\n" +
-                    "data:" + jsonBag + "\n\n" +
+                    //"event:bag\n" +
+                    //"data:" + jsonBag + "\n\n" +
                     "event:gamenotover\n" +
                     "data:" + json + "\n\n"+
                     "event:options\n" +
@@ -138,8 +136,8 @@ public class NewBoardEvent extends ServerResource {
         else {
             representation = new StringRepresentation("" +
                     "data:" + "[[\"Game is over\"]]" + "\n\n" +
-                    "event:bag\n" +
-                    "data:" + jsonBag + "\n\n" +
+                    //"event:bag\n" +
+                    //"data:" + jsonBag + "\n\n" +
                     "event:gameover\n" +
                     "data:" + json + "\n\n",
                     TEXT_EVENT_STREAM);

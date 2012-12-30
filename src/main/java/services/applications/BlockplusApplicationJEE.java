@@ -10,6 +10,7 @@ import org.restlet.data.Protocol;
 import org.restlet.routing.Router;
 import org.restlet.service.ConnectorService;
 
+import services.resources.AvailablePieces;
 import services.resources.LegalMoves;
 import services.resources.NewBoardEvent;
 import services.resources.NewPositionsSubmit;
@@ -40,6 +41,7 @@ public class BlockplusApplicationJEE extends Application implements BlockplusApp
         router.attach("/data", NewBoardEvent.class);
         router.attach("/submit", NewPositionsSubmit.class);
         router.attach("/options", LegalMoves.class);
+        router.attach("/pieces", AvailablePieces.class);
         return router;
     }
 
