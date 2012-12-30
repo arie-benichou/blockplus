@@ -5,6 +5,7 @@
 		<link rel="shortcut icon" href="./images/favicon.png" />
 		<link href="./styles/default.css" rel="stylesheet" type="text/css" />
 		<link href="./styles/index.css" rel="stylesheet" type="text/css" />
+		<script src="./scripts/prototype.js"></script>
 		<title>Blockplus</title>
 	</head>
 	<body>
@@ -19,10 +20,33 @@
 			 <!--  -->
 			<h1>Blockplus</h1>
 			<ul>
-				<li><a href="./game.html">Local</a></li>
+				<li><a href="./local-game.html">Local</a></li>
 				<li>Network</li>
 			</ul>
+			<div id="initialization">
+				<!--
+				<canvas id="piece" width="84px" height="84px"></canvas>
+				-->
+				<canvas id="piece"></canvas>
+				<!-- 
+				<div id="piece-image"></div>
+				 -->
+			</div>
 		</div>
+		
+		<script src="./scripts/modules/Colors.js"></script>
+		<script src="./scripts/modules/Position.js"></script>
+		<script src="./scripts/modules/CellRendering.js"></script>
+		<script src="./scripts/modules/BoardRendering.js"></script>		
+		<script src="./scripts/modules/PieceImageManager.js"></script>
+		
 		<script src="./scripts/index.js"></script>
+		
+		<script type="text/javascript">
+			localStorage.clear();
+			var boardRendering = new BoardRendering(new CellRendering("piece", 12, 12, 11, 11)); // TODO
+			createAllPiecesImages("/pieces.xml");
+		</script>
+		
 	</body>
 </html>

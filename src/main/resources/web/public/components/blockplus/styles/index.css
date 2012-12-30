@@ -1,0 +1,15 @@
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	background-color: #d5d8df;
+}
+/*
+#piece-image {
+	background-color: black;
+}
+*/
+img {
+	border: 1px solid black;
+}
+#piece {
+	border: 1px solid red;
+}

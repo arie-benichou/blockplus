@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="shortcut icon" href="./images/favicon.png" />
+		<link href="./styles/default.css" rel="stylesheet" type="text/css" />
+		<link href="./styles/local-game.css" rel="stylesheet" type="text/css" />
+		<script src="./scripts/prototype.js"></script>
+	</head>
+	<body>
+		<div>
+			<div id="messages">
+				<div id="last-message">Loading...</div>
+			</div>
+			<div>
+				<audio id="game-is-not-over" preload="auto" loop="loop">
+					<source src="./audio/game-is-not-over.mp3" type="audio/mp3"></source>
+				</audio>
+				<audio id="game-is-over" preload="auto" loop="loop">
+					<source src="./audio/game-is-over.mp3" type="audio/mp3"></source>
+				</audio>				
+			</div>
+			<div style="width: 1707px; margin: 0 auto;">
+				<div id="left">
+					<div id="available-pieces"></div>
+				</div>
+				<div id="middle">
+					<canvas id="board" class="game-is-over" width="679px" height="679px"></canvas>
+				</div>
+				<div id="right">
+					<div id="submit">
+						<canvas class="clickable" id="pieceToPlay" width="0px" height="0px" style="border:4px solid #dadfe2;"></canvas>
+					</div>
+				</div>		
+				<!-- 
+				<button id="submit" type="button">ok</button>
+				 -->
+				  <div style="clear: both;"></div>
+			</div>
+		</div>
+		<script src="./scripts/modules/Position.js"></script>
+		<script src="./scripts/modules/OffsetToPositionBuilder.js"></script>
+		<script src="./scripts/modules/CellRendering.js"></script>
+		<script src="./scripts/modules/BoardRendering.js"></script>
+		<script src="./scripts/modules/SelectedPositions.js"></script>
+		<script src="./scripts/modules/SelectedPositions.js"></script>
+		<script src="./scripts/modules/Options.js"></script>
+		<script src="./scripts/modules/EventSourceManager.js"></script>
+		<script src="./scripts/modules/PieceImageManager.js"></script>
+		
+		<script src="./scripts/local-game.js"></script>
+	</body>
+</html>
