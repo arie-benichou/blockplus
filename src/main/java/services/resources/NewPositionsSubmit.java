@@ -40,6 +40,11 @@ public class NewPositionsSubmit extends ServerResource {
         int id = Integer.parseInt(this.getQueryValue("id"));
         String json = this.getQueryValue("positions");
         
+        //int id = 0;
+        //String json = "[]";
+        
+        System.out.println(json);
+        
         Gson gson = new Gson();
         JsonParser parser = new JsonParser();
         JsonArray array = parser.parse(json).getAsJsonArray();
@@ -53,7 +58,22 @@ public class NewPositionsSubmit extends ServerResource {
             positions.add(Position.from(row, column));
         }
         
-        PieceInterface piece = PieceComposite.from(id, positions.iterator().next(), positions);
+        System.out.println("ok1");
+        System.out.println(positions);
+        
+        PieceInterface piece;
+        
+        if(positions.isEmpty()) { // TODO !!! à revoir
+            piece = PieceComposite.from(id, Position.from(), positions);
+        }
+        else {
+            piece = PieceComposite.from(id, positions.iterator().next(), positions);    
+        }
+        
+        System.out.println(piece);
+        
+        System.out.println("ok2");
+        
         Move move = new Move(Colors.Green, piece);
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
         final Game game = application.getGame();

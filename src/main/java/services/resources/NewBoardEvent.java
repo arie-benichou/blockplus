@@ -77,22 +77,32 @@ public class NewBoardEvent extends ServerResource {
 
         String playablePositionsData = null;
         GameContext newGameContext;
-        
+
+        System.out.println(initialContext.getPlayers().get(Colors.Green).getPieces());
+
         if (color.is(Colors.Green)) {
             newGameContext = initialContext;
             List<Move> options = initialContext.options();
-            
-            if(options.size() == 1) {
-                Move move = new Move(color, Pieces.get(0).iterator().next());
-                newGameContext = game.getInitialContext().apply(move);
-                application.setGame(new Game(newGameContext.next()));
-                isGameNotOver = newGameContext.hasNext();
+
+            if (options.size() == 1) { // !! TODO à revoir
+                System.out.println(options);
+                if (options.iterator().next().isNull()) {
+                    //Move move = new Move(color, Pieces.get(0).iterator().next());
+                    Move move = options.iterator().next();
+                    newGameContext = newGameContext.apply(move);
+                    application.setGame(new Game(newGameContext.next()));                                        
+                    isGameNotOver = false;
+                }
+                else {
+                    isGameNotOver = true;
+                }
             }
             else {
                 Set<PositionInterface> potentialPositions = Sets.newHashSet();
-                for (final Move move : options) potentialPositions.addAll(move.getPiece().getSelfPositions());
+                for (final Move move : options)
+                    potentialPositions.addAll(move.getPiece().getSelfPositions());
                 Gson gson = JSONSerializer.getInstance();
-                playablePositionsData = gson.toJson(potentialPositions);                
+                playablePositionsData = gson.toJson(potentialPositions);
             }
 
         }
@@ -124,7 +134,7 @@ public class NewBoardEvent extends ServerResource {
         String jsonBag = PiecesBagEncoding.encode(piecesBagDiff);
         //}
         */
-        
+
         //PiecesBag bag = newGameContext.getPlayers().get(Colors.Green).getPieces();
         //String jsonBag = PiecesBagEncoding.encode(bag);
 
@@ -139,9 +149,9 @@ public class NewBoardEvent extends ServerResource {
                     //"event:bag\n" +
                     //"data:" + jsonBag + "\n\n" +
                     "event:gamenotover\n" +
-                    "data:" + json + "\n\n"+
+                    "data:" + json + "\n\n" +
                     "event:options\n" +
-                    "data:" + playablePositionsData + "\n\n",                    
+                    "data:" + playablePositionsData + "\n\n",
                     TEXT_EVENT_STREAM);
         }
         else {

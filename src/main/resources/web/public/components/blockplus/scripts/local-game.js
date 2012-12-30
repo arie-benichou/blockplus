@@ -30,9 +30,10 @@ var gameoverEventHandler = function(event) {
     $("game-is-over").play();
     event.target.close();
     boardRendering.update(JSON.parse(event.data));
-    $("board").className = "game-is-over";
+    // $("board").className = "game-is-over";
     $("game-is-not-over").pause();
     getAvailablePieces();
+    $("content").setAttribute("style", "opacity:0.4;");
 };
 
 var getAvailablePieces = function() {
@@ -55,30 +56,32 @@ var getAvailablePieces = function() {
 
 var optionsEventHandler = function(event) {
     var array = JSON.parse(event.data);
-    
-    console.log(array);
-    if (array == null) return;
-    
-    source.disconnect();
-    for ( var i = 0; i < array.length; ++i) {
-        var position = new Position(array[i][0], array[i][1]);
-        showPotentialCells(position);
-    }
-    
-    getAvailablePieces();
 
-    new Ajax.Request("/blockplus/options", {
-        onSuccess : function(response) {
-            option = new Options(JSON.parse(response.responseText));
-            if (option.get().length == 0)
-                alert("fuck");
-            // $("submit").show();
-        },
-        onFailure : function(response) {
-            alert("failed!");
-        },
-        method : 'get',
-    });
+    console.log(array);
+    if (array == null || array.length == 0) {
+        //$("skip").show();
+    }
+    else {
+        source.disconnect();
+        for ( var i = 0; i < array.length; ++i) {
+            var position = new Position(array[i][0], array[i][1]);
+            showPotentialCells(position);
+        }
+        getAvailablePieces();
+        new Ajax.Request("/blockplus/options", {
+            onSuccess : function(response) {
+                option = new Options(JSON.parse(response.responseText));
+                if (option.get().length == 0)
+                    alert("fuck");
+                // $("submit").show();
+            },
+            onFailure : function(response) {
+                alert("failed!");
+            },
+            method : 'get',
+        });        
+    }
+
 };
 /*--------------------------------------------------8<--------------------------------------------------*/
 var source = new EventSourceManager("/blockplus/data");
@@ -218,3 +221,27 @@ $("pieceToPlay").addEventListener("click", function(event) {
     });
 
 }, false);
+/*--------------------------------------------------8<--------------------------------------------------*/
+/*
+$("skip").addEventListener("click", function(event) {
+    new Ajax.Request("/blockplus/submit", {
+        onSuccess : function(response) {
+            console.log(response.responseText);
+            $("submit").hide();
+            selectedPositions.clear();
+            getAvailablePieces();
+            source.connect();
+            // TODO mettre à jour le bag
+        },
+        onFailure : function(response) {
+            alert("failed!");
+        },
+        method : 'get',
+        parameters : {
+            id : 0,
+            positions : JSON.stringify([])
+        }
+    });
+}, false);
+*/
+/*--------------------------------------------------8<--------------------------------------------------*/
