@@ -32,16 +32,10 @@ var gameoverEventHandler = function(event) {
     boardRendering.update(JSON.parse(event.data));
     $("board").className = "game-is-over";
     $("game-is-not-over").pause();
+    getAvailablePieces();
 };
-var optionsEventHandler = function(event) {
-    var array = JSON.parse(event.data);
-    if (array == null)
-        return // TODO
-        source.disconnect();
-    for ( var i = 0; i < array.length; ++i) {
-        var position = new Position(array[i][0], array[i][1]);
-        showPotentialCells(position);
-    }
+
+var getAvailablePieces = function() {
     new Ajax.Request("/blockplus/pieces", {
         onSuccess : function(response) {
             var array = JSON.parse(response.responseText);
@@ -57,10 +51,28 @@ var optionsEventHandler = function(event) {
         },
         method : 'get',
     });
+};
+
+var optionsEventHandler = function(event) {
+    var array = JSON.parse(event.data);
+    
+    console.log(array);
+    if (array == null) return;
+    
+    source.disconnect();
+    for ( var i = 0; i < array.length; ++i) {
+        var position = new Position(array[i][0], array[i][1]);
+        showPotentialCells(position);
+    }
+    
+    getAvailablePieces();
+
     new Ajax.Request("/blockplus/options", {
         onSuccess : function(response) {
             option = new Options(JSON.parse(response.responseText));
-            //$("submit").show();
+            if (option.get().length == 0)
+                alert("fuck");
+            // $("submit").show();
         },
         onFailure : function(response) {
             alert("failed!");
@@ -125,11 +137,11 @@ boardRendering.getCanvas().addEventListener("click", function(event) {
         }
 
         var id = option.perfectMatch(selectedPositions);
-        
+
         console.log("#######");
         console.log(id);
         console.log("#######");
-        
+
         if (id) {
 
             $("piece-" + id).setAttribute("class", "perfect-match");
@@ -174,23 +186,26 @@ $("pieceToPlay").addEventListener("mouseout", function(event) {
 }, false);
 
 $("pieceToPlay").addEventListener("click", function(event) {
-    
-    var pieceId = option.perfectMatch(selectedPositions); console.log(pieceId);
-    
+
+    var pieceId = option.perfectMatch(selectedPositions);
+    console.log(pieceId);
+
     var data = [];
     for ( var position in selectedPositions.get()) {
         var p = JSON.parse([ position ]);
         data.push([ p.row, p.column ]);
     }
-    
+
     console.log(JSON.stringify(data));
-    
+
     new Ajax.Request("/blockplus/submit", {
         onSuccess : function(response) {
             console.log(response.responseText);
             $("submit").hide();
             selectedPositions.clear();
+            getAvailablePieces();
             source.connect();
+            // TODO mettre à jour le bag
         },
         onFailure : function(response) {
             alert("failed!");

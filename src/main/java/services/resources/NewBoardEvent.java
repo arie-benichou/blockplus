@@ -41,6 +41,7 @@ import blockplus.model.game.GameContext;
 import blockplus.model.move.Move;
 import blockplus.model.piece.PieceComponent;
 import blockplus.model.piece.PieceComposite;
+import blockplus.model.piece.PieceInstances;
 import blockplus.model.piece.PieceInterface;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
@@ -70,7 +71,7 @@ public class NewBoardEvent extends ServerResource {
         final Game game = application.getGame();
 
         final GameContext initialContext = game.getInitialContext();
-        final boolean isGameNotOver = initialContext.hasNext();
+        boolean isGameNotOver = initialContext.hasNext();
 
         final ColorInterface color = initialContext.getColor().iterator().next();
 
@@ -80,10 +81,20 @@ public class NewBoardEvent extends ServerResource {
         if (color.is(Colors.Green)) {
             newGameContext = initialContext;
             List<Move> options = initialContext.options();
-            Set<PositionInterface> potentialPositions = Sets.newHashSet();
-            for (final Move move : options) potentialPositions.addAll(move.getPiece().getSelfPositions());
-            Gson gson = JSONSerializer.getInstance();
-            playablePositionsData = gson.toJson(potentialPositions);
+            
+            if(options.size() == 1) {
+                Move move = new Move(color, Pieces.get(0).iterator().next());
+                newGameContext = game.getInitialContext().apply(move);
+                application.setGame(new Game(newGameContext.next()));
+                isGameNotOver = newGameContext.hasNext();
+            }
+            else {
+                Set<PositionInterface> potentialPositions = Sets.newHashSet();
+                for (final Move move : options) potentialPositions.addAll(move.getPiece().getSelfPositions());
+                Gson gson = JSONSerializer.getInstance();
+                playablePositionsData = gson.toJson(potentialPositions);                
+            }
+
         }
         else {
             newGameContext = game.start(1);
