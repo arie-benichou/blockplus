@@ -227,3 +227,27 @@ localStorage.clear();
 var pieceRendering = new BoardRendering(new CellRendering("piece", 12, 12, 11, 11));
 createAllPiecesImages("/pieces.xml");
 /*--------------------------------------------------8<--------------------------------------------------*/
+//myAudio = $("game-is-not-over");
+//myAudio.addEventListener('canplay', function() {
+//    
+//    console.log("can play it!");
+//    
+//    myAudio.addEventListener('ended', function() {
+//        console.log("end");
+//        myAudio.currentTime = 0;
+//        myAudio.play();
+//    }, false);
+//    
+//    myAudio.addEventListener('play', function() {
+//        console.log(myAudio.currentTime);
+//    }, false);
+//    
+//    myAudio.addEventListener('pause', function() {
+//        console.log("pause");
+//        myAudio.currentTime = 0;
+//        myAudio.play();
+//    }, false);
+//    
+//    myAudio.play();
+//    
+//}, false);
