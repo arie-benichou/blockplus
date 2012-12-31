@@ -23,15 +23,14 @@ var messsageEventHandler = function(event) {
 var gamenotoverEventHandler = function(event) {
     boardRendering.update(JSON.parse(event.data));
     $("board").className = "game-is-not-over";
-    if ($("game-is-not-over").currentTime == 0)
-        $("game-is-not-over").play();
+    //if ($("game-is-not-over").currentTime == 0) $("game-is-not-over").play();
 };
 var gameoverEventHandler = function(event) {
-    $("game-is-over").play();
+    //$("game-is-over").play();
     event.target.close();
     boardRendering.update(JSON.parse(event.data));
     // $("board").className = "game-is-over";
-    $("game-is-not-over").pause();
+    //$("game-is-not-over").pause();
     getAvailablePieces();
     $("content").setAttribute("style", "opacity:0.4;");
 };
