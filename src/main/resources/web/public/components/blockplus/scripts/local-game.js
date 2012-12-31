@@ -222,26 +222,8 @@ $("pieceToPlay").addEventListener("click", function(event) {
 
 }, false);
 /*--------------------------------------------------8<--------------------------------------------------*/
-/*
-$("skip").addEventListener("click", function(event) {
-    new Ajax.Request("/blockplus/submit", {
-        onSuccess : function(response) {
-            console.log(response.responseText);
-            $("submit").hide();
-            selectedPositions.clear();
-            getAvailablePieces();
-            source.connect();
-            // TODO mettre à jour le bag
-        },
-        onFailure : function(response) {
-            alert("failed!");
-        },
-        method : 'get',
-        parameters : {
-            id : 0,
-            positions : JSON.stringify([])
-        }
-    });
-}, false);
-*/
+// TODO
+localStorage.clear();
+var pieceRendering = new BoardRendering(new CellRendering("piece", 12, 12, 11, 11));
+createAllPiecesImages("/pieces.xml");
 /*--------------------------------------------------8<--------------------------------------------------*/

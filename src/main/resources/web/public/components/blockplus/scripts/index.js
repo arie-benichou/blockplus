@@ -6,3 +6,12 @@ music.addEventListener('ended', function() {
 }, false);
 music.play();
 */
+
+//myAudio = new Audio('someSound.ogg');
+myAudio = $("music");
+myAudio.addEventListener('ended', function() {
+    console.log("end");
+    this.currentTime = 0;
+    this.play();
+}, false);
+myAudio.play();
