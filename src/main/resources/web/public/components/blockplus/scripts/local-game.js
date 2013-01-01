@@ -5,6 +5,7 @@
 var offsetToPositionBuilder = new OffsetToPositionBuilder(34, 34);
 var boardRendering = new BoardRendering(new CellRendering("board", 34, 34, 33, 33));
 var selectedPositions = new SelectedPositions();
+var audio = new Audio();
 /*--------------------------------------------------8<--------------------------------------------------*/
 var openEventHandler = function(event) {
     console.log("Event listening");
@@ -126,6 +127,9 @@ boardRendering.getCanvas().addEventListener("click", function(event) {
             selectedPositions.remove(position);
             showPotentialCells(position);
         } else {
+            //audio.pause();
+            audio.src = "./audio/tick.mp3";
+            audio.play();
             boardRendering.updateCell(position, "black");
             selectedPositions.add(position);
         }
@@ -145,6 +149,9 @@ boardRendering.getCanvas().addEventListener("click", function(event) {
         console.log("#######");
 
         if (id) {
+            
+            audio.src = "./audio/punch.mp3";
+            audio.play();
 
             $("piece-" + id).setAttribute("class", "perfect-match");
 
@@ -203,6 +210,10 @@ $("pieceToPlay").addEventListener("click", function(event) {
     new Ajax.Request("/blockplus/submit", {
         onSuccess : function(response) {
             console.log(response.responseText);
+            
+            audio.src = "./audio/submit.mp3";
+            audio.play();
+            
             $("submit").hide();
             selectedPositions.clear();
             getAvailablePieces();
