@@ -15,3 +15,6 @@
  + Utiliser cette énumération pas à pas pour tester la stratégie de l'IA pour 2 couleurs
 -----------------------------------------------------------8<-----------------------------------------------------------
  DEFAULT: abbatage des TODOs avec au moins un '!'
+ 
+ 
+ ajouter une transition CSS lorsqu'une pièce a été jouée

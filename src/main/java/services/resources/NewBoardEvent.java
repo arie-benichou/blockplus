@@ -97,13 +97,13 @@ public class NewBoardEvent extends ServerResource {
                     isGameNotOver = true;
                 }
             }
-            else {
+            //else {
                 Set<PositionInterface> potentialPositions = Sets.newHashSet();
                 for (final Move move : options)
                     potentialPositions.addAll(move.getPiece().getSelfPositions());
                 Gson gson = JSONSerializer.getInstance();
                 playablePositionsData = gson.toJson(potentialPositions);
-            }
+            //}
 
         }
         else {
