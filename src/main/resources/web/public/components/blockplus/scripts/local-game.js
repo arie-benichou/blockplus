@@ -187,7 +187,7 @@ Event.observe(window, 'load', function() {
     /*--------------------------------------------------8<--------------------------------------------------*/
     boardRendering.getCanvas().addEventListener("click", potentialCellClickEventHandler, false);
     /*--------------------------------------------------8<--------------------------------------------------*/
-    var audio = new Audio();
+    audio = new Audio();
     audio.src = "./audio/none.mp3";
     audio.play();
     audio.src = "./audio/subtle.mp3";
