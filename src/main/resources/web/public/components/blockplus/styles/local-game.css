@@ -39,6 +39,12 @@ img {
 	-webkit-transition: all 2.5s ease-in-out;
 }
 
+/*
+#board:HOVER {
+	cursor: pointer;
+}
+*/
+
 .over {
 	border: 4px solid #efe;
 	opacity: 1;

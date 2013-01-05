@@ -145,7 +145,7 @@ public class NewBoardEvent extends ServerResource {
         if (isGameNotOver) {
             representation = new StringRepresentation("" +
                     "retry:1000\n" +
-                    "data:" + "[[\"" + color + " has just played\"]]" + "\n\n" +
+                    "data:" + "[[\"" + color + "\"]]" + "\n\n" +
                     //"event:bag\n" +
                     //"data:" + jsonBag + "\n\n" +
                     "event:gamenotover\n" +

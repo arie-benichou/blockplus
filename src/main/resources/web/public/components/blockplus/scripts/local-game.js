@@ -4,7 +4,7 @@ Event.observe(window, 'load', function() {
     audioManager.play("./audio/none.mp3");
     audioManager.play("./audio/subtle.mp3");
     audioManager.play("./audio/vector.mp3");
-    /*--------------------------------------------------8<--------------------------------------------------*/    
+    /*--------------------------------------------------8<--------------------------------------------------*/
     var openEventHandler = function(event) {
     };
     var errorEventHandler = function(event) {
@@ -24,7 +24,7 @@ Event.observe(window, 'load', function() {
     };
     var gameoverEventHandler = function(event) {
         audioManager.play("./audio/game-is-over.mp3");
-        //$("game-is-over").play();
+        // $("game-is-over").play();
         event.target.close();
         boardRendering.update(JSON.parse(event.data));
         getAvailablePieces();
@@ -35,14 +35,19 @@ Event.observe(window, 'load', function() {
         if (array == null || array.length == 0) {
         } else {
             source.disconnect();
+
+            potentialPositions = new PotentialPositions(array); // TODO
+
             for ( var i = 0; i < array.length; ++i) {
                 var position = new Position(array[i][0], array[i][1]);
                 showPotentialCells(position);
             }
-            getAvailablePieces();
+
+            getAvailablePieces(); // TODO
+
             new Ajax.Request("/blockplus/options", {
                 onSuccess : function(response) {
-                    option = new Options(JSON.parse(response.responseText));
+                    option = new Options(JSON.parse(response.responseText)); // TODO
                     audioManager.play("./audio/vector.mp3");
                     console.log("!");
                 },
@@ -55,10 +60,8 @@ Event.observe(window, 'load', function() {
     };
     /*--------------------------------------------------8<--------------------------------------------------*/
     var potentialCellClickEventHandler = function(event) {
-        if (event.ctrlKey)
-            window.location = event.srcElement.toDataURL("image/png");
-        else {
-            var position = offsetToPositionBuilder.build(event.offsetX, event.offsetY);
+        var position = offsetToPositionBuilder.build(event.offsetX, event.offsetY);
+        if (potentialPositions.match(position)) {
             if (selectedPositions.contains(position)) {
                 boardRendering.updateCell(position, "White");
                 selectedPositions.remove(position);
@@ -81,13 +84,9 @@ Event.observe(window, 'load', function() {
             }
             var id = option.perfectMatch(selectedPositions);
             if (id) {
-
                 $("pieceToPlay").show();
-
                 audioManager.play("./audio/subtle.mp3");
-
                 $("piece-" + id).setAttribute("class", "perfect-match");
-
                 var topLeft = selectedPositions.getTopLeftPosition();
                 var bottomRight = selectedPositions.getBottomRightPosition();
                 var copy = function(topLeft, bottomRight) {
@@ -108,7 +107,6 @@ Event.observe(window, 'load', function() {
             } else {
                 $("pieceToPlay").setAttribute("class", "transparent out");
             }
-
         }
     };
     /*--------------------------------------------------8<--------------------------------------------------*/
@@ -129,7 +127,7 @@ Event.observe(window, 'load', function() {
         }
         new Ajax.Request("/blockplus/submit", {
             onSuccess : function(response) {
-                //audioManager.play("./audio/vector.mp3");
+                // audioManager.play("./audio/vector.mp3");
                 $("pieceToPlay").hide();
                 selectedPositions.clear();
                 getAvailablePieces();
@@ -195,5 +193,5 @@ Event.observe(window, 'load', function() {
     createAllPiecesImages("/pieces.xml", new BoardRendering(new CellRendering("piece", 12, 12, 11, 11)));
     /*--------------------------------------------------8<--------------------------------------------------*/
     source.connect();
-    /*--------------------------------------------------8<--------------------------------------------------*/    
+    /*--------------------------------------------------8<--------------------------------------------------*/
 });
