@@ -56,11 +56,33 @@ canvas {
 	padding: 10px;
 	float: left;
 }
-	
 
 img {
-	border: 3px solid #efe;
 	margin: 2px;
+	-webkit-transition: all 0.4s ease-in-out;
+}
+
+#pieceToPlay {
+	-webkit-transition: all 0.6s ease-in-out;
+}
+
+.over {
+	border: 4px solid #efe;	
+	opacity: 1;
+}
+
+.out {
+	border: 4px solid #dadfe2;	
+	opacity: 0.5;
+}
+
+.opaque {
+	opacity: 1;
+}
+
+.transparent {
+	opacity: 0;
+	display: none;
 }
 
 .available {
@@ -75,9 +97,7 @@ img {
 
 .perfect-match {
 	opacity: 1;
-	border: 3px solid #dadfe2;
-	/* border: 3px solid efe; */
-	/*rgba(255,255,255,0.30);*/
+	border: 3px solid #efe;
 }
 
 .clickable {

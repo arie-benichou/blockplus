@@ -6,6 +6,18 @@ var offsetToPositionBuilder = new OffsetToPositionBuilder(34, 34);
 var boardRendering = new BoardRendering(new CellRendering("board", 34, 34, 33, 33));
 var selectedPositions = new SelectedPositions();
 var audio = new Audio();
+audio.src = "./audio/none.mp3"; 
+audio.play();
+audio.src = "./audio/subtle.mp3";
+audio.play();
+audio.src = "./audio/vector.mp3";
+audio.play();
+/*
+var audio2 = new Audio();
+audio2.loop = true;
+audio2.src = "./audio/game-is-not-over.mp3";
+audio2.play();
+*/
 /*--------------------------------------------------8<--------------------------------------------------*/
 var openEventHandler = function(event) {
     console.log("Event listening");
@@ -27,7 +39,12 @@ var gamenotoverEventHandler = function(event) {
     //if ($("game-is-not-over").currentTime == 0) $("game-is-not-over").play();
 };
 var gameoverEventHandler = function(event) {
+    
     //$("game-is-over").play();
+    
+    audio.src = "./audio/game-is-over.mp3";
+    audio.play();
+    
     event.target.close();
     boardRendering.update(JSON.parse(event.data));
     // $("board").className = "game-is-over";
@@ -55,6 +72,14 @@ var getAvailablePieces = function() {
 };
 
 var optionsEventHandler = function(event) {
+    
+    /*
+    console.log("hello");
+    audio.src = "./audio/color.mp3";
+    audio.play();
+    audio.pause();
+    */
+    
     var array = JSON.parse(event.data);
 
     console.log(array);
@@ -71,8 +96,8 @@ var optionsEventHandler = function(event) {
         new Ajax.Request("/blockplus/options", {
             onSuccess : function(response) {
                 option = new Options(JSON.parse(response.responseText));
-                if (option.get().length == 0)
-                    alert("fuck");
+                //if (option.get().length == 0)
+                    //alert("fuck");
                 // $("submit").show();
             },
             onFailure : function(response) {
@@ -128,18 +153,26 @@ boardRendering.getCanvas().addEventListener("click", function(event) {
             showPotentialCells(position);
         } else {
             //audio.pause();
-            audio.src = "./audio/tick.mp3";
-            audio.play();
+            //audio.src = "./audio/test.mp3";
+            //audio.play();
             boardRendering.updateCell(position, "black");
             selectedPositions.add(position);
         }
         var matches = option.matches(selectedPositions);
         console.log(matches);
+                
         for ( var i = 1; i <= 21; ++i) {
             $(("piece-" + i)).setAttribute("class", "not-available");
         }
+        var hasPotential = false;
         for ( var id in matches) {
+            hasPotential = true;
             $(("piece-" + id)).setAttribute("class", "available");
+        }
+        
+        if(!hasPotential) {
+            audio.src = "./audio/none.mp3";
+            audio.play();
         }
 
         var id = option.perfectMatch(selectedPositions);
@@ -150,7 +183,9 @@ boardRendering.getCanvas().addEventListener("click", function(event) {
 
         if (id) {
             
-            audio.src = "./audio/punch.mp3";
+            $("pieceToPlay").show();
+            
+            audio.src = "./audio/subtle.mp3";
             audio.play();
 
             $("piece-" + id).setAttribute("class", "perfect-match");
@@ -178,20 +213,25 @@ boardRendering.getCanvas().addEventListener("click", function(event) {
                 }
             };
             copy(topLeft, bottomRight);
-            $("submit").show();
+            //$("submit").show();
+            $("pieceToPlay").setAttribute("class", "opaque out");
         } else {
-            $("submit").hide();
+            //$("submit").hide();
+            $("pieceToPlay").setAttribute("class", "transparent out");            
         }
 
     }
 }, false);
 /*--------------------------------------------------8<--------------------------------------------------*/
 $("pieceToPlay").addEventListener("mouseover", function(event) {
-    $("pieceToPlay").setAttribute("style", "border:4px solid gray;");
+    //$("pieceToPlay").setAttribute("style", "border:6px solid #efe;");
+    //$("pieceToPlay").addClassName("over");
+    $("pieceToPlay").setAttribute("class", "opaque over clickable");    
 }, false);
 
 $("pieceToPlay").addEventListener("mouseout", function(event) {
-    $("pieceToPlay").setAttribute("style", "border:4px solid #dadfe2;");
+    //$("pieceToPlay").setAttribute("style", "border:6px solid #dadfe2;");
+    $("pieceToPlay").setAttribute("class", "opaque out clickable");
 }, false);
 
 $("pieceToPlay").addEventListener("click", function(event) {
@@ -211,10 +251,15 @@ $("pieceToPlay").addEventListener("click", function(event) {
         onSuccess : function(response) {
             console.log(response.responseText);
             
-            audio.src = "./audio/submit.mp3";
+            audio.src = "./audio/vector.mp3";
             audio.play();
             
-            $("submit").hide();
+            //$("submit").hide();
+            
+            //$("submit").removeClassName("opaque");            
+            //$("submit").addClassName("transparent");            
+            $("pieceToPlay").hide();
+            
             selectedPositions.clear();
             getAvailablePieces();
             source.connect();
