@@ -1,5 +1,10 @@
 Event.observe(window, 'load', function() {
     /*--------------------------------------------------8<--------------------------------------------------*/
+    var audioManager = new AudioManager(new Audio());
+    audioManager.play("./audio/none.mp3");
+    audioManager.play("./audio/subtle.mp3");
+    audioManager.play("./audio/vector.mp3");
+    /*--------------------------------------------------8<--------------------------------------------------*/    
     var openEventHandler = function(event) {
     };
     var errorEventHandler = function(event) {
@@ -18,12 +23,12 @@ Event.observe(window, 'load', function() {
         $("board").className = "game-is-not-over";
     };
     var gameoverEventHandler = function(event) {
-        audio.src = "./audio/game-is-over.mp3";
-        audio.play();
+        audioManager.play("./audio/game-is-over.mp3");
+        //$("game-is-over").play();
         event.target.close();
         boardRendering.update(JSON.parse(event.data));
         getAvailablePieces();
-        $("content").setAttribute("style", "opacity:0.4;");
+        $("content").setAttribute("style", "opacity:0.33;");
     };
     var optionsEventHandler = function(event) {
         var array = JSON.parse(event.data);
@@ -38,6 +43,8 @@ Event.observe(window, 'load', function() {
             new Ajax.Request("/blockplus/options", {
                 onSuccess : function(response) {
                     option = new Options(JSON.parse(response.responseText));
+                    audioManager.play("./audio/vector.mp3");
+                    console.log("!");
                 },
                 onFailure : function(response) {
                     alert("failed!");
@@ -70,16 +77,14 @@ Event.observe(window, 'load', function() {
                 $(("piece-" + id)).setAttribute("class", "available");
             }
             if (!hasPotential) {
-                audio.src = "./audio/none.mp3";
-                audio.play();
+                audioManager.play("./audio/none.mp3");
             }
             var id = option.perfectMatch(selectedPositions);
             if (id) {
 
                 $("pieceToPlay").show();
 
-                audio.src = "./audio/subtle.mp3";
-                audio.play();
+                audioManager.play("./audio/subtle.mp3");
 
                 $("piece-" + id).setAttribute("class", "perfect-match");
 
@@ -124,8 +129,7 @@ Event.observe(window, 'load', function() {
         }
         new Ajax.Request("/blockplus/submit", {
             onSuccess : function(response) {
-                audio.src = "./audio/vector.mp3";
-                audio.play();
+                //audioManager.play("./audio/vector.mp3");
                 $("pieceToPlay").hide();
                 selectedPositions.clear();
                 getAvailablePieces();
@@ -186,14 +190,6 @@ Event.observe(window, 'load', function() {
     source.addEventListener("options", optionsEventHandler, false);
     /*--------------------------------------------------8<--------------------------------------------------*/
     boardRendering.getCanvas().addEventListener("click", potentialCellClickEventHandler, false);
-    /*--------------------------------------------------8<--------------------------------------------------*/
-    audio = new Audio();
-    audio.src = "./audio/none.mp3";
-    audio.play();
-    audio.src = "./audio/subtle.mp3";
-    audio.play();
-    audio.src = "./audio/vector.mp3";
-    audio.play();
     /*--------------------------------------------------8<--------------------------------------------------*/
     localStorage.clear();
     createAllPiecesImages("/pieces.xml", new BoardRendering(new CellRendering("piece", 12, 12, 11, 11)));

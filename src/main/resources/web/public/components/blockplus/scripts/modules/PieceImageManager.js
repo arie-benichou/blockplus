@@ -46,6 +46,7 @@ var createPiecesImages = function(color, pieces, pieceRendering) {
 /*--------------------------------------------------8<--------------------------------------------------*/
 var createAllPiecesImages = function(url, pieceRendering) {
     new Ajax.Request(url, {
+        method: 'GET',
         onSuccess : function(response) {
             var data = response.responseXML;
             var pieces = data.evaluate("//piece", data, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
