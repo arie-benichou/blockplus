@@ -53,14 +53,6 @@ var createAllPiecesImages = function(url, pieceRendering) {
             for ( var color in Colors) {
                 createPiecesImages(Colors[color], pieces, pieceRendering);
             }
-            for ( var i = 1; i <= 21; ++i) {
-                var retrievedObject = localStorage.getItem(getLocalStoreKey("Green", "piece" + i));
-                var image = new Image();
-                image.setAttribute("id", "piece-" + i);
-                image.src = retrievedObject;
-                image.setAttribute("class", "not-available");
-                $("available-pieces").appendChild(image);
-            }            
         }
     });
 };

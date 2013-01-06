@@ -10,10 +10,11 @@ import org.restlet.data.Protocol;
 import org.restlet.routing.Router;
 import org.restlet.service.ConnectorService;
 
-import services.resources.AvailablePieces;
-import services.resources.LegalMoves;
-import services.resources.NewBoardEvent;
-import services.resources.NewPositionsSubmit;
+import services.resources.local.GameMove;
+import services.resources.local.GameNullMove;
+import services.resources.local.GameOptions;
+import services.resources.local.GameState;
+import services.resources.local.GameStatePieces;
 import blockplus.model.game.Game;
 
 public class BlockplusApplicationJEE extends Application implements BlockplusApplicationInterface {
@@ -38,10 +39,21 @@ public class BlockplusApplicationJEE extends Application implements BlockplusApp
     @Override
     public synchronized Restlet createInboundRoot() {
         final Router router = new Router(this.getContext());
+
+        /* network
         router.attach("/data", NewBoardEvent.class);
         router.attach("/submit", NewPositionsSubmit.class);
         router.attach("/options", LegalMoves.class);
         router.attach("/pieces", AvailablePieces.class);
+        */
+
+        /* local */
+        router.attach("/game-state", GameState.class);
+        router.attach("/game-state-pieces", GameStatePieces.class);
+        router.attach("/game-options", GameOptions.class);
+        router.attach("/game-move", GameMove.class);
+        router.attach("/game-null-move", GameNullMove.class);
+
         return router;
     }
 

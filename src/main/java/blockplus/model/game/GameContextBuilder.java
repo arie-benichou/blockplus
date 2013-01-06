@@ -1,9 +1,12 @@
 
 package blockplus.model.game;
 
-import static blockplus.model.board.State.*;
-import static blockplus.model.color.Colors.*;
-import static components.position.Position.*;
+import static blockplus.model.board.State.Light;
+import static blockplus.model.color.Colors.Blue;
+import static blockplus.model.color.Colors.Green;
+import static blockplus.model.color.Colors.Red;
+import static blockplus.model.color.Colors.Yellow;
+import static components.position.Position.Position;
 
 import java.util.List;
 import java.util.Set;

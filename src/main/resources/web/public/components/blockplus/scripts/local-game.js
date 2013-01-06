@@ -17,6 +17,9 @@ Event.observe(window, 'load', function() {
         newChild.innerHTML = JSON.parse(event.data);
         $("last-message").remove();
         $("messages").appendChild(newChild);
+        
+        // TODO define json structure for a game representation
+        currentColor = JSON.parse(event.data)[0][0];
     };
     var gamenotoverEventHandler = function(event) {
         boardRendering.update(JSON.parse(event.data));
@@ -31,8 +34,20 @@ Event.observe(window, 'load', function() {
         $("content").setAttribute("style", "opacity:0.33;");
     };
     var optionsEventHandler = function(event) {
+        
+        getAvailablePieces(); // TODO
+        
         var array = JSON.parse(event.data);
         if (array == null || array.length == 0) {
+            new Ajax.Request("/blockplus/game-null-move", {
+                onSuccess : function(response) {
+                    console.log("you have no more legal move");
+                },
+                onFailure : function(response) {
+                    alert("failed!");
+                },
+                method : 'get',
+            });
         } else {
             source.disconnect();
 
@@ -43,9 +58,7 @@ Event.observe(window, 'load', function() {
                 showPotentialCells(position);
             }
 
-            getAvailablePieces(); // TODO
-
-            new Ajax.Request("/blockplus/options", {
+            new Ajax.Request("/blockplus/game-options", {
                 onSuccess : function(response) {
                     option = new Options(JSON.parse(response.responseText)); // TODO
                     audioManager.play("./audio/vector.mp3");
@@ -67,7 +80,9 @@ Event.observe(window, 'load', function() {
                 selectedPositions.remove(position);
                 showPotentialCells(position);
             } else {
+                boardRendering.getContext().globalAlpha = 0.55;
                 boardRendering.updateCell(position, "black");
+                boardRendering.getContext().globalAlpha = 1;                
                 selectedPositions.add(position);
             }
             var matches = option.matches(selectedPositions);
@@ -99,7 +114,7 @@ Event.observe(window, 'load', function() {
                     var positions = selectedPositions.get();
                     for ( var position in positions) {
                         var p = JSON.parse(position); // TODO !!
-                        tmpBoardRendering.updateCell(new Position(1 + p.row - topLeft.row, 1 + p.column - topLeft.column), "Green");
+                        tmpBoardRendering.updateCell(new Position(1 + p.row - topLeft.row, 1 + p.column - topLeft.column), currentColor);
                     }
                 };
                 copy(topLeft, bottomRight);
@@ -125,12 +140,12 @@ Event.observe(window, 'load', function() {
             var p = JSON.parse([ position ]);
             data.push([ p.row, p.column ]);
         }
-        new Ajax.Request("/blockplus/submit", {
+        new Ajax.Request("/blockplus/game-move", {
             onSuccess : function(response) {
                 // audioManager.play("./audio/vector.mp3");
                 $("pieceToPlay").hide();
                 selectedPositions.clear();
-                getAvailablePieces();
+                //getAvailablePieces();
                 source.connect();
             },
             onFailure : function(response) {
@@ -146,8 +161,21 @@ Event.observe(window, 'load', function() {
     }, false);
     /*--------------------------------------------------8<--------------------------------------------------*/
     var getAvailablePieces = function() {
-        new Ajax.Request("/blockplus/pieces", {
+        new Ajax.Request("/blockplus/game-state-pieces", {
             onSuccess : function(response) {
+                
+                $("available-pieces").innerHTML = "";
+                
+                //alert(currentColor);
+                for ( var i = 1; i <= 21; ++i) { // TODO
+                    var retrievedObject = localStorage.getItem(getLocalStoreKey(currentColor, "piece" + i));
+                    var image = new Image();
+                    image.setAttribute("id", "piece-" + i);
+                    image.src = retrievedObject;
+                    image.setAttribute("class", "not-available");
+                    $("available-pieces").appendChild(image);
+                }                            
+                
                 var array = JSON.parse(response.responseText);
                 for ( var i = 1; i <= 21; ++i) { // TODO
                     $("piece-" + i).setAttribute("class", "not-available");
@@ -165,13 +193,18 @@ Event.observe(window, 'load', function() {
     /*--------------------------------------------------8<--------------------------------------------------*/
     var showPotentialCells = function(position) {
         var context = boardRendering.getContext();
-        context.fillStyle = "rgba(0, 128, 0, 0.35)";
+        
+        context.globalAlpha = 0.35;
+        //context.fillStyle = "rgba(0, 128, 0, 0.35)";
+        context.fillStyle = currentColor;
         context.beginPath();
         context.arc(34 * position.getColumn() + 34 / 2, 34 * position.getRow() + 34 / 2, 4, 0, Math.PI * 2, true);
         context.closePath();
         context.fill();
+        context.globalAlpha = 1;
+        
         context.lineWidth = 1;
-        context.strokeStyle = "green";
+        context.strokeStyle = currentColor;
         context.stroke();
     };
     /*--------------------------------------------------8<--------------------------------------------------*/
@@ -179,7 +212,7 @@ Event.observe(window, 'load', function() {
     var boardRendering = new BoardRendering(new CellRendering("board", 34, 34, 33, 33));
     var selectedPositions = new SelectedPositions();
     /*--------------------------------------------------8<--------------------------------------------------*/
-    var source = new EventSourceManager("/blockplus/data");
+    var source = new EventSourceManager("/blockplus/game-state");
     source.addEventListener("open", openEventHandler, false);
     source.addEventListener("error", errorEventHandler, false);
     source.addEventListener("message", messsageEventHandler, false);
