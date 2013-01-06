@@ -13,6 +13,7 @@ import org.restlet.service.ConnectorService;
 import services.resources.local.GameMove;
 import services.resources.local.GameNullMove;
 import services.resources.local.GameOptions;
+import services.resources.local.GameReset;
 import services.resources.local.GameState;
 import services.resources.local.GameStatePieces;
 import blockplus.model.game.Game;
@@ -53,6 +54,7 @@ public class BlockplusApplicationJEE extends Application implements BlockplusApp
         router.attach("/game-options", GameOptions.class);
         router.attach("/game-move", GameMove.class);
         router.attach("/game-null-move", GameNullMove.class);
+        router.attach("/game-reset", GameReset.class);
 
         return router;
     }

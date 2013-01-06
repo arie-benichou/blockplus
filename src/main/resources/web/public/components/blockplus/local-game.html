@@ -3,8 +3,12 @@
 	<head>
 		<meta charset="utf-8" />
 		<link rel="shortcut icon" href="./images/favicon.png" />
+        
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+                
 		<link href="./styles/default.css" rel="stylesheet" type="text/css" />
 		<link href="./styles/local-game.css" rel="stylesheet" type="text/css" />
+                
 		<script src="./scripts/library/prototype.js"></script>
 		<script src="./scripts/modules/Position.js"></script>
 		<script src="./scripts/modules/OffsetToPositionBuilder.js"></script>
@@ -33,8 +37,9 @@
 					<canvas id="board" width="679px" height="679px"></canvas>
 				</div>
 				<div id="right">
+                    <button class="btn btn-large btn-primary" id="play-again" type="submit">Play again</button>                
 					<div id="submit">
-						<canvas class="clickable out" id="pieceToPlay" width="0px" height="0px"></canvas>
+                        <canvas class="clickable out" id="pieceToPlay" width="0px" height="0px"></canvas>                        
 					</div>
 				</div>		
 				  <div style="clear: both;"></div>

@@ -31,11 +31,26 @@ img {
 	-webkit-transition: all 0.4s ease-in-out;
 }
 
+/*
+#myButton {
+	float: left;
+}
+*/
+
 #pieceToPlay {
 	-webkit-transition: all 0.6s ease-in-out;
 }
 
-#content {
+/*
+#submit {
+	position: relative;
+	top: 30px;
+	left: -80px;
+	float: left;
+}
+*/
+
+#board {
 	-webkit-transition: all 2.5s ease-in-out;
 }
 

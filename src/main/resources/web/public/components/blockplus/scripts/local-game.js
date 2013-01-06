@@ -31,7 +31,8 @@ Event.observe(window, 'load', function() {
         event.target.close();
         boardRendering.update(JSON.parse(event.data));
         getAvailablePieces();
-        $("content").setAttribute("style", "opacity:0.33;");
+        $("board").setAttribute("style", "opacity:0.33;");
+        $("play-again").show();
     };
     var optionsEventHandler = function(event) {
         
@@ -226,5 +227,22 @@ Event.observe(window, 'load', function() {
     createAllPiecesImages("/pieces.xml", new BoardRendering(new CellRendering("piece", 12, 12, 11, 11)));
     /*--------------------------------------------------8<--------------------------------------------------*/
     source.connect();
+    /*--------------------------------------------------8<--------------------------------------------------*/    
+    $("play-again").observe('click', function(event) {
+        new Ajax.Request("/blockplus/game-reset", {
+            onSuccess : function(response) {
+                source.connect();
+                // TODO utiliser des classes css
+                $("play-again").hide();
+                $("board").setAttribute("style", "opacity:1;");
+                
+            },
+            onFailure : function(response) {
+                alert("failed!");
+            },
+            method : 'get',
+        });        
+    });
+    $("play-again").hide();
     /*--------------------------------------------------8<--------------------------------------------------*/
 });
