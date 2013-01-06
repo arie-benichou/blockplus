@@ -33,6 +33,7 @@ Event.observe(window, 'load', function() {
         getAvailablePieces();
         $("board").setAttribute("style", "opacity:0.33;");
         $("play-again").show();
+        $("left").setAttribute("style", "width:0");
     };
     var optionsEventHandler = function(event) {
         
@@ -81,8 +82,12 @@ Event.observe(window, 'load', function() {
                 selectedPositions.remove(position);
                 showPotentialCells(position);
             } else {
+                /*
                 boardRendering.getContext().globalAlpha = 0.55;
                 boardRendering.updateCell(position, "black");
+                */
+                boardRendering.getContext().globalAlpha = 0.5;
+                boardRendering.updateCell(position, Colors[currentColor]);                
                 boardRendering.getContext().globalAlpha = 1;                
                 selectedPositions.add(position);
             }
@@ -100,7 +105,7 @@ Event.observe(window, 'load', function() {
             }
             var id = option.perfectMatch(selectedPositions);
             if (id) {
-                $("pieceToPlay").show();
+                $("submit").show();
                 audioManager.play("./audio/subtle.mp3");
                 $("piece-" + id).setAttribute("class", "perfect-match");
                 var topLeft = selectedPositions.getTopLeftPosition();
@@ -113,6 +118,8 @@ Event.observe(window, 'load', function() {
                     newCanvas.height = 34 * height;
                     var tmpBoardRendering = new BoardRendering(new CellRendering(newCanvas, 34, 34, 33, 33));
                     var positions = selectedPositions.get();
+                    //tmpBoardRendering.clear("#a0a6ab");
+                    tmpBoardRendering.clear("#2a2d30");
                     for ( var position in positions) {
                         var p = JSON.parse(position); // TODO !!
                         tmpBoardRendering.updateCell(new Position(1 + p.row - topLeft.row, 1 + p.column - topLeft.column), currentColor);
@@ -144,7 +151,7 @@ Event.observe(window, 'load', function() {
         new Ajax.Request("/blockplus/game-move", {
             onSuccess : function(response) {
                 // audioManager.play("./audio/vector.mp3");
-                $("pieceToPlay").hide();
+                $("submit").hide();
                 selectedPositions.clear();
                 //getAvailablePieces();
                 source.connect();
@@ -197,7 +204,7 @@ Event.observe(window, 'load', function() {
         
         context.globalAlpha = 0.35;
         //context.fillStyle = "rgba(0, 128, 0, 0.35)";
-        context.fillStyle = currentColor;
+        context.fillStyle = Colors[currentColor];
         context.beginPath();
         context.arc(34 * position.getColumn() + 34 / 2, 34 * position.getRow() + 34 / 2, 4, 0, Math.PI * 2, true);
         context.closePath();
@@ -205,7 +212,7 @@ Event.observe(window, 'load', function() {
         context.globalAlpha = 1;
         
         context.lineWidth = 1;
-        context.strokeStyle = currentColor;
+        context.strokeStyle = Colors[currentColor];
         context.stroke();
     };
     /*--------------------------------------------------8<--------------------------------------------------*/
@@ -243,6 +250,7 @@ Event.observe(window, 'load', function() {
             method : 'get',
         });        
     });
-    $("play-again").hide();
+    $("play-again").hide(); // TODO
+    $("submit").hide(); // TODO
     /*--------------------------------------------------8<--------------------------------------------------*/
 });

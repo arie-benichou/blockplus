@@ -13,13 +13,24 @@ var CellRendering = Class.create({
 	getContext : function() {
 		return this.context;
 	},
-	update : function(position, state) {
-		switch (state) {
+	update : function(position, color) {
+	    if(color in Colors) {
+	        this.getContext().fillStyle = Colors[color];
+	    }
+        else if (color == "White"){
+            //this.getContext().fillStyle = "gray";
+            this.getContext().fillStyle = "#2a2d30";
+        }	    
+	    else {
+	        this.getContext().fillStyle = color;
+	    }
+	    /*
+		switch (color) {
 		case "Blue":
 			this.getContext().fillStyle = "blue";
 			break;
 		case "Yellow":
-			this.getContext().fillStyle = "yellow";
+			this.getContext().fillStyle = "#ffc600";
 			break;
 		case "Green":
 			this.getContext().fillStyle = "green";
@@ -31,8 +42,9 @@ var CellRendering = Class.create({
 			this.getContext().fillStyle = "gray";
 			break;
 		default:
-			this.getContext().fillStyle = "black";
+			this.getContext().fillStyle = color;
 		}
+		*/
 		this.getContext().fillRect(this.offsetX * position.getColumn(), this.offsetY * position.getRow(), this.width, this.length);
 	},
 	// TODO ajouter canvas et context

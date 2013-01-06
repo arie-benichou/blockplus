@@ -21,8 +21,10 @@ var BoardRendering = Class.create({
 			}
 		}
 	},
-	clear : function() {
-		this.getContext().clearRect(0, 0, this.getCanvas().width, this.getCanvas().height);
+	clear : function(color) {
+		//this.getContext().clearRect(0, 0, this.getCanvas().width, this.getCanvas().height);
+        this.getContext().fillStyle = color;
+        this.getContext().fillRect(0, 0, this.getCanvas().width, this.getCanvas().height);
 	},	
 	toString : function() {
 		return "BoardRendering{" + "cellRendering=" + this.cellRendering + "}";

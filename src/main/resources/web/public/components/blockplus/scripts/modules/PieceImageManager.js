@@ -29,18 +29,21 @@ var createPiecesImages = function(color, pieces, pieceRendering) {
         }
         $("piece").width = n * 12; // TODO
         $("piece").height = n * 12; // TODO
+        
+        //pieceRendering.clear("#c8cad0");
+        pieceRendering.clear(Colors[color]);
+        
         for ( var j = 0; j < positions.snapshotLength; ++j) {
             var position = positions.snapshotItem(j);
             var y = document.evaluate("y", position, null, XPathResult.NUMBER_TYPE, null);
             var x = document.evaluate("x", position, null, XPathResult.NUMBER_TYPE, null);
             var py = y.numberValue + ty;
             var px = x.numberValue + tx;
-            pieceRendering.updateCell(new Position(py, px), color);
+            pieceRendering.updateCell(new Position(py, px), "white");
         }
         var key = getLocalStoreKey(color, name);
         var value = $("piece").toDataURL("image/png");
         localStorage.setItem(key, value);
-        pieceRendering.clear("piece");
     }
 };
 /*--------------------------------------------------8<--------------------------------------------------*/
@@ -51,8 +54,9 @@ var createAllPiecesImages = function(url, pieceRendering) {
             var data = response.responseXML;
             var pieces = data.evaluate("//piece", data, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
             for ( var color in Colors) {
-                createPiecesImages(Colors[color], pieces, pieceRendering);
+                createPiecesImages(color, pieces, pieceRendering);
             }
+            $("initialization").hide();
         }
     });
 };
