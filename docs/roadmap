@@ -17,4 +17,5 @@
  DEFAULT: abbatage des TODOs avec au moins un '!'
  
  
- ajouter une transition CSS lorsqu'une pièce a été jouée
+Utiliser une div par couleur pour les pièces disponibles
+Au game-over, supprimer les images des pièces utilisées. 

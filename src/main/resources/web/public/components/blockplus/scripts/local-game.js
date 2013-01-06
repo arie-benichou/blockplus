@@ -53,7 +53,7 @@ Event.observe(window, 'load', function() {
                 onSuccess : function(response) {
                     var array = JSON.parse(response.responseText);
                     console.log(array.length);
-                    $(color).innerHTML = "";
+                    //$(color).innerHTML = "";
                     for ( var i = 0; i < array.length; ++i) {
                         var retrievedObject = localStorage.getItem(getLocalStoreKey(color, "piece" + array[i]));
                         console.log(getLocalStoreKey(color, "piece" + array[i]));
@@ -64,9 +64,10 @@ Event.observe(window, 'load', function() {
                         //image.width = "45px";
                         //image.height = "45px;";
                         console.log(image);
-                        image.setAttribute("style", "width:45px; height:45px;");
+                        image.setAttribute("style", "width:55px; height:55px;");
                         //document.body.appendChild(image);
-                        $(color).appendChild(image);
+                        //$(color).appendChild(image);
+                        $("remaining-pieces").appendChild(image);
                     }
                 },
                 onFailure : function(response) {
@@ -78,7 +79,8 @@ Event.observe(window, 'load', function() {
                 }
             });
         };
-        
+
+        $("remaining-pieces").innerHTML = "";        
         for ( var color in Colors) {
             console.log(color);
             getAvailablePiecesByColor(color);
@@ -302,6 +304,8 @@ Event.observe(window, 'load', function() {
     createAllPiecesImages("/pieces.xml", new BoardRendering(new CellRendering("piece", 13, 13, 12, 12)));
     /*--------------------------------------------------8<--------------------------------------------------*/
     source.connect();
+    /*--------------------------------------------------8<--------------------------------------------------*/    
+    $("remaining-pieces").hide(); // TODO
     /*--------------------------------------------------8<--------------------------------------------------*/
     $("play-again").observe('click', function(event) {
         new Ajax.Request("/blockplus/game-reset", {
@@ -315,12 +319,7 @@ Event.observe(window, 'load', function() {
                 audioManager.pause();
             },
             onFailure : function(response) {
-                alert("failure");
-                $("left").setAttribute("style", "width:303px;");
-                $("board").setAttribute("style", "opacity:1;");        
-                $("play-again").hide();
-                $("remaining-pieces").hide();
-                audioManager.pause();
+                alert("failed");
             },
             method : 'get',
         });        

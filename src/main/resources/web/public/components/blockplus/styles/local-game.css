@@ -20,14 +20,16 @@ canvas { /*
 }
 
 #content {
-	margin-top: 1%;
+	/*margin-top: 1%;*/
+	margin: 40px;
 }
 
 #truc {
-	width: 1288px;
+	width: 1274px;
 	margin: 0 auto;
+	padding: 10px;
 	/*
-	border: 2px solid red;
+	border: 1px solid red;
 	*/
 }
 
@@ -36,37 +38,43 @@ canvas { /*
 	/*
 	width: 660px;
 	*/
-	width: 303px;
+	width: 291px;
 	/*
 	margin: 10px;
+	margin-top: 5px;
 	*/
-	margin-top: 14px;
 	/*
 	padding: 10px;
 	*/
 	/*
 	border: 1px solid black;
 	*/
-	height: 692px;
+	height: 683px;
 	overflow: hidden;
 	-webkit-transition: all 1.2s ease-out;
 }
 
 #middle {
-	margin: 10px;
+	margin-left: 25px;
+	margin-right: 25px;
 	/*
 	padding: 10px;
 	*/
 	float: left;
 }
 
-#right {
-	/*
+#right { /*
 	margin: 10px;
-	margin-top: 6px;
 	padding: 10px;
 	*/
+	/*
+	margin-top: 9px;
+	margin-left: 6px;
+	*/
 	float: left;
+	/*
+	border: 1px solid black;
+	*/
 }
 
 #remaining-pieces {
@@ -84,6 +92,10 @@ canvas { /*
 	*/
 }
 
+#Blue,#Yellow,#Green,#Red {margin 0;padding 0;
+	
+}
+
 #play-again {
 	margin: 10px;
 	/*
@@ -92,7 +104,7 @@ canvas { /*
 }
 
 img {
-	margin: 4px;
+	margin: 3px;
 	/*
 	border: 3px solid #efe;
 	*/
