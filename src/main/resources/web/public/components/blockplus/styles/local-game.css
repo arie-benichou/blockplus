@@ -12,7 +12,13 @@ body {
 }
 
 canvas {
-	border: 0px solid black;
+	/*
+	border: 3px solid white;
+	*/
+	-webkit-border-top-right-radius: 8px;
+	-webkit-border-bottom-right-radius: 8px;
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-bottom-left-radius: 8px;	
 }
 
 #content {
@@ -21,9 +27,15 @@ canvas {
 
 #left {
 	float: left;
+	/*
 	width: 660px;
+	*/
+	width: 303px;
 	margin: 10px;
+	margin-top: 14px;
+	/*
 	padding: 10px;
+	*/
 	-webkit-transition: all 1.2s ease-out;	
 }
 
@@ -35,12 +47,13 @@ canvas {
 
 #right {
 	margin: 10px;
+	margin-top: 6px;
 	padding: 10px;
 	float: left;
 }
 
 img {
-	margin: 5px;
+	margin: 4px;
 	/*
 	border: 3px solid #efe;
 	*/
@@ -59,7 +72,10 @@ img {
 }
 */
 #pieceToPlay {
+	/*
 	-webkit-transition: all 0.6s ease-in-out;
+	*/
+	-webkit-transition: all 0.35s ease-out;
 }
 
 /*
@@ -81,12 +97,20 @@ img {
 }
 */
 .over {
-	border: 4px solid #efe;
+	/*
+	border: 8px solid #efe;
+	*/
+	border: 8px solid #dadfe2;
 	opacity: 1;
 }
 
 .out {
-	border: 4px solid #dadfe2;
+	/*
+	border: 8px solid #dadfe2;
+	*/
+	/*
+	border: 8px solid #a0a6ab;
+	*/
 	opacity: 0.5;
 }
 
@@ -116,7 +140,7 @@ img {
 .perfect-match {
 	opacity: 1;
 	/*
-	border: 3px solid #efe;
+	border: 16px solid #efe;
 	*/
 }
 

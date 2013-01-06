@@ -4,6 +4,7 @@ var getLocalStoreKey = function(color, piece) {
 };
 /*--------------------------------------------------8<--------------------------------------------------*/
 var createPiecesImages = function(color, pieces, pieceRendering) {
+    var size = 13;
     var image = new Image();
     image.src = "";
     document.body.appendChild(image);
@@ -27,8 +28,8 @@ var createPiecesImages = function(color, pieces, pieceRendering) {
             ty = t - y.numberValue;
             tx = t - x.numberValue;
         }
-        $("piece").width = n * 12; // TODO
-        $("piece").height = n * 12; // TODO
+        $("piece").width = n * size; // TODO
+        $("piece").height = n * size; // TODO
         
         //pieceRendering.clear("#c8cad0");
         pieceRendering.clear(Colors[color]);

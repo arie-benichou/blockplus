@@ -206,7 +206,7 @@ Event.observe(window, 'load', function() {
         //context.fillStyle = "rgba(0, 128, 0, 0.35)";
         context.fillStyle = Colors[currentColor];
         context.beginPath();
-        context.arc(34 * position.getColumn() + 34 / 2, 34 * position.getRow() + 34 / 2, 4, 0, Math.PI * 2, true);
+        context.arc(34 * position.getColumn() + 34 / 2, 34 * position.getRow() + 34 / 2, 8, 0, Math.PI * 2, true);
         context.closePath();
         context.fill();
         context.globalAlpha = 1;
@@ -231,7 +231,7 @@ Event.observe(window, 'load', function() {
     boardRendering.getCanvas().addEventListener("click", potentialCellClickEventHandler, false);
     /*--------------------------------------------------8<--------------------------------------------------*/
     localStorage.clear();
-    createAllPiecesImages("/pieces.xml", new BoardRendering(new CellRendering("piece", 12, 12, 11, 11)));
+    createAllPiecesImages("/pieces.xml", new BoardRendering(new CellRendering("piece", 13, 13, 12, 12)));
     /*--------------------------------------------------8<--------------------------------------------------*/
     source.connect();
     /*--------------------------------------------------8<--------------------------------------------------*/    
