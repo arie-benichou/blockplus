@@ -10,4 +10,9 @@ var AudioManager = Class.create({
         //this.audio.pause();
         this.audio.oncanplay=this.audio.play();
     },
+    
+    pause : function() {
+        this.audio.pause();
+    },
+    
 });

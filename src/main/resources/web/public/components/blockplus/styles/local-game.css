@@ -2,7 +2,6 @@ body {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	/*background-color: #d5d8df;*/
 	background-color: #a0a6ab;
-	
 }
 
 #available-pieces { /*
@@ -11,18 +10,25 @@ body {
 	
 }
 
-canvas {
-	/*
+canvas { /*
 	border: 3px solid white;
 	*/
 	-webkit-border-top-right-radius: 8px;
 	-webkit-border-bottom-right-radius: 8px;
 	-webkit-border-top-left-radius: 8px;
-	-webkit-border-bottom-left-radius: 8px;	
+	-webkit-border-bottom-left-radius: 8px;
 }
 
 #content {
 	margin-top: 1%;
+}
+
+#truc {
+	width: 1288px;
+	margin: 0 auto;
+	/*
+	border: 2px solid red;
+	*/
 }
 
 #left {
@@ -31,25 +37,58 @@ canvas {
 	width: 660px;
 	*/
 	width: 303px;
+	/*
 	margin: 10px;
+	*/
 	margin-top: 14px;
 	/*
 	padding: 10px;
 	*/
-	-webkit-transition: all 1.2s ease-out;	
+	/*
+	border: 1px solid black;
+	*/
+	height: 692px;
+	overflow: hidden;
+	-webkit-transition: all 1.2s ease-out;
 }
 
 #middle {
 	margin: 10px;
+	/*
 	padding: 10px;
+	*/
 	float: left;
 }
 
 #right {
+	/*
 	margin: 10px;
 	margin-top: 6px;
 	padding: 10px;
+	*/
 	float: left;
+}
+
+#remaining-pieces {
+	margin: 10px;
+	text-align: left;
+	/*
+	border: 1px solid black;
+	*/
+	/*
+	width: 568px;
+	*/
+	width: 266px;
+	/*
+	width: 372px;
+	*/
+}
+
+#play-again {
+	margin: 10px;
+	/*
+	float: right;
+	*/
 }
 
 img {
@@ -57,9 +96,7 @@ img {
 	/*
 	border: 3px solid #efe;
 	*/
-	
 	-webkit-transition: all 0.4s ease-out;
-	
 	-webkit-border-top-right-radius: 16px;
 	-webkit-border-bottom-right-radius: 16px;
 	-webkit-border-top-left-radius: 16px;
@@ -71,8 +108,7 @@ img {
 	float: left;
 }
 */
-#pieceToPlay {
-	/*
+#pieceToPlay { /*
 	-webkit-transition: all 0.6s ease-in-out;
 	*/
 	-webkit-transition: all 0.35s ease-out;
@@ -86,8 +122,7 @@ img {
 	float: left;
 }
 */
-#board {
-	/*-webkit-transition: all 2.5s ease-in-out;*/
+#board { /*-webkit-transition: all 2.5s ease-in-out;*/
 	-webkit-transition: all 5s ease-in-out;
 }
 
@@ -96,16 +131,14 @@ img {
 	cursor: pointer;
 }
 */
-.over {
-	/*
+.over { /*
 	border: 8px solid #efe;
 	*/
 	border: 8px solid #dadfe2;
 	opacity: 1;
 }
 
-.out {
-	/*
+.out { /*
 	border: 8px solid #dadfe2;
 	*/
 	/*

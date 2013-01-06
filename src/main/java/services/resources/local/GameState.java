@@ -85,7 +85,7 @@ public class GameState extends ServerResource {
                                                                         mutations);
             final String json = CellEncoding.encode(coloredBoard);
             final Representation representation = new StringRepresentation("" +
-                    "data:" + "[[\"Game Over\"]]" + "\n\n" +
+                    //"data:" + "[[\"Game Over\"]]" + "\n\n" +
                     "event:gameover\n" +
                     "data:" + json + "\n\n",
                     TEXT_EVENT_STREAM);

@@ -1,9 +1,9 @@
 Event.observe(window, 'load', function() {
     /*--------------------------------------------------8<--------------------------------------------------*/
     var audioManager = new AudioManager(new Audio());
-    audioManager.play("./audio/none.mp3");
-    audioManager.play("./audio/subtle.mp3");
-    audioManager.play("./audio/vector.mp3");
+    //audioManager.play("./audio/none.mp3");
+    //audioManager.play("./audio/subtle.mp3");
+    //audioManager.play("./audio/vector.mp3");
     /*--------------------------------------------------8<--------------------------------------------------*/
     var openEventHandler = function(event) {
     };
@@ -26,6 +26,7 @@ Event.observe(window, 'load', function() {
         $("board").className = "game-is-not-over";
     };
     var gameoverEventHandler = function(event) {
+        $("last-message").innerHTML = "";
         audioManager.play("./audio/game-is-over.mp3");
         // $("game-is-over").play();
         event.target.close();
@@ -34,6 +35,61 @@ Event.observe(window, 'load', function() {
         $("board").setAttribute("style", "opacity:0.33;");
         $("play-again").show();
         $("left").setAttribute("style", "width:0");
+        $("available-pieces").hide();
+        
+        
+        ////////////////////////////////////////////////////////////
+        
+        /*
+        $("left").setAttribute("style", "width:303px;");
+        $("left").show();
+        $("available-pieces").show();
+        $("available-pieces").innerHTML = "";
+        */
+        
+        
+        var getAvailablePiecesByColor = function(color) {
+            new Ajax.Request("/blockplus/game-state-pieces-color", {
+                onSuccess : function(response) {
+                    var array = JSON.parse(response.responseText);
+                    console.log(array.length);
+                    $(color).innerHTML = "";
+                    for ( var i = 0; i < array.length; ++i) {
+                        var retrievedObject = localStorage.getItem(getLocalStoreKey(color, "piece" + array[i]));
+                        console.log(getLocalStoreKey(color, "piece" + array[i]));
+                        //console.log(retrievedObject);
+                        var image = new Image();
+                        //image.setAttribute("id", "piece-" + i);
+                        image.src = retrievedObject;
+                        //image.width = "45px";
+                        //image.height = "45px;";
+                        console.log(image);
+                        image.setAttribute("style", "width:45px; height:45px;");
+                        //document.body.appendChild(image);
+                        $(color).appendChild(image);
+                    }
+                },
+                onFailure : function(response) {
+                    alert("failed!");
+                },
+                method : 'get',
+                parameters : {
+                    color : color
+                }
+            });
+        };
+        
+        for ( var color in Colors) {
+            console.log(color);
+            getAvailablePiecesByColor(color);
+        }
+        
+        $("remaining-pieces").show();
+        
+        ////////////////////////////////////////////////////////////
+        
+        
+        
     };
     var optionsEventHandler = function(event) {
         
@@ -63,7 +119,7 @@ Event.observe(window, 'load', function() {
             new Ajax.Request("/blockplus/game-options", {
                 onSuccess : function(response) {
                     option = new Options(JSON.parse(response.responseText)); // TODO
-                    audioManager.play("./audio/vector.mp3");
+                    //audioManager.play("./audio/vector.mp3");
                     console.log("!");
                 },
                 onFailure : function(response) {
@@ -71,6 +127,17 @@ Event.observe(window, 'load', function() {
                 },
                 method : 'get',
             });
+            
+            new Ajax.Request("/blockplus/game-random-move", {
+                onSuccess : function(response) {
+                    source.connect();
+                },
+                onFailure : function(response) {
+                    //alert("failed!");
+                },
+                method : 'get',
+            });
+            
         }
     };
     /*--------------------------------------------------8<--------------------------------------------------*/
@@ -191,6 +258,7 @@ Event.observe(window, 'load', function() {
                 for ( var i = 0; i < array.length; ++i) {
                     $("piece-" + array[i]).setAttribute("class", "available");
                 }
+                $("available-pieces").show();
             },
             onFailure : function(response) {
                 alert("failed!");
@@ -202,18 +270,18 @@ Event.observe(window, 'load', function() {
     var showPotentialCells = function(position) {
         var context = boardRendering.getContext();
         
-        context.globalAlpha = 0.35;
+        context.globalAlpha = 0.4;
         //context.fillStyle = "rgba(0, 128, 0, 0.35)";
         context.fillStyle = Colors[currentColor];
         context.beginPath();
-        context.arc(34 * position.getColumn() + 34 / 2, 34 * position.getRow() + 34 / 2, 8, 0, Math.PI * 2, true);
+        context.arc(34 * position.getColumn() + 34 / 2, 34 * position.getRow() + 34 / 2, 7, 0, Math.PI * 2, true);
         context.closePath();
         context.fill();
-        context.globalAlpha = 1;
-        
-        context.lineWidth = 1;
+        context.globalAlpha = 0.8;
+        context.lineWidth = 2;
         context.strokeStyle = Colors[currentColor];
         context.stroke();
+        context.globalAlpha = 1;
     };
     /*--------------------------------------------------8<--------------------------------------------------*/
     var offsetToPositionBuilder = new OffsetToPositionBuilder(34, 34);
@@ -234,18 +302,25 @@ Event.observe(window, 'load', function() {
     createAllPiecesImages("/pieces.xml", new BoardRendering(new CellRendering("piece", 13, 13, 12, 12)));
     /*--------------------------------------------------8<--------------------------------------------------*/
     source.connect();
-    /*--------------------------------------------------8<--------------------------------------------------*/    
+    /*--------------------------------------------------8<--------------------------------------------------*/
     $("play-again").observe('click', function(event) {
         new Ajax.Request("/blockplus/game-reset", {
             onSuccess : function(response) {
                 source.connect();
                 // TODO utiliser des classes css
+                $("left").setAttribute("style", "width:303px;");
+                $("board").setAttribute("style", "opacity:1;");        
                 $("play-again").hide();
-                $("board").setAttribute("style", "opacity:1;");
-                
+                $("remaining-pieces").hide();
+                audioManager.pause();
             },
             onFailure : function(response) {
-                alert("failed!");
+                alert("failure");
+                $("left").setAttribute("style", "width:303px;");
+                $("board").setAttribute("style", "opacity:1;");        
+                $("play-again").hide();
+                $("remaining-pieces").hide();
+                audioManager.pause();
             },
             method : 'get',
         });        
