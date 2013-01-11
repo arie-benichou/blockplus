@@ -29,8 +29,9 @@ public class GameMove extends ServerResource {
 
     @Get
     public Representation getRepresentation() {
+        final String room = (String) this.getRequest().getAttributes().get("room");
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        final Game game = application.getGame();
+        final Game game = application.getGame(room);
         final GameContext context = game.getInitialContext();
         // TODO checks...
         final int id = Integer.parseInt(this.getQueryValue("id"));
@@ -55,7 +56,7 @@ public class GameMove extends ServerResource {
         final Move move = new Move(context.getColor(), piece);
         // TODO ! check if move is legal
         final GameContext newGameContext = context.apply(move);
-        application.setGame(new Game(newGameContext.next()));
+        application.setGame(room, new Game(newGameContext.next()));
         this.setStatus(Status.SUCCESS_OK);
         final StringRepresentation representation = new StringRepresentation(json);
         representation.setCharacterSet(CharacterSet.UTF_8);

@@ -51,8 +51,10 @@ public class GameState extends ServerResource {
 
         this.setStatus(Status.SUCCESS_OK);
 
+        final String room = (String) this.getRequest().getAttributes().get("room");
+
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        final Game game = application.getGame();
+        final Game game = application.getGame(room);
         final GameContext context = game.getInitialContext();
         final ColorInterface color = context.getColor();
         final boolean isGameNotOver = context.hasNext();

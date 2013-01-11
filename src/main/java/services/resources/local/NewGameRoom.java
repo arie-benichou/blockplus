@@ -10,19 +10,16 @@ import org.restlet.resource.ServerResource;
 
 import services.applications.BlockplusApplicationInterface;
 import blockplus.model.game.Game;
-import blockplus.model.game.GameContext;
 
-public class GameRandomMove extends ServerResource {
+public class NewGameRoom extends ServerResource {
 
     @Get
     public Representation getRepresentation() {
-        final String room = (String) this.getRequest().getAttributes().get("room");
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        final Game game = application.getGame(room);
-        final GameContext newGameContext = game.start(1);
-        application.setGame(room, new Game(newGameContext));
+        final int room = application.getCounter().incrementAndGet();
+        application.setGame("" + room, new Game());
         this.setStatus(Status.SUCCESS_OK);
-        final StringRepresentation representation = new StringRepresentation("RANDOM MOVE");
+        final StringRepresentation representation = new StringRepresentation("" + room);
         representation.setCharacterSet(CharacterSet.UTF_8);
         return representation;
     }

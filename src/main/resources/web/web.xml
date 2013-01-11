@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	id="WebApp_ID" version="2.5">
-	<display-name>Blockplus</display-name>
+    xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    id="WebApp_ID" version="2.5">
+    <display-name>Blockplus</display-name>
 
-	<servlet>
-		<servlet-name>Blockplus</servlet-name>
-		<servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
-		<init-param>
-			<param-name>org.restlet.application</param-name>
-			<param-value>services.applications.BlockplusApplicationJEE</param-value>
-		</init-param>
-	</servlet>
+    <servlet>
+        <servlet-name>Blockplus</servlet-name>
+        <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
+        <init-param>
+            <param-name>org.restlet.application</param-name>
+            <param-value>services.applications.BlockplusApplicationJEE</param-value>
+        </init-param>
+    </servlet>
 
-	<servlet-mapping>
-		<servlet-name>Blockplus</servlet-name>
-		<url-pattern>/blockplus/*</url-pattern>
-	</servlet-mapping>
-	
+    <servlet-mapping>
+        <servlet-name>Blockplus</servlet-name>
+        <url-pattern>/blockplus/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>WS</servlet-name>
+        <servlet-class>net.wessendorf.jetty.websocket.BlockplusWebSocketServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>WS</servlet-name>
+        <url-pattern>/talk/*</url-pattern>
+    </servlet-mapping>
+
 </web-app>

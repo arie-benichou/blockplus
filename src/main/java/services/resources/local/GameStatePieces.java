@@ -19,8 +19,9 @@ public class GameStatePieces extends ServerResource {
 
     @Get
     public Representation getRepresentation() {
+        final String room = (String) this.getRequest().getAttributes().get("room");
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        final Game game = application.getGame();
+        final Game game = application.getGame(room);
         final GameContext context = game.getInitialContext();
         final PiecesBag bag = context.getPlayers().get(context.getColor()).getPieces();
         final PiecesBag effectiveBag = bag.remove(Pieces.PIECE0);

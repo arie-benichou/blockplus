@@ -18,4 +18,6 @@
  
  
 Utiliser une div par couleur pour les pièces disponibles
-Au game-over, supprimer les images des pièces utilisées. 
+Au game-over, supprimer les images des pièces utilisées.
+
+sudo haproxy -f ./haproxy.cfg

@@ -1,141 +1,129 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.designpattern</groupId>
-	<artifactId>blockplus</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>blockplus</name>
-	<url>https://code.google.com/p/blockplus/</url>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>fr.designpattern</groupId>
+    <artifactId>blockplus</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>blockplus</name>
+    <url>https://code.google.com/p/blockplus/</url>
 
-	<!-- 
-	<packaging>jar</packaging>
-	 -->
-	 
-	<packaging>war</packaging>
+    <!-- <packaging>jar</packaging> -->
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<restlet.version>2.1-RC6</restlet.version>
-		<webXml>${basedir}/src/main/resources/web/web.xml</webXml>
-		<sourceDirectory>${basedir}/src/main/resources/web/public/components/blockplus</sourceDirectory>
-	</properties>
+    <packaging>war</packaging>
 
-	<build>
-		<finalName>blockplus</finalName>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<!--
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<mainClass>services.RunBlockplusApplicationJSE</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			 -->			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<webXml>${webXml}</webXml>
-					<warSourceDirectory>${sourceDirectory}</warSourceDirectory>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>8.1.5.v20120716</version>
-				<configuration>
-					<!--  
-					<jettyXml>${basedir}/jetty.xml</jettyXml>
-					-->
-					<scanIntervalSeconds>0</scanIntervalSeconds>
-					<webXml>${webXml}</webXml>
-					<webAppSourceDirectory>${sourceDirectory}</webAppSourceDirectory>
-					<!-- 
-					<connectors>
-				       <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-				          <port>8080</port>
-				          <maxIdleTime>60000</maxIdleTime>
-				          <reuseAddress>true</reuseAddress>
-				       </connector>
-			     	</connectors>
-			     	 -->
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <restlet.version>2.1-RC6</restlet.version>
+        <webXml>${basedir}/src/main/resources/web/web.xml</webXml>
+        <sourceDirectory>${basedir}/src/main/resources/web/public/components/blockplus</sourceDirectory>
+    </properties>
 
-	<repositories>
-		<repository>
-			<id>maven-restlet</id>
-			<name>Public online Restlet repository</name>
-			<url>http://maven.restlet.org</url>
-		</repository>
-	</repositories>
+    <build>
+        <!-- 
+        <defaultGoal>jetty:run</defaultGoal>
+         -->
+        <finalName>blockplus</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId> 
+                <version>2.3</version> <configuration> <descriptorRefs> <descriptorRef>jar-with-dependencies</descriptorRef> 
+                </descriptorRefs> <archive> <manifest> <mainClass>services.RunBlockplusApplicationJSE</mainClass> 
+                </manifest> </archive> </configuration> <executions> <execution> <phase>package</phase> 
+                <goals> <goal>single</goal> </goals> </execution> </executions> </plugin> -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <webXml>${webXml}</webXml>
+                    <warSourceDirectory>${sourceDirectory}</warSourceDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>8.1.8.v20121106</version>
+                <configuration>
+                    <!-- <jettyXml>${basedir}/jetty.xml</jettyXml> -->
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <webAppConfig>
+                        <contextPath>/</contextPath>
+                    </webAppConfig>
+                    <webXml>${webXml}</webXml>
+                    <webAppSourceDirectory>${sourceDirectory}</webAppSourceDirectory>
+                    <connectors>
+                        <connector
+                            implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                            <port>8080</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                            <!-- <reuseAddress>true</reuseAddress> -->
+                        </connector>
+                    </connectors>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>11.0.2</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.2.2</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>org.restlet</artifactId>
-			<version>${restlet.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>org.restlet.ext.jetty</artifactId>
-			<version>${restlet.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet.jee</groupId>
-			<artifactId>org.restlet.ext.servlet</artifactId>
-			<version>${restlet.version}</version>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
+    <repositories>
+        <repository>
+            <id>maven-restlet</id>
+            <name>Public online Restlet repository</name>
+            <url>http://maven.restlet.org</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>11.0.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet</artifactId>
+            <version>${restlet.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet.ext.jetty</artifactId>
+            <version>${restlet.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet.jee</groupId>
+            <artifactId>org.restlet.ext.servlet</artifactId>
+            <version>${restlet.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- <dependency> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-websocket</artifactId> 
+            <version>8.1.8.v20121106</version> <classifier>tests</classifier> </dependency> -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-websocket</artifactId>
+            <version>8.1.8.v20121106</version>
+        </dependency>
+    </dependencies>
 
 </project>

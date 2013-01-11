@@ -21,8 +21,9 @@ public class GameStatePiecesByColor extends ServerResource {
 
     @Get
     public Representation getRepresentation() {
+        final String room = (String) this.getRequest().getAttributes().get("room");
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        final Game game = application.getGame();
+        final Game game = application.getGame(room);
         final GameContext context = game.getInitialContext();
         final String color = this.getQueryValue("color");
         final PlayersInterface players = context.getPlayers();

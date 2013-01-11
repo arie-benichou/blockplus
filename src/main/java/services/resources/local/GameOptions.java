@@ -29,15 +29,16 @@ public class GameOptions extends ServerResource {
     @Get
     public Representation getRepresentation() {
 
+        final String room = (String) this.getRequest().getAttributes().get("room");
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        final Game game = application.getGame();
-        List<Move> legalMoves = game.getInitialContext().options();
+        final Game game = application.getGame(room);
+        final List<Move> legalMoves = game.getInitialContext().options();
 
         final Map<Pieces, List<Set<PositionInterface>>> legalPositionsByPiece = Maps.newTreeMap();
         for (final Move move : legalMoves) {
-            if(!move.isNull()) { // TODO à revoir
+            if (!move.isNull()) { // TODO à revoir
                 final PieceInterface piece = move.getPiece();
-                Pieces key = Pieces.get(piece.getId());
+                final Pieces key = Pieces.get(piece.getId());
                 List<Set<PositionInterface>> playablePositions = legalPositionsByPiece.get(key);
                 if (playablePositions == null) {
                     playablePositions = Lists.newArrayList();
@@ -47,11 +48,11 @@ public class GameOptions extends ServerResource {
             }
         }
 
-        Gson gson = JSONSerializer.getInstance();
-        String json = gson.toJson(legalPositionsByPiece);
+        final Gson gson = JSONSerializer.getInstance();
+        final String json = gson.toJson(legalPositionsByPiece);
 
         this.setStatus(Status.SUCCESS_OK);
-        StringRepresentation representation = new StringRepresentation(json);
+        final StringRepresentation representation = new StringRepresentation(json);
         representation.setCharacterSet(CharacterSet.UTF_8);
         return representation;
 

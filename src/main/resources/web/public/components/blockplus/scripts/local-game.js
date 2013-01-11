@@ -1,9 +1,10 @@
+room = 0;
 Event.observe(window, 'load', function() {
     /*--------------------------------------------------8<--------------------------------------------------*/
     var audioManager = new AudioManager(new Audio());
-    //audioManager.play("./audio/none.mp3");
-    //audioManager.play("./audio/subtle.mp3");
-    //audioManager.play("./audio/vector.mp3");
+    // audioManager.play("./audio/none.mp3");
+    // audioManager.play("./audio/subtle.mp3");
+    // audioManager.play("./audio/vector.mp3");
     /*--------------------------------------------------8<--------------------------------------------------*/
     var openEventHandler = function(event) {
     };
@@ -17,7 +18,7 @@ Event.observe(window, 'load', function() {
         newChild.innerHTML = JSON.parse(event.data);
         $("last-message").remove();
         $("messages").appendChild(newChild);
-        
+
         // TODO define json structure for a game representation
         currentColor = JSON.parse(event.data)[0][0];
     };
@@ -36,37 +37,33 @@ Event.observe(window, 'load', function() {
         $("play-again").show();
         $("left").setAttribute("style", "width:0");
         $("available-pieces").hide();
-        
-        
-        ////////////////////////////////////////////////////////////
-        
+
+        // //////////////////////////////////////////////////////////
+
         /*
-        $("left").setAttribute("style", "width:303px;");
-        $("left").show();
-        $("available-pieces").show();
-        $("available-pieces").innerHTML = "";
-        */
-        
-        
+         * $("left").setAttribute("style", "width:303px;"); $("left").show();
+         * $("available-pieces").show(); $("available-pieces").innerHTML = "";
+         */
+
         var getAvailablePiecesByColor = function(color) {
-            new Ajax.Request("/blockplus/game-state-pieces-color", {
+            new Ajax.Request("/blockplus/game-room/" + room + "/game-state-pieces-color", {
                 onSuccess : function(response) {
                     var array = JSON.parse(response.responseText);
                     console.log(array.length);
-                    //$(color).innerHTML = "";
+                    // $(color).innerHTML = "";
                     for ( var i = 0; i < array.length; ++i) {
                         var retrievedObject = localStorage.getItem(getLocalStoreKey(color, "piece" + array[i]));
                         console.log(getLocalStoreKey(color, "piece" + array[i]));
-                        //console.log(retrievedObject);
+                        // console.log(retrievedObject);
                         var image = new Image();
-                        //image.setAttribute("id", "piece-" + i);
+                        // image.setAttribute("id", "piece-" + i);
                         image.src = retrievedObject;
-                        //image.width = "45px";
-                        //image.height = "45px;";
+                        // image.width = "45px";
+                        // image.height = "45px;";
                         console.log(image);
                         image.setAttribute("style", "width:55px; height:55px;");
-                        //document.body.appendChild(image);
-                        //$(color).appendChild(image);
+                        // document.body.appendChild(image);
+                        // $(color).appendChild(image);
                         $("remaining-pieces").appendChild(image);
                     }
                 },
@@ -80,26 +77,24 @@ Event.observe(window, 'load', function() {
             });
         };
 
-        $("remaining-pieces").innerHTML = "";        
+        $("remaining-pieces").innerHTML = "";
         for ( var color in Colors) {
             console.log(color);
             getAvailablePiecesByColor(color);
         }
-        
+
         $("remaining-pieces").show();
-        
-        ////////////////////////////////////////////////////////////
-        
-        
-        
+
+        // //////////////////////////////////////////////////////////
+
     };
     var optionsEventHandler = function(event) {
-        
+
         getAvailablePieces(); // TODO
-        
+
         var array = JSON.parse(event.data);
         if (array == null || array.length == 0) {
-            new Ajax.Request("/blockplus/game-null-move", {
+            new Ajax.Request("/blockplus/game-room/" + room + "/game-null-move", {
                 onSuccess : function(response) {
                     console.log("you have no more legal move");
                 },
@@ -118,32 +113,40 @@ Event.observe(window, 'load', function() {
                 showPotentialCells(position);
             }
 
-            new Ajax.Request("/blockplus/game-options", {
+            //new Ajax.Request("/blockplus/game-room/" + room + "/game-options", {
+            new Ajax.Request("/blockplus/game-room/" + room + "/game-options", {
                 onSuccess : function(response) {
                     option = new Options(JSON.parse(response.responseText)); // TODO
-                    //audioManager.play("./audio/vector.mp3");
+                    // audioManager.play("./audio/vector.mp3");
                     console.log("!");
+                    boardRendering.getContext().save();
                 },
                 onFailure : function(response) {
                     alert("failed!");
                 },
                 method : 'get',
             });
-            
-            new Ajax.Request("/blockplus/game-random-move", {
+
+            /*
+            new Ajax.Request("/blockplus/game-room/" + room + "/game-random-move", {
                 onSuccess : function(response) {
                     source.connect();
                 },
                 onFailure : function(response) {
-                    //alert("failed!");
+                    // alert("failed!");
                 },
                 method : 'get',
             });
-            
+            */
+
         }
     };
     /*--------------------------------------------------8<--------------------------------------------------*/
     var potentialCellClickEventHandler = function(event) {
+        
+        event.preventDefault();
+
+        
         var position = offsetToPositionBuilder.build(event.offsetX, event.offsetY);
         if (potentialPositions.match(position)) {
             if (selectedPositions.contains(position)) {
@@ -152,12 +155,12 @@ Event.observe(window, 'load', function() {
                 showPotentialCells(position);
             } else {
                 /*
-                boardRendering.getContext().globalAlpha = 0.55;
-                boardRendering.updateCell(position, "black");
-                */
+                 * boardRendering.getContext().globalAlpha = 0.55;
+                 * boardRendering.updateCell(position, "black");
+                 */
                 boardRendering.getContext().globalAlpha = 0.5;
-                boardRendering.updateCell(position, Colors[currentColor]);                
-                boardRendering.getContext().globalAlpha = 1;                
+                boardRendering.updateCell(position, Colors[currentColor]);
+                boardRendering.getContext().globalAlpha = 1;
                 selectedPositions.add(position);
             }
             var matches = option.matches(selectedPositions);
@@ -187,7 +190,7 @@ Event.observe(window, 'load', function() {
                     newCanvas.height = 34 * height;
                     var tmpBoardRendering = new BoardRendering(new CellRendering(newCanvas, 34, 34, 33, 33));
                     var positions = selectedPositions.get();
-                    //tmpBoardRendering.clear("#a0a6ab");
+                    // tmpBoardRendering.clear("#a0a6ab");
                     tmpBoardRendering.clear("#2a2d30");
                     for ( var position in positions) {
                         var p = JSON.parse(position); // TODO !!
@@ -200,6 +203,36 @@ Event.observe(window, 'load', function() {
                 $("pieceToPlay").setAttribute("class", "transparent out");
             }
         }
+    };
+    /*--------------------------------------------------8<--------------------------------------------------*/
+    var potentialCellMouseMoveEventHandler = function(event) {
+        console.log("mouse move");
+        
+        var position = offsetToPositionBuilder.build(event.offsetX, event.offsetY);
+        var context = boardRendering.getContext();
+        
+        context.restore();
+        context.save();
+        
+        if (potentialPositions.match(position)) {
+            console.log(position);
+            console.log("matching");
+            if (selectedPositions.contains(position)) {
+                
+            }
+            else {
+                context.fillStyle = Colors[currentColor];
+                context.beginPath();
+                context.arc(34 * position.getColumn() + 34 / 2, 34 * position.getRow() + 34 / 2, 7, 0, Math.PI * 2, true);
+                context.closePath();
+                context.fill();
+                context.save();                
+            }
+        }
+        else {
+            context.restore();
+        }
+        
     };
     /*--------------------------------------------------8<--------------------------------------------------*/
     $("pieceToPlay").addEventListener("mouseover", function(event) {
@@ -217,12 +250,12 @@ Event.observe(window, 'load', function() {
             var p = JSON.parse([ position ]);
             data.push([ p.row, p.column ]);
         }
-        new Ajax.Request("/blockplus/game-move", {
+        new Ajax.Request("/blockplus/game-room/" + room + "/game-move", {
             onSuccess : function(response) {
                 // audioManager.play("./audio/vector.mp3");
                 $("submit").hide();
                 selectedPositions.clear();
-                //getAvailablePieces();
+                // getAvailablePieces();
                 source.connect();
             },
             onFailure : function(response) {
@@ -238,12 +271,12 @@ Event.observe(window, 'load', function() {
     }, false);
     /*--------------------------------------------------8<--------------------------------------------------*/
     var getAvailablePieces = function() {
-        new Ajax.Request("/blockplus/game-state-pieces", {
+        new Ajax.Request("/blockplus/game-room/" + room + "/game-state-pieces", {
             onSuccess : function(response) {
-                
+
                 $("available-pieces").innerHTML = "";
-                
-                //alert(currentColor);
+
+                // alert(currentColor);
                 for ( var i = 1; i <= 21; ++i) { // TODO
                     var retrievedObject = localStorage.getItem(getLocalStoreKey(currentColor, "piece" + i));
                     var image = new Image();
@@ -251,8 +284,8 @@ Event.observe(window, 'load', function() {
                     image.src = retrievedObject;
                     image.setAttribute("class", "not-available");
                     $("available-pieces").appendChild(image);
-                }                            
-                
+                }
+
                 var array = JSON.parse(response.responseText);
                 for ( var i = 1; i <= 21; ++i) { // TODO
                     $("piece-" + i).setAttribute("class", "not-available");
@@ -271,9 +304,9 @@ Event.observe(window, 'load', function() {
     /*--------------------------------------------------8<--------------------------------------------------*/
     var showPotentialCells = function(position) {
         var context = boardRendering.getContext();
-        
+
         context.globalAlpha = 0.4;
-        //context.fillStyle = "rgba(0, 128, 0, 0.35)";
+        // context.fillStyle = "rgba(0, 128, 0, 0.35)";
         context.fillStyle = Colors[currentColor];
         context.beginPath();
         context.arc(34 * position.getColumn() + 34 / 2, 34 * position.getRow() + 34 / 2, 7, 0, Math.PI * 2, true);
@@ -290,7 +323,7 @@ Event.observe(window, 'load', function() {
     var boardRendering = new BoardRendering(new CellRendering("board", 34, 34, 33, 33));
     var selectedPositions = new SelectedPositions();
     /*--------------------------------------------------8<--------------------------------------------------*/
-    var source = new EventSourceManager("/blockplus/game-state");
+    var source = new EventSourceManager("/blockplus/game-room/" + room + "/game-state");
     source.addEventListener("open", openEventHandler, false);
     source.addEventListener("error", errorEventHandler, false);
     source.addEventListener("message", messsageEventHandler, false);
@@ -299,21 +332,23 @@ Event.observe(window, 'load', function() {
     source.addEventListener("options", optionsEventHandler, false);
     /*--------------------------------------------------8<--------------------------------------------------*/
     boardRendering.getCanvas().addEventListener("click", potentialCellClickEventHandler, false);
+    //boardRendering.getCanvas().addEventListener("mousemove", potentialCellMouseMoveEventHandler, false);
+    //boardRendering.getCanvas().addEventListener("mouseout", potentialCellMouseOutEventHandler, false);
     /*--------------------------------------------------8<--------------------------------------------------*/
     localStorage.clear();
     createAllPiecesImages("/pieces.xml", new BoardRendering(new CellRendering("piece", 13, 13, 12, 12)));
     /*--------------------------------------------------8<--------------------------------------------------*/
     source.connect();
-    /*--------------------------------------------------8<--------------------------------------------------*/    
+    /*--------------------------------------------------8<--------------------------------------------------*/
     $("remaining-pieces").hide(); // TODO
     /*--------------------------------------------------8<--------------------------------------------------*/
     $("play-again").observe('click', function(event) {
-        new Ajax.Request("/blockplus/game-reset", {
+        new Ajax.Request("/blockplus/game-room/" + room + "/game-reset", {
             onSuccess : function(response) {
                 source.connect();
                 // TODO utiliser des classes css
                 $("left").setAttribute("style", "width:303px;");
-                $("board").setAttribute("style", "opacity:1;");        
+                $("board").setAttribute("style", "opacity:1;");
                 $("play-again").hide();
                 $("remaining-pieces").hide();
                 audioManager.pause();
@@ -322,7 +357,7 @@ Event.observe(window, 'load', function() {
                 alert("failed");
             },
             method : 'get',
-        });        
+        });
     });
     $("play-again").hide(); // TODO
     $("submit").hide(); // TODO

@@ -45,7 +45,7 @@ Event.observe(window, 'load', function() {
 
             getAvailablePieces(); // TODO
 
-            new Ajax.Request("/blockplus/options", {
+            new Ajax.Request("/blockplus/game-room/0/options", {
                 onSuccess : function(response) {
                     option = new Options(JSON.parse(response.responseText)); // TODO
                     audioManager.play("./audio/vector.mp3");

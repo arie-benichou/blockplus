@@ -8,18 +8,15 @@ import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
-import services.applications.BlockplusApplicationInterface;
-import blockplus.model.game.Game;
-
-public class GameReset extends ServerResource {
+public class GameRoom extends ServerResource {
 
     @Get
     public Representation getRepresentation() {
-        final String room = (String) this.getRequest().getAttributes().get("room");
-        final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        application.setGame(room, new Game());
+        final String location = (String) this.getRequest().getAttributes().get("location");
+        //final int id = Integer.parseInt(this.getQueryValue("id"));
         this.setStatus(Status.SUCCESS_OK);
-        final StringRepresentation representation = new StringRepresentation("NEW GAME");
+        System.out.println(location);
+        final StringRepresentation representation = new StringRepresentation(location);
         representation.setCharacterSet(CharacterSet.UTF_8);
         return representation;
     }
