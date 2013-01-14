@@ -70,7 +70,7 @@ public class GameState extends ServerResource {
             final BoardInterface<ColorInterface> coloredBoard = board.colorize();
             final String json = CellEncoding.encode(coloredBoard);
             final Representation representation = new StringRepresentation("" +
-                    "retry:1000\n" +
+                    "retry:3000\n" +
                     "data:" + "[[\"" + color + "\"]]" + "\n\n" +
                     "event:gamenotover\n" +
                     "data:" + json + "\n\n" +

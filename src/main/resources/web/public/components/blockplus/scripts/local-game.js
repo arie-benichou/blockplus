@@ -104,7 +104,8 @@ Event.observe(window, 'load', function() {
                 method : 'get',
             });
         } else {
-            source.disconnect();
+            
+            source.disconnect(); // TODO            
 
             potentialPositions = new PotentialPositions(array); // TODO
 
@@ -130,7 +131,7 @@ Event.observe(window, 'load', function() {
             /*
             new Ajax.Request("/blockplus/game-room/" + room + "/game-random-move", {
                 onSuccess : function(response) {
-                    source.connect();
+                    //source.connect(); // TODO
                 },
                 onFailure : function(response) {
                     // alert("failed!");

@@ -20,13 +20,13 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>WS</servlet-name>
-        <servlet-class>net.wessendorf.jetty.websocket.BlockplusWebSocketServlet</servlet-class>
+        <servlet-name>WebSocket</servlet-name>
+        <servlet-class>transport.WebSocketServer</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>WS</servlet-name>
+        <servlet-name>WebSocket</servlet-name>
         <url-pattern>/talk/*</url-pattern>
     </servlet-mapping>
 
