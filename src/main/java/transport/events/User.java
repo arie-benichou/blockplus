@@ -30,7 +30,7 @@ public final class User implements UserInterface {
         return this.name;
     }
 
-    private User(final IOinterface io, final String name) {
+    public User(final IOinterface io, final String name) {
         this.io = io;
         this.name = name;
     }

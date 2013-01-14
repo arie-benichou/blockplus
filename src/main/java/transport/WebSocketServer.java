@@ -2,10 +2,10 @@
 package transport;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,17 +13,28 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketServlet;
 
+import serialization.CellEncoding;
+import transport.events.AutoJoinInterface;
 import transport.events.JoinRoomInterface;
 import transport.events.UserInterface;
 import transport.protocol.MessageDecoder;
 import transport.protocol.MessageHandler;
 import transport.protocol.MessageHandlerInterface;
 import transport.protocol.MessageInterface;
+import blockplus.model.board.Board;
+import blockplus.model.color.ColorInterface;
+import blockplus.model.game.Game;
+import blockplus.model.game.GameContext;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import components.board.BoardInterface;
 
 @SuppressWarnings("serial")
 public class WebSocketServer extends WebSocketServlet {
@@ -32,12 +43,16 @@ public class WebSocketServer extends WebSocketServlet {
 
     private final MessageDecoder messageDecoder = new MessageDecoder(); // TODO à injecter
 
-    private final Map<IOinterface, UserInterface> connectedUsersByIO = Maps.newConcurrentMap();
+    private final Map<IOinterface, UserInterface> connectedUserByIO = Maps.newConcurrentMap();
 
-    private final Map<Integer, Set<UserInterface>> connectedUsersByRoom = Maps.newConcurrentMap();
+    private final Map<Integer, List<UserInterface>> connectedUsersByRoom = Maps.newConcurrentMap();
+
+    //private final Map<Integer, Game> gameByRoom = Maps.newConcurrentMap();
+
+    private final Map<Integer, RoomInterface> roomByOrdinal = Maps.newConcurrentMap();
 
     public Collection<UserInterface> getConnectedUsers() {
-        return this.connectedUsersByIO.values();
+        return this.connectedUserByIO.values();
     }
 
     private final EventBus eventBus = new EventBus();
@@ -51,7 +66,8 @@ public class WebSocketServer extends WebSocketServlet {
         super.init();
         this.getEventBus().register(this);
         for (int i = 1; i <= 10; ++i) {
-            this.connectedUsersByRoom.put(i, new CopyOnWriteArraySet<UserInterface>());
+            final ImmutableList<UserInterface> empty = ImmutableList.of();
+            this.connectedUsersByRoom.put(i, empty);
         }
     }
 
@@ -71,6 +87,8 @@ public class WebSocketServer extends WebSocketServlet {
         private final WebSocketServer server;
 
         private Connection connection = null;
+
+        private Integer room = 0;
 
         public IO(final WebSocketServer server) {
             this.server = server;
@@ -124,18 +142,29 @@ public class WebSocketServer extends WebSocketServlet {
         public Connection getConnection() {
             return this.connection;
         }
+
+        @Override
+        public Integer getRoom() {
+            return this.room;
+        }
+
+        @Override
+        public void setRoom(final Integer ordinal) {
+            this.room = ordinal;
+        }
     }
 
     public void connect(final UserInterface user) {
-        this.connectedUsersByIO.put(user.getIO(), user);
+        this.connectedUserByIO.put(user.getIO(), user);
     }
 
     public UserInterface getUser(final IOinterface io) {
-        return this.connectedUsersByIO.get(io);
+        return this.connectedUserByIO.get(io);
     }
 
     public void disconnect(final IOinterface io) {
-        this.connectedUsersByIO.remove(io);
+        //io.say("Bye !");
+        this.connectedUserByIO.remove(io);
     }
 
     @Subscribe
@@ -149,22 +178,101 @@ public class WebSocketServer extends WebSocketServlet {
     @Subscribe
     @AllowConcurrentEvents
     public void handleJoinRoomEvent(final JoinRoomInterface joinRoomEvent) {
-        final Set<UserInterface> connectedRoomUsers = this.connectedUsersByRoom.get(joinRoomEvent.getOrdinal());
+        final Integer room = joinRoomEvent.getOrdinal();
+        final List<UserInterface> connectedRoomUsers = this.connectedUsersByRoom.get(room);
         final int n = connectedRoomUsers.size();
         if (n < 4) {
-            final UserInterface user = this.getUser(joinRoomEvent.getIO());
-            connectedRoomUsers.add(user);
+            final IOinterface io = joinRoomEvent.getIO();
+            final UserInterface user = this.getUser(io);
+            final ImmutableList<UserInterface> roomUsers = new ImmutableList.Builder<UserInterface>().addAll(connectedRoomUsers).add(user).build();
+            System.out.println(roomUsers);
+            this.connectedUsersByRoom.put(room, roomUsers);
+            io.setRoom(room);
             for (final UserInterface connectedRoomUser : connectedRoomUsers) {
-                connectedRoomUser.getIO().say(user.getName() + " has joined room " + joinRoomEvent.getOrdinal());
+                connectedRoomUser.getIO().say(user.getName() + " has joined room " + room);
             }
             if (n == 3) {
-                for (final UserInterface connectedRoomUser : connectedRoomUsers) {
+                for (final UserInterface connectedRoomUser : roomUsers) {
                     connectedRoomUser.getIO().say("Let's kick some ass ! :)");
                 }
+                final Game game = new Game();
+                //this.gameByRoom.put(room, game);
+                System.out.println(roomUsers);
+                final List<Integer> parts = Lists.newArrayList();
+                for (final UserInterface userInterface : roomUsers) {
+                    final IOinterface io2 = userInterface.getIO();
+                    parts.add(io2.hashCode());
+                }
+                final String hash1 = Joiner.on(':').join(parts);
+                //System.out.println(hash);
+                // TODO générer un hascode et le placer dans le local storage
+                // reconnecter immédiatement à la room une socket déconnectée dont le hashcode correspond
+
+                this.roomByOrdinal.put(room, new Room(room, hash1, roomUsers, game));
+
+                final GameContext context = game.getInitialContext();
+                final Board board = context.getBoard();
+                final BoardInterface<ColorInterface> coloredBoard = board.colorize();
+                final String json = CellEncoding.encode(coloredBoard);
+
+                int k = 0;
+                for (final UserInterface connectedRoomUser : roomUsers) {
+                    //connectedRoomUser.getIO().say(json);
+                    //connectedRoomUser.getIO().say(list);
+                    //connectedRoomUser.getIO().say(this.connectedUsersByIO);
+                    final List<String> hashParts = Lists.newArrayList();
+                    hashParts.add("" + room);
+                    hashParts.add("" + (++k));
+                    //hashParts.add("" + connectedRoomUser.getIO().hashCode());
+                    hashParts.add(connectedRoomUser.getName());
+                    hashParts.add(hash1);
+                    final String hashcode = Joiner.on('.').join(hashParts);
+                    connectedRoomUser.getIO().say(hashcode); // TODO ajouter le timestamp de connexion
+                }
+
             }
         }
         else {
-            joinRoomEvent.getIO().say("Room " + joinRoomEvent.getOrdinal() + " is full :(");
+            joinRoomEvent.getIO().say("Room " + room + " is full :(");
+        }
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void handleAutoJoinEvent(final AutoJoinInterface autoJoinEvent) {
+
+        final String hashCode = autoJoinEvent.getHashCode();
+
+        final List<String> parts = Lists.newArrayList(Splitter.on('.').split(hashCode));
+
+        final Integer ordinal = Integer.parseInt(parts.get(0));
+        final Integer colorIndex = Integer.parseInt(parts.get(1));
+        final String name = parts.get(2);
+        final String code = parts.get(3);
+
+        final RoomInterface room = this.roomByOrdinal.get(ordinal);
+
+        if (room.getCode().equals(code)) {
+            final UserInterface roomUser = room.getUsers().get(colorIndex - 1);
+            if (roomUser.getName().equals(name)) {
+                // TODO vérifier le timestamp de la première connexion
+                //if (!list.contains(autoJoinEvent.getIO().hashCode())) {
+                final ArrayList<UserInterface> newUsers = Lists.newArrayList(room.getUsers());
+                final transport.events.User user = new transport.events.User(autoJoinEvent.getIO(), name);
+                newUsers.set(colorIndex - 1, user);
+                this.connectedUsersByRoom.put(ordinal, ImmutableList.copyOf(newUsers));
+                final IOinterface oldIo = room.getUsers().get(colorIndex - 1).getIO();
+                oldIo.say("auto join...");
+                oldIo.getConnection().close();
+
+                this.connectedUserByIO.remove(oldIo);
+                this.connectedUserByIO.put(autoJoinEvent.getIO(), user);
+                final Room newRoom = new Room(ordinal, code, newUsers, room.getGame());
+                this.roomByOrdinal.put(ordinal, newRoom);
+                System.out.println(newRoom);
+                user.getIO().say("Welcome back, " + name + " ;)");
+                //}
+            }
         }
     }
 }

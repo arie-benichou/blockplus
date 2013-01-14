@@ -13,4 +13,8 @@ public interface IOinterface extends OnTextMessage {
 
     void say(Object object);
 
+    Integer getRoom();
+
+    void setRoom(Integer ordinal);
+
 }
