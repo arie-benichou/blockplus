@@ -119,7 +119,7 @@ Event.observe(window, 'load', function() {
                 onSuccess : function(response) {
                     option = new Options(JSON.parse(response.responseText)); // TODO
                     // audioManager.play("./audio/vector.mp3");
-                    console.log("!");
+                    //console.log("!");
                     boardRendering.getContext().save();
                 },
                 onFailure : function(response) {
@@ -324,6 +324,7 @@ Event.observe(window, 'load', function() {
     var boardRendering = new BoardRendering(new CellRendering("board", 34, 34, 33, 33));
     var selectedPositions = new SelectedPositions();
     /*--------------------------------------------------8<--------------------------------------------------*/
+    /*
     var source = new EventSourceManager("/blockplus/game-room/" + room + "/game-state");
     source.addEventListener("open", openEventHandler, false);
     source.addEventListener("error", errorEventHandler, false);
@@ -331,6 +332,7 @@ Event.observe(window, 'load', function() {
     source.addEventListener("gamenotover", gamenotoverEventHandler, false);
     source.addEventListener("gameover", gameoverEventHandler, false);
     source.addEventListener("options", optionsEventHandler, false);
+    */
     /*--------------------------------------------------8<--------------------------------------------------*/
     boardRendering.getCanvas().addEventListener("click", potentialCellClickEventHandler, false);
     //boardRendering.getCanvas().addEventListener("mousemove", potentialCellMouseMoveEventHandler, false);
@@ -339,7 +341,7 @@ Event.observe(window, 'load', function() {
     localStorage.clear();
     createAllPiecesImages("/pieces.xml", new BoardRendering(new CellRendering("piece", 13, 13, 12, 12)));
     /*--------------------------------------------------8<--------------------------------------------------*/
-    source.connect();
+    //source.connect();
     /*--------------------------------------------------8<--------------------------------------------------*/
     $("remaining-pieces").hide(); // TODO
     /*--------------------------------------------------8<--------------------------------------------------*/
@@ -362,5 +364,149 @@ Event.observe(window, 'load', function() {
     });
     $("play-again").hide(); // TODO
     $("submit").hide(); // TODO
+    /*--------------------------------------------------8<--------------------------------------------------*/
+    myWebSocket = new WebSocket("ws://artefact.hd.free.fr/talk/tome");
+    
+    var myProtocol = new Protocol();
+    
+    myProtocol.register("board", function(data) {
+        boardRendering.update(data);
+    });
+    
+    myProtocol.register("room", function(data) {
+        //alert("room saved");
+        console.log(data);
+        sessionStorage.setItem("blockplus.network.hashcode", data); // TODO utiliser aussi le localStorage
+        console.log("ok!");
+    });    
+    
+    var messageMock1 = {
+            type: "connect",
+            data: {property1: "test"}
+        };
+    
+    console.log(JSON.stringify(messageMock1));
+    
+        /*
+        var messageMock1 = {
+            type: "connect",
+            data: {property1: "test"}
+        };
+        
+        var messageMock2 = {
+                type: "unknown",
+                data: {property1: "test"}
+        };
+        
+        myProtocol.handle(JSON.stringify(messageMock1));
+        myProtocol.handle(JSON.stringify(messageMock2));
+        myProtocol.handle("java.lang.NullPointerException");
+        */    
+                                            
+     var onMessage = function(event) {
+        myProtocol.handle(event.data);
+        
+        /*
+        showMessage(event.data);
+        // TODO test if key exist
+        // TODO test if hash exist
+        // TODO stringify array of hascodes
+        if(event.data.indexOf(':') != -1) {
+            console.log("room code saved");
+            sessionStorage.setItem("blockplus.network.hashcode", event.data); // TODO utiliser le localStorage
+        }
+        */
+    };
+    
+    var onOpen = function(event) {
+        showMessage("Channel has been open: " + new Date());
+        console.log(sessionStorage.getItem("blockplus.network.hashcode"));
+        autoJoin(sessionStorage.getItem("blockplus.network.hashcode"));
+        console.log("open");
+    };
+    
+    var onClose = function(event) {
+        showMessage("Channel has been closed: " + new Date());
+        myWebSocket = new WebSocket("ws://artefact.hd.free.fr/talk/tome");
+        init(myWebSocket);
+    };
+    
+    var init = function(ws) {
+        ws.onmessage = onMessage;
+        ws.onopen = onOpen;
+        ws.onclose = onClose;
+    }
+    
+    var showMessage = function(message) {
+        var div = document.createElement('div');
+        div.innerHTML = '>' + message;
+        $("io").appendChild(div);
+    };
+    
+    var say = function(message) {
+        myWebSocket.send(JSON.stringify(message));
+    };
+    
+    var login = function(name) {
+        var message = {
+                type: 'User',
+                data: {
+                    name: name    
+                }
+        };
+        say(message);
+    };
+    
+    var joinRoom = function(ordinal) {
+        var message = {
+                type: 'JoinRoom',
+                data: {
+                    ordinal: ordinal
+                }
+        }
+        say(message);
+    };
+    
+    var autoJoin = function(hashCode) {
+        var message = {
+                type: 'AutoJoin',
+                data: {
+                    hashCode: hashCode
+                }
+        };
+        say(message);
+    };
+    
+    /*
+    reconnect = function(hashCode) {
+        var message = {
+            type: 'AutoJoin',
+            data: {
+                hashCode: sessionStorage.getItem("blockplus.network.hashcode")
+            }
+        };
+        console.log(message);
+        say(message);
+    };
+    */    
+        
+    init(myWebSocket);
+    
+    $("user").observe("change", function(event) {
+        login($("user").value);
+    });
+    
+    $("room").observe("change", function(event) {
+        joinRoom($("room").value);
+    });
+    
+    $("user").focus();
+    
+    /*
+    $("new-game-button").observe('click', function(event) {
+        newGame();
+    });
+    */
+    
     /*--------------------------------------------------8<--------------------------------------------------*/
 });

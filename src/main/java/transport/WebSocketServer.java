@@ -124,7 +124,10 @@ public class WebSocketServer extends WebSocketServlet {
         public void onMessage(final String data) {
             try {
                 final MessageInterface message = WebSocketServer.this.messageDecoder.decode(data);
+                System.out.println(message);
                 final Object object = WebSocketServer.this.messageHandler.handle(this, message);
+                System.out.println(object);
+                System.out.println("---------------------------------------------------------");
                 this.getServer().getEventBus().post(object);
             }
             catch (final Exception e) {
@@ -188,8 +191,9 @@ public class WebSocketServer extends WebSocketServlet {
             System.out.println(roomUsers);
             this.connectedUsersByRoom.put(room, roomUsers);
             io.setRoom(room);
-            for (final UserInterface connectedRoomUser : connectedRoomUsers) {
-                connectedRoomUser.getIO().say(user.getName() + " has joined room " + room);
+            for (final UserInterface connectedRoomUser : roomUsers) {
+                //connectedRoomUser.getIO().say(user.getName() + " has joined room " + room);
+                connectedRoomUser.getIO().say("{\"type\":\"info\",\"data\":" + "\"" + user.getName() + " has joined room " + room + "\"" + "}");
             }
             if (n == 3) {
                 for (final UserInterface connectedRoomUser : roomUsers) {
@@ -208,7 +212,8 @@ public class WebSocketServer extends WebSocketServlet {
                 // TODO générer un hascode et le placer dans le local storage
                 // reconnecter immédiatement à la room une socket déconnectée dont le hashcode correspond
 
-                this.roomByOrdinal.put(room, new Room(room, hash1, roomUsers, game));
+                final Room newRoom = new Room(room, hash1, roomUsers, game);
+                this.roomByOrdinal.put(room, newRoom);
 
                 final GameContext context = game.getInitialContext();
                 final Board board = context.getBoard();
@@ -221,13 +226,18 @@ public class WebSocketServer extends WebSocketServlet {
                     //connectedRoomUser.getIO().say(list);
                     //connectedRoomUser.getIO().say(this.connectedUsersByIO);
                     final List<String> hashParts = Lists.newArrayList();
+                    hashParts.add(connectedRoomUser.getName());
                     hashParts.add("" + room);
                     hashParts.add("" + (++k));
                     //hashParts.add("" + connectedRoomUser.getIO().hashCode());
-                    hashParts.add(connectedRoomUser.getName());
-                    hashParts.add(hash1);
+                    hashParts.add(newRoom.getCode());
                     final String hashcode = Joiner.on('.').join(hashParts);
-                    connectedRoomUser.getIO().say(hashcode); // TODO ajouter le timestamp de connexion
+
+                    connectedRoomUser.getIO().say(newRoom.getCode());
+
+                    connectedRoomUser.getIO().say("{\"type\":\"room\",\"data\":" + "\"" + hashcode + "\"" + "}");
+                    connectedRoomUser.getIO().say("{\"type\":\"board\",\"data\":" + json + "}");
+
                 }
 
             }
@@ -240,38 +250,64 @@ public class WebSocketServer extends WebSocketServlet {
     @Subscribe
     @AllowConcurrentEvents
     public void handleAutoJoinEvent(final AutoJoinInterface autoJoinEvent) {
-
         final String hashCode = autoJoinEvent.getHashCode();
-
         final List<String> parts = Lists.newArrayList(Splitter.on('.').split(hashCode));
-
-        final Integer ordinal = Integer.parseInt(parts.get(0));
-        final Integer colorIndex = Integer.parseInt(parts.get(1));
-        final String name = parts.get(2);
+        final String name = parts.get(0);
+        final Integer ordinal = Integer.parseInt(parts.get(1));
+        final Integer colorIndex = Integer.parseInt(parts.get(2));
         final String code = parts.get(3);
-
         final RoomInterface room = this.roomByOrdinal.get(ordinal);
 
-        if (room.getCode().equals(code)) {
-            final UserInterface roomUser = room.getUsers().get(colorIndex - 1);
-            if (roomUser.getName().equals(name)) {
-                // TODO vérifier le timestamp de la première connexion
-                //if (!list.contains(autoJoinEvent.getIO().hashCode())) {
-                final ArrayList<UserInterface> newUsers = Lists.newArrayList(room.getUsers());
-                final transport.events.User user = new transport.events.User(autoJoinEvent.getIO(), name);
-                newUsers.set(colorIndex - 1, user);
-                this.connectedUsersByRoom.put(ordinal, ImmutableList.copyOf(newUsers));
-                final IOinterface oldIo = room.getUsers().get(colorIndex - 1).getIO();
-                oldIo.say("auto join...");
-                oldIo.getConnection().close();
+        System.out.println("--------------------------------");
+        System.out.println(parts);
+        System.out.println();
+        System.out.println(ordinal);
+        System.out.println(colorIndex);
+        System.out.println(name);
+        System.out.println(code);
+        System.out.println();
+        System.out.println(room);
+        System.out.println();
+        System.out.println(room != null);
+        System.out.println();
+        System.out.println(room.getCode());
+        System.out.println(code);
+        System.out.println();
+        System.out.println(room.getCode().equals(code));
+        final UserInterface roomUser2 = room.getUsers().get(colorIndex - 1);
+        System.out.println(roomUser2);
+        System.out.println(roomUser2.getName().equals(name));
+        System.out.println("--------------------------------");
 
-                this.connectedUserByIO.remove(oldIo);
-                this.connectedUserByIO.put(autoJoinEvent.getIO(), user);
-                final Room newRoom = new Room(ordinal, code, newUsers, room.getGame());
-                this.roomByOrdinal.put(ordinal, newRoom);
-                System.out.println(newRoom);
-                user.getIO().say("Welcome back, " + name + " ;)");
-                //}
+        if (room != null) {
+            if (room.getCode().equals(code)) {
+                final UserInterface roomUser = room.getUsers().get(colorIndex - 1);
+                if (roomUser.getName().equals(name)) {
+                    // TODO vérifier le timestamp de la première connexion
+                    //if (!list.contains(autoJoinEvent.getIO().hashCode())) {
+                    final ArrayList<UserInterface> newUsers = Lists.newArrayList(room.getUsers());
+                    final transport.events.User user = new transport.events.User(autoJoinEvent.getIO(), name);
+                    newUsers.set(colorIndex - 1, user);
+                    this.connectedUsersByRoom.put(ordinal, ImmutableList.copyOf(newUsers));
+                    final IOinterface oldIo = room.getUsers().get(colorIndex - 1).getIO();
+                    //oldIo.say("auto join...");
+                    oldIo.getConnection().close();
+
+                    this.connectedUserByIO.remove(oldIo);
+                    this.connectedUserByIO.put(autoJoinEvent.getIO(), user);
+                    final Room newRoom = new Room(ordinal, code, newUsers, room.getGame());
+                    this.roomByOrdinal.put(ordinal, newRoom);
+                    System.out.println(newRoom);
+                    user.getIO().say("Welcome back, " + name + " ;)");
+
+                    final GameContext context = room.getGame().getInitialContext();
+                    final Board board = context.getBoard();
+                    final BoardInterface<ColorInterface> coloredBoard = board.colorize();
+                    final String json = CellEncoding.encode(coloredBoard);
+                    user.getIO().say("{\"type\":\"board\",\"data\":" + json + "}");
+
+                    //}
+                }
             }
         }
     }

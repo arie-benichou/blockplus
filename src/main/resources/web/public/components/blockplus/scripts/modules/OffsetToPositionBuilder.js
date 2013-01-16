@@ -13,7 +13,7 @@ var OffsetToPositionBuilder = Class.create({
 		var row = Math.floor(y / this.offsetY);
 		var column = Math.floor(x / this.offsetX);
 		newPosition = new Position(row, column);
-		console.log(newPosition.toString());
+		//console.log(newPosition.toString());
 		return newPosition;
 
 	},

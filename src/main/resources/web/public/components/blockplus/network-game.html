@@ -3,12 +3,9 @@
 	<head>
 		<meta charset="utf-8" />
 		<link rel="shortcut icon" href="./images/favicon.png" />
-        
         <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-                
 		<link href="./styles/default.css" rel="stylesheet" type="text/css" />
 		<link href="./styles/local-game.css" rel="stylesheet" type="text/css" />
-                
 		<script src="./scripts/library/prototype.js"></script>
 		<script src="./scripts/modules/Position.js"></script>
 		<script src="./scripts/modules/OffsetToPositionBuilder.js"></script>
@@ -22,144 +19,40 @@
 		<script src="./scripts/modules/PieceImageManager.js"></script>
 		<script src="./scripts/modules/AudioManager.js"></script>
 		<script src="./scripts/modules/PotentialPositions.js"></script>
+        <script src="./scripts/modules/Protocol.js"></script>
 		<script src="./scripts/network-game.js"></script>		
 	</head>
 	<body>
-		<div id="messages">
-			<div id="last-message">Loading...</div>
+        <div id="messages">
+        	<div id="last-message">Loading...</div>
             <div><button class="btn btn-large btn-primary" id="play-again" type="submit">Play again ?</button></div>
-		</div>
-		<div id="content">	
-            <div id="io">
-                <input onchange="login(this.value);" id="user" style="margin: 15px;" />
-                <input onchange="joinRoom(this.value);" id="room" style="margin: 15px;" />
-                <script>
-                
-                    myWebSocket = new WebSocket("ws://artefact.hd.free.fr/talk/tome");
-                    
-                    /*
-                    myWebSocket.onmessage = function(event) {
-                        showMessage(event.data);
-                    };
-                    */
-                    
-                    // TODO inclure le hash dans la représentation du jeu en json
-                     var onMessage = function(event) {
-                        showMessage(event.data);
-                     	// TODO test if key exist
-                     	// TODO test if hash exist
-                        // TODO stringify array of hascodes
-                        if(event.data.indexOf(':') != -1) {
-                            console.log("room code saved");
-                            sessionStorage.setItem("blockplus.network.hashcode", event.data); // TODO utiliser le localStorage
-                        }
-                    };
-                    
-                    var onOpen = function(event) {
-                        showMessage("Channel has been open: " + new Date());
-                        console.log(sessionStorage.getItem("blockplus.network.hashcode"));
-                        autoJoin(sessionStorage.getItem("blockplus.network.hashcode"));                        
-                    };
-                    
-                    var onClose = function(event) {
-                        showMessage("Channel has been closed: " + new Date());
-                        myWebSocket = new WebSocket("ws://artefact.hd.free.fr/talk/tome");
-                        init(myWebSocket);
-                    };
-                    
-                    var init = function(ws) {
-                        ws.onmessage = onMessage;
-                        ws.onopen = onOpen;
-                        ws.onclose = onClose;
-                    }
-                    
-                    var showMessage = function(message) {
-                        var div = document.createElement('div');
-                        div.innerHTML = '>' + message;
-                        $("io").appendChild(div);
-                    };
-                    
-                    var say = function(message) {
-                        myWebSocket.send(JSON.stringify(message));
-                    };
-                    
-                    var login = function(name) {
-                        var message = {
-                                type: 'User',
-                                data: {
-                                    name: name    
-                                }
-                        };
-                        say(message);
-                    };
-                    
-                    var joinRoom = function(ordinal) {
-                        var message = {
-                                type: 'JoinRoom',
-                                data: {
-                                    ordinal: ordinal
-                                }
-                        }
-                        say(message);
-                    };
-                    
-                    var autoJoin = function(hashCode) {
-                        var message = {
-                                type: 'AutoJoin',
-                                data: {
-                                    //hashCode: sessionStorage.getItem("blockplus.network.hashcode")
-                                    hashCode: hashCode
-                                    //"#Claire.1#1.12677324.26895425.8567047.15136641"
-                                }
-                        }
-                        say(message);
-                    };
-                    
-                    init(myWebSocket);                    
-                    
-
-                    /*
-                    function test() {
-                        say("" + new Date());
-                    }            
-                    window.setInterval(test,2000);
-                    */
-                </script>            
-            </div>        		
-			<div id="truc">
-				<div id="left">
-					<div id="available-pieces"></div>
-				</div>
-				<div id="middle">
-					<canvas id="board" width="679px" height="679px"></canvas>
-				</div>
-				<div id="right">
-					<div id="submit">
-                        <canvas class="clickable out" id="pieceToPlay" width="0px" height="0px"></canvas>                        
-					</div>
-                    <!--
-                    <div style="clear: both;"></div>
-                     -->
-                    <div id="remaining-pieces">
-                        <!-- 
-                        <span id="Blue"></span>
-                        <span id="Yellow"></span>
-                        <span id="Red"></span>
-                        <span id="Green"></span>
-                         -->
-                    </div>
-				</div>		
-				  <div style="clear: both;"></div>
-			</div>
+        </div>
+        <div id="content">
+            <input id="user" value="" style="margin: 15px;" />
+            <input id="room" value="" style="margin: 15px;" />
             <!-- 
-            TODO le nom sur la room doit etre unique 
-            <div>
-            <input type="text" id="name">
-            </div>
+            <div><button class="btn btn-large btn-primary" id="new-game-button" type="submit">Let's play !</button></div>
              -->
-			<div id="initialization">
-				<canvas id="piece"></canvas>
-			</div>
-	   </div>
+            <div id="io"></div>
+        	<div id="truc">
+        		<div id="left">
+        			<div id="available-pieces"></div>
+        		</div>
+        		<div id="middle">
+        			<canvas id="board" width="679px" height="679px"></canvas>
+        		</div>
+        		<div id="right">
+        			<div id="submit">
+                        <canvas class="clickable out" id="pieceToPlay" width="0px" height="0px"></canvas>                        
+        			</div>
+                    <div style="clear: both;"></div>
+                    <div id="remaining-pieces"></div>
+        		</div>		
+        		  <div style="clear: both;"></div>
+        	</div>
+        	<div id="initialization">
+        		<canvas id="piece"></canvas>
+        	</div>
+        </div>
 	</body>
 </html>

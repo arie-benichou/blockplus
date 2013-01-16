@@ -11,6 +11,7 @@ public final class AutoJoin implements AutoJoinInterface {
     public static class Builder {
 
         public static AutoJoin build(final IOinterface io, final JsonObject data) {
+            System.out.println(data.get("hashCode").getAsString());
             return new AutoJoin(io, data.get("hashCode").getAsString());
         }
 

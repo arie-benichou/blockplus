@@ -46,7 +46,7 @@ public class Room implements RoomInterface {
     public String toString() {
         return Objects.toStringHelper(this)
                 .add("ordinal", this.ordinal)
-                .add("hashCode", this.code)
+                .add("code", this.code)
                 .toString();
     }
 
