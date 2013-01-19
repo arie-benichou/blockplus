@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,28 +14,38 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketServlet;
 
-import serialization.CellEncoding;
+import serialization.GameJSONRepresentation;
 import transport.events.AutoJoinInterface;
+import transport.events.Client;
+import transport.events.ClientInterface;
 import transport.events.JoinRoomInterface;
-import transport.events.UserInterface;
+import transport.events.SubmitInterface;
 import transport.protocol.MessageDecoder;
 import transport.protocol.MessageHandler;
 import transport.protocol.MessageHandlerInterface;
 import transport.protocol.MessageInterface;
-import blockplus.model.board.Board;
 import blockplus.model.color.ColorInterface;
+import blockplus.model.color.PrimeColors;
 import blockplus.model.game.Game;
 import blockplus.model.game.GameContext;
+import blockplus.model.move.Move;
+import blockplus.model.piece.PieceComposite;
+import blockplus.model.piece.PieceInterface;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.common.eventbus.AllowConcurrentEvents;
+import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import components.board.BoardInterface;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import components.position.Position;
+import components.position.PositionInterface;
 
 @SuppressWarnings("serial")
 public class WebSocketServer extends WebSocketServlet {
@@ -43,15 +54,13 @@ public class WebSocketServer extends WebSocketServlet {
 
     private final MessageDecoder messageDecoder = new MessageDecoder(); // TODO à injecter
 
-    private final Map<IOinterface, UserInterface> connectedUserByIO = Maps.newConcurrentMap();
+    private final Map<IOinterface, ClientInterface> connectedUserByIO = Maps.newConcurrentMap();
 
-    private final Map<Integer, List<UserInterface>> connectedUsersByRoom = Maps.newConcurrentMap();
-
-    //private final Map<Integer, Game> gameByRoom = Maps.newConcurrentMap();
+    private final Map<Integer, List<ClientInterface>> connectedUsersByRoom = Maps.newConcurrentMap(); // TODO à virer
 
     private final Map<Integer, RoomInterface> roomByOrdinal = Maps.newConcurrentMap();
 
-    public Collection<UserInterface> getConnectedUsers() {
+    public Collection<ClientInterface> getConnectedUsers() {
         return this.connectedUserByIO.values();
     }
 
@@ -66,7 +75,7 @@ public class WebSocketServer extends WebSocketServlet {
         super.init();
         this.getEventBus().register(this);
         for (int i = 1; i <= 10; ++i) {
-            final ImmutableList<UserInterface> empty = ImmutableList.of();
+            final ImmutableList<ClientInterface> empty = ImmutableList.of();
             this.connectedUsersByRoom.put(i, empty);
         }
     }
@@ -157,11 +166,11 @@ public class WebSocketServer extends WebSocketServlet {
         }
     }
 
-    public void connect(final UserInterface user) {
+    public void connect(final ClientInterface user) {
         this.connectedUserByIO.put(user.getIO(), user);
     }
 
-    public UserInterface getUser(final IOinterface io) {
+    public ClientInterface getUser(final IOinterface io) {
         return this.connectedUserByIO.get(io);
     }
 
@@ -172,7 +181,13 @@ public class WebSocketServer extends WebSocketServlet {
 
     @Subscribe
     @AllowConcurrentEvents
-    public void handleNewUserEvent(final UserInterface newUserEvent) {
+    public void handleDeadEvent(final DeadEvent deadEvent) {
+        System.out.println(deadEvent.getEvent());
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void handleNewUserEvent(final ClientInterface newUserEvent) {
         this.connect(newUserEvent);
         newUserEvent.getIO().say("Welcome " + newUserEvent.getName() + " !");
         //newUserEvent.getIO().say(this.getConnectedUsers());
@@ -182,28 +197,30 @@ public class WebSocketServer extends WebSocketServlet {
     @AllowConcurrentEvents
     public void handleJoinRoomEvent(final JoinRoomInterface joinRoomEvent) {
         final Integer room = joinRoomEvent.getOrdinal();
-        final List<UserInterface> connectedRoomUsers = this.connectedUsersByRoom.get(room);
+        final List<ClientInterface> connectedRoomUsers = this.connectedUsersByRoom.get(room);
         final int n = connectedRoomUsers.size();
         if (n < 4) {
             final IOinterface io = joinRoomEvent.getIO();
-            final UserInterface user = this.getUser(io);
-            final ImmutableList<UserInterface> roomUsers = new ImmutableList.Builder<UserInterface>().addAll(connectedRoomUsers).add(user).build();
+            final ClientInterface oldUser = this.getUser(io);
+            final ClientInterface user = new Client(oldUser.getIO(), oldUser.getName(), room);
+            this.connectedUserByIO.put(user.getIO(), user);
+            final ImmutableList<ClientInterface> roomUsers = new ImmutableList.Builder<ClientInterface>().addAll(connectedRoomUsers).add(user).build();
             System.out.println(roomUsers);
             this.connectedUsersByRoom.put(room, roomUsers);
             io.setRoom(room);
-            for (final UserInterface connectedRoomUser : roomUsers) {
+            for (final ClientInterface connectedRoomUser : roomUsers) {
                 //connectedRoomUser.getIO().say(user.getName() + " has joined room " + room);
                 connectedRoomUser.getIO().say("{\"type\":\"info\",\"data\":" + "\"" + user.getName() + " has joined room " + room + "\"" + "}");
             }
             if (n == 3) {
-                for (final UserInterface connectedRoomUser : roomUsers) {
+                for (final ClientInterface connectedRoomUser : roomUsers) {
                     connectedRoomUser.getIO().say("Let's kick some ass ! :)");
                 }
                 final Game game = new Game();
                 //this.gameByRoom.put(room, game);
                 System.out.println(roomUsers);
                 final List<Integer> parts = Lists.newArrayList();
-                for (final UserInterface userInterface : roomUsers) {
+                for (final ClientInterface userInterface : roomUsers) {
                     final IOinterface io2 = userInterface.getIO();
                     parts.add(io2.hashCode());
                 }
@@ -215,13 +232,10 @@ public class WebSocketServer extends WebSocketServlet {
                 final Room newRoom = new Room(room, hash1, roomUsers, game);
                 this.roomByOrdinal.put(room, newRoom);
 
-                final GameContext context = game.getInitialContext();
-                final Board board = context.getBoard();
-                final BoardInterface<ColorInterface> coloredBoard = board.colorize();
-                final String json = CellEncoding.encode(coloredBoard);
+                final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(game);
 
                 int k = 0;
-                for (final UserInterface connectedRoomUser : roomUsers) {
+                for (final ClientInterface connectedRoomUser : roomUsers) {
                     //connectedRoomUser.getIO().say(json);
                     //connectedRoomUser.getIO().say(list);
                     //connectedRoomUser.getIO().say(this.connectedUsersByIO);
@@ -233,12 +247,21 @@ public class WebSocketServer extends WebSocketServlet {
                     hashParts.add(newRoom.getCode());
                     final String hashcode = Joiner.on('.').join(hashParts);
 
-                    connectedRoomUser.getIO().say(newRoom.getCode());
+                    //connectedRoomUser.getIO().say(newRoom.getCode());
 
                     connectedRoomUser.getIO().say("{\"type\":\"room\",\"data\":" + "\"" + hashcode + "\"" + "}");
-                    connectedRoomUser.getIO().say("{\"type\":\"board\",\"data\":" + json + "}");
-
+                    //connectedRoomUser.getIO().say("{\"type\":\"color\",\"data\":" + "\"" + gameRepresentation.encodeColor() + "\"" + "}");
+                    connectedRoomUser.getIO().say("{\"type\":\"board\",\"data\":" + gameRepresentation.encodeBoard() + "}");
                 }
+
+                final ClientInterface userToPlay = newRoom.getUserToPlay();
+                //System.out.println(userToPlay);
+
+                userToPlay.getIO().say("{\"type\":\"color\",\"data\":" + gameRepresentation.encodeColor() + "}");
+                userToPlay.getIO().say("{\"type\":\"pieces\",\"data\":" + gameRepresentation.encodeBagOfPiece() + "}");
+                userToPlay.getIO().say("{\"type\":\"board\",\"data\":" + gameRepresentation.encodeBoard() + "}");
+                userToPlay.getIO().say("{\"type\":\"options\",\"data\":" + gameRepresentation.encodeOptions() + "}");
+                userToPlay.getIO().say("{\"type\":\"potential\",\"data\":" + gameRepresentation.encodePotentialPositions() + "}");
 
             }
         }
@@ -257,58 +280,120 @@ public class WebSocketServer extends WebSocketServlet {
         final Integer colorIndex = Integer.parseInt(parts.get(2));
         final String code = parts.get(3);
         final RoomInterface room = this.roomByOrdinal.get(ordinal);
-
-        System.out.println("--------------------------------");
-        System.out.println(parts);
-        System.out.println();
-        System.out.println(ordinal);
-        System.out.println(colorIndex);
-        System.out.println(name);
-        System.out.println(code);
-        System.out.println();
-        System.out.println(room);
-        System.out.println();
-        System.out.println(room != null);
-        System.out.println();
-        System.out.println(room.getCode());
-        System.out.println(code);
-        System.out.println();
-        System.out.println(room.getCode().equals(code));
-        final UserInterface roomUser2 = room.getUsers().get(colorIndex - 1);
-        System.out.println(roomUser2);
-        System.out.println(roomUser2.getName().equals(name));
-        System.out.println("--------------------------------");
-
         if (room != null) {
             if (room.getCode().equals(code)) {
-                final UserInterface roomUser = room.getUsers().get(colorIndex - 1);
+                final ClientInterface roomUser = room.getUsers().get(colorIndex - 1);
                 if (roomUser.getName().equals(name)) {
-                    // TODO vérifier le timestamp de la première connexion
                     //if (!list.contains(autoJoinEvent.getIO().hashCode())) {
-                    final ArrayList<UserInterface> newUsers = Lists.newArrayList(room.getUsers());
-                    final transport.events.User user = new transport.events.User(autoJoinEvent.getIO(), name);
+                    final ArrayList<ClientInterface> newUsers = Lists.newArrayList(room.getUsers());
+                    final transport.events.Client user = new transport.events.Client(autoJoinEvent.getIO(), name, ordinal);
                     newUsers.set(colorIndex - 1, user);
-                    this.connectedUsersByRoom.put(ordinal, ImmutableList.copyOf(newUsers));
                     final IOinterface oldIo = room.getUsers().get(colorIndex - 1).getIO();
-                    //oldIo.say("auto join...");
                     oldIo.getConnection().close();
-
-                    this.connectedUserByIO.remove(oldIo);
-                    this.connectedUserByIO.put(autoJoinEvent.getIO(), user);
                     final Room newRoom = new Room(ordinal, code, newUsers, room.getGame());
                     this.roomByOrdinal.put(ordinal, newRoom);
-                    System.out.println(newRoom);
+                    this.connectedUserByIO.put(autoJoinEvent.getIO(), user);
+                    this.connectedUserByIO.remove(oldIo);
                     user.getIO().say("Welcome back, " + name + " ;)");
+                    // TODO utiliser un ID pour les IO
+                    //
+                    final Game game = room.getGame();
+                    final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(game);
+                    user.getIO().say("{\"type\":\"color\",\"data\":" + gameRepresentation.encodeColor() + "}");
+                    user.getIO().say("{\"type\":\"pieces\",\"data\":" + gameRepresentation.encodeBagOfPiece() + "}");
+                    user.getIO().say("{\"type\":\"board\",\"data\":" + gameRepresentation.encodeBoard() + "}");
 
-                    final GameContext context = room.getGame().getInitialContext();
-                    final Board board = context.getBoard();
-                    final BoardInterface<ColorInterface> coloredBoard = board.colorize();
-                    final String json = CellEncoding.encode(coloredBoard);
-                    user.getIO().say("{\"type\":\"board\",\"data\":" + json + "}");
-
+                    final RoomInterface roomInterface = this.roomByOrdinal.get(ordinal);
+                    if (roomInterface.getUserToPlay().equals(user)) {
+                        user.getIO().say("{\"type\":\"options\",\"data\":" + gameRepresentation.encodeOptions() + "}");
+                        user.getIO().say("{\"type\":\"potential\",\"data\":" + gameRepresentation.encodePotentialPositions() + "}");
+                    }
                     //}
                 }
             }
         }
     }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void handleSubmit(final SubmitInterface newSubmit) {
+        final ClientInterface user = this.connectedUserByIO.get(newSubmit.getIO());
+        final Integer room = user.getRoom();
+        System.out.println(room);
+        final RoomInterface roomInterface = this.roomByOrdinal.get(room);
+        final Game game = roomInterface.getGame();
+        final GameContext context = game.getInitialContext();
+        // TODO checks...
+        final int id = newSubmit.getId();
+        final JsonArray array = newSubmit.getPositions();
+        final Set<PositionInterface> positions = Sets.newLinkedHashSet();
+        for (final JsonElement jsonElement : array) {
+            final JsonArray asJsonArray = jsonElement.getAsJsonArray();
+            final int row = asJsonArray.get(0).getAsInt();
+            final int column = asJsonArray.get(1).getAsInt();
+            positions.add(Position.from(row, column));
+        }
+        PieceInterface piece;
+        if (positions.isEmpty()) { // TODO !!! à revoir
+            piece = PieceComposite.from(id, Position.from(), positions);
+        }
+        else {
+            piece = PieceComposite.from(id, positions.iterator().next(), positions);
+        }
+        final Move move = new Move(context.getColor(), piece);
+        // TODO ! check if move is legal
+
+        GameContext nextContext = context.apply(move);
+        final Game nextGame = new Game(nextContext);
+
+        // speed-up
+        //nextContext = nextGame.start(4 * 4);
+        //nextGame = new Game(nextContext);
+
+        // check next player
+        final ColorInterface color0 = nextContext.getColor();
+        List<Move> nextOptions;
+        do {
+            nextContext = nextContext.next();
+            nextOptions = nextContext.options();
+        } while (nextOptions.size() == 1 && nextOptions.iterator().next().isNull() && !nextContext.getColor().equals(color0));
+
+        //
+        final Room room2 = new Room(roomInterface.getOrdinal(), roomInterface.getCode(), roomInterface.getUsers(), nextGame); // TODO update(Game);
+        this.roomByOrdinal.put(roomInterface.getOrdinal(), room2);
+        final RoomInterface roomInterface2 = this.roomByOrdinal.get(roomInterface.getOrdinal());
+        final List<ClientInterface> users = roomInterface2.getUsers();
+        final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(roomInterface2.getGame());
+        final String messageColor = "{\"type\":\"color\",\"data\":" + gameRepresentation.encodeColor() + "}";
+        final String messagePieces = "{\"type\":\"pieces\",\"data\":" + gameRepresentation.encodeBagOfPiece() + "}";
+        final String messageBoard = "{\"type\":\"board\",\"data\":" + gameRepresentation.encodeBoard() + "}";
+
+        // check game over
+        if (nextContext.getColor().equals(color0) && nextOptions.size() == 1 && nextOptions.iterator().next().isNull()) {
+            final String messageEnd = "{\"type\":\"end\",\"data\":" + "game-over" + "}";
+            for (final ClientInterface client : users) {
+                client.getIO().say(messageColor);
+                client.getIO().say(messagePieces);
+                client.getIO().say(messageBoard);
+                client.getIO().say(messageBoard);
+                client.getIO().say(messageEnd);
+            }
+        }
+        else {
+            for (final ClientInterface client : users) {
+                client.getIO().say(messageColor);
+                client.getIO().say(messagePieces);
+                client.getIO().say(messageBoard);
+            }
+            roomInterface2.getUserToPlay().getIO().say("{\"type\":\"options\",\"data\":" + gameRepresentation.encodeOptions() + "}");
+            roomInterface2.getUserToPlay().getIO().say("{\"type\":\"potential\",\"data\":" + gameRepresentation.encodePotentialPositions() + "}");
+        }
+    }
+
+    public static void main(final String[] args) {
+        final Game game = new Game();
+        final ColorInterface color = game.getInitialContext().getColor();
+        System.out.println(PrimeColors.get(color.toString()));
+    }
+
 }

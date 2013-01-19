@@ -6,13 +6,14 @@ Protocol.prototype = {
     constructor : Protocol,
 
     handle : function(message) {
+        var object = null;
         try {
-            this.on(JSON.parse(message));
-            console.log(message);
+         object = JSON.parse(message);
         } catch (e) {
-            console.log(e);
             console.error(message);
+            //console.log(e);
         }
+        if(object != null) this.on(object);
     },
 
     on : function(json) {

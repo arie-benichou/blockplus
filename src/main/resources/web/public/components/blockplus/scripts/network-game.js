@@ -6,12 +6,6 @@ Event.observe(window, 'load', function() {
     // audioManager.play("./audio/subtle.mp3");
     // audioManager.play("./audio/vector.mp3");
     /*--------------------------------------------------8<--------------------------------------------------*/
-    var openEventHandler = function(event) {
-    };
-    var errorEventHandler = function(event) {
-        if (event.readyState == EventSource.CLOSED)
-            console.log("Event handling error");
-    };
     var messsageEventHandler = function(event) {
         var newChild = document.createElement("div");
         newChild.setAttribute("id", "last-message");
@@ -21,10 +15,6 @@ Event.observe(window, 'load', function() {
 
         // TODO define json structure for a game representation
         currentColor = JSON.parse(event.data)[0][0];
-    };
-    var gamenotoverEventHandler = function(event) {
-        boardRendering.update(JSON.parse(event.data));
-        $("board").className = "game-is-not-over";
     };
     var gameoverEventHandler = function(event) {
         $("last-message").innerHTML = "";
@@ -37,13 +27,6 @@ Event.observe(window, 'load', function() {
         $("play-again").show();
         $("left").setAttribute("style", "width:0");
         $("available-pieces").hide();
-
-        // //////////////////////////////////////////////////////////
-
-        /*
-         * $("left").setAttribute("style", "width:303px;"); $("left").show();
-         * $("available-pieces").show(); $("available-pieces").innerHTML = "";
-         */
 
         var getAvailablePiecesByColor = function(color) {
             new Ajax.Request("/blockplus/game-room/" + room + "/game-state-pieces-color", {
@@ -84,14 +67,9 @@ Event.observe(window, 'load', function() {
         }
 
         $("remaining-pieces").show();
-
-        // //////////////////////////////////////////////////////////
-
     };
     var optionsEventHandler = function(event) {
-
         getAvailablePieces(); // TODO
-
         var array = JSON.parse(event.data);
         if (array == null || array.length == 0) {
             new Ajax.Request("/blockplus/game-room/" + room + "/game-null-move", {
@@ -103,43 +81,6 @@ Event.observe(window, 'load', function() {
                 },
                 method : 'get',
             });
-        } else {
-            
-            source.disconnect(); // TODO            
-
-            potentialPositions = new PotentialPositions(array); // TODO
-
-            for ( var i = 0; i < array.length; ++i) {
-                var position = new Position(array[i][0], array[i][1]);
-                showPotentialCells(position);
-            }
-
-            //new Ajax.Request("/blockplus/game-room/" + room + "/game-options", {
-            new Ajax.Request("/blockplus/game-room/" + room + "/game-options", {
-                onSuccess : function(response) {
-                    option = new Options(JSON.parse(response.responseText)); // TODO
-                    // audioManager.play("./audio/vector.mp3");
-                    //console.log("!");
-                    boardRendering.getContext().save();
-                },
-                onFailure : function(response) {
-                    alert("failed!");
-                },
-                method : 'get',
-            });
-
-            /*
-            new Ajax.Request("/blockplus/game-room/" + room + "/game-random-move", {
-                onSuccess : function(response) {
-                    //source.connect(); // TODO
-                },
-                onFailure : function(response) {
-                    // alert("failed!");
-                },
-                method : 'get',
-            });
-            */
-
         }
     };
     /*--------------------------------------------------8<--------------------------------------------------*/
@@ -206,44 +147,6 @@ Event.observe(window, 'load', function() {
         }
     };
     /*--------------------------------------------------8<--------------------------------------------------*/
-    var potentialCellMouseMoveEventHandler = function(event) {
-        console.log("mouse move");
-        
-        var position = offsetToPositionBuilder.build(event.offsetX, event.offsetY);
-        var context = boardRendering.getContext();
-        
-        context.restore();
-        context.save();
-        
-        if (potentialPositions.match(position)) {
-            console.log(position);
-            console.log("matching");
-            if (selectedPositions.contains(position)) {
-                
-            }
-            else {
-                context.fillStyle = Colors[currentColor];
-                context.beginPath();
-                context.arc(34 * position.getColumn() + 34 / 2, 34 * position.getRow() + 34 / 2, 7, 0, Math.PI * 2, true);
-                context.closePath();
-                context.fill();
-                context.save();                
-            }
-        }
-        else {
-            context.restore();
-        }
-        
-    };
-    /*--------------------------------------------------8<--------------------------------------------------*/
-    $("pieceToPlay").addEventListener("mouseover", function(event) {
-        $("pieceToPlay").setAttribute("class", "opaque over clickable");
-    }, false);
-
-    $("pieceToPlay").addEventListener("mouseout", function(event) {
-        $("pieceToPlay").setAttribute("class", "opaque out clickable");
-    }, false);
-
     $("pieceToPlay").addEventListener("click", function(event) {
         var pieceId = option.perfectMatch(selectedPositions);
         var data = [];
@@ -251,61 +154,11 @@ Event.observe(window, 'load', function() {
             var p = JSON.parse([ position ]);
             data.push([ p.row, p.column ]);
         }
-        new Ajax.Request("/blockplus/game-room/" + room + "/game-move", {
-            onSuccess : function(response) {
-                // audioManager.play("./audio/vector.mp3");
-                $("submit").hide();
-                selectedPositions.clear();
-                // getAvailablePieces();
-                source.connect();
-            },
-            onFailure : function(response) {
-                alert("failed!");
-            },
-            method : 'get',
-            parameters : {
-                id : pieceId,
-                positions : JSON.stringify(data)
-            }
-        });
-
+        submit(pieceId, data); // TODO ? se contenter des positions
     }, false);
-    /*--------------------------------------------------8<--------------------------------------------------*/
-    var getAvailablePieces = function() {
-        new Ajax.Request("/blockplus/game-room/" + room + "/game-state-pieces", {
-            onSuccess : function(response) {
-
-                $("available-pieces").innerHTML = "";
-
-                // alert(currentColor);
-                for ( var i = 1; i <= 21; ++i) { // TODO
-                    var retrievedObject = localStorage.getItem(getLocalStoreKey(currentColor, "piece" + i));
-                    var image = new Image();
-                    image.setAttribute("id", "piece-" + i);
-                    image.src = retrievedObject;
-                    image.setAttribute("class", "not-available");
-                    $("available-pieces").appendChild(image);
-                }
-
-                var array = JSON.parse(response.responseText);
-                for ( var i = 1; i <= 21; ++i) { // TODO
-                    $("piece-" + i).setAttribute("class", "not-available");
-                }
-                for ( var i = 0; i < array.length; ++i) {
-                    $("piece-" + array[i]).setAttribute("class", "available");
-                }
-                $("available-pieces").show();
-            },
-            onFailure : function(response) {
-                alert("failed!");
-            },
-            method : 'get',
-        });
-    };
     /*--------------------------------------------------8<--------------------------------------------------*/
     var showPotentialCells = function(position) {
         var context = boardRendering.getContext();
-
         context.globalAlpha = 0.4;
         // context.fillStyle = "rgba(0, 128, 0, 0.35)";
         context.fillStyle = Colors[currentColor];
@@ -324,24 +177,10 @@ Event.observe(window, 'load', function() {
     var boardRendering = new BoardRendering(new CellRendering("board", 34, 34, 33, 33));
     var selectedPositions = new SelectedPositions();
     /*--------------------------------------------------8<--------------------------------------------------*/
-    /*
-    var source = new EventSourceManager("/blockplus/game-room/" + room + "/game-state");
-    source.addEventListener("open", openEventHandler, false);
-    source.addEventListener("error", errorEventHandler, false);
-    source.addEventListener("message", messsageEventHandler, false);
-    source.addEventListener("gamenotover", gamenotoverEventHandler, false);
-    source.addEventListener("gameover", gameoverEventHandler, false);
-    source.addEventListener("options", optionsEventHandler, false);
-    */
-    /*--------------------------------------------------8<--------------------------------------------------*/
     boardRendering.getCanvas().addEventListener("click", potentialCellClickEventHandler, false);
-    //boardRendering.getCanvas().addEventListener("mousemove", potentialCellMouseMoveEventHandler, false);
-    //boardRendering.getCanvas().addEventListener("mouseout", potentialCellMouseOutEventHandler, false);
     /*--------------------------------------------------8<--------------------------------------------------*/
     localStorage.clear();
     createAllPiecesImages("/pieces.xml", new BoardRendering(new CellRendering("piece", 13, 13, 12, 12)));
-    /*--------------------------------------------------8<--------------------------------------------------*/
-    //source.connect();
     /*--------------------------------------------------8<--------------------------------------------------*/
     $("remaining-pieces").hide(); // TODO
     /*--------------------------------------------------8<--------------------------------------------------*/
@@ -369,8 +208,52 @@ Event.observe(window, 'load', function() {
     
     var myProtocol = new Protocol();
     
+    myProtocol.register("color", function(data) {
+        currentColor = data; // TODO
+        //alert(data);
+        console.log(currentColor);
+    });
+    
+    myProtocol.register("pieces", function(data) {
+        $("available-pieces").innerHTML = "";
+        for ( var i = 1; i <= 21; ++i) { // TODO
+            var retrievedObject = localStorage.getItem(getLocalStoreKey(currentColor, "piece" + i));
+            var image = new Image();
+            image.setAttribute("id", "piece-" + i);
+            image.src = retrievedObject;
+            image.setAttribute("class", "not-available");
+            $("available-pieces").appendChild(image);
+        }
+        var array = data;
+        for ( var i = 1; i <= 21; ++i) { // TODO
+            $("piece-" + i).setAttribute("class", "not-available");
+        }
+        for ( var i = 0; i < array.length; ++i) {
+            $("piece-" + array[i]).setAttribute("class", "available");
+        }
+        $("available-pieces").show();
+    });
+    
     myProtocol.register("board", function(data) {
         boardRendering.update(data);
+    });
+    
+    myProtocol.register("options", function(data) {
+        option = new Options(data); // TODO
+        console.log(data);
+    });
+    
+    myProtocol.register("potential", function(data) {
+        
+        //window.focus();
+        alert(currentColor);
+        
+        selectedPositions.clear();
+        potentialPositions = new PotentialPositions(data);
+        for ( var i = 0; i < data.length; ++i) {
+            var position = new Position(data[i][0], data[i][1]);
+            showPotentialCells(position);
+        }
     });
     
     myProtocol.register("room", function(data) {
@@ -378,34 +261,12 @@ Event.observe(window, 'load', function() {
         console.log(data);
         sessionStorage.setItem("blockplus.network.hashcode", data); // TODO utiliser aussi le localStorage
         console.log("ok!");
-    });    
+    });
     
-    var messageMock1 = {
-            type: "connect",
-            data: {property1: "test"}
-        };
-    
-    console.log(JSON.stringify(messageMock1));
-    
-        /*
-        var messageMock1 = {
-            type: "connect",
-            data: {property1: "test"}
-        };
-        
-        var messageMock2 = {
-                type: "unknown",
-                data: {property1: "test"}
-        };
-        
-        myProtocol.handle(JSON.stringify(messageMock1));
-        myProtocol.handle(JSON.stringify(messageMock2));
-        myProtocol.handle("java.lang.NullPointerException");
-        */    
-                                            
+    /*--------------------------------------------------8<--------------------------------------------------*/    
+                                                
      var onMessage = function(event) {
         myProtocol.handle(event.data);
-        
         /*
         showMessage(event.data);
         // TODO test if key exist
@@ -419,14 +280,14 @@ Event.observe(window, 'load', function() {
     };
     
     var onOpen = function(event) {
-        showMessage("Channel has been open: " + new Date());
-        console.log(sessionStorage.getItem("blockplus.network.hashcode"));
+        console.log("Channel has been open: " + new Date());
+        //console.log(sessionStorage.getItem("blockplus.network.hashcode"));
         autoJoin(sessionStorage.getItem("blockplus.network.hashcode"));
-        console.log("open");
+        //console.log("open");
     };
     
     var onClose = function(event) {
-        showMessage("Channel has been closed: " + new Date());
+        console.log("Channel has been closed: " + new Date());
         myWebSocket = new WebSocket("ws://artefact.hd.free.fr/talk/tome");
         init(myWebSocket);
     };
@@ -435,7 +296,7 @@ Event.observe(window, 'load', function() {
         ws.onmessage = onMessage;
         ws.onopen = onOpen;
         ws.onclose = onClose;
-    }
+    };
     
     var showMessage = function(message) {
         var div = document.createElement('div');
@@ -449,7 +310,7 @@ Event.observe(window, 'load', function() {
     
     var login = function(name) {
         var message = {
-                type: 'User',
+                type: 'Client',
                 data: {
                     name: name    
                 }
@@ -477,6 +338,18 @@ Event.observe(window, 'load', function() {
         say(message);
     };
     
+    var submit = function(id, positions) {
+        var message = {
+                type: 'Submit',
+                data: {
+                    id: id,
+                    positions: positions
+                }
+        };
+        console.log(message);
+        say(message);
+    };    
+    
     /*
     reconnect = function(hashCode) {
         var message = {
@@ -501,12 +374,5 @@ Event.observe(window, 'load', function() {
     });
     
     $("user").focus();
-    
-    /*
-    $("new-game-button").observe('click', function(event) {
-        newGame();
-    });
-    */
-    
     /*--------------------------------------------------8<--------------------------------------------------*/
 });

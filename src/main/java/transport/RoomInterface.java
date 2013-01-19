@@ -3,7 +3,7 @@ package transport;
 
 import java.util.List;
 
-import transport.events.UserInterface;
+import transport.events.ClientInterface;
 import blockplus.model.game.Game;
 
 public interface RoomInterface {
@@ -12,8 +12,10 @@ public interface RoomInterface {
 
     String getCode();
 
-    List<UserInterface> getUsers();
+    List<ClientInterface> getUsers();
 
     Game getGame();
+
+    ClientInterface getUserToPlay();
 
 }
