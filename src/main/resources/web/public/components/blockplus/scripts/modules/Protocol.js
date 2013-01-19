@@ -11,7 +11,6 @@ Protocol.prototype = {
          object = JSON.parse(message);
         } catch (e) {
             console.error(message);
-            //console.log(e);
         }
         if(object != null) this.on(object);
     },
@@ -19,8 +18,11 @@ Protocol.prototype = {
     on : function(json) {
         if (json.type in this.listeners)
             this.listeners[json.type](json.data);
-        else
+        else {
             console.error("Protocol has no listener defined for event of type: " + json.type);
+            console.error(json.data);
+        }
+            
     },
 
     register : function(type, listener) {

@@ -1,10 +1,9 @@
 
 package transport.protocol;
 
-import java.lang.reflect.InvocationTargetException;
-
 import transport.IOinterface;
 
+import com.google.common.base.Throwables;
 import com.google.gson.JsonObject;
 
 public class MessageHandler implements MessageHandlerInterface {
@@ -35,27 +34,11 @@ public class MessageHandler implements MessageHandlerInterface {
         try {
             //final String inflection = "transport.protocol." + ("" + type.charAt(0)).toUpperCase() + type.substring(1);
             final String inflection = "transport.events." + type + "$Builder";
-            //System.out.println(inflection);
             //event = (EventInterface) Class.forName(inflection).getConstructor(IOinterface.class, JsonObject.class).newInstance(io, data);
             object = Class.forName(inflection).getMethod("build", IOinterface.class, JsonObject.class).invoke(null, io, data);
         }
-        catch (final ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        catch (final IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        catch (final SecurityException e) {
-            e.printStackTrace();
-        }
-        catch (final IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        catch (final InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        catch (final NoSuchMethodException e) {
-            e.printStackTrace();
+        catch (final Exception e) {
+            Throwables.propagate(e); // TODO
         }
 
         // TODO check for null and create null events
