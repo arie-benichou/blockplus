@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import serialization.GameJSONRepresentation;
-import transport.events.ClientInterface;
-import transport.events.MoveSubmitInterface;
+import transport.events.interfaces.ClientInterface;
+import transport.events.interfaces.MoveSubmitInterface;
 import blockplus.model.color.ColorInterface;
 import blockplus.model.color.PrimeColors;
 import blockplus.model.game.BlockplusGame;
@@ -239,6 +239,13 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
                 client.getIO().emit("end", "game-over");
             }
         }
+    }
+
+    @Override
+    public String toJson() {
+        final BlockplusGame game = this.getApplication();
+        final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(game);
+        return gameRepresentation.encodeBoard();
     }
 
 }

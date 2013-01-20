@@ -1,7 +1,7 @@
 
 package transport;
 
-import transport.events.ClientInterface;
+import transport.events.interfaces.ClientInterface;
 
 import com.google.common.collect.ImmutableList;
 
@@ -26,6 +26,8 @@ public interface RoomInterface<T> {
     RoomInterface<T> connect(ClientInterface client);
 
     RoomInterface<T> disconnect(ClientInterface client);
+
+    String toJson();
 
     //ClientInterface getUserToPlay(); TODO
 

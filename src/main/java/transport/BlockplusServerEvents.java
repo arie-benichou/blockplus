@@ -4,10 +4,10 @@ package transport;
 import java.util.ArrayList;
 
 import transport.events.Client;
-import transport.events.ClientInterface;
-import transport.events.MoveSubmitInterface;
-import transport.events.RoomConnectionInterface;
-import transport.events.RoomReconnectionInterface;
+import transport.events.interfaces.ClientInterface;
+import transport.events.interfaces.MoveSubmitInterface;
+import transport.events.interfaces.RoomConnectionInterface;
+import transport.events.interfaces.RoomReconnectionInterface;
 import blockplus.model.game.BlockplusGame;
 
 import com.google.common.collect.ImmutableList;

@@ -1,5 +1,5 @@
 
-package transport.events;
+package transport.events.interfaces;
 
 public interface ClientInterface extends EventInterface {
 

@@ -2,6 +2,7 @@
 package transport.events;
 
 import transport.IOinterface;
+import transport.events.interfaces.RoomReconnectionInterface;
 
 import com.google.common.base.Objects;
 import com.google.gson.JsonObject;

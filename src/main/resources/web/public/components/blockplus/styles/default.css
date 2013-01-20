@@ -9,7 +9,11 @@ html,body {
 	text-align: center;
 	font: 100% "Trebuchet MS", "Lucida Sans", Arial, Helvetica, sans-serif;
 	color: #2e3436;
+	/*
 	background: #ffffff
+	*/
+	background-color: #a0a6ab;
+
 }
 
 acronym {
@@ -38,6 +42,8 @@ select {
 	padding: 1px;
 }
 
+/*
 canvas {
 	border: 0px solid black;
 }
+*/

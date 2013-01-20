@@ -1,5 +1,5 @@
 
-package transport.events;
+package transport.events.interfaces;
 
 import com.google.gson.JsonArray;
 
