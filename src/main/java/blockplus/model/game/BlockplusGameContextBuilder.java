@@ -27,7 +27,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 // TODO ! à revoir
-public final class GameContextBuilder {
+public final class BlockplusGameContextBuilder {
 
     private final static Set<ColorInterface> DEFAULT_LEGAL_COLORS = ImmutableSet.of(
             Blue,
@@ -63,18 +63,18 @@ public final class GameContextBuilder {
     private final List<PlayerInterface> players = DEFAULT_PLAYERS;
     private Board board = null;
 
-    public GameContextBuilder(final Set<ColorInterface> legalColors, final Set<Pieces> legalPieces) {
+    public BlockplusGameContextBuilder(final Set<ColorInterface> legalColors, final Set<Pieces> legalPieces) {
         Preconditions.checkArgument(!legalColors.isEmpty());
         Preconditions.checkArgument(!legalPieces.isEmpty());
         this.colors = ImmutableSet.copyOf(legalColors);
         this.pieces = ImmutableSet.copyOf(legalPieces);
     }
 
-    public GameContextBuilder() {
+    public BlockplusGameContextBuilder() {
         this(DEFAULT_LEGAL_COLORS, DEFAULT_LEGAL_PIECES);
     }
 
-    public GameContextBuilder setBoard(final Board board) {
+    public BlockplusGameContextBuilder setBoard(final Board board) {
         this.board = board;
         return this;
     }
@@ -92,7 +92,7 @@ public final class GameContextBuilder {
         this.players.add(player);
     }
 
-    public GameContextBuilder setPlayers(final PlayerInterface... players) {
+    public BlockplusGameContextBuilder setPlayers(final PlayerInterface... players) {
         this.players.clear();
         for (final PlayerInterface player : players) {
             this.addPlayer(player);
@@ -100,7 +100,7 @@ public final class GameContextBuilder {
         return this;
     }
 
-    public GameContextBuilder setPlayers(final List<PlayerInterface> players) {
+    public BlockplusGameContextBuilder setPlayers(final List<PlayerInterface> players) {
         this.players.clear();
         for (final PlayerInterface player : players) {
             this.addPlayer(player);
@@ -108,7 +108,7 @@ public final class GameContextBuilder {
         return this;
     }
 
-    public GameContext build() {
+    public BlockplusGameContext build() {
         if (this.board == null) {
             final int rows = 20, columns = 20;
             final BoardLayer blueLayer = new BoardLayer(rows, columns).apply(Position(0, 0), Light);
@@ -122,7 +122,7 @@ public final class GameContextBuilder {
                     .set(Green, greenLayer)
                     .build();
         }
-        return new GameContext(this.board, Players.Players(this.players), this.players.get(0).getColor());
+        return new BlockplusGameContext(this.board, Players.Players(this.players), this.players.get(0).getColor());
     }
 
 }

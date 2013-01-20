@@ -14,7 +14,7 @@ import org.restlet.resource.ServerResource;
 
 import serialization.JSONSerializer;
 import services.applications.BlockplusApplicationInterface;
-import blockplus.model.game.Game;
+import blockplus.model.game.BlockplusGame;
 import blockplus.model.move.Move;
 import blockplus.model.piece.PieceInterface;
 import blockplus.model.piece.Pieces;
@@ -31,7 +31,7 @@ public class GameOptions extends ServerResource {
 
         final String room = (String) this.getRequest().getAttributes().get("room");
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        final Game game = application.getGame(room);
+        final BlockplusGame game = application.getGame(room);
         final List<Move> legalMoves = game.getInitialContext().options();
 
         final Map<Pieces, List<Set<PositionInterface>>> legalPositionsByPiece = Maps.newTreeMap();

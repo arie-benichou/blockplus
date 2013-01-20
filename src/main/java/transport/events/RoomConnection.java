@@ -6,12 +6,12 @@ import transport.IOinterface;
 import com.google.common.base.Objects;
 import com.google.gson.JsonObject;
 
-public final class JoinRoom implements JoinRoomInterface {
+public final class RoomConnection implements RoomConnectionInterface {
 
     public static class Builder {
 
-        public static JoinRoom build(final IOinterface io, final JsonObject data) {
-            return new JoinRoom(io, data.get("ordinal").getAsInt());
+        public static RoomConnection build(final IOinterface io, final JsonObject data) {
+            return new RoomConnection(io, data.get("ordinal").getAsInt());
         }
 
     }
@@ -30,7 +30,7 @@ public final class JoinRoom implements JoinRoomInterface {
         return this.ordinal;
     }
 
-    private JoinRoom(final IOinterface io, final Integer ordinal) {
+    private RoomConnection(final IOinterface io, final Integer ordinal) {
         this.io = io;
         this.ordinal = ordinal;
     }

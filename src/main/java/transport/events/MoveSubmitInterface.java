@@ -3,7 +3,7 @@ package transport.events;
 
 import com.google.gson.JsonArray;
 
-public interface SubmitInterface extends EventInterface {
+public interface MoveSubmitInterface extends EventInterface {
 
     Integer getId();
 

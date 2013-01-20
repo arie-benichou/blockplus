@@ -17,7 +17,7 @@
 
 package blockplus.demo.game;
 
-import blockplus.model.game.Game;
+import blockplus.model.game.BlockplusGame;
 
 /**
  * Random game generator.
@@ -25,7 +25,7 @@ import blockplus.model.game.Game;
 public class GameDemo01 {
 
     public static void main(final String[] args) {
-        new Game().start();
+        new BlockplusGame().start();
     }
 
 }

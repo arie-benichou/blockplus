@@ -10,8 +10,8 @@ import org.restlet.resource.ServerResource;
 
 import serialization.PiecesBagEncoding;
 import services.applications.BlockplusApplicationInterface;
-import blockplus.model.game.Game;
-import blockplus.model.game.GameContext;
+import blockplus.model.game.BlockplusGame;
+import blockplus.model.game.BlockplusGameContext;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
 
@@ -21,8 +21,8 @@ public class GameStatePieces extends ServerResource {
     public Representation getRepresentation() {
         final String room = (String) this.getRequest().getAttributes().get("room");
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        final Game game = application.getGame(room);
-        final GameContext context = game.getInitialContext();
+        final BlockplusGame game = application.getGame(room);
+        final BlockplusGameContext context = game.getInitialContext();
         final PiecesBag bag = context.getPlayers().get(context.getColor()).getPieces();
         final PiecesBag effectiveBag = bag.remove(Pieces.PIECE0);
         final String jsonBag = PiecesBagEncoding.encode(effectiveBag);

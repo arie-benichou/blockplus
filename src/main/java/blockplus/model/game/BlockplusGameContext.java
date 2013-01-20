@@ -15,18 +15,18 @@ import blockplus.model.player.PlayersInterface;
 
 import com.google.common.base.Predicate;
 
-public class GameContext {
+public class BlockplusGameContext {
 
-    public final static GameContext DEFAULT = new GameContextBuilder().build();
+    public final static BlockplusGameContext DEFAULT = new BlockplusGameContextBuilder().build();
 
     private final static MoveHandler MOVE_HANDLER = new MoveHandler(); // TODO à injecter
     private final static Referee REFEREE = new Referee(); // TODO à injecter
     //private final static EstimationInterface ESTIMATION_FUNCTION = new Estimation1(); // TODO à injecter
 
-    public final static Predicate<GameContext> DEFAULT_PREDICATE = new Predicate<GameContext>() {
+    public final static Predicate<BlockplusGameContext> DEFAULT_PREDICATE = new Predicate<BlockplusGameContext>() {
 
         @Override
-        public boolean apply(@Nullable final GameContext context) {
+        public boolean apply(@Nullable final BlockplusGameContext context) {
             return context.getPlayers().hasAlivePlayers();
         }
 
@@ -38,7 +38,7 @@ public class GameContext {
     private final PlayerInterface player;
     private final PlayerInterface opponent;
 
-    public GameContext(final Board board, final PlayersInterface players, final ColorInterface color) {
+    public BlockplusGameContext(final Board board, final PlayersInterface players, final ColorInterface color) {
         this.board = board;
         this.players = players;
         this.color = color;
@@ -66,7 +66,7 @@ public class GameContext {
         return this.opponent;
     }
 
-    public GameContext apply(final Move move) {
+    public BlockplusGameContext apply(final Move move) {
         return MOVE_HANDLER.handle(this, move);
     }
 
@@ -83,8 +83,8 @@ public class GameContext {
         return 0.0 + evaluation;
     }
 
-    public GameContext next() {
-        return new GameContext(this.getBoard(), this.getPlayers(), this.getOpponent().getColor());
+    public BlockplusGameContext next() {
+        return new BlockplusGameContext(this.getBoard(), this.getPlayers(), this.getOpponent().getColor());
     }
 
     public List<Move> options() { // TODO !!! caching
@@ -104,8 +104,8 @@ public class GameContext {
         return null; // TODO
     }
 
-    public GameContext update(final PlayersInterface newPlayers) {
-        return new GameContext(this.getBoard(), newPlayers, this.getColor());
+    public BlockplusGameContext update(final PlayersInterface newPlayers) {
+        return new BlockplusGameContext(this.getBoard(), newPlayers, this.getColor());
     }
 
     public Referee getReferee() {

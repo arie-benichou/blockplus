@@ -23,8 +23,8 @@ import services.applications.BlockplusApplicationInterface;
 import blockplus.model.board.Board;
 import blockplus.model.color.ColorInterface;
 import blockplus.model.color.Colors;
-import blockplus.model.game.Game;
-import blockplus.model.game.GameContext;
+import blockplus.model.game.BlockplusGame;
+import blockplus.model.game.BlockplusGameContext;
 import blockplus.model.move.Move;
 
 import com.google.common.collect.Sets;
@@ -54,8 +54,8 @@ public class GameState extends ServerResource {
         final String room = (String) this.getRequest().getAttributes().get("room");
 
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        final Game game = application.getGame(room);
-        final GameContext context = game.getInitialContext();
+        final BlockplusGame game = application.getGame(room);
+        final BlockplusGameContext context = game.getInitialContext();
         final ColorInterface color = context.getColor();
         final boolean isGameNotOver = context.hasNext();
         final Board board = context.getBoard();

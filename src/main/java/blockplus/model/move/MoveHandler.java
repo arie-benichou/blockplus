@@ -18,7 +18,7 @@
 package blockplus.model.move;
 
 import blockplus.model.board.Board;
-import blockplus.model.game.GameContext;
+import blockplus.model.game.BlockplusGameContext;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
 import blockplus.model.player.DeadPlayer;
@@ -40,12 +40,12 @@ public class MoveHandler {
         return new Player(player.getColor(), newBagOfPieces, player.getOpponentColor(), player.getStrategy());
     }
 
-    public GameContext handle(final GameContext gameContext, final Move move) {
+    public BlockplusGameContext handle(final BlockplusGameContext gameContext, final Move move) {
         final Board newBoard = this.getNewBoard(gameContext.getBoard(), move);
         final PlayerInterface newPlayer = this.getNewPlayer(gameContext.getPlayer(), move);
         final PlayersInterface newPlayers = gameContext.getPlayers().update(newPlayer);
         //final ColorInterface newColorToPlay = newPlayer.getOpponentColor(); // TODO newPlayerToPlay
-        return new GameContext(newBoard, newPlayers, move.getColor());
+        return new BlockplusGameContext(newBoard, newPlayers, move.getColor());
     }
 
 }

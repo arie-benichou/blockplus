@@ -30,16 +30,16 @@ import services.resources.local.GameStatePiecesByColor;
 import services.resources.local.NewGameRoom;
 import blockplus.model.board.Board;
 import blockplus.model.board.BoardLayer;
-import blockplus.model.game.Game;
-import blockplus.model.game.GameContext;
-import blockplus.model.game.GameContextBuilder;
+import blockplus.model.game.BlockplusGame;
+import blockplus.model.game.BlockplusGameContext;
+import blockplus.model.game.BlockplusGameContextBuilder;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class BlockplusApplicationJEE extends Application implements BlockplusApplicationInterface {
 
-    private final static Map<String, Game> GAME_BY_ROOM = Maps.newConcurrentMap();
+    private final static Map<String, BlockplusGame> GAME_BY_ROOM = Maps.newConcurrentMap();
 
     static {
         // network game test
@@ -55,8 +55,8 @@ public class BlockplusApplicationJEE extends Application implements BlockplusApp
                 .set(Green, greenLayer)
                 .build();
 
-        final GameContext gameContext1 = new GameContextBuilder().setBoard(board).build();
-        final Game game1 = new Game(gameContext1);
+        final BlockplusGameContext gameContext1 = new BlockplusGameContextBuilder().setBoard(board).build();
+        final BlockplusGame game1 = new BlockplusGame(gameContext1);
 
         GAME_BY_ROOM.put("0", game1);
     }
@@ -110,7 +110,7 @@ public class BlockplusApplicationJEE extends Application implements BlockplusApp
     }
 
     @Override
-    public/*synchronized*/Game getGame(final String room) {
+    public/*synchronized*/BlockplusGame getGame(final String room) {
         //if (room.equals("0")) return this.getGame();
         return GAME_BY_ROOM.get(room);
     }
@@ -123,7 +123,7 @@ public class BlockplusApplicationJEE extends Application implements BlockplusApp
     */
 
     @Override
-    public/*synchronized*/void setGame(final String room, final Game game) {
+    public/*synchronized*/void setGame(final String room, final BlockplusGame game) {
         //if (room.equals("0")) this.setGame(game);
         //else
         GAME_BY_ROOM.put(room, game);

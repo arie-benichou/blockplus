@@ -7,12 +7,12 @@ import com.google.common.base.Objects;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-public final class Submit implements SubmitInterface {
+public final class MoveSubmit implements MoveSubmitInterface {
 
     public static class Builder {
 
-        public static Submit build(final IOinterface io, final JsonObject data) {
-            return new Submit(io, data.get("id").getAsInt(), data.get("positions").getAsJsonArray());
+        public static MoveSubmit build(final IOinterface io, final JsonObject data) {
+            return new MoveSubmit(io, data.get("id").getAsInt(), data.get("positions").getAsJsonArray());
         }
 
     }
@@ -38,7 +38,7 @@ public final class Submit implements SubmitInterface {
         return this.positions;
     }
 
-    public Submit(final IOinterface io, final int id, final JsonArray positions) {
+    public MoveSubmit(final IOinterface io, final int id, final JsonArray positions) {
         this.io = io;
         this.id = id;
         this.positions = positions;

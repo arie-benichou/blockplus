@@ -11,8 +11,8 @@ import org.restlet.resource.ServerResource;
 import serialization.PiecesBagEncoding;
 import services.applications.BlockplusApplicationInterface;
 import blockplus.model.color.PrimeColors;
-import blockplus.model.game.Game;
-import blockplus.model.game.GameContext;
+import blockplus.model.game.BlockplusGame;
+import blockplus.model.game.BlockplusGameContext;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
 import blockplus.model.player.PlayersInterface;
@@ -23,8 +23,8 @@ public class GameStatePiecesByColor extends ServerResource {
     public Representation getRepresentation() {
         final String room = (String) this.getRequest().getAttributes().get("room");
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        final Game game = application.getGame(room);
-        final GameContext context = game.getInitialContext();
+        final BlockplusGame game = application.getGame(room);
+        final BlockplusGameContext context = game.getInitialContext();
         final String color = this.getQueryValue("color");
         final PlayersInterface players = context.getPlayers();
         final PiecesBag bag = players.get(PrimeColors.get(color)).getPieces();

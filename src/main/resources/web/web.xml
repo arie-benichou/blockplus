@@ -21,7 +21,7 @@
 
     <servlet>
         <servlet-name>WebSocket</servlet-name>
-        <servlet-class>transport.WebSocketServer</servlet-class>
+        <servlet-class>transport.BlockplusServer</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 

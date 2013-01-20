@@ -85,10 +85,9 @@ Event.observe(window, 'load', function() {
     };
     /*--------------------------------------------------8<--------------------------------------------------*/
     var potentialCellClickEventHandler = function(event) {
-        
+
         event.preventDefault();
 
-        
         var position = offsetToPositionBuilder.build(event.offsetX, event.offsetY);
         if (potentialPositions.match(position)) {
             if (selectedPositions.contains(position)) {
@@ -154,7 +153,7 @@ Event.observe(window, 'load', function() {
             var p = JSON.parse([ position ]);
             data.push([ p.row, p.column ]);
         }
-        submit(pieceId, data); // TODO ? se contenter des positions
+        moveSubmit(pieceId, data); // TODO ? se contenter des positions
     }, false);
     /*--------------------------------------------------8<--------------------------------------------------*/
     var showPotentialCells = function(position) {
@@ -205,15 +204,38 @@ Event.observe(window, 'load', function() {
     $("submit").hide(); // TODO
     /*--------------------------------------------------8<--------------------------------------------------*/
     myWebSocket = new WebSocket("ws://artefact.hd.free.fr/talk/tome");
+    /*--------------------------------------------------8<--------------------------------------------------*/
     
     var myProtocol = new Protocol();
-    
+
+    var infoEventHandler = function(data) {
+        var newChild = document.createElement("div");
+        newChild.setAttribute("id", "last-message");
+        newChild.innerHTML = data;
+        $("last-message").remove();
+        $("messages").appendChild(newChild);
+    };
+
+    myProtocol.register("info", infoEventHandler);
+
+    myProtocol.register("rooms", function(data) {
+        var room = $("room");
+        var rooms = JSON.parse(data);
+        var n = rooms.length;
+        for ( var i = 0; i < n; ++i) {
+            var current = rooms[i];
+            var option = document.createElement("option");
+            option.setAttribute("value", current);
+            option.innerHTML = current;
+            room.appendChild(option);
+        }
+    });
+
     myProtocol.register("color", function(data) {
         currentColor = data; // TODO
-        //alert(data);
-        console.log(currentColor);
+        $("user").hide(); // TODO à revoir
     });
-    
+
     myProtocol.register("pieces", function(data) {
         $("available-pieces").innerHTML = "";
         for ( var i = 1; i <= 21; ++i) { // TODO
@@ -233,20 +255,20 @@ Event.observe(window, 'load', function() {
         }
         $("available-pieces").show();
     });
-    
+
     myProtocol.register("board", function(data) {
         boardRendering.update(data);
     });
-    
+
     myProtocol.register("options", function(data) {
         option = new Options(data); // TODO
         console.log(data);
     });
-    
+
     myProtocol.register("potential", function(data) {
         
-        //window.focus();
-        alert(currentColor);
+        // window.focus();
+        //alert(currentColor);
         
         selectedPositions.clear();
         potentialPositions = new PotentialPositions(data);
@@ -255,124 +277,104 @@ Event.observe(window, 'load', function() {
             showPotentialCells(position);
         }
     });
-    
-    myProtocol.register("room", function(data) {
-        //alert("room saved");
+
+    myProtocol.register("link", function(data) {
         console.log(data);
-        sessionStorage.setItem("blockplus.network.hashcode", data); // TODO utiliser aussi le localStorage
-        console.log("ok!");
+        sessionStorage.setItem("blockplus.network.hashcode", JSON.stringify(data));
     });
-    
-    /*--------------------------------------------------8<--------------------------------------------------*/    
-                                                
-     var onMessage = function(event) {
+
+    /*--------------------------------------------------8<--------------------------------------------------*/
+
+    var onMessage = function(event) {
         myProtocol.handle(event.data);
-        /*
-        showMessage(event.data);
-        // TODO test if key exist
-        // TODO test if hash exist
-        // TODO stringify array of hascodes
-        if(event.data.indexOf(':') != -1) {
-            console.log("room code saved");
-            sessionStorage.setItem("blockplus.network.hashcode", event.data); // TODO utiliser le localStorage
-        }
-        */
     };
-    
+
     var onOpen = function(event) {
         console.log("Channel has been open: " + new Date());
-        //console.log(sessionStorage.getItem("blockplus.network.hashcode"));
-        autoJoin(sessionStorage.getItem("blockplus.network.hashcode"));
-        //console.log("open");
+        var link = sessionStorage.getItem("blockplus.network.hashcode");
+        if(link != null) roomReconnection(JSON.parse(link));
     };
-    
+
     var onClose = function(event) {
         console.log("Channel has been closed: " + new Date());
         myWebSocket = new WebSocket("ws://artefact.hd.free.fr/talk/tome");
         init(myWebSocket);
     };
-    
+
     var init = function(ws) {
         ws.onmessage = onMessage;
         ws.onopen = onOpen;
         ws.onclose = onClose;
     };
-    
-    var showMessage = function(message) {
-        var div = document.createElement('div');
-        div.innerHTML = '>' + message;
-        $("io").appendChild(div);
-    };
-    
+
+    /*
+     * var showMessage = function(message) { var div =
+     * document.createElement('div'); div.innerHTML = '>' + message;
+     * $("io").appendChild(div); };
+     */
+
     var say = function(message) {
         myWebSocket.send(JSON.stringify(message));
     };
     
+    /*--------------------------------------------------8<--------------------------------------------------*/
+
     var login = function(name) {
         var message = {
-                type: 'Client',
-                data: {
-                    name: name    
-                }
+            type : 'Client',
+            data : {
+                name : name
+            }
+        };
+        say(message);
+    };
+
+    var roomConnection = function(ordinal) {
+        var message = {
+            type : 'RoomConnection',
+            data : {
+                ordinal : ordinal
+            }
         };
         say(message);
     };
     
-    var joinRoom = function(ordinal) {
+    var moveSubmit = function(id, positions) {
         var message = {
-                type: 'JoinRoom',
-                data: {
-                    ordinal: ordinal
-                }
-        }
-        say(message);
-    };
-    
-    var autoJoin = function(hashCode) {
-        var message = {
-                type: 'AutoJoin',
-                data: {
-                    hashCode: hashCode
-                }
-        };
-        say(message);
-    };
-    
-    var submit = function(id, positions) {
-        var message = {
-                type: 'Submit',
-                data: {
-                    id: id,
-                    positions: positions
-                }
-        };
-        console.log(message);
-        say(message);
-    };    
-    
-    /*
-    reconnect = function(hashCode) {
-        var message = {
-            type: 'AutoJoin',
-            data: {
-                hashCode: sessionStorage.getItem("blockplus.network.hashcode")
+            type : 'MoveSubmit',
+            data : {
+                id : id,
+                positions : positions
             }
         };
         console.log(message);
         say(message);
+    };    
+
+    var roomReconnection = function(data) {
+        var message = {
+            type : 'RoomReconnection',
+            data : {
+                link : data
+            }
+        };
+        say(message);
     };
-    */    
-        
-    init(myWebSocket);
     
+    /*--------------------------------------------------8<--------------------------------------------------*/
     $("user").observe("change", function(event) {
         login($("user").value);
+        $("user").hide();
+        $("room").show();
     });
-    
+
     $("room").observe("change", function(event) {
-        joinRoom($("room").value);
+        roomConnection($("room").value);
+        $("room").hide();
     });
-    
+    /*--------------------------------------------------8<--------------------------------------------------*/
     $("user").focus();
+    /*--------------------------------------------------8<--------------------------------------------------*/
+    init(myWebSocket);
     /*--------------------------------------------------8<--------------------------------------------------*/
 });

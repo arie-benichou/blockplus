@@ -11,8 +11,8 @@ import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
 import services.applications.BlockplusApplicationInterface;
-import blockplus.model.game.Game;
-import blockplus.model.game.GameContext;
+import blockplus.model.game.BlockplusGame;
+import blockplus.model.game.BlockplusGameContext;
 import blockplus.model.move.Move;
 import blockplus.model.piece.PieceComposite;
 import blockplus.model.piece.PieceInterface;
@@ -31,8 +31,8 @@ public class GameMove extends ServerResource {
     public Representation getRepresentation() {
         final String room = (String) this.getRequest().getAttributes().get("room");
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        final Game game = application.getGame(room);
-        final GameContext context = game.getInitialContext();
+        final BlockplusGame game = application.getGame(room);
+        final BlockplusGameContext context = game.getInitialContext();
         // TODO checks...
         final int id = Integer.parseInt(this.getQueryValue("id"));
         final String json = this.getQueryValue("positions");
@@ -55,8 +55,8 @@ public class GameMove extends ServerResource {
         }
         final Move move = new Move(context.getColor(), piece);
         // TODO ! check if move is legal
-        final GameContext newGameContext = context.apply(move);
-        application.setGame(room, new Game(newGameContext.next()));
+        final BlockplusGameContext newGameContext = context.apply(move);
+        application.setGame(room, new BlockplusGame(newGameContext.next()));
         this.setStatus(Status.SUCCESS_OK);
         final StringRepresentation representation = new StringRepresentation(json);
         representation.setCharacterSet(CharacterSet.UTF_8);

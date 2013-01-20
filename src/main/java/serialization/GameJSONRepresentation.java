@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import blockplus.model.color.ColorInterface;
-import blockplus.model.game.Game;
-import blockplus.model.game.GameContext;
+import blockplus.model.game.BlockplusGame;
+import blockplus.model.game.BlockplusGameContext;
 import blockplus.model.move.Move;
 import blockplus.model.piece.PieceInterface;
 import blockplus.model.piece.Pieces;
@@ -20,30 +20,37 @@ import components.position.PositionInterface;
 
 public final class GameJSONRepresentation {
 
-    private final Game game;
+    private final BlockplusGame game;
 
-    public Game getGame() {
+    public BlockplusGame getGame() {
         return this.game;
     }
 
-    public GameJSONRepresentation(final Game game) {
+    public GameJSONRepresentation(final BlockplusGame game) {
         this.game = game;
     }
 
-    public String encodeColor() {
-        final ColorInterface color = this.getGame().getInitialContext().getColor();
+    public String encodeColor(final ColorInterface color) {
         return JSONSerializer.getInstance().toJson(color);
+    }
+
+    public String encodeColor() {
+        return this.encodeColor(this.getGame().getInitialContext().getColor());
     }
 
     public String encodeBoard() {
         return CellEncoding.encode(this.getGame().getInitialContext().getBoard().colorize());
     }
 
-    public String encodeBagOfPiece() {
-        final GameContext context = this.getGame().getInitialContext();
-        final PiecesBag bag = context.getPlayers().get(context.getColor()).getPieces();
-        final PiecesBag effectiveBag = bag.remove(Pieces.PIECE0);
+    public String encodeBagOfPiece(final PiecesBag pieces) {
+        final PiecesBag effectiveBag = pieces.remove(Pieces.PIECE0); // TODO à revoir
         return PiecesBagEncoding.encode(effectiveBag);
+    }
+
+    public String encodeBagOfPiece() {
+        final BlockplusGameContext context = this.getGame().getInitialContext();
+        final PiecesBag pieces = context.getPlayers().get(context.getColor()).getPieces();
+        return PiecesBagEncoding.encode(pieces);
     }
 
     public String encodeOptions() {
@@ -83,7 +90,7 @@ public final class GameJSONRepresentation {
     */
 
     public static void main(final String[] args) {
-        final Game game = new Game();
+        final BlockplusGame game = new BlockplusGame();
         final String string = new GameJSONRepresentation(game).encodeColor();
         System.out.println(string);
     }

@@ -19,6 +19,7 @@ Protocol.prototype = {
         if (json.type in this.listeners)
             this.listeners[json.type](json.data);
         else {
+            console.error(json);
             console.error("Protocol has no listener defined for event of type: " + json.type);
             console.error(json.data);
         }

@@ -3,26 +3,26 @@ package blockplus.model.game;
 
 import blockplus.model.move.Move;
 
-public class Game {
+public class BlockplusGame {
 
-    private final GameContext initialContext;
+    private final BlockplusGameContext initialContext;
 
-    public GameContext getInitialContext() {
+    public BlockplusGameContext getInitialContext() {
         return this.initialContext;
     }
 
-    public Game(final GameContext initialContext) {
+    public BlockplusGame(final BlockplusGameContext initialContext) {
         this.initialContext = initialContext;
     }
 
-    public Game() {
-        this(GameContext.DEFAULT);
+    public BlockplusGame() {
+        this(BlockplusGameContext.DEFAULT);
     }
 
-    public GameContext start(final int max) {
+    public BlockplusGameContext start(final int max) {
 
         int i = 0;
-        GameContext newContext = this.getInitialContext();
+        BlockplusGameContext newContext = this.getInitialContext();
 
         // TODO listeners du contexte
         //final BoardView windowBoardView = View.as(blockplus.view.window.BoardView.class).show(newContext.getBoard()).up();
@@ -62,12 +62,24 @@ public class Game {
         return newContext;
     }
 
-    public GameContext start() {
+    public BlockplusGameContext start() {
         return this.start(-1);
     }
 
-    public GameContext reset() {
+    public BlockplusGameContext reset() {
         return this.getInitialContext();
     }
 
+    /*
+    public BlockplusGameContext next() {
+        BlockplusGameContext nextContext = this.getInitialContext();
+        final ColorInterface color = nextContext.getColor();
+        List<Move> nextOptions;
+        do {
+            nextContext = nextContext.next();
+            nextOptions = nextContext.options();
+        } while (nextOptions.size() == 1 && nextOptions.iterator().next().isNull() && !nextContext.getColor().equals(color));
+        return nextContext;
+    }
+    */
 }

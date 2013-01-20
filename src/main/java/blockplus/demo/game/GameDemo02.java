@@ -25,9 +25,9 @@ import java.util.Set;
 
 import blockplus.model.board.BoardLayer;
 import blockplus.model.color.ColorInterface;
-import blockplus.model.game.Game;
-import blockplus.model.game.GameContext;
-import blockplus.model.game.GameContextBuilder;
+import blockplus.model.game.BlockplusGame;
+import blockplus.model.game.BlockplusGameContext;
+import blockplus.model.game.BlockplusGameContextBuilder;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
 import blockplus.model.player.Player;
@@ -51,12 +51,12 @@ public class GameDemo02 {
         final PlayerInterface redPlayer = new Player(Red, bagOfPieces, Green, new FirstOptionStrategy());
         final PlayerInterface greenPlayer = new Player(Green, bagOfPieces, Blue, new FirstOptionStrategy());
 
-        final GameContext initialContext = new GameContextBuilder()
+        final BlockplusGameContext initialContext = new BlockplusGameContextBuilder()
                 .setPlayers(bluePlayer, yellowPlayer, redPlayer, greenPlayer)
                 .build();
 
-        final Game game = new Game(initialContext);
-        final GameContext finalContext = game.start();
+        final BlockplusGame game = new BlockplusGame(initialContext);
+        final BlockplusGameContext finalContext = game.start();
 
         System.out.println("-----------------------------8<-----------------------------");
         System.out.println("Game should be over by now :p");

@@ -1,21 +1,32 @@
 
 package transport;
 
-import java.util.List;
-
 import transport.events.ClientInterface;
-import blockplus.model.game.Game;
 
-public interface RoomInterface {
+import com.google.common.collect.ImmutableList;
+
+public interface RoomInterface<T> {
 
     Integer getOrdinal();
 
     String getCode();
 
-    List<ClientInterface> getUsers();
+    long getTimeStamp();
 
-    Game getGame();
+    ImmutableList<ClientInterface> getClients();
 
-    ClientInterface getUserToPlay();
+    T getApplication();
+
+    boolean isFull();
+
+    boolean isEmpty();
+
+    int getCapacity();
+
+    RoomInterface<T> connect(ClientInterface client);
+
+    RoomInterface<T> disconnect(ClientInterface client);
+
+    //ClientInterface getUserToPlay(); TODO
 
 }

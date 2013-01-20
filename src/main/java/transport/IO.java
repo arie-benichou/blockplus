@@ -10,10 +10,10 @@ import com.google.common.base.Throwables;
 
 public final class IO implements IOinterface {
 
-    private final WebSocketServer server;
+    private final BlockplusServer server;
 
     @Override
-    public WebSocketServer getServer() {
+    public BlockplusServer getServer() {
         return this.server;
     }
 
@@ -40,12 +40,11 @@ public final class IO implements IOinterface {
         this.room = ordinal;
     }
 
-    public IO(final WebSocketServer server) {
+    public IO(final BlockplusServer server) {
         this.server = server;
     }
 
-    @Override
-    public void say(final String message) {
+    private void say(final String message) {
         try {
             this.getConnection().sendMessage(message);
         }
@@ -55,14 +54,15 @@ public final class IO implements IOinterface {
     }
 
     @Override
-    public void say(final Object object) {
-        this.say(object.toString());
+    public void emit(final String type, final String data) {
+        //this.say("{" + "\"" + "type" + "\"" + ":" + "\"" + type + "\"" + "," + "\"" + "data" + "\"" + ":" + "\"" + data + "\"" + "}"); // TODO sprintf
+        this.say("{" + "\"" + "type" + "\"" + ":" + "\"" + type + "\"" + "," + "\"" + "data" + "\"" + ":" + data + "}"); // TODO sprintf
     }
 
     @Override
     public void onOpen(final Connection connection) {
         this.setConnection(connection);
-        this.say("Who is there ?"); // TODO client side event
+        this.emit("info", "\"" + "Who is there ?" + "\""); // TODO client side event
     }
 
     @Override

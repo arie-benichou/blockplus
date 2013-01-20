@@ -11,8 +11,8 @@ import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
 import services.applications.BlockplusApplicationInterface;
-import blockplus.model.game.Game;
-import blockplus.model.game.GameContext;
+import blockplus.model.game.BlockplusGame;
+import blockplus.model.game.BlockplusGameContext;
 import blockplus.model.move.Move;
 import blockplus.model.piece.PieceComposite;
 import blockplus.model.piece.PieceInterface;
@@ -26,13 +26,13 @@ public class GameNullMove extends ServerResource {
     public Representation getRepresentation() {
         final String room = (String) this.getRequest().getAttributes().get("room");
         final BlockplusApplicationInterface application = (BlockplusApplicationInterface) this.getApplication();
-        final Game game = application.getGame(room);
-        final GameContext context = game.getInitialContext();
+        final BlockplusGame game = application.getGame(room);
+        final BlockplusGameContext context = game.getInitialContext();
         final PieceInterface nullPiece = PieceComposite.from(0, Position.from(), new HashSet<PositionInterface>()); // TODO extract constant
         final Move move = new Move(context.getColor(), nullPiece);
         // TODO ! check if move is legal
-        final GameContext newGameContext = context.apply(move);
-        application.setGame(room, new Game(newGameContext.next()));
+        final BlockplusGameContext newGameContext = context.apply(move);
+        application.setGame(room, new BlockplusGame(newGameContext.next()));
         this.setStatus(Status.SUCCESS_OK);
         final StringRepresentation representation = new StringRepresentation("NULL MOVE");
         representation.setCharacterSet(CharacterSet.UTF_8);

@@ -3,7 +3,7 @@ package services.applications;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import blockplus.model.game.Game;
+import blockplus.model.game.BlockplusGame;
 
 public interface BlockplusApplicationInterface {
 
@@ -11,9 +11,9 @@ public interface BlockplusApplicationInterface {
 
     //void setGame(Game game);
 
-    Game getGame(String room);
+    BlockplusGame getGame(String room);
 
-    void setGame(String room, Game game);
+    void setGame(String room, BlockplusGame game);
 
     AtomicInteger getCounter();
 
