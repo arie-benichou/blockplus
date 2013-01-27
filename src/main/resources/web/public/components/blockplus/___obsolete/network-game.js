@@ -203,7 +203,7 @@ Event.observe(window, 'load', function() {
     $("play-again").hide(); // TODO
     $("submit").hide(); // TODO
     /*--------------------------------------------------8<--------------------------------------------------*/
-    myWebSocket = new WebSocket("ws://artefact.hd.free.fr/talk/tome");
+    myWebSocket = new WebSocket("ws://localhost:8181/talk/tome");
     /*--------------------------------------------------8<--------------------------------------------------*/
     
     var myProtocol = new Protocol();
@@ -297,7 +297,7 @@ Event.observe(window, 'load', function() {
 
     var onClose = function(event) {
         console.log("Channel has been closed: " + new Date());
-        myWebSocket = new WebSocket("ws://artefact.hd.free.fr/talk/tome");
+        myWebSocket = new WebSocket("ws://localhost:8181/talk/tome");
         init(myWebSocket);
     };
 

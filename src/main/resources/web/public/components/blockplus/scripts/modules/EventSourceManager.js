@@ -3,31 +3,38 @@ function EventSourceManager(url) {
     this.es = null;
     this.listeners = {};
 }
+
 EventSourceManager.prototype = {
-    constructor: EventSourceManager,
-    connect: function() {
+
+    constructor : EventSourceManager,
+
+    connect : function() {
         this.es = new EventSource(this.url);
         this.bindEvents();
     },
-    disconnect: function() {
+
+    disconnect : function() {
         this.es.close();
         this.es = null;
     },
-    bindEvents: function() {
-        for ( var type in this.listeners ) {
+
+    bindEvents : function() {
+        for ( var type in this.listeners) {
             var evs = this.listeners[type];
-            for( var i = 0; i < evs.length; ++i ) {
-                this.es.addEventListener( type, evs[i], false );
+            for ( var i = 0; i < evs.length; ++i) {
+                this.es.addEventListener(type, evs[i], false);
             }
         }
     },
-    addEventListener: function( type, fn ) {
-        if( !this.listeners[type] ) {
+
+    addEventListener : function(type, fn) {
+        if (!this.listeners[type]) {
             this.listeners[type] = [];
         }
-        this.listeners[type].push( fn );
-        if( this.es ) {
+        this.listeners[type].push(fn);
+        if (this.es) {
             this.bindEvents();
         }
     }
+
 };

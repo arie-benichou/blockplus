@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		
+        <meta charset="utf-8" />
+		
+        <link href="../images/favicon.png" rel="shortcut icon" />
+        
+        <link href="../styles/bootstrap.min.css" rel="stylesheet">
+        
+        <link href="index.css" rel="stylesheet"/>
+                
+        <script src="../scripts/library/jquery.min.js"></script>
+        <script src="../scripts/library/bootstrap.min.js"></script>
+           
+        <script src="../scripts/modules/Protocol.js"></script>
+        <script src="../scripts/modules/Client.js"></script>
+        
+        <script src="../scripts/modules/Colors.js"></script>
+        <script src="../scripts/modules/Position.js"></script>
+        <script src="../scripts/modules/CellRendering.js"></script>
+        <script src="../scripts/modules/BoardRendering.js"></script>        
+        
+        <script src="../scripts/modules/OffsetToPositionBuilder.js"></script>
+        <script src="../scripts/modules/SelectedPositions.js"></script>
+        <script src="../scripts/modules/PieceImageManager.js"></script>
+        <script src="../scripts/modules/Options.js"></script>
+        <script src="../scripts/modules/PotentialPositions.js"></script>
+        <script src="../scripts/modules/AudioManager.js"></script>
+        
+	</head>
+	<body>
+        
+        <!-- connection -->
+        <div id="connection" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="label" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="label">Welcome !</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="user" placeholder="Enter your name…" style="margin: 0;">
+            </div>
+            <div class="modal-footer">
+                <button id="connect" class="btn btn-primary" data-dismiss="modal">Connect</button>
+            </div>
+        </div>
+        
+        <!-- rooms -->
+        <div id="rooms" style="display: none;"></div>
+        
+        <!-- game -->
+        <div id="game" style="display: none;">
+            <div id="messages">
+                <div id="last-message"><!-- Loading... --></div>
+                <!-- 
+                <div><button class="btn btn-large btn-primary" id="play-again" type="submit">Play again ?</button></div>
+                 -->
+            </div>
+            <div id="content">
+                <div id="truc">
+                    <div id="left">
+                        <div id="available-pieces"></div>
+                    </div>
+                    <div id="middle">
+                        <canvas id="board" width="679px" height="679px"></canvas>
+                    </div>
+                    <div id="right">
+                        <div id="submitPiece">
+                            <canvas class="clickable out" id="pieceToPlay" width="0px" height="0px"></canvas>                        
+                        </div>
+                        <div style="clear: both;"></div>
+                        <div id="remaining-pieces"></div>
+                    </div>      
+                      <div style="clear: both;"></div>
+                </div>
+                <div id="initialization">
+                    <canvas id="piece" width="91px" height="91px"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <script src="index.js"></script>        
+        
+	</body>
+</html>

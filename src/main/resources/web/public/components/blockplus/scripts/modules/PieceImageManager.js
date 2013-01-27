@@ -1,3 +1,4 @@
+// TODO extract objects
 /*--------------------------------------------------8<--------------------------------------------------*/
 var getLocalStoreKey = function(color, piece) {
     return color + "." + piece;
@@ -28,12 +29,11 @@ var createPiecesImages = function(color, pieces, pieceRendering) {
             ty = t - y.numberValue;
             tx = t - x.numberValue;
         }
-        $("piece").width = n * size; // TODO
-        $("piece").height = n * size; // TODO
-        
-        //pieceRendering.clear("#c8cad0");
+        $("#piece").width = n * size; // TODO
+        $("#piece").height = n * size; // TODO
+
         pieceRendering.clear(Colors[color]);
-        
+
         for ( var j = 0; j < positions.snapshotLength; ++j) {
             var position = positions.snapshotItem(j);
             var y = document.evaluate("y", position, null, XPathResult.NUMBER_TYPE, null);
@@ -43,21 +43,19 @@ var createPiecesImages = function(color, pieces, pieceRendering) {
             pieceRendering.updateCell(new Position(py, px), "white");
         }
         var key = getLocalStoreKey(color, name);
-        var value = $("piece").toDataURL("image/png");
+        var value = document.getElementById("piece").toDataURL("image/png");
         localStorage.setItem(key, value);
     }
 };
 /*--------------------------------------------------8<--------------------------------------------------*/
 var createAllPiecesImages = function(url, pieceRendering) {
-    new Ajax.Request(url, {
-        method: 'GET',
-        onSuccess : function(response) {
-            var data = response.responseXML;
-            var pieces = data.evaluate("//piece", data, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    jQuery.ajax(url, {
+        success : function(document) {
+            var pieces = document.evaluate("//piece", document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
             for ( var color in Colors) {
                 createPiecesImages(color, pieces, pieceRendering);
             }
-            $("initialization").hide();
+            $("#initialization").hide();
         }
     });
 };

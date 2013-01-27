@@ -114,6 +114,14 @@ public class BlockplusServer extends WebSocketServlet {
 
     @Override
     public WebSocket doWebSocketConnect(final HttpServletRequest request, final String protocol) {
+        /*
+        try {
+            Thread.sleep(2 * 1000);
+        }
+        catch (final InterruptedException e) {
+            e.printStackTrace();
+        }
+        */
         return new IO(this);
     }
 
@@ -150,6 +158,7 @@ public class BlockplusServer extends WebSocketServlet {
     public void onNewClient(final ClientInterface newClient) {
         this.connect(newClient);
         newClient.getIO().emit("info", "\"" + "Welcome " + newClient.getName() + " !" + "\"");
+        newClient.getIO().emit("welcome", "\"" + newClient.getName() + "\"");
         final String rooms = new Gson().toJson(this.getRooms());
         newClient.getIO().emit("rooms", "\"" + rooms + "\"");
     }

@@ -62,7 +62,7 @@ public final class IO implements IOinterface {
     @Override
     public void onOpen(final Connection connection) {
         this.setConnection(connection);
-        this.emit("info", "\"" + "Who is there ?" + "\""); // TODO client side event
+        //this.emit("handshake", "\"" + "Nice to meet you," + "\""); // TODO client side event
     }
 
     @Override

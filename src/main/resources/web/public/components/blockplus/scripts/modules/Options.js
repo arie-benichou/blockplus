@@ -1,31 +1,36 @@
-var Options = Class.create({
-    initialize : function(data) {
-        var tmpData = [];
-        for ( var p in data) {
-            var pieceInstances = data[p];
-            var pieceInstancesObject = {
-                id : parseInt(p.substring(5, 7), 10),
-                size : pieceInstances[0].length,
-                instances : []
-            };
-            var n = pieceInstances.length;
-            for ( var i = 0; i < n; ++i) {
-                var pieceInstance = pieceInstances[i];
-                var size = pieceInstance.length;
-                var pieceInstanceObject = {};
-                for ( var j = 0; j < size; ++j) {
-                    var p = new Position(pieceInstance[j][0], pieceInstance[j][1]);
-                    pieceInstanceObject[JSON.stringify(p)] = true;
-                }
-                pieceInstancesObject["instances"].push(pieceInstanceObject);
+var Options = function(data) {
+    var tmpData = [];
+    for ( var p in data) {
+        var pieceInstances = data[p];
+        var pieceInstancesObject = {
+            id : parseInt(p.substring(5, 7), 10),
+            size : pieceInstances[0].length,
+            instances : []
+        };
+        var n = pieceInstances.length;
+        for ( var i = 0; i < n; ++i) {
+            var pieceInstance = pieceInstances[i];
+            var size = pieceInstance.length;
+            var pieceInstanceObject = {};
+            for ( var j = 0; j < size; ++j) {
+                var p = new Position(pieceInstance[j][0], pieceInstance[j][1]);
+                pieceInstanceObject[JSON.stringify(p)] = true;
             }
-            tmpData.push(pieceInstancesObject);
+            pieceInstancesObject["instances"].push(pieceInstanceObject);
         }
-        this.data = tmpData;
-    },
+        tmpData.push(pieceInstancesObject);
+    }
+    this.data = tmpData;
+};
+
+Options.prototype = {
+
+    constructor : Options,
+
     get : function() {
         return this.data;
     },
+
     matches : function(selectedPositions) {
         var matches = {};
         var min = selectedPositions.getSize();
@@ -50,6 +55,7 @@ var Options = Class.create({
         }
         return matches;
     },
+
     perfectMatch : function(selectedPositions) {
         var min = selectedPositions.getSize();
         var n = this.data.length;
@@ -73,4 +79,5 @@ var Options = Class.create({
         }
         return 0;
     }
-});
+
+};

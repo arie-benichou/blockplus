@@ -39,6 +39,10 @@ public class BlockplusServerEvents {
         else {
             final ClientInterface oldClient = this.getServer().getClient(roomConnection.getIO());
             final ClientInterface newClient = new Client(roomConnection.getIO(), oldClient.getName(), room.getOrdinal());
+            System.out.println();
+            System.out.println(newClient.getName());
+            System.out.println(room.getOrdinal());
+            System.out.println();
             this.getServer().updateClients(newClient.getIO(), newClient);
 
             final BlockplusRoom newRoom = (BlockplusRoom) room.connect(newClient);

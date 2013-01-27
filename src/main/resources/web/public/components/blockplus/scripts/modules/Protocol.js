@@ -8,11 +8,12 @@ Protocol.prototype = {
     handle : function(message) {
         var object = null;
         try {
-         object = JSON.parse(message);
+            object = JSON.parse(message);
         } catch (e) {
             console.error(message);
         }
-        if(object != null) this.on(object);
+        if (object != null)
+            this.on(object);
     },
 
     on : function(json) {
@@ -23,11 +24,11 @@ Protocol.prototype = {
             console.error("Protocol has no listener defined for event of type: " + json.type);
             console.error(json.data);
         }
-            
+
     },
 
     register : function(type, listener) {
         this.listeners[type] = listener;
     }
-    
+
 };

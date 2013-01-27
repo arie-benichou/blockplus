@@ -3,24 +3,33 @@
 	<head>
 		<meta charset="utf-8" />
 		<link rel="shortcut icon" href="./images/favicon.png" />
-		<link href="./styles/default.css" rel="stylesheet" type="text/css" />
-		<link href="./styles/index.css" rel="stylesheet" type="text/css" />
+        <link href="./styles/bootstrap.min.css" rel="stylesheet">
+        <script src="./scripts/library/jquery.min.js"></script>
+        <script src="./scripts/library/bootstrap.min.js"></script>
 		<title>Blockplus</title>
 	</head>
 	<body>
-		<div>
-			<div>
-				<audio id="music" preload="auto" loop="loop" autoplay="autoplay">
-		  			<source src="./audio/index.mp3" type="audio/mp3"></source>
-					<source src="./audio/index.ogg" type="audio/ogg"></source>
-				</audio>
-			</div>
+        <div style="margin: 25px 25px; auto;">
 			<h1>Blockplus</h1>
 			<ul>
-				<!--<li> <a href="./local-game.html">Local</a></li> -->
-                <!-- <li><a href="./network-game.html">Network</a></li> -->
-                <li><a href="./network-game.html">Play online</a></li>
+                <li><a href="./network/">Play game</a></li>
 			</ul>
-		</div>
+            <!--         
+            <div class="bs-docs-example">
+                <ul class="nav nav-pills">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" id="drop5" role="button" data-toggle="dropdown" href="#">Blockplus<b class="caret"></b></a>
+                            <ul id="menu3" class="dropdown-menu" role="menu" aria-labelledby="drop5">
+                                <li><a tabindex="-1" href="#">Play online</a></li>
+                            </ul>
+                    </li>
+                </ul>
+            </div>
+             -->        
+            <audio id="music" preload="auto" loop="loop" autoplay="autoplay">
+                <source src="./audio/index.mp3" type="audio/mp3"></source>
+                <source src="./audio/index.ogg" type="audio/ogg"></source>
+            </audio>
+        </div>
 	</body>
 </html>
