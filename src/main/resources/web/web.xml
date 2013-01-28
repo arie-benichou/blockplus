@@ -3,21 +3,8 @@
     xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     id="WebApp_ID" version="2.5">
+
     <display-name>Blockplus</display-name>
-
-    <servlet>
-        <servlet-name>Blockplus</servlet-name>
-        <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
-        <init-param>
-            <param-name>org.restlet.application</param-name>
-            <param-value>services.applications.BlockplusApplicationJEE</param-value>
-        </init-param>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>Blockplus</servlet-name>
-        <url-pattern>/blockplus/*</url-pattern>
-    </servlet-mapping>
 
     <servlet>
         <servlet-name>WebSocket</servlet-name>
@@ -27,7 +14,7 @@
 
     <servlet-mapping>
         <servlet-name>WebSocket</servlet-name>
-        <url-pattern>/talk/*</url-pattern>
+        <url-pattern>/io/*</url-pattern>
     </servlet-mapping>
 
 </web-app>

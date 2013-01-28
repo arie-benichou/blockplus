@@ -7,9 +7,6 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>blockplus</name>
     <url>https://code.google.com/p/blockplus/</url>
-
-    <!-- <packaging>jar</packaging> -->
-
     <packaging>war</packaging>
 
     <properties>
@@ -20,9 +17,7 @@
     </properties>
 
     <build>
-        <!-- 
-        <defaultGoal>jetty:run</defaultGoal>
-         -->
+        <!-- <defaultGoal>jetty:run</defaultGoal> -->
         <finalName>blockplus</finalName>
         <plugins>
             <plugin>
@@ -33,11 +28,6 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-            <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId> 
-                <version>2.3</version> <configuration> <descriptorRefs> <descriptorRef>jar-with-dependencies</descriptorRef> 
-                </descriptorRefs> <archive> <manifest> <mainClass>services.RunBlockplusApplicationJSE</mainClass> 
-                </manifest> </archive> </configuration> <executions> <execution> <phase>package</phase> 
-                <goals> <goal>single</goal> </goals> </execution> </executions> </plugin> -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -52,7 +42,6 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>8.1.8.v20121106</version>
                 <configuration>
-                    <!-- <jettyXml>${basedir}/jetty.xml</jettyXml> -->
                     <scanIntervalSeconds>0</scanIntervalSeconds>
                     <webAppConfig>
                         <contextPath>/</contextPath>
@@ -64,21 +53,12 @@
                             implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
                             <port>8080</port>
                             <maxIdleTime>60000</maxIdleTime>
-                            <!-- <reuseAddress>true</reuseAddress> -->
                         </connector>
                     </connectors>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>maven-restlet</id>
-            <name>Public online Restlet repository</name>
-            <url>http://maven.restlet.org</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
@@ -100,29 +80,14 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.restlet.jse</groupId>
-            <artifactId>org.restlet</artifactId>
-            <version>${restlet.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.restlet.jse</groupId>
-            <artifactId>org.restlet.ext.jetty</artifactId>
-            <version>${restlet.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.restlet.jee</groupId>
-            <artifactId>org.restlet.ext.servlet</artifactId>
-            <version>${restlet.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- <dependency> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-websocket</artifactId> 
-            <version>8.1.8.v20121106</version> <classifier>tests</classifier> </dependency> -->
-        <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-websocket</artifactId>
             <version>8.1.8.v20121106</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
         </dependency>
     </dependencies>
 

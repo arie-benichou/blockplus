@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
     // TODO extract from url
-    var location = "ws://artefact.hd.free.fr/talk/tome";
+    var location = "ws://artefact.hd.free.fr/io/";
 
     Client.protocol.register("info", function(data) {
         console.log(data);
