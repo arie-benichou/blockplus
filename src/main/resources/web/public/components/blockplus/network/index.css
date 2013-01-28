@@ -61,6 +61,9 @@ body {
 #right {
 	float: left;
 	width: 238px;
+	/*
+	border: 1px solid red;
+	*/
 }
 
 #remaining-pieces {

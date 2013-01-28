@@ -35,6 +35,7 @@ public class BlockplusServerEvents {
         final RoomInterface<BlockplusGame> room = this.getServer().getRoom(roomConnection.getOrdinal());
         if (room.isFull()) {
             roomConnection.getIO().emit("info", "\"" + "Room " + room.getOrdinal() + " is full" + "\""); // TODO revoir emit
+            roomConnection.getIO().emit("fullRoom", "\"" + room.getOrdinal() + "\"");
         }
         else {
             final ClientInterface oldClient = this.getServer().getClient(roomConnection.getIO());
@@ -50,6 +51,9 @@ public class BlockplusServerEvents {
             final ImmutableList<ClientInterface> clients = newRoom.getClients();
             this.getServer().updateRoom(newRoom.getOrdinal(), clients);
             this.getServer().updateRooms(newRoom.getOrdinal(), newRoom);
+
+            // TODO revoir emit
+            newClient.getIO().emit("enterRoom", "\"" + newRoom.getOrdinal() + "\"");
 
             for (final ClientInterface client : clients) {
                 client.getIO().emit("info", "\"" + newClient.getName() + " has joined room " + newRoom.getOrdinal() + "\""); // TODO revoir emit
