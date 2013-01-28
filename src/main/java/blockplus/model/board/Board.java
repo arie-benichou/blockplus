@@ -98,6 +98,7 @@ public final class Board implements Supplier<BoardInterface<? extends Symbol>> {
         return new Board.Builder(colors, rows, columns);
     }
 
+    // TODO sorted map
     private final Map<ColorInterface, BoardLayer> layerByColor;
 
     public Set<ColorInterface> getColors() {

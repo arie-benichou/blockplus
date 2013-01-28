@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import blockplus.model.board.Board;
+import blockplus.model.board.BoardLayer;
 import blockplus.model.color.ColorInterface;
 import blockplus.model.game.BlockplusGame;
 import blockplus.model.game.BlockplusGameContext;
@@ -16,6 +18,10 @@ import blockplus.model.piece.PiecesBag;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import components.position.PositionInterface;
 
 public final class GameJSONRepresentation {
@@ -38,8 +44,31 @@ public final class GameJSONRepresentation {
         return this.encodeColor(this.getGame().getInitialContext().getColor());
     }
 
-    public String encodeBoard() {
+    public String _encodeBoard() {
         return CellEncoding.encode(this.getGame().getInitialContext().getBoard().colorize());
+    }
+
+    public JsonElement encodeBoard() {
+        final JsonObject boardState = new JsonObject();
+        final JsonObject meta = new JsonObject();
+        final JsonObject data = new JsonObject();
+        final Board board = this.getGame().getInitialContext().getBoard();
+        final int rows = board.rows();
+        final int columns = board.columns();
+        meta.addProperty("rows", rows);
+        meta.addProperty("columns", columns);
+        final Set<ColorInterface> colors = board.getColors();
+        for (final ColorInterface color : colors) {
+            final JsonArray jsonArray = new JsonArray();
+            final BoardLayer layer = board.getLayer(color);
+            final Set<PositionInterface> positions = layer.getSelves().keySet();
+            for (final PositionInterface position : positions)
+                jsonArray.add(new JsonPrimitive(columns * position.row() + (position.column() % rows)));
+            data.add(color.toString(), jsonArray);
+        }
+        boardState.add("dimension", meta);
+        boardState.add("cells", data);
+        return boardState;
     }
 
     public String encodeBagOfPiece(final PiecesBag pieces) {
@@ -81,18 +110,10 @@ public final class GameJSONRepresentation {
         return JSONSerializer.getInstance().toJson(potentialPositions);
     }
 
-    /*
-    @Override
-    public String toString() {
-        final String json = this.encodeBoard();
-        return json;
-    }
-    */
-
     public static void main(final String[] args) {
         final BlockplusGame game = new BlockplusGame();
-        final String string = new GameJSONRepresentation(game).encodeColor();
-        System.out.println(string);
+        final JsonElement jsonElement = new GameJSONRepresentation(game).encodeBoard();
+        System.out.println(jsonElement);
+        System.out.println(new GameJSONRepresentation(game)._encodeBoard());
     }
-
 }

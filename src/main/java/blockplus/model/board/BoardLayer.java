@@ -208,4 +208,9 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return this.get().toString();
+    }
+
 }

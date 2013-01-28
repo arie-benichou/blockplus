@@ -18,13 +18,33 @@ BoardRendering.prototype = {
         this.cellRendering.update(position, state);
     },
 
-    update : function(board) {
-        for ( var i = 0; i < board.length; i++) {
-            var row = board[i];
+    update : function(array) {
+        for ( var i = 0; i < array.length; i++) {
+            var row = array[i];
             for ( var j = 0; j < row.length; j++) {
-                var state = board[i][j];
+                var state = array[i][j];
                 var position = new Position(i, j);
                 this.updateCell(position, state);
+            }
+        }
+    },
+
+    update2 : function(boardState) {
+        var none = "#2a2d30"; // TODO add property
+        var dimension = boardState.dimension;
+        var rows = dimension.rows;
+        var columns = dimension.columns;
+        for ( var i = 0; i < rows; ++i)
+            for ( var j = 0; j < columns; ++j)
+                this.updateCell(new Position(i, j), none);
+        var cells = boardState.cells;
+        for ( var color in cells) {
+            var array = cells[color];
+            for ( var i = 0, n = array.length; i < n; ++i) {
+                var index = array[i];
+                var row = Math.floor(index/columns);
+                var column = index % rows;
+                this.updateCell(new Position(row, column), color);                
             }
         }
     },

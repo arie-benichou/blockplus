@@ -41,7 +41,7 @@ var Game = function(client) {
 
     // TODO send a single game state object    
     Client.protocol.register("board", function(data) {
-        that.boardRendering.update(data);
+        that.boardRendering.update2(data);
     });
 
     // TODO send a single game state object    

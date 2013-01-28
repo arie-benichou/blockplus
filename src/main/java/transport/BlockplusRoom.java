@@ -30,6 +30,7 @@ import com.google.gson.JsonPrimitive;
 import components.position.Position;
 import components.position.PositionInterface;
 
+// TODO RoomContext et RoomContextBuilder
 public class BlockplusRoom implements RoomInterface<BlockplusGame> {
 
     private static String computeCode(final ImmutableList<ClientInterface> clients) {
@@ -236,7 +237,7 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
         final BlockplusGame game = this.getApplication();
 
         final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(game);
-        final String encodedBoard = gameRepresentation.encodeBoard();
+        final String encodedBoard = gameRepresentation.encodeBoard().toString();
 
         client.getIO().emit("info", "\"" + client.getName() + "\"");
         client.getIO().emit("color", gameRepresentation.encodeColor(player.getColor()));
@@ -256,7 +257,7 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
     public void update() {
         final BlockplusGame game = this.getApplication();
         final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(game);
-        final String encodedBoard = gameRepresentation.encodeBoard();
+        final String encodedBoard = gameRepresentation.encodeBoard().toString();
         final JsonArray remainingPieces = new JsonArray();
         for (final ClientInterface client : this.getClients()) {
             final PlayerInterface player = this.getPlayer(client);
@@ -283,7 +284,7 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
     public String toJson() {
         final BlockplusGame game = this.getApplication();
         final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(game);
-        return gameRepresentation.encodeBoard();
+        return gameRepresentation.encodeBoard().toString();
     }
 
 }
