@@ -17,17 +17,17 @@
 
 package blockplus.demo.arbitration;
 
-import static blockplus.model.color.Colors.*;
-import static components.position.Position.*;
+import static blockplus.model.color.Colors.Blue;
+import static blockplus.model.color.Colors.Green;
+import static blockplus.model.color.Colors.Red;
+import static blockplus.model.color.Colors.Yellow;
+import static components.position.Position.Position;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import serialization.JSONSerializer;
-
 import blockplus.model.arbitration.Referee;
 import blockplus.model.board.Board;
 import blockplus.model.board.BoardLayer;
@@ -50,10 +50,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
-import com.google.gson.JsonSerializer;
-
 import components.board.BoardInterface;
-import components.position.PositionInterface;
 
 /**
  * Featuring set of playable positions for a player
@@ -105,7 +102,7 @@ public final class RefereeDemo04 {
                 boards.add(coloredBoard);
                 //View.as(blockplus.view.window.BoardView.class).show(newBoard).up();
                 boardView.apply(newBoard);
-                Pieces key = Pieces.get(piece.getId());
+                final Pieces key = Pieces.get(piece.getId());
                 List<Move> playablePositions = legalMovesByPiece.get(key);
                 if (playablePositions == null) {
                     playablePositions = Lists.newArrayList(move);
@@ -123,16 +120,7 @@ public final class RefereeDemo04 {
             System.out.println(PieceComponent.FACTORY);
             System.out.println(PieceComposite.FACTORY);
             System.out.println("-----------------------------8<-----------------------------");
-            for (Entry<Pieces, List<Move>> entry : legalMovesByPiece.entrySet()) {
-                //System.out.println(entry);
-            }
-            /*
-            Gson gson = new Gson();
-            String json = gson.toJson(legalMovesByReferential);
-            System.out.println(json);
-            */
-            
-            Gson gson = JSONSerializer.getInstance();
+            final Gson gson = JSONSerializer.getInstance();
             System.out.println(gson.toJson(legalMovesByPiece));
             System.out.println(gson.toJson(legalMovesByPiece.keySet()));
         }

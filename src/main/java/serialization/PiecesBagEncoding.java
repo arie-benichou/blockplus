@@ -3,13 +3,11 @@ package serialization;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import blockplus.model.color.ColorInterface;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
 
@@ -32,11 +30,12 @@ public final class PiecesBagEncoding {
         @Override
         public JsonElement serialize(final PiecesBag bag, final Type typeOfSrc, final JsonSerializationContext context) {
             //PiecesBag effectiveBag = bag.remove(Pieces.PIECE0);
-            List<Pieces> effectiveBagAsList = bag.asList(); // TODO pouvoir passer un Ordering
+            final List<Pieces> effectiveBagAsList = bag.asList(); // TODO pouvoir passer un Ordering
             Collections.sort(effectiveBagAsList);
-            List<Integer> remaining = Lists.transform(effectiveBagAsList, new Function<Pieces, Integer>() {
+            final List<Integer> remaining = Lists.transform(effectiveBagAsList, new Function<Pieces, Integer>() {
+
                 @Override
-                public Integer apply(@Nullable Pieces input) {
+                public Integer apply(@Nullable final Pieces input) {
                     return input.ordinal();
                 }
             });
@@ -53,7 +52,7 @@ public final class PiecesBagEncoding {
     }
 
     public static void main(final String[] args) throws IOException {
-        PiecesBag bag = PiecesBag.from(Pieces.values());
+        final PiecesBag bag = PiecesBag.from(Pieces.values());
         final String encodedToJson = encode(bag);
         System.out.println(encodedToJson);
     }

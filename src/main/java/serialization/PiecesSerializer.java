@@ -12,24 +12,22 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
-import components.position.Position;
-import components.position.PositionInterface;
 
 public final class PiecesSerializer implements JsonSerializer<Pieces> {
 
     @Override
-    public JsonElement serialize(Pieces piece, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonElement serialize(final Pieces piece, final Type typeOfSrc, final JsonSerializationContext context) {
         return new JsonPrimitive(piece.ordinal());
     }
 
-    public static void main(String[] args) {
-        
+    public static void main(final String[] args) {
+
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder = gsonBuilder.registerTypeAdapter(new TypeToken<Pieces>() {}.getType(), new PiecesSerializer());
-        Gson gson = gsonBuilder.create();
+        final Gson gson = gsonBuilder.create();
 
-        Pieces position = Pieces.get(7);
-        String json = gson.toJson(position);
+        final Pieces position = Pieces.get(7);
+        final String json = gson.toJson(position);
         System.out.println(json);
 
     }
