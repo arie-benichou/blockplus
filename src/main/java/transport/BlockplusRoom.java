@@ -26,6 +26,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 import components.position.Position;
 import components.position.PositionInterface;
 
@@ -135,9 +136,42 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
     @Override
     public RoomInterface<BlockplusGame> connect(final ClientInterface newClient) {
         final ImmutableList<ClientInterface> clients = new ImmutableList.Builder<ClientInterface>().addAll(this.getClients()).add(newClient).build();
-        final BlockplusRoom newRoom = (clients.size() == this.getCapacity()) ?
-                new BlockplusRoom(this.ordinal, computeCode(clients), clients, new BlockplusGame(), System.currentTimeMillis()) :
-                new BlockplusRoom(this.ordinal, this.code, clients, this.game, this.timeStamp);
+
+        BlockplusRoom newRoom = null;
+        if (clients.size() == this.getCapacity()) {
+
+            /*
+            final PiecesBag bagOfPieces = PiecesBag.from(Pieces.set());
+            final PlayerInterface bluePlayer = new Player(Colors.Blue, bagOfPieces, Colors.Yellow);
+
+            final PlayerInterface yellowPlayer = new Player(Colors.Yellow, bagOfPieces, Colors.Red, new FirstOptionStrategy());
+            final PlayerInterface redPlayer = new Player(Colors.Red, bagOfPieces, Colors.Green, new FirstOptionStrategy());
+            final PlayerInterface greenPlayer = new Player(Colors.Green, bagOfPieces, Colors.Blue, new FirstOptionStrategy());
+            */
+
+            /*
+            final PlayerInterface yellowPlayer = new Player(Colors.Yellow, bagOfPieces, Colors.Red, new RandomStrategy());
+            final PlayerInterface redPlayer = new Player(Colors.Red, bagOfPieces, Colors.Green, new RandomStrategy());
+            final PlayerInterface greenPlayer = new Player(Colors.Green, bagOfPieces, Colors.Blue, new RandomStrategy());
+            */
+
+            /*
+            final BlockplusGameContext initialContext = new BlockplusGameContextBuilder()
+                    .setPlayers(bluePlayer, yellowPlayer, redPlayer, greenPlayer)
+                    .build();
+
+            final BlockplusGame game = new BlockplusGame(initialContext);
+            final BlockplusGameContext context = game.start(4 * 16);
+
+            newRoom = new BlockplusRoom(this.ordinal, computeCode(clients), clients, new BlockplusGame(context), System.currentTimeMillis());
+            */
+            newRoom = new BlockplusRoom(this.ordinal, computeCode(clients), clients, new BlockplusGame(), System.currentTimeMillis());
+
+        }
+        else {
+            newRoom = new BlockplusRoom(this.ordinal, this.code, clients, this.game, this.timeStamp);
+        }
+
         return newRoom;
     }
 
@@ -223,11 +257,14 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
         final BlockplusGame game = this.getApplication();
         final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(game);
         final String encodedBoard = gameRepresentation.encodeBoard();
+        final JsonArray remainingPieces = new JsonArray();
         for (final ClientInterface client : this.getClients()) {
             final PlayerInterface player = this.getPlayer(client);
             client.getIO().emit("info", "\"" + client.getName() + "\"");
             client.getIO().emit("color", gameRepresentation.encodeColor(player.getColor()));
-            client.getIO().emit("pieces", gameRepresentation.encodeBagOfPiece(player.getPieces()));
+            final String bagOfPieces = gameRepresentation.encodeBagOfPiece(player.getPieces());
+            remainingPieces.add(new JsonPrimitive(bagOfPieces));
+            client.getIO().emit("pieces", bagOfPieces);
             client.getIO().emit("board", encodedBoard);
         }
         if (game.getInitialContext().hasNext()) {
@@ -236,7 +273,8 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
         }
         else {
             for (final ClientInterface client : this.getClients()) {
-                client.getIO().emit("end", "game-over");
+                client.getIO().emit("end", "\"" + "And the winner is..." + "\"");
+                client.getIO().emit("score", remainingPieces.toString());
             }
         }
     }

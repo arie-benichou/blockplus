@@ -14,10 +14,12 @@ var Game = function(client) {
 
     var that = this;
 
+    // TODO send a single game state object    
     Client.protocol.register("color", function(data) {
         that.currentColor = data; // TODO avoir un objet game
     });
 
+    // TODO send a single game state object    
     Client.protocol.register("pieces", function(data) {
         $("#available-pieces").html('');
         for ( var i = 1; i <= 21; ++i) { // TODO
@@ -37,14 +39,17 @@ var Game = function(client) {
         $("#available-pieces").show();
     });
 
+    // TODO send a single game state object    
     Client.protocol.register("board", function(data) {
         that.boardRendering.update(data);
     });
 
+    // TODO send a single game state object    
     Client.protocol.register("options", function(data) {
         that.option = new Options(data); // TODO
     });
-
+    
+    // TODO send a single game state object
     Client.protocol.register("potential", function(data) {
         that.selectedPositions.clear();
         that.potentialPositions = new PotentialPositions(data);
@@ -52,6 +57,36 @@ var Game = function(client) {
             that.showPotentialCells(new Position(data[i][0], data[i][1]));
     });
 
+    // TODO send a single game state object    
+    Client.protocol.register("end", function(data) {
+        that.audioManager.play("../audio/game-is-over.mp3");
+        that.potentialPositions = null; // TODO clear();
+        that.selectedPositions.clear();
+        $(that.board).attr("style", "opacity:0.33;");
+    });
+
+    // TODO send a single game state object
+    Client.protocol.register("score", function(data) {
+        $("#available-pieces").html('');
+        //$("#available-pieces").hide();        
+        $("#left").attr("style", "width:0");
+        $("#remaining-pieces").html('');
+        var k = 0;
+        for ( var color in Colors) {
+            var array = JSON.parse(data[k]);
+            for ( var i = 0; i < array.length; ++i) {
+                var retrievedObject = localStorage.getItem(getLocalStoreKey(color, "piece" + array[i]));
+                var image = new Image();
+                image.src = retrievedObject;
+                image.setAttribute("style", "width:55px; height:55px;");
+                $("#remaining-pieces").append(image);
+            }
+            ++k;
+        }
+        $("#remaining-pieces").show();        
+    });
+
+    
     Client.protocol.register("link", function(data) {
         sessionStorage.setItem("blockplus.network.hashcode", JSON.stringify(data));
     });
