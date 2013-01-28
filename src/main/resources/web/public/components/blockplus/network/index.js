@@ -27,12 +27,19 @@ $(document).ready(function() {
     Client.message = connection; // TODO à revoir
 
     $("#connect").click(function(event) {
-        
-        var name = $("#user").val();
-        
+
+        // TODO extract method
+        // TODO sanitize on server side
+        var input = $("#user").val();
+        if (input == "") return false;
+        var pattern = new RegExp("[<&?#'\"= >:;,/!*.\{\}\\]\\[]", "g");
+        var name = input.replace(pattern, "").substring(0,26);
+        $("#user").val(name);
+        if(name != input) return false;
+
         var client = new Client(name, location);
         client.start(client.join);
-        
+
         var drawRoomNumber = function(context, ordinal) {
             context.fillStyle = "rgba(255,255,255,0.90)";
             context.textAlign = "center";
@@ -73,7 +80,7 @@ $(document).ready(function() {
                         Client.protocol.register("exitRoom", function(data) {
                             alert("You are now out of room " + data + ".");
                         });
-                        
+
                         myGame = new Game(client);
                         myGame.bigMess();
                     });
