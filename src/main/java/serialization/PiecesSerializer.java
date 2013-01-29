@@ -13,6 +13,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
+@Deprecated
 public final class PiecesSerializer implements JsonSerializer<Pieces> {
 
     @Override

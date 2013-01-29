@@ -76,9 +76,9 @@ $(document).ready(function() {
                         return message;
                     };
                     Client.protocol.register("enterRoom", function(data) {
-                        alert("You are now in room " + data + ".");
+                        //alert("You are now in room " + data + ".");
                         Client.protocol.register("exitRoom", function(data) {
-                            alert("You are now out of room " + data + ".");
+                            //alert("You are now out of room " + data + ".");
                         });
 
                         myGame = new Game(client);
@@ -102,7 +102,7 @@ $(document).ready(function() {
             var boardRendering = new BoardRendering(new CellRendering(canvas, 10, 10, 9.5, 9.5));
             boardRendering.clear("#2a2d30"); // TODO à revoir
             var board = JSON.parse(data.board); // TODO à revoir coté serveur
-            boardRendering.update2(board);
+            boardRendering.update(board);
         });
 
         var showRoom = function(ordinal) {

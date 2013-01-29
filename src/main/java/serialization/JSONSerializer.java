@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import components.position.Position;
 import components.position.PositionInterface;
 
+@Deprecated
 public class JSONSerializer {
 
     private static final Gson INSTANCE = new GsonBuilder()

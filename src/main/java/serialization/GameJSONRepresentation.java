@@ -14,10 +14,10 @@ import blockplus.model.move.Move;
 import blockplus.model.piece.PieceInterface;
 import blockplus.model.piece.Pieces;
 import blockplus.model.piece.PiecesBag;
+import blockplus.model.player.PlayerInterface;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -38,14 +38,6 @@ public final class GameJSONRepresentation {
 
     public String encodeColor(final ColorInterface color) {
         return JSONSerializer.getInstance().toJson(color);
-    }
-
-    public String encodeColor() {
-        return this.encodeColor(this.getGame().getInitialContext().getColor());
-    }
-
-    public String _encodeBoard() {
-        return CellEncoding.encode(this.getGame().getInitialContext().getBoard().colorize());
     }
 
     public JsonElement encodeBoard() {
@@ -71,18 +63,26 @@ public final class GameJSONRepresentation {
         return boardState;
     }
 
-    public String encodeBagOfPiece(final PiecesBag pieces) {
-        final PiecesBag effectiveBag = pieces.remove(Pieces.PIECE0); // TODO à revoir
-        return PiecesBagEncoding.encode(effectiveBag);
-    }
-
-    public String encodeBagOfPiece() {
+    // TODO ordering in piecesBag
+    // TODO array of 0/1
+    // TODO enlever la pièce nulle ?
+    public JsonElement encodePieces() {
+        final JsonObject data = new JsonObject();
         final BlockplusGameContext context = this.getGame().getInitialContext();
-        final PiecesBag pieces = context.getPlayers().get(context.getColor()).getPieces();
-        return PiecesBagEncoding.encode(pieces);
+        final List<PlayerInterface> players = context.getPlayers().getAllPlayers();
+        for (final PlayerInterface player : players) {
+            final ColorInterface color = player.getColor();
+            final JsonArray jsonArray = new JsonArray();
+            final PiecesBag pieces = player.getPieces();
+            for (final Pieces piece : pieces) {
+                jsonArray.add(new JsonPrimitive(piece.ordinal()));
+            }
+            data.add(color.toString(), jsonArray);
+        }
+        return data;
     }
 
-    public String encodeOptions() {
+    public JsonElement encodeOptions() {
         final List<Move> options = this.getGame().getInitialContext().options();
         final Map<Pieces, List<Set<PositionInterface>>> legalPositionsByPiece = Maps.newTreeMap();
         for (final Move move : options) {
@@ -97,23 +97,25 @@ public final class GameJSONRepresentation {
                 playablePositions.add(piece.getSelfPositions());
             }
         }
-        return JSONSerializer.getInstance().toJson(legalPositionsByPiece);
+        return JSONSerializer.getInstance().toJsonTree(legalPositionsByPiece);
     }
 
-    // TODO à faire cote js
-    public String encodePotentialPositions() {
-        final List<Move> options = this.getGame().getInitialContext().options();
-        final Set<PositionInterface> potentialPositions = Sets.newHashSet();
-        for (final Move move : options) {
-            potentialPositions.addAll(move.getPiece().getSelfPositions());
-        }
-        return JSONSerializer.getInstance().toJson(potentialPositions);
+    @Override
+    public String toString() {
+        final JsonObject data = new JsonObject();
+        data.addProperty("color", this.getGame().getInitialContext().getColor().toString());
+        data.addProperty("isTerminal", !this.getGame().getInitialContext().hasNext());
+        data.add("board", this.encodeBoard());
+        data.add("pieces", this.encodePieces());
+        data.add("options", this.encodeOptions());
+        return data.toString();
     }
 
     public static void main(final String[] args) {
         final BlockplusGame game = new BlockplusGame();
-        final JsonElement jsonElement = new GameJSONRepresentation(game).encodeBoard();
-        System.out.println(jsonElement);
-        System.out.println(new GameJSONRepresentation(game)._encodeBoard());
+        final GameJSONRepresentation gameJSONRepresentation = new GameJSONRepresentation(game);
+        System.out.println(gameJSONRepresentation);
+        System.out.println(gameJSONRepresentation.encodePieces());
     }
+
 }

@@ -14,6 +14,10 @@ SelectedPositions.prototype = {
     getSize : function() {
         return this.size;
     },
+    
+    isEmpty : function() {
+        return this.size == 0;
+    },    
 
     add : function(position) {
         this.data[JSON.stringify(position)] = true;

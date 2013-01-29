@@ -1,5 +1,6 @@
 var Options = function(data) {
-    var tmpData = [];
+    this.data = [];
+    this.potentialPositions = {};
     for ( var p in data) {
         var pieceInstances = data[p];
         var pieceInstancesObject = {
@@ -14,13 +15,14 @@ var Options = function(data) {
             var pieceInstanceObject = {};
             for ( var j = 0; j < size; ++j) {
                 var p = new Position(pieceInstance[j][0], pieceInstance[j][1]);
-                pieceInstanceObject[JSON.stringify(p)] = true;
+                var json = JSON.stringify(p); // TODO encoder les positions en index
+                this.potentialPositions[json] = true;
+                pieceInstanceObject[json] = true;
             }
             pieceInstancesObject["instances"].push(pieceInstanceObject);
         }
-        tmpData.push(pieceInstancesObject);
+        this.data.push(pieceInstancesObject);
     }
-    this.data = tmpData;
 };
 
 Options.prototype = {
@@ -29,6 +31,10 @@ Options.prototype = {
 
     get : function() {
         return this.data;
+    },
+    
+    getPotentialPositions : function() {
+        return this.potentialPositions;
     },
 
     matches : function(selectedPositions) {

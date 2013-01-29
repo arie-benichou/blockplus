@@ -26,7 +26,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 import components.position.Position;
 import components.position.PositionInterface;
 
@@ -232,51 +231,18 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
     }
 
     public void update(final ClientInterface client) {
-
-        final PlayerInterface player = this.getPlayer(client);
         final BlockplusGame game = this.getApplication();
-
         final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(game);
-        final String encodedBoard = gameRepresentation.encodeBoard().toString();
-
-        client.getIO().emit("info", "\"" + client.getName() + "\"");
-        client.getIO().emit("color", gameRepresentation.encodeColor(player.getColor()));
-        client.getIO().emit("pieces", gameRepresentation.encodeBagOfPiece(player.getPieces()));
-        client.getIO().emit("board", encodedBoard);
-
-        if (game.getInitialContext().hasNext()) {
-            if (this.getUserToPlay().equals(client)) {
-                this.getUserToPlay().getIO().emit("options", gameRepresentation.encodeOptions());
-                this.getUserToPlay().getIO().emit("potential", gameRepresentation.encodePotentialPositions());
-            }
-        }
-        else client.getIO().emit("end", "game-over");
+        client.getIO().emit("color", gameRepresentation.encodeColor(this.getPlayer(client).getColor()));
+        client.getIO().emit("update", gameRepresentation.toString());
     }
 
-    // TODO reuse single client update
     public void update() {
         final BlockplusGame game = this.getApplication();
         final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(game);
-        final String encodedBoard = gameRepresentation.encodeBoard().toString();
-        final JsonArray remainingPieces = new JsonArray();
         for (final ClientInterface client : this.getClients()) {
-            final PlayerInterface player = this.getPlayer(client);
-            client.getIO().emit("info", "\"" + client.getName() + "\"");
-            client.getIO().emit("color", gameRepresentation.encodeColor(player.getColor()));
-            final String bagOfPieces = gameRepresentation.encodeBagOfPiece(player.getPieces());
-            remainingPieces.add(new JsonPrimitive(bagOfPieces));
-            client.getIO().emit("pieces", bagOfPieces);
-            client.getIO().emit("board", encodedBoard);
-        }
-        if (game.getInitialContext().hasNext()) {
-            this.getUserToPlay().getIO().emit("options", gameRepresentation.encodeOptions());
-            this.getUserToPlay().getIO().emit("potential", gameRepresentation.encodePotentialPositions());
-        }
-        else {
-            for (final ClientInterface client : this.getClients()) {
-                client.getIO().emit("end", "\"" + "And the winner is..." + "\"");
-                client.getIO().emit("score", remainingPieces.toString());
-            }
+            client.getIO().emit("color", gameRepresentation.encodeColor(this.getPlayer(client).getColor()));
+            client.getIO().emit("update", gameRepresentation.toString());
         }
     }
 

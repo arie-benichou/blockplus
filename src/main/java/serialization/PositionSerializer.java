@@ -14,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import components.position.Position;
 import components.position.PositionInterface;
 
+@Deprecated
 public final class PositionSerializer implements JsonSerializer<Position> {
 
     @Override
