@@ -3,15 +3,31 @@ var Game = function(client) {
 
     this.client = client;
 
-    this.board = document.getElementById("board"); // TODO renommer en
-                                                    // 'boardElement' (et à
-                                                    // injecter)
-    this.boardRendering = new BoardRendering(new CellRendering(board, 34, 34, 33, 33));
+    // TODO renommer en 'boardElement' (et à injecter)
+    this.boardRendering = new BoardRendering(new CellRendering(document.getElementById("board"), 34, 34, 33, 33));
 
     this.currentColor = null; // TODO renommer en 'color' (et à injecter)
     this.option = null; // TODO renommer en 'options'
     this.gameState = null;
+
+    // TODO
+    var mock = {
+        dimension : {
+            rows : 20,
+            columns : 20
+        },
+        cells : {
+            Blue : [],
+            Yellow : [],
+            Red : [],
+            Green : []
+        }
+    };
+    this.board = new Board(mock);
+    // this.board = null;
+
     this.selectedPositions = new SelectedPositions();
+    this.potentialPositions = null;
 
     this.audioManager = new AudioManager(new Audio());
     this.offsetToPositionBuilder = new OffsetToPositionBuilder(34, 34);
@@ -27,6 +43,7 @@ var Game = function(client) {
         that._updateUI();
     });
 
+    // TODO
     Client.protocol.register("link", function(data) {
         sessionStorage.setItem("blockplus.network.hashcode", JSON.stringify(data));
     });
@@ -37,8 +54,12 @@ Game.prototype = {
 
     constructor : Game,
 
+    getBoard : function() {
+        return this.board;
+    },
+
     _updateColor : function() {
-        //alert(this.gameState.getColor() + " must play..."); // TODO
+        // alert(this.gameState.getColor() + " must play..."); // TODO
     },
 
     // TODO à revoir
@@ -62,7 +83,8 @@ Game.prototype = {
     },
 
     _updateBoard : function() {
-        this.boardRendering.update(this.gameState.getBoard());
+        this.board = this.gameState.getBoard();
+        this.boardRendering.update(this.board);
     },
 
     _showPotentialCells : function(position) {
@@ -80,29 +102,65 @@ Game.prototype = {
         context.stroke();
         context.globalAlpha = 1;
     },
+    
+    _hidePotentialCells : function(position) {
+        this.boardRendering.updateCell(position, "White");
+    },
+    
+    _showSelectedPotentialCell : function(position) {
+            console.log(position);
+            this.boardRendering.getContext().globalAlpha = 0.5;
+            this.boardRendering.updateCell(position, Colors[this.currentColor]); // TODO pouvoir passer alpha
+            this.boardRendering.getContext().globalAlpha = 1;
+    },            
+    
+    _showSelectedPotentialCells : function() {
+        var selectedPotentialPositions = this.selectedPositions.get();
+        console.log(selectedPotentialPositions);
+        for ( var selectedPotentialPosition in selectedPotentialPositions) {
+            // TODO à revoir
+            var position = JSON.parse(selectedPotentialPosition);
+            this._showSelectedPotentialCell(position);
+        }
+    },
+
+    _decorateOpponentCell : function(opponentColor, position) {
+        this.boardRendering.getContext().globalAlpha = 0.5;
+        // TODO add alpha parameter
+        this.boardRendering.updateCell(position, "#FFF");
+        this.boardRendering.getContext().globalAlpha = 1;
+    },
 
     _updateOptions : function() {
         this.option = new Options(this.gameState.getOptions(this.currentColor));
-        var potentialPositions = this.option.getPotentialPositions();
-        this.selectedPositions.clear();
-        for ( var potentialPosition in potentialPositions)
-            this._showPotentialCells(JSON.parse(potentialPosition));
     },
+    
+    _updatePotentialPositions : function() {
+        this.potentialPositions = this.option.getPotentialPositions();
+        for ( var potentialPosition in this.potentialPositions)
+            this._showPotentialCells(JSON.parse(potentialPosition));
+    },    
 
     _updateUI : function() {
 
         this._updateColor();
         this._updatePieces();
+        
         this._updateBoard();
         this._updateOptions();
+        
+        this.selectedPositions.clear();
+        this._updatePotentialPositions();
+        this._showSelectedPotentialCells();
+        
 
-        console.log(this.gameState.isTerminal());
+        $("#remaining-pieces").hide();
 
         if (this.gameState.isTerminal()) {
             this.audioManager.play("../audio/game-is-over.mp3");
             this.potentialPositions = null; // TODO clear();
             this.selectedPositions.clear();
-            $(this.board).attr("style", "opacity:0.33;");
+            $(this.boardRendering.getCanvas()).attr("style", "opacity:0.33;");
             // ///////////////////////////////////////////
             $("#available-pieces").html('');
             // $("#available-pieces").hide();
@@ -111,7 +169,7 @@ Game.prototype = {
             for ( var color in Colors) {
                 var array = this.gameState.getPieces(color);
                 for ( var i = 0, n = array.length; i < n; ++i) {
-                    if(array[i] != 0) { // TODO à revoir
+                    if (array[i] != 0) { // TODO à revoir
                         var key = getLocalStoreKey(color, "piece" + array[i]);
                         var retrievedObject = localStorage.getItem(key);
                         var image = new Image();
@@ -127,6 +185,9 @@ Game.prototype = {
     },
 
     bigMess : function() {
+
+        this.boardRendering.init(this.board); // TODO à revoir
+
         /*--------------------------------------------------8<--------------------------------------------------*/
         // TODO extract class
         var moveSubmit = function(id, positions) {
@@ -171,9 +232,7 @@ Game.prototype = {
                         return; // TODO à revoir
                     }
                 } else {
-                    that.boardRendering.getContext().globalAlpha = 0.5;
-                    that.boardRendering.updateCell(position, Colors[that.currentColor]);
-                    that.boardRendering.getContext().globalAlpha = 1;
+                    that._showSelectedPotentialCell(position);
                     that.selectedPositions.add(position);
                 }
                 var matches = that.option.matches(that.selectedPositions);
@@ -214,6 +273,41 @@ Game.prototype = {
                 } else {
                     $("#pieceToPlay").attr("class", "transparent out");
                 }
+            } else {
+                var opponentColor = that.board.getOpponentColorAt(position);
+                $("#remaining-pieces").html('');
+
+                // TODO this.selectedOpponent
+                that.boardRendering.update(that.board);
+                that._updatePotentialPositions();
+                that._showSelectedPotentialCells();
+                
+                if (opponentColor != null /*&& opponentColor != that.currentColor*/) {
+                    
+                    that.boardRendering.showOpponentCells(that.board, that.currentColor, opponentColor);
+                    
+
+                    
+                    //if (opponentColor != that.currentColor) {
+                        // TODO extract method
+                        var f = function(color) {
+                            var array = that.gameState.getPieces(color);
+                            for ( var i = 0, n = array.length; i < n; ++i) {
+                                if (array[i] != 0) { // TODO à revoir
+                                    var key = getLocalStoreKey(color, "piece" + array[i]);
+                                    var retrievedObject = localStorage.getItem(key);
+                                    var image = new Image();
+                                    image.src = retrievedObject;
+                                    image.setAttribute("style", "width:55px; height:55px;");
+                                    $("#remaining-pieces").append(image);
+                                }
+                            }
+                        };
+                        f(opponentColor);
+                        $("#remaining-pieces").show();
+                    //}
+                }
+                
             }
         };
         /*--------------------------------------------------8<--------------------------------------------------*/
@@ -225,8 +319,10 @@ Game.prototype = {
                 var p = JSON.parse([ position ]);
                 data.push([ p.row, p.column ]);
             }
-            // TODO ? se contenter des positions
-            that.client.say(moveSubmit(pieceId, data));
+            for ( var potentialPosition in this.potentialPositions)
+                that._hidePotentialCells(JSON.parse(potentialPosition));
+            // TODO ? se contenter des positions            
+            that.client.say(moveSubmit(pieceId, data));            
         };
         /*--------------------------------------------------8<--------------------------------------------------*/
         $(this.boardRendering.getCanvas()).click(potentialCellClickEventHandler);

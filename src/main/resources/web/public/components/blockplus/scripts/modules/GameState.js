@@ -1,7 +1,7 @@
 var GameState = function(data) {
     this._color = data.color;
     this._pieces = data.pieces;    
-    this._board = data.board;
+    this._board = new Board(data.board);
     this._options = data.options;
     this._isTerminal = data.isTerminal;
 };

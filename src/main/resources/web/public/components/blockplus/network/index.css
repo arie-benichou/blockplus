@@ -66,10 +66,27 @@ body {
 	*/
 }
 
+#container1 {
+	height: 238px;
+}
+
+#submitPiece {
+	/*
+	border: 1px solid red;
+	*/
+}
+
 #remaining-pieces {
 	margin: 10px;
 	text-align: left;
 	width: 266px;
+}
+
+#chat {
+	height: 126px;
+	/*
+	border: 1px solid green;
+	*/	
 }
 
 #Blue,#Yellow,#Green,#Red {margin 0;padding 0;

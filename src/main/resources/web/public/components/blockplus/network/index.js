@@ -101,8 +101,7 @@ $(document).ready(function() {
             var canvas = document.getElementById('room-' + ordinal);
             var boardRendering = new BoardRendering(new CellRendering(canvas, 10, 10, 9.5, 9.5));
             boardRendering.clear("#2a2d30"); // TODO à revoir
-            var board = JSON.parse(data.board); // TODO à revoir coté serveur
-            boardRendering.update(board);
+            boardRendering.update(new Board(JSON.parse(data.board)));
         });
 
         var showRoom = function(ordinal) {

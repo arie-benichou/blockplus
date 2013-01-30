@@ -27,7 +27,7 @@ CellRendering.prototype = {
         } else {
             this.getContext().fillStyle = color;
         }
-        this.getContext().fillRect(this.offsetX * position.getColumn(), this.offsetY * position.getRow(), this.width, this.length);
+        this.getContext().fillRect(this.offsetX * position.column, this.offsetY * position.row, this.width, this.length);
     }
 
 };
