@@ -2,6 +2,9 @@
 var Game = function(client) {
 
     this.client = client;
+    
+    this.remainingPieces = new RemainingPieces("remaining-pieces");
+    this.availablePieces = new AvailablePieces("available-pieces");
 
     // TODO renommer en 'boardElement' (et à injecter)
     this.boardRendering = new BoardRendering(new CellRendering(document.getElementById("board"), 34, 34, 33, 33));
@@ -64,71 +67,14 @@ Game.prototype = {
 
     // TODO à revoir
     _updatePieces : function() {
-        $("#available-pieces").html('');
-        for ( var i = 1; i <= 21; ++i) { // TODO
-            var key = getLocalStoreKey(this.currentColor, "piece" + i);
-            var retrievedObject = localStorage.getItem(key);
-            var image = new Image();
-            image.setAttribute("id", "piece-" + i);
-            image.src = retrievedObject;
-            image.setAttribute("class", "not-available");
-            $("#available-pieces").append(image);
-        }
-        var array = this.gameState.getPieces(this.currentColor);
-        for ( var i = 1; i <= 21; ++i)
-            $("#piece-" + i).attr("class", "not-available");
-        for ( var i = 0; i < array.length; ++i)
-            $("#piece-" + array[i]).attr("class", "available");
-        $("#available-pieces").show();
+        this.availablePieces.clear();
+        this.availablePieces.update(this.currentColor, this.gameState.getPieces(this.currentColor));
+        this.availablePieces.show();
     },
 
     _updateBoard : function() {
         this.board = this.gameState.getBoard();
         this.boardRendering.update(this.board);
-    },
-
-    _showPotentialCells : function(position) {
-        var context = this.boardRendering.getContext();
-        var color = Colors[this.currentColor];
-        context.globalAlpha = 0.4;
-        context.fillStyle = color;
-        context.beginPath();
-        context.arc(34 * position.column + 34 / 2, 34 * position.row + 34 / 2, 7, 0, Math.PI * 2, true);
-        context.closePath();
-        context.fill();
-        context.globalAlpha = 0.8;
-        context.lineWidth = 2;
-        context.strokeStyle = color;
-        context.stroke();
-        context.globalAlpha = 1;
-    },
-    
-    _hidePotentialCells : function(position) {
-        this.boardRendering.updateCell(position, "White");
-    },
-    
-    _showSelectedPotentialCell : function(position) {
-            console.log(position);
-            this.boardRendering.getContext().globalAlpha = 0.5;
-            this.boardRendering.updateCell(position, Colors[this.currentColor]); // TODO pouvoir passer alpha
-            this.boardRendering.getContext().globalAlpha = 1;
-    },            
-    
-    _showSelectedPotentialCells : function() {
-        var selectedPotentialPositions = this.selectedPositions.get();
-        console.log(selectedPotentialPositions);
-        for ( var selectedPotentialPosition in selectedPotentialPositions) {
-            // TODO à revoir
-            var position = JSON.parse(selectedPotentialPosition);
-            this._showSelectedPotentialCell(position);
-        }
-    },
-
-    _decorateOpponentCell : function(opponentColor, position) {
-        this.boardRendering.getContext().globalAlpha = 0.5;
-        // TODO add alpha parameter
-        this.boardRendering.updateCell(position, "#FFF");
-        this.boardRendering.getContext().globalAlpha = 1;
     },
 
     _updateOptions : function() {
@@ -137,9 +83,32 @@ Game.prototype = {
     
     _updatePotentialPositions : function() {
         this.potentialPositions = this.option.getPotentialPositions();
-        for ( var potentialPosition in this.potentialPositions)
-            this._showPotentialCells(JSON.parse(potentialPosition));
-    },    
+        for ( var potentialPosition in this.potentialPositions) {
+            var position = JSON.parse(potentialPosition); // TODO à revoir
+            this.boardRendering.showPotentialCell(position, Colors[this.currentColor]);
+        }
+            
+    },
+    
+    _updateOthers : function() {
+        this.remainingPieces.hide();
+        if (this.gameState.isTerminal()) {
+            
+            this.audioManager.play("../audio/game-is-over.mp3");
+            this.potentialPositions = null; // TODO clear();
+            this.selectedPositions.clear();
+            $(this.boardRendering.getCanvas()).attr("style", "opacity:0.33;");
+            // ///////////////////////////////////////////
+            $("#left").attr("style", "width:0");
+            
+            this.remainingPieces.clear();
+            for ( var color in Colors) {
+                var remainingPieces = this.gameState.getPieces(color);
+                this.remainingPieces.update(color, remainingPieces);
+            }
+            this.remainingPieces.show();
+        }
+    },
 
     _updateUI : function() {
 
@@ -150,38 +119,12 @@ Game.prototype = {
         this._updateOptions();
         
         this.selectedPositions.clear();
+
         this._updatePotentialPositions();
-        this._showSelectedPotentialCells();
         
-
-        $("#remaining-pieces").hide();
-
-        if (this.gameState.isTerminal()) {
-            this.audioManager.play("../audio/game-is-over.mp3");
-            this.potentialPositions = null; // TODO clear();
-            this.selectedPositions.clear();
-            $(this.boardRendering.getCanvas()).attr("style", "opacity:0.33;");
-            // ///////////////////////////////////////////
-            $("#available-pieces").html('');
-            // $("#available-pieces").hide();
-            $("#left").attr("style", "width:0");
-            $("#remaining-pieces").html('');
-            for ( var color in Colors) {
-                var array = this.gameState.getPieces(color);
-                for ( var i = 0, n = array.length; i < n; ++i) {
-                    if (array[i] != 0) { // TODO à revoir
-                        var key = getLocalStoreKey(color, "piece" + array[i]);
-                        var retrievedObject = localStorage.getItem(key);
-                        var image = new Image();
-                        image.src = retrievedObject;
-                        image.setAttribute("style", "width:55px; height:55px;");
-                        $("#remaining-pieces").append(image);
-                    }
-                }
-            }
-            $("#remaining-pieces").show();
-        }
-
+        this.boardRendering.showSelectedPotentialCells(this.selectedPositions.get(), this.currentColor);
+        
+        this._updateOthers();
     },
 
     bigMess : function() {
@@ -225,14 +168,14 @@ Game.prototype = {
                 if (that.selectedPositions.contains(position)) {
                     that.boardRendering.updateCell(position, "White");
                     that.selectedPositions.remove(position);
-                    that._showPotentialCells(position);
+                    that.boardRendering.showPotentialCell(position, Colors[that.currentColor]);
                     if (that.selectedPositions.isEmpty()) {
                         $("#submitPiece").hide();
                         that._updatePieces();
                         return; // TODO à revoir
                     }
                 } else {
-                    that._showSelectedPotentialCell(position);
+                    that.boardRendering.showSelectedPotentialCell(position, Colors[that.currentColor]);
                     that.selectedPositions.add(position);
                 }
                 var matches = that.option.matches(that.selectedPositions);
@@ -274,38 +217,17 @@ Game.prototype = {
                     $("#pieceToPlay").attr("class", "transparent out");
                 }
             } else {
-                var opponentColor = that.board.getOpponentColorAt(position);
-                $("#remaining-pieces").html('');
-
-                // TODO this.selectedOpponent
                 that.boardRendering.update(that.board);
                 that._updatePotentialPositions();
-                that._showSelectedPotentialCells();
-                
-                if (opponentColor != null /*&& opponentColor != that.currentColor*/) {
-                    
+                that.boardRendering.showSelectedPotentialCells(that.selectedPositions.get());
+                that.remainingPieces.hide();
+                var opponentColor = that.board.getOpponentColorAt(position);
+                if (opponentColor != null) {
                     that.boardRendering.showOpponentCells(that.board, that.currentColor, opponentColor);
-                    
-
-                    
-                    //if (opponentColor != that.currentColor) {
-                        // TODO extract method
-                        var f = function(color) {
-                            var array = that.gameState.getPieces(color);
-                            for ( var i = 0, n = array.length; i < n; ++i) {
-                                if (array[i] != 0) { // TODO à revoir
-                                    var key = getLocalStoreKey(color, "piece" + array[i]);
-                                    var retrievedObject = localStorage.getItem(key);
-                                    var image = new Image();
-                                    image.src = retrievedObject;
-                                    image.setAttribute("style", "width:55px; height:55px;");
-                                    $("#remaining-pieces").append(image);
-                                }
-                            }
-                        };
-                        f(opponentColor);
-                        $("#remaining-pieces").show();
-                    //}
+                    var remainingPieces = that.gameState.getPieces(opponentColor);
+                    that.remainingPieces.clear();
+                    that.remainingPieces.update(opponentColor, remainingPieces);
+                    that.remainingPieces.show();
                 }
                 
             }
@@ -319,8 +241,6 @@ Game.prototype = {
                 var p = JSON.parse([ position ]);
                 data.push([ p.row, p.column ]);
             }
-            for ( var potentialPosition in this.potentialPositions)
-                that._hidePotentialCells(JSON.parse(potentialPosition));
             // TODO ? se contenter des positions            
             that.client.say(moveSubmit(pieceId, data));            
         };
