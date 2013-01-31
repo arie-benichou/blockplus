@@ -4,14 +4,15 @@ package transport.events;
 import transport.IOinterface;
 import transport.events.interfaces.ClientInterface;
 
-import com.google.common.base.Objects;
 import com.google.gson.JsonObject;
 
+// TODO event = {source:IO, message:JSON}
 public final class Client implements ClientInterface {
 
     public static class Builder {
 
         public static Client build(final IOinterface io, final JsonObject data) {
+            // TODO à revoir
             return new Client(io, data.get("name").getAsString(), data.has("room") ? data.get("room").getAsInt() : 0);
         }
 
@@ -32,10 +33,11 @@ public final class Client implements ClientInterface {
     }
 
     @Override
-    public Integer getRoom() {
+    public Integer getRoom() { // TODO à revoir
         return this.room;
     }
 
+    // TODO à revoir
     private final Integer room;
 
     public Client(final IOinterface io, final String name, final Integer room) {
@@ -46,10 +48,11 @@ public final class Client implements ClientInterface {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-                .add("io", this.getIO())
-                .add("name", this.getName())
-                .add("room", this.getRoom())
-                .toString();
+        final JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("type", this.getClass().getSimpleName());
+        final JsonObject data = new JsonObject();
+        data.addProperty("name", this.getName());
+        jsonObject.add("data", data);
+        return jsonObject.toString();
     }
 }

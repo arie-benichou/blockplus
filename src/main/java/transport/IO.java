@@ -8,7 +8,7 @@ import transport.protocol.MessageInterface;
 import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
 
-public final class IO implements IOinterface {
+public class IO implements IOinterface {
 
     private final BlockplusServer server;
 

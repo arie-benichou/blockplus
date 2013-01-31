@@ -12,11 +12,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.jetty.websocket.WebSocket;
+import org.eclipse.jetty.websocket.WebSocketClient;
+import org.eclipse.jetty.websocket.WebSocketClientFactory;
 import org.eclipse.jetty.websocket.WebSocketServlet;
 
 import transport.events.interfaces.ClientInterface;
 import transport.events.interfaces.EventInterface;
 import transport.events.interfaces.ShowRoomInterface;
+import transport.messages.Messages;
 import transport.protocol.MessageDecoder;
 import transport.protocol.MessageHandler;
 import transport.protocol.MessageHandlerInterface;
@@ -122,6 +125,7 @@ public class BlockplusServer extends WebSocketServlet {
             e.printStackTrace();
         }
         */
+        System.out.println(request);
         return new IO(this);
     }
 
@@ -192,4 +196,55 @@ public class BlockplusServer extends WebSocketServlet {
         else System.out.println(deadEvent.getEvent());
     }
 
+    // TODO unit tests !
+    public static void main(final String[] args) throws Exception {
+
+        final String host = "localhost";
+        final int port = 8080;
+
+        final WebSocketClientFactory factory = new WebSocketClientFactory();
+        factory.setBufferSize(4096);
+        factory.start();
+
+        final Messages messages = new Messages();
+
+        final VirtualClient[] virtualClients = new VirtualClient[4];
+        final int room = 1;
+
+        final WebSocketClient client = factory.newWebSocketClient();
+
+        Thread.sleep(1000);
+
+        for (int i = 1; i <= 4; ++i) {
+
+            //final WebSocketClient client = factory.newWebSocketClient();
+            client.setMaxIdleTime(60000 * 5);
+            client.setMaxTextMessageSize(1024 * 32);
+
+            final VirtualClient virtualClient = new VirtualClient("virtual-client-" + i, client, host, port);
+            virtualClients[i - 1] = virtualClient;
+            virtualClient.start();
+
+            // connection
+            final MessageInterface message1 = messages.newClient(virtualClient.getName());
+            virtualClient.send(message1);
+            Thread.sleep(100);
+
+            // join room 1
+            final MessageInterface message2 = messages.newRoomConnection(room);
+            virtualClient.send(message2);
+            Thread.sleep(100);
+
+            //System.out.println("----------------------------------------------------");
+
+        }
+
+        Thread.sleep(1000 * 60 * 60);
+
+        for (final VirtualClient virtualClient : virtualClients) {
+            virtualClient.stop();
+        }
+
+        factory.stop();
+    }
 }

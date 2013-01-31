@@ -37,10 +37,12 @@ public class BlockplusGame {
             //consoleBoardView.apply(newContext.getBoard()); // TODO à virer une fois listeners du contexte
 
             if (!move.isNull()) { // TODO à virer
+                /*
                 try {
                     Thread.sleep(500);
                 }
                 catch (final InterruptedException e) {}
+                */
             }
 
             /*
