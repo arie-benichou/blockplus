@@ -58,6 +58,15 @@ public class BlockplusServerEvents {
             for (final ClientInterface client : clients) {
                 client.getIO().emit("info", "\"" + newClient.getName() + " has joined room " + newRoom.getOrdinal() + "\""); // TODO revoir emit
             }
+
+            // TODO add virtual client one by one until room is full
+            try {
+                BlockplusServer.main(new String[] { newRoom.getOrdinal().toString() });
+            }
+            catch (final Exception e) {
+                e.printStackTrace();
+            }
+
             if (newRoom.isFull()) {
                 int k = 0;
                 for (final ClientInterface client : newRoom.getClients()) {

@@ -199,6 +199,8 @@ public class BlockplusServer extends WebSocketServlet {
     // TODO unit tests !
     public static void main(final String[] args) throws Exception {
 
+        final int room = args.length > 0 ? Integer.parseInt(args[0]) : 1;
+
         final String host = "localhost";
         final int port = 8080;
 
@@ -209,15 +211,14 @@ public class BlockplusServer extends WebSocketServlet {
         final Messages messages = new Messages();
 
         final VirtualClient[] virtualClients = new VirtualClient[4];
-        final int room = 1;
 
-        final WebSocketClient client = factory.newWebSocketClient();
+        //final WebSocketClient client = factory.newWebSocketClient();
 
-        Thread.sleep(1000);
+        ///Thread.sleep(1000);
 
         for (int i = 1; i <= 4; ++i) {
 
-            //final WebSocketClient client = factory.newWebSocketClient();
+            final WebSocketClient client = factory.newWebSocketClient();
             client.setMaxIdleTime(60000 * 5);
             client.setMaxTextMessageSize(1024 * 64);
 
@@ -228,17 +229,18 @@ public class BlockplusServer extends WebSocketServlet {
             // connection
             final MessageInterface message1 = messages.newClient(virtualClient.getName());
             virtualClient.send(message1);
-            Thread.sleep(100);
+            ///Thread.sleep(100);
 
             // join room 1
             final MessageInterface message2 = messages.newRoomConnection(room);
             virtualClient.send(message2);
-            Thread.sleep(100);
+            Thread.sleep(250);
 
             //System.out.println("----------------------------------------------------");
 
         }
 
+        /*
         Thread.sleep(1000 * 60 * 60);
 
         for (final VirtualClient virtualClient : virtualClients) {
@@ -246,5 +248,6 @@ public class BlockplusServer extends WebSocketServlet {
         }
 
         factory.stop();
+        */
     }
 }
