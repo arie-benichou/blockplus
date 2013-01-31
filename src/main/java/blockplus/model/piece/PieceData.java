@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-
-
 import blockplus.model.piece.matrix.Matrix;
 
 import com.google.common.base.Objects;
@@ -241,7 +239,7 @@ public enum PieceData {
     */
 
     ENTRY17(
-            Position(1, 1),
+            //Position(1, 1), // very bad idea, actually :-o
             new int[][] { { 0, 0, 0, 1, 2 }, { 0, 1, 2, 0, 0 } }
     ),
 

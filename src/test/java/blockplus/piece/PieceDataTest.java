@@ -17,14 +17,12 @@
 
 package blockplus.piece;
 
-import static blockplus.model.piece.PieceData.*;
+import static blockplus.model.piece.PieceData.PieceData;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-
 import org.junit.Test;
-
 
 import blockplus.model.piece.PieceData;
 
@@ -130,7 +128,7 @@ public class PieceDataTest {
         assertEquals(Position(1, 1), PieceData(14).referential());
         assertEquals(Position(1, 0), PieceData(15).referential());
         assertEquals(Position(1, 1), PieceData(16).referential());
-        assertEquals(Position(1, 1), PieceData(17).referential());
+        assertEquals(Position(0, 0), PieceData(17).referential());
         assertEquals(Position(1, 1), PieceData(18).referential());
         assertEquals(Position(1, 1), PieceData(19).referential());
         assertEquals(Position(1, 1), PieceData(20).referential());
@@ -254,7 +252,7 @@ public class PieceDataTest {
         assertEquals(2, PieceData(15).radius());
 
         assertEquals(1, PieceData(16).radius());
-        assertEquals(1, PieceData(17).radius());
+        assertEquals(2, PieceData(17).radius());
         assertEquals(1, PieceData(18).radius());
         assertEquals(1, PieceData(19).radius());
         assertEquals(1, PieceData(20).radius());

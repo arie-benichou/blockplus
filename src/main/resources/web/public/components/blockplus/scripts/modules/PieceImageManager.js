@@ -16,19 +16,19 @@ var createPiecesImages = function(color, pieces, pieceRendering) {
         var n = 7;
         var t = Math.floor(n / 2);
         var ty, tx;
-        var referential = document.evaluate("referential", piece, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
-        if (referential.singleNodeValue == null) {
+        //var referential = document.evaluate("referential", piece, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+        //if (referential.singleNodeValue == null) {
             var position = positions.snapshotItem(0);
             var y = document.evaluate("y", position, null, XPathResult.NUMBER_TYPE, null);
             var x = document.evaluate("x", position, null, XPathResult.NUMBER_TYPE, null);
             ty = t - y.numberValue;
             tx = t - x.numberValue;
-        } else {
-            var y = document.evaluate("y", referential.singleNodeValue, null, XPathResult.NUMBER_TYPE, null);
-            var x = document.evaluate("x", referential.singleNodeValue, null, XPathResult.NUMBER_TYPE, null);
-            ty = t - y.numberValue;
-            tx = t - x.numberValue;
-        }
+        //} else {
+        //    var y = document.evaluate("y", referential.singleNodeValue, null, XPathResult.NUMBER_TYPE, null);
+        //    var x = document.evaluate("x", referential.singleNodeValue, null, XPathResult.NUMBER_TYPE, null);
+        //    ty = t - y.numberValue;
+        //    tx = t - x.numberValue;
+        //}
         $("#piece").width = n * size; // TODO
         $("#piece").height = n * size; // TODO
 
