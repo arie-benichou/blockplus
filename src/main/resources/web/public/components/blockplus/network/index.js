@@ -1,4 +1,4 @@
-$(document).ready(function() {
+var main = function() {
 
     // TODO extract from url
     var location = "ws://artefact.hd.free.fr/io/";
@@ -6,10 +6,12 @@ $(document).ready(function() {
     Client.protocol.register("info", function(data) {
         // TODO thanks for your feedback in a nice fade-out
         console.log(data);
+        var to = function() {$("#alert").hide();}
+        window.clearTimeout(to);
         $("#notification").html(data);
         $("#alert").show();
         $("#alert").alert();
-        window.setTimeout(function() {$("#alert").hide();}, 1000*3);
+        window.setTimeout(to, 1000*3);
     });
 
     Client.protocol.register("welcome", function(data) {
@@ -89,9 +91,11 @@ $(document).ready(function() {
                         myGame = new Game(client);
                         myGame.bigMess();
                     });
+                    /*
                     Client.protocol.register("fullRoom", function(data) {
                         alert("There is no room left for you in room " + data + ": this room is full.");
                     });
+                    */
                     var id = this.getAttribute("id");
                     var n = id.substr(id.indexOf("-") + 1);
                     client.say(roomConnection(n));
@@ -154,4 +158,4 @@ $(document).ready(function() {
     
     $('#connection').modal('show');
     
-});
+};

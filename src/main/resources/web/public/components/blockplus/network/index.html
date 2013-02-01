@@ -32,6 +32,9 @@
         <script src="../scripts/modules/Options.js"></script>
         <script src="../scripts/modules/AudioManager.js"></script>
         
+        <script src="index.js"></script>
+        
+        
 	</head>
 	<body>
     
@@ -114,6 +117,22 @@
         </div>        
         <div id="feedback" data-toggle="modal" data-target="#feedback-dialog" style="display: none;">Send feedback</div>
         
-        <script src="index.js"></script>
+        <!-- requirements -->
+        <div id="browser" style="display: none;">
+            <img src="http://www.google.fr/images/icons/product/chrome-48.png">
+            <a href="https://www.google.com/intl/en/chrome/browser/">Install Google Chrome</a>
+        </div>
+        
+        <script type="text/javascript">
+      		$(document).ready(function() {
+            	var isCompliant = /chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
+            	if(isCompliant){
+            		main();  
+               	}
+            	else {
+            	    $('#browser').show();
+            	}
+      		});
+        </script>
 	</body>
 </html>

@@ -99,10 +99,11 @@ body {
 
 #feedback {
 	padding: 9px;
-	padding-left: 14px;
+	padding-left: 16px;
 	padding-top: 12px;
+	padding-bottom: 13px;
 	position: absolute;
-	bottom: 0;
+	top: 0;
 	right: 0;
 	font-family: arial, sans-serif;
 	line-height: 1;
@@ -112,10 +113,10 @@ body {
 	text-align: center;
 	border: 3px solid #dcdcdc;
 	border-right: 0;
-	border-bottom: 0;
+	border-top: 0;
 	background: #717171;
 	cursor: pointer;
-	-webkit-border-top-left-radius: 12px;
+	-webkit-border-bottom-left-radius: 12px;
 }
 
 #feedback-dialog {
@@ -231,4 +232,19 @@ img {
 to {
 	opacity: 1.0;
 }
+}
+
+#browser {
+	width: 285px;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: white;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+}
+
+#browser a {
+	margin-left: 10px;
+	font-size: 150%;
 }
