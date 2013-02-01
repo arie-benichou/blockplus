@@ -4,7 +4,12 @@ $(document).ready(function() {
     var location = "ws://artefact.hd.free.fr/io/";
 
     Client.protocol.register("info", function(data) {
+        // TODO thanks for your feedback in a nice fade-out
         console.log(data);
+        $("#notification").html(data);
+        $("#alert").show();
+        $("#alert").alert();
+        window.setTimeout(function() {$("#alert").hide();}, 1000*3);
     });
 
     Client.protocol.register("welcome", function(data) {
@@ -23,7 +28,7 @@ $(document).ready(function() {
         };
         return object;
     };
-
+    
     Client.message = connection; // TODO à revoir
 
     $("#connect").click(function(event) {
@@ -93,6 +98,33 @@ $(document).ready(function() {
                 });
 
             }
+            
+            
+            // TODO add Connected event
+            
+            // TODO extract class
+            var feedback = function(name, content) {
+                var object = {
+                    type : 'Feedback',
+                    data : {
+                        name :  name,
+                        content: content
+                    }
+                };
+                return object;
+            };
+            
+            $('#feedback').show();
+            
+            $('#feedback-dialog').on('shown', function () {
+                $('#feedback-content').focus();
+            });
+            
+            $('#send-feedback').click(function() {
+                var content = $('#feedback-content').val();
+                client.say(feedback(client.name, content));
+            });
+            
 
         });
 
@@ -116,7 +148,10 @@ $(document).ready(function() {
 
     });
 
+    $('#connection').on('shown', function () {
+        $('#user').focus();
+    });
+    
     $('#connection').modal('show');
-    $("#user").focus();
-
+    
 });

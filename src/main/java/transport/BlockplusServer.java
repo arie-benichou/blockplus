@@ -11,6 +11,10 @@ import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.SimpleEmail;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketClient;
 import org.eclipse.jetty.websocket.WebSocketClientFactory;
@@ -18,6 +22,7 @@ import org.eclipse.jetty.websocket.WebSocketServlet;
 
 import transport.events.interfaces.ClientInterface;
 import transport.events.interfaces.EventInterface;
+import transport.events.interfaces.FeedbackInterface;
 import transport.events.interfaces.ShowRoomInterface;
 import transport.messages.Messages;
 import transport.protocol.MessageDecoder;
@@ -187,6 +192,27 @@ public class BlockplusServer extends WebSocketServlet {
 
     @Subscribe
     @AllowConcurrentEvents
+    public void onFeedback(final FeedbackInterface feedback) {
+        final Email email = new SimpleEmail();
+        email.setHostName("smtp.googlemail.com");
+        email.setSmtpPort(465);
+        email.setAuthenticator(new DefaultAuthenticator("arie.benichou", "*****")); // TODO
+        email.setSSLOnConnect(true);
+        try {
+            email.setFrom("arie.benichou@gmail.com");
+            email.setSubject("[Block+] New feedback from " + feedback.getName() + " !");
+            email.setMsg(feedback.getContent());
+            email.addTo("arie.benichou@gmail.com");
+            email.send();
+            feedback.getIO().emit("info", "\"" + "Thank you for your feedback !" + "\"");
+        }
+        catch (final EmailException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
     public void onDeadEvent(final DeadEvent deadEvent) {
         final Object event = deadEvent.getEvent();
         if (event instanceof EventInterface) {
@@ -214,7 +240,7 @@ public class BlockplusServer extends WebSocketServlet {
 
         //final WebSocketClient client = factory.newWebSocketClient();
 
-        ///Thread.sleep(1000);
+        Thread.sleep(1500);
 
         for (int i = 1; i <= 4; ++i) {
 
@@ -233,8 +259,8 @@ public class BlockplusServer extends WebSocketServlet {
 
             // join room 1
             final MessageInterface message2 = messages.newRoomConnection(room);
+            Thread.sleep(750);
             virtualClient.send(message2);
-            Thread.sleep(250);
 
             //System.out.println("----------------------------------------------------");
 

@@ -8,6 +8,10 @@ body {
 	width: 250px;
 }
 
+#connection div.modal-body {
+	
+}
+
 #rooms {
 	margin: 5px auto;
 	width: 872px;
@@ -31,7 +35,7 @@ body {
 }
 
 #content {
-	margin: 40px;
+	margin: 4px;
 }
 
 #truc {
@@ -70,10 +74,10 @@ body {
 	height: 238px;
 }
 
-#submitPiece {
-	/*
+#submitPiece { /*
 	border: 1px solid red;
 	*/
+	
 }
 
 #remaining-pieces {
@@ -86,11 +90,61 @@ body {
 	height: 126px;
 	/*
 	border: 1px solid green;
-	*/	
+	*/
 }
 
 #Blue,#Yellow,#Green,#Red {margin 0;padding 0;
 	
+}
+
+#feedback {
+	padding: 9px;
+	padding-left: 14px;
+	padding-top: 12px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	font-family: arial, sans-serif;
+	line-height: 1;
+	font-size: 12px;
+	font-weight: bold;
+	color: #fff;
+	text-align: center;
+	border: 3px solid #dcdcdc;
+	border-right: 0;
+	border-bottom: 0;
+	background: #717171;
+	cursor: pointer;
+	-webkit-border-top-left-radius: 12px;
+}
+
+#feedback-dialog {
+	margin: 0px 0 0 -250px;
+	width: 500px;
+}
+
+#feedback-content {
+	margin: 0;
+	width: 97%;
+	height: auto;
+	resize: none;
+}
+
+#feedback-dialog div.modal-body {
+	padding: 26px;
+}
+
+.alert {
+	width: 360px;
+	margin: 26px auto;
+}
+
+.alert p{
+	margin: 0;
+	padding: 0;
+	line-height: 1;
+	font-weight: bold;
+	text-align: center;
 }
 
 #play-again {

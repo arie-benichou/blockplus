@@ -2,6 +2,7 @@
 package blockplus.model.game;
 
 import blockplus.model.move.Move;
+import blockplus.view.View;
 
 public class BlockplusGame {
 
@@ -26,7 +27,7 @@ public class BlockplusGame {
 
         // TODO listeners du contexte
         //final BoardView windowBoardView = View.as(blockplus.view.window.BoardView.class).show(newContext.getBoard()).up();
-        //final blockplus.view.console.BoardView consoleBoardView = View.as(blockplus.view.console.BoardView.class).show(newContext.getBoard()).up();
+        final blockplus.view.console.BoardView consoleBoardView = View.as(blockplus.view.console.BoardView.class).show(newContext.getBoard()).up();
 
         while (newContext.hasNext() && i != max) {
             final Move move = newContext.getMove();
@@ -34,7 +35,7 @@ public class BlockplusGame {
             newContext = newContext.apply(move);
 
             //windowBoardView.apply(newContext.getBoard()); // TODO à virer une fois listeners du contexte 
-            //consoleBoardView.apply(newContext.getBoard()); // TODO à virer une fois listeners du contexte
+            consoleBoardView.apply(newContext.getBoard()); // TODO à virer une fois listeners du contexte
 
             if (!move.isNull()) { // TODO à virer
                 /*

@@ -5,16 +5,16 @@ import transport.protocol.MessageInterface;
 
 import com.google.gson.JsonObject;
 
-public final class Client implements MessageInterface {
+public final class Feedback implements MessageInterface {
 
-    private final String name;
+    private final String content;
 
-    public String getName() {
-        return this.name;
+    public String getContent() {
+        return this.content;
     }
 
-    public Client(final String name) {
-        this.name = name;
+    public Feedback(final String content) {
+        this.content = content;
     }
 
     @Override
@@ -25,7 +25,7 @@ public final class Client implements MessageInterface {
     @Override
     public JsonObject getData() {
         final JsonObject data = new JsonObject();
-        data.addProperty("name", this.getName());
+        data.addProperty("name", this.getContent());
         return data;
     }
 
@@ -36,4 +36,5 @@ public final class Client implements MessageInterface {
         jsonObject.add("data", this.getData());
         return jsonObject.toString();
     }
+
 }

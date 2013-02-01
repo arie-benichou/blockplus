@@ -34,11 +34,23 @@
         
 	</head>
 	<body>
+    
+        <!-- notifications -->
+        <div style="height:36px; padding: 12px;">
+            <div id="alert" class="alert alert-info fade in" style="display: none; margin:0 auto;">
+                <!-- 
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                 -->
+                <p id="notification">loading...</p>
+            </div>
+        </div>
         
         <!-- connection -->
         <div id="connection" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="label" aria-hidden="true">
             <div class="modal-header">
+                <!-- 
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                 -->
                 <h3 id="label">Welcome !</h3>
             </div>
             <div class="modal-body">
@@ -86,7 +98,22 @@
             </div>
         </div>
         
-        <script src="index.js"></script>        
+        <!-- feedback -->
+        <div id="feedback-dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="label" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="label">Feedback</h3>
+            </div>
+            <div class="modal-body">
+                <p>Feature ideas, problem reports or general comments are welcome !</p>
+                <textarea id="feedback-content" rows="5" cols="20"></textarea>
+                </div>
+            <div class="modal-footer">
+                <button id="send-feedback" class="btn btn-primary" data-dismiss="modal">Send</button>
+            </div>
+        </div>        
+        <div id="feedback" data-toggle="modal" data-target="#feedback-dialog" style="display: none;">Send feedback</div>
         
+        <script src="index.js"></script>
 	</body>
 </html>
