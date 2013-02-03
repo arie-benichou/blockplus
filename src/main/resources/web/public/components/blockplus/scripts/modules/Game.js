@@ -267,8 +267,16 @@ Game.prototype = {
             that.client.say(moveSubmit(pieceId, data));            
         };
         /*--------------------------------------------------8<--------------------------------------------------*/
+        $("#pieceToPlay").bind("mouseover", function(event) {
+            $("#pieceToPlay").attr("class", "clickable over");
+        });
+
+        $("#pieceToPlay").bind("mouseout", function(event) {
+            $("#pieceToPlay").attr("class", "clickable out");
+        });
+                /*--------------------------------------------------8<--------------------------------------------------*/
         $(this.boardRendering.getCanvas()).click(potentialCellClickEventHandler);
-        $("#pieceToPlay").click(moveSubmitHandler);
+        $("#pieceToPlay").bind("click", moveSubmitHandler);
         // localStorage.clear();
         var piece = document.getElementById("piece");
         createAllPiecesImages("/xml/pieces.xml", new BoardRendering(new CellRendering(piece, 13, 13, 12, 12)));

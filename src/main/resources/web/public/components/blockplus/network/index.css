@@ -162,7 +162,7 @@ img {
 }
 
 #pieceToPlay {
-	-webkit-transition: all 0.35s ease-out;
+	-webkit-transition: all 0.35s ease-in-out;
 }
 
 #board {
@@ -171,16 +171,17 @@ img {
 
 .over {
 	border: 8px solid #dadfe2;
-	opacity: 1;
 }
 
 .out {
-	opacity: 0.5;
+	border: 8px solid #a0a6ab;
 }
 
+/*
 .opaque {
 	opacity: 1;
 }
+*/
 
 .transparent {
 	opacity: 0;
