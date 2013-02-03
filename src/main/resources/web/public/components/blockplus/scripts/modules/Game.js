@@ -107,6 +107,7 @@ Game.prototype = {
             
     },
     
+    // TODO
     _updateOthers : function() {
         this.remainingPieces.hide();
         if (this.gameState.isTerminal()) {
@@ -124,6 +125,10 @@ Game.prototype = {
                 this.remainingPieces.update(color, remainingPieces);
             }
             this.remainingPieces.show();
+        }
+        else {
+            if(this.currentColor == this.gameState.getColor())
+                this.audioManager.play("../audio/you.mp3");
         }
     },
 
