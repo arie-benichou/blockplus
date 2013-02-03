@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012-2013 Arie Benichou
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package serialization;
 
@@ -5,16 +21,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import blockplus.model.board.Board;
-import blockplus.model.board.BoardLayer;
-import blockplus.model.color.ColorInterface;
-import blockplus.model.game.BlockplusGame;
-import blockplus.model.game.BlockplusGameContext;
-import blockplus.model.move.Move;
-import blockplus.model.piece.PieceInterface;
-import blockplus.model.piece.Pieces;
-import blockplus.model.piece.PiecesBag;
-import blockplus.model.player.PlayerInterface;
+import blockplus.board.Board;
+import blockplus.board.BoardLayer;
+import blockplus.color.ColorInterface;
+import blockplus.game.BlockplusGame;
+import blockplus.game.BlockplusGameContext;
+import blockplus.move.Move;
+import blockplus.piece.PieceInterface;
+import blockplus.piece.Pieces;
+import blockplus.piece.PiecesBag;
+import blockplus.player.PlayerInterface;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -55,7 +71,7 @@ public final class GameJSONRepresentation {
             final BoardLayer layer = board.getLayer(color);
             final Set<PositionInterface> positions = layer.getSelves().keySet();
             for (final PositionInterface position : positions)
-                jsonArray.add(new JsonPrimitive(columns * position.row() + (position.column() % rows)));
+                jsonArray.add(new JsonPrimitive(columns * position.row() + (position.column() % rows))); // TODO extract method
             data.add(color.toString(), jsonArray);
         }
         boardState.add("dimension", meta);

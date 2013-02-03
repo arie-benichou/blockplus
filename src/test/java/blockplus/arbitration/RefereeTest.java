@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Arie Benichou
+ * Copyright 2012-2013 Arie Benichou
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,10 +17,10 @@
 
 package blockplus.arbitration;
 
-import static blockplus.model.color.Colors.Blue;
-import static blockplus.model.color.Colors.Green;
-import static blockplus.model.color.Colors.Red;
-import static blockplus.model.color.Colors.Yellow;
+import static blockplus.color.Colors.Blue;
+import static blockplus.color.Colors.Green;
+import static blockplus.color.Colors.Red;
+import static blockplus.color.Colors.Yellow;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,21 +34,21 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import blockplus.model.arbitration.Referee;
-import blockplus.model.board.Board;
-import blockplus.model.board.BoardLayer;
-import blockplus.model.board.BoardParser;
-import blockplus.model.board.State;
-import blockplus.model.game.BlockplusGameContext;
-import blockplus.model.game.BlockplusGameContextBuilder;
-import blockplus.model.move.Move;
-import blockplus.model.piece.PieceInstances;
-import blockplus.model.piece.PieceInterface;
-import blockplus.model.piece.Pieces;
-import blockplus.model.piece.PiecesBag;
-import blockplus.model.player.Player;
-import blockplus.model.player.PlayerInterface;
-import blockplus.model.strategy.FirstOptionStrategy;
+import blockplus.arbitration.Referee;
+import blockplus.board.Board;
+import blockplus.board.BoardLayer;
+import blockplus.board.BoardParser;
+import blockplus.board.State;
+import blockplus.game.BlockplusGameContext;
+import blockplus.game.BlockplusGameContextBuilder;
+import blockplus.move.Move;
+import blockplus.piece.PieceInstances;
+import blockplus.piece.PieceInterface;
+import blockplus.piece.Pieces;
+import blockplus.piece.PiecesBag;
+import blockplus.player.Player;
+import blockplus.player.PlayerInterface;
+import blockplus.strategy.FirstOptionStrategy;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

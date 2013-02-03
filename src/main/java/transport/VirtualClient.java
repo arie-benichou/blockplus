@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012-2013 Arie Benichou
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package transport;
 
@@ -11,7 +27,7 @@ import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketClient;
 
 import transport.messages.MoveSubmit;
-import blockplus.model.piece.Pieces;
+import blockplus.piece.Pieces;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -49,10 +65,10 @@ public class VirtualClient implements WebSocket.OnTextMessage
 
     private transient String color;
 
-    public VirtualClient(final String username, final WebSocketClient client, final String host, final int port) {
+    public VirtualClient(final String username, final WebSocketClient client, final String host, final int port, final String base) {
         this.name = username;
         this.client = client;
-        this.uri = "ws://" + host + ":" + port + "/io/";
+        this.uri = "ws://" + host + ":" + port + "/" + base;
     }
 
     public void start() throws Exception {
@@ -68,9 +84,7 @@ public class VirtualClient implements WebSocket.OnTextMessage
     }
 
     @Override
-    public void onOpen(final Connection connection) {
-        //System.out.println(this);
-    }
+    public void onOpen(final Connection connection) {}
 
     @Override
     public void onClose(final int closeCode, final String message) {
@@ -79,7 +93,6 @@ public class VirtualClient implements WebSocket.OnTextMessage
 
     @Override
     public void onMessage(final String message) {
-        //System.out.println(message);
         final JsonParser jsonParser = new JsonParser();
         final JsonObject jsonObject = jsonParser.parse(message).getAsJsonObject();
         final String type = jsonObject.get("type").getAsString();
@@ -92,32 +105,20 @@ public class VirtualClient implements WebSocket.OnTextMessage
             if (color.equals(this.color)) {
                 final JsonObject options = data.get("options").getAsJsonObject();
                 final Set<Entry<String, JsonElement>> entrySet = options.entrySet();
-                System.out.println();
-                System.out.println(this);
-                System.out.println("It's my turn !");
-                //System.out.println(entrySet);
-                System.out.println(entrySet.size());
-                // TODO color on game over should be none...
-                //if (entrySet.size() == 0) System.out.println(data.get("isTerminal").getAsBoolean());
                 if (data.get("isTerminal").getAsBoolean()) {
-                    System.out.println("Oh no ! I'm such a fool, game is over ! :(");
+                    System.out.println("Game Over");
                 }
                 else {
                     final List<Entry<String, JsonElement>> list = Lists.newArrayList(entrySet);
                     final Entry<String, JsonElement> entry = list.get(entrySet.size() - 1);
                     final String piece = entry.getKey();
                     final JsonArray instances = entry.getValue().getAsJsonArray();
-                    //System.out.println(piece);
-                    //System.out.println(instances);
-                    //System.out.println(instances.size());
                     final int n = new Random().nextInt(instances.size());
-                    //System.out.println(n);
                     final JsonArray positions = instances.get(n).getAsJsonArray();
-                    //System.out.println(positions);
                     final Pieces pieceObject = Pieces.valueOf(piece);
-                    //System.out.println(pieceObject);
-                    //System.out.println("----------------------------------------------------");
                     final MoveSubmit moveSubmit = new MoveSubmit(pieceObject.ordinal(), positions);
+                    System.out.println();
+                    System.out.println(this);
                     System.out.println(moveSubmit);
                     try {
                         Thread.sleep(750);
@@ -127,7 +128,6 @@ public class VirtualClient implements WebSocket.OnTextMessage
                         e.printStackTrace();
                     }
                 }
-
             }
         }
     }

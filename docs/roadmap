@@ -1,11 +1,9 @@
 -----------------------------------------------------------8<-----------------------------------------------------------
- + pouvoir déterminer une pièce en fonction d'un ensemble de positions
- + Pouvoir énumérer les instances de pièces potentielles case par case lors de la saisie d'un coup par l'utilisateur
- + Utiliser cette énumération pas à pas pour tester la stratégie de l'IA
------------------------------------------------------------8<-----------------------------------------------------------
  * Utiliser cometd ?
  * Utiliser akka micro-kernel ? 
  * Tester vagrant
 -----------------------------------------------------------8<-----------------------------------------------------------
- + click sur une couleur d'un adversaire affiche les pièces de l'adversaires
- + créer une room de test
+ + générer le fichier XML des pièces automatiquement
+ + créer une room de démo didactique
+ + revoir le package transport: event(source, message)
+ ----------------------------------------------------------8<-----------------------------------------------------------

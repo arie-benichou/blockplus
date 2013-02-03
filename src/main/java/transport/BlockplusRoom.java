@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012-2013 Arie Benichou
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package transport;
 
@@ -7,14 +23,14 @@ import java.util.Set;
 import serialization.GameJSONRepresentation;
 import transport.events.interfaces.ClientInterface;
 import transport.events.interfaces.MoveSubmitInterface;
-import blockplus.model.color.ColorInterface;
-import blockplus.model.color.PrimeColors;
-import blockplus.model.game.BlockplusGame;
-import blockplus.model.game.BlockplusGameContext;
-import blockplus.model.move.Move;
-import blockplus.model.piece.PieceComposite;
-import blockplus.model.piece.PieceInterface;
-import blockplus.model.player.PlayerInterface;
+import blockplus.color.ColorInterface;
+import blockplus.color.PrimeColors;
+import blockplus.game.BlockplusGame;
+import blockplus.game.BlockplusGameContext;
+import blockplus.move.Move;
+import blockplus.piece.PieceComposite;
+import blockplus.piece.PieceInterface;
+import blockplus.player.PlayerInterface;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;

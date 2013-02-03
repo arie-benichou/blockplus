@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012-2013 Arie Benichou
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package transport;
 
@@ -29,7 +45,7 @@ import transport.protocol.MessageDecoder;
 import transport.protocol.MessageHandler;
 import transport.protocol.MessageHandlerInterface;
 import transport.protocol.MessageInterface;
-import blockplus.model.game.BlockplusGame;
+import blockplus.game.BlockplusGame;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -196,7 +212,7 @@ public class BlockplusServer extends WebSocketServlet {
         final Email email = new SimpleEmail();
         email.setHostName("smtp.googlemail.com");
         email.setSmtpPort(465);
-        email.setAuthenticator(new DefaultAuthenticator("arie.benichou", "*****")); // TODO
+        email.setAuthenticator(new DefaultAuthenticator("arie.benichou", "")); // TODO
         email.setSSLOnConnect(true);
         try {
             email.setFrom("arie.benichou@gmail.com");
@@ -225,10 +241,10 @@ public class BlockplusServer extends WebSocketServlet {
     // TODO unit tests !
     public static void main(final String[] args) throws Exception {
 
-        final int room = args.length > 0 ? Integer.parseInt(args[0]) : 1;
+        final int room = args.length > 0 ? Integer.parseInt(args[0]) : 2;
 
         final String host = "localhost";
-        final int port = 8080;
+        final int port = 8282;
 
         final WebSocketClientFactory factory = new WebSocketClientFactory();
         factory.setBufferSize(4096);
@@ -240,7 +256,7 @@ public class BlockplusServer extends WebSocketServlet {
 
         //final WebSocketClient client = factory.newWebSocketClient();
 
-        Thread.sleep(1500);
+        Thread.sleep(1250);
 
         for (int i = 1; i <= 4; ++i) {
 
@@ -248,7 +264,7 @@ public class BlockplusServer extends WebSocketServlet {
             client.setMaxIdleTime(60000 * 5);
             client.setMaxTextMessageSize(1024 * 64);
 
-            final VirtualClient virtualClient = new VirtualClient("virtual-client-" + i, client, host, port);
+            final VirtualClient virtualClient = new VirtualClient("virtual-client-" + i, client, host, port, "network/io");
             virtualClients[i - 1] = virtualClient;
             virtualClient.start();
 
@@ -259,9 +275,8 @@ public class BlockplusServer extends WebSocketServlet {
 
             // join room 1
             final MessageInterface message2 = messages.newRoomConnection(room);
-            Thread.sleep(750);
             virtualClient.send(message2);
-
+            Thread.sleep(250);
             //System.out.println("----------------------------------------------------");
 
         }

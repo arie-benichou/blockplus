@@ -1,23 +1,43 @@
+/*
+ * Copyright 2012-2013 ArteFact
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 var main = function() {
 
-    // TODO extract from url
-    var location = "ws://artefact.hd.free.fr/io/";
+    var computeLocation = function(suffix) {
+        return document.location.toString().replace('http://', 'ws://').replace('https://', 'wss://') + suffix;
+    };
 
+    var location = computeLocation("io");
+
+    // TODO à revoir
     Client.protocol.register("info", function(data) {
-        // TODO thanks for your feedback in a nice fade-out
         console.log(data);
-        var to = function() {$("#alert").hide();}
+        var to = function() {
+            $("#alert").hide();
+        };
         window.clearTimeout(to);
         $("#notification").html(data);
         $("#alert").show();
         $("#alert").alert();
-        window.setTimeout(to, 1000*3);
+        window.setTimeout(to, 1000 * 3);
     });
 
     Client.protocol.register("welcome", function(data) {
-        // var h1 = document.createElement("h1");
-        // h1.innerHTML = data;
-        // $("body").append(h1);
+        // TODO
     });
 
     // TODO extract class
@@ -30,7 +50,7 @@ var main = function() {
         };
         return object;
     };
-    
+
     Client.message = connection; // TODO à revoir
 
     $("#connect").click(function(event) {
@@ -38,11 +58,13 @@ var main = function() {
         // TODO extract method
         // TODO sanitize on server side
         var input = $("#user").val();
-        if (input == "") return false;
+        if (input == "")
+            return false;
         var pattern = new RegExp("[<&?#'\"= >:;,/!*.\{\}\\]\\[]", "g");
-        var name = input.replace(pattern, "").substring(0,26);
+        var name = input.replace(pattern, "").substring(0, 26);
         $("#user").val(name);
-        if(name != input) return false;
+        if (name != input)
+            return false;
 
         var client = new Client(name, location);
         client.start(client.join);
@@ -83,53 +105,39 @@ var main = function() {
                         return message;
                     };
                     Client.protocol.register("enterRoom", function(data) {
-                        //alert("You are now in room " + data + ".");
+                        // TODO ...
                         Client.protocol.register("exitRoom", function(data) {
-                            //alert("You are now out of room " + data + ".");
+                            // TODO ...
                         });
-
                         myGame = new Game(client);
                         myGame.bigMess();
                     });
-                    /*
-                    Client.protocol.register("fullRoom", function(data) {
-                        alert("There is no room left for you in room " + data + ": this room is full.");
-                    });
-                    */
                     var id = this.getAttribute("id");
                     var n = id.substr(id.indexOf("-") + 1);
                     client.say(roomConnection(n));
                 });
 
             }
-            
-            
-            // TODO add Connected event
-            
+
             // TODO extract class
             var feedback = function(name, content) {
                 var object = {
                     type : 'Feedback',
                     data : {
-                        name :  name,
-                        content: content
+                        name : name,
+                        content : content
                     }
                 };
                 return object;
             };
-            
             $('#feedback').show();
-            
-            $('#feedback-dialog').on('shown', function () {
+            $('#feedback-dialog').on('shown', function() {
                 $('#feedback-content').focus();
             });
-            
             $('#send-feedback').click(function() {
                 var content = $('#feedback-content').val();
                 client.say(feedback(client.name, content));
             });
-            
-
         });
 
         Client.protocol.register("room", function(data) {
@@ -152,10 +160,10 @@ var main = function() {
 
     });
 
-    $('#connection').on('shown', function () {
+    $('#connection').on('shown', function() {
         $('#user').focus();
     });
-    
+
     $('#connection').modal('show');
-    
+
 };

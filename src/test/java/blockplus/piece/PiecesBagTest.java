@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Arie Benichou
+ * Copyright 2012-2013 Arie Benichou
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -25,8 +25,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import blockplus.model.piece.Pieces;
-import blockplus.model.piece.PiecesBag;
+import blockplus.piece.Pieces;
+import blockplus.piece.PiecesBag;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

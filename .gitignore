@@ -4,9 +4,4 @@
 /.project
 /*.cache
 /.pmd
-/cases.txt
-/draft_PieceTemplateRanking
-/roadmap
-/main.sh
-/jetty.xml
 /.metadata/

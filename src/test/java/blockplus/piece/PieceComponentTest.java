@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Arie Benichou
+ * Copyright 2012-2013 Arie Benichou
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
 
 package blockplus.piece;
 
-import static blockplus.model.piece.PieceComponent.*;
+import static blockplus.piece.PieceComponent.*;
 import static components.direction.Direction.*;
 import static components.position.Position.*;
 import static org.junit.Assert.*;
@@ -28,7 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import blockplus.model.piece.PieceInterface;
+import blockplus.piece.PieceInterface;
 
 import com.google.common.collect.Sets;
 import components.position.PositionInterface;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Arie Benichou
+ * Copyright 2012-2013 Arie Benichou
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,12 +17,12 @@
 
 package components.board;
 
-import static blockplus.model.board.State.*;
+import static blockplus.board.State.*;
 import static components.position.Position.*;
 
 import java.util.Map;
 
-import blockplus.model.board.State;
+import blockplus.board.State;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;

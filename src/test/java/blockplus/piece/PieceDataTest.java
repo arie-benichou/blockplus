@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Arie Benichou
+ * Copyright 2012-2013 Arie Benichou
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,14 +17,14 @@
 
 package blockplus.piece;
 
-import static blockplus.model.piece.PieceData.PieceData;
+import static blockplus.piece.PieceData.PieceData;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
-import blockplus.model.piece.PieceData;
+import blockplus.piece.PieceData;
 
 import com.google.common.collect.Sets;
 import components.position.NullPosition;

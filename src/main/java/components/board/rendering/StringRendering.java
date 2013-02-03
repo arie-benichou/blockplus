@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Arie Benichou
+ * Copyright 2012-2013 Arie Benichou
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
 
 package components.board.rendering;
 
-import static components.position.Position.*;
+import static components.position.Position.Position;
 
 import java.util.Map;
 
@@ -61,15 +61,5 @@ public final class StringRendering {
     public String apply(final Supplier<BoardInterface<?>> boardSupplier) {
         return this.apply(boardSupplier.get());
     }
-
-    /*
-    public void render(final BoardInterface<?> board) {
-        System.out.println(this.getRenderingFor(board));
-    }
-
-    public void render(final Supplier<BoardInterface<?>> boardSupplier) {
-        this.render(boardSupplier.get());
-    }
-    */
 
 }

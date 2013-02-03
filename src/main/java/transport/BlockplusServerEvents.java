@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012-2013 Arie Benichou
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package transport;
 
@@ -8,7 +24,7 @@ import transport.events.interfaces.ClientInterface;
 import transport.events.interfaces.MoveSubmitInterface;
 import transport.events.interfaces.RoomConnectionInterface;
 import transport.events.interfaces.RoomReconnectionInterface;
-import blockplus.model.game.BlockplusGame;
+import blockplus.game.BlockplusGame;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -59,9 +75,9 @@ public class BlockplusServerEvents {
                 client.getIO().emit("info", "\"" + newClient.getName() + " has joined room " + newRoom.getOrdinal() + "\""); // TODO revoir emit
             }
 
-            // TODO add virtual client one by one until room is full
+            // TODO !! add virtual client one by one until room is full
             try {
-                BlockplusServer.main(new String[] { newRoom.getOrdinal().toString() });
+                BlockplusServer.main(new String[] { newRoom.getOrdinal().toString() }); // quick & very dirty
             }
             catch (final Exception e) {
                 e.printStackTrace();

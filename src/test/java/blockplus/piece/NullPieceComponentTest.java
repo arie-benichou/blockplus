@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Arie Benichou
+ * Copyright 2012-2013 Arie Benichou
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -26,8 +26,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import blockplus.model.piece.NullPieceComponent;
-import blockplus.model.piece.PieceInterface;
+import blockplus.piece.NullPieceComponent;
+import blockplus.piece.PieceInterface;
 
 import com.google.common.collect.ImmutableSet;
 import components.position.NullPosition;
