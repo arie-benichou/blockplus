@@ -6,4 +6,10 @@
  + générer le fichier XML des pièces automatiquement
  + créer une room de démo didactique
  + revoir le package transport: event(source, message)
+ + check messages origin
  ----------------------------------------------------------8<-----------------------------------------------------------
+ + corriger la confusion entre room, game et game context:
+   * l'entité game context actuel représente en fait l'entité game
+   * l'entité game actuel ne sert plus à rien
+   * l'entité room actuel représente en fait l'entité game
+   * la future entité room reste donc à définir
