@@ -12,12 +12,12 @@ body {
 	
 }
 
-#rooms {
+#games {
 	margin: 5px auto;
 	width: 872px;
 }
 
-#rooms canvas {
+#games canvas {
 	margin: 5px;
 	border: 4px solid #d5d8df;
 	-webkit-border-top-right-radius: 8px;

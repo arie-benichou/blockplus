@@ -20,13 +20,13 @@ package transport;
 import java.util.List;
 import java.util.Set;
 
-import serialization.GameJSONRepresentation;
+import serialization.GameContextRepresentation;
 import transport.events.interfaces.ClientInterface;
 import transport.events.interfaces.MoveSubmitInterface;
 import blockplus.color.ColorInterface;
 import blockplus.color.PrimeColors;
-import blockplus.game.BlockplusGame;
 import blockplus.game.BlockplusGameContext;
+import blockplus.game.BlockplusGameContextBuilder;
 import blockplus.move.Move;
 import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
@@ -46,7 +46,7 @@ import components.position.Position;
 import components.position.PositionInterface;
 
 // TODO RoomContext et RoomContextBuilder
-public class BlockplusRoom implements RoomInterface<BlockplusGame> {
+public class BlockplusGame implements GameInterface<BlockplusGameContext> {
 
     private static String computeCode(final ImmutableList<ClientInterface> clients) {
         final List<Integer> parts = Lists.newArrayList();
@@ -62,22 +62,23 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
     private final int ordinal;
     private final String code;
     private final ImmutableList<ClientInterface> clients;
-    private final BlockplusGame game;
+    private final BlockplusGameContext gameContext;
     private final long timeStamp;
 
     private ImmutableMap<PlayerInterface, ClientInterface> clientByPlayer;
     private ImmutableMap<ClientInterface, PlayerInterface> playerByClient;
 
-    public BlockplusRoom(final int ordinal, final String code, final ImmutableList<ClientInterface> clients, final BlockplusGame game, final long timeStamp) {
+    public BlockplusGame(final int ordinal, final String code, final ImmutableList<ClientInterface> clients, final BlockplusGameContext gameContext,
+            final long timeStamp) {
 
         this.ordinal = ordinal;
         this.code = code;
         this.timeStamp = timeStamp;
         this.clients = clients;
-        this.game = game;
+        this.gameContext = gameContext;
 
-        // TODO ! Builder de room
-        if (this.game == null) {
+        // TODO ! Builder de game
+        if (this.gameContext == null) {
             this.clientByPlayer = null;
         }
         else {
@@ -86,7 +87,7 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
             int n = 0;
             for (final ClientInterface client : clients) {
                 final ColorInterface color = PrimeColors.get(this.SEQUENCE.get(n));
-                final PlayerInterface player = game.getInitialContext().getPlayers().get(color);
+                final PlayerInterface player = gameContext.getPlayers().get(color);
                 builder1.put(player, client);
                 builder2.put(client, player);
                 ++n;
@@ -112,8 +113,8 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
     }
 
     @Override
-    public BlockplusGame getApplication() {
-        return this.game;
+    public BlockplusGameContext getApplication() {
+        return this.gameContext;
     }
 
     @Override
@@ -140,8 +141,8 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
     }
 
     public ClientInterface getUserToPlay() {
-        final ColorInterface colorToPlay = this.getApplication().getInitialContext().getColor();
-        final PlayerInterface player = this.getApplication().getInitialContext().getPlayers().get(colorToPlay);
+        final ColorInterface colorToPlay = this.getApplication().getColor();
+        final PlayerInterface player = this.getApplication().getPlayers().get(colorToPlay);
         return this.clientByPlayer.get(player);
     }
 
@@ -150,56 +151,25 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
     }
 
     @Override
-    public RoomInterface<BlockplusGame> connect(final ClientInterface newClient) {
+    public GameInterface<BlockplusGameContext> connect(final ClientInterface newClient) {
         final ImmutableList<ClientInterface> clients = new ImmutableList.Builder<ClientInterface>().addAll(this.getClients()).add(newClient).build();
-
-        BlockplusRoom newRoom = null;
+        BlockplusGame newRoom = null;
         if (clients.size() == this.getCapacity()) {
-
-            /*
-            final PiecesBag bagOfPieces = PiecesBag.from(Pieces.set());
-            final PlayerInterface bluePlayer = new Player(Colors.Blue, bagOfPieces, Colors.Yellow);
-
-            final PlayerInterface yellowPlayer = new Player(Colors.Yellow, bagOfPieces, Colors.Red, new FirstOptionStrategy());
-            final PlayerInterface redPlayer = new Player(Colors.Red, bagOfPieces, Colors.Green, new FirstOptionStrategy());
-            final PlayerInterface greenPlayer = new Player(Colors.Green, bagOfPieces, Colors.Blue, new FirstOptionStrategy());
-            */
-
-            /*
-            final PlayerInterface yellowPlayer = new Player(Colors.Yellow, bagOfPieces, Colors.Red, new RandomStrategy());
-            final PlayerInterface redPlayer = new Player(Colors.Red, bagOfPieces, Colors.Green, new RandomStrategy());
-            final PlayerInterface greenPlayer = new Player(Colors.Green, bagOfPieces, Colors.Blue, new RandomStrategy());
-            */
-
-            /*
-            final BlockplusGameContext initialContext = new BlockplusGameContextBuilder()
-                    .setPlayers(bluePlayer, yellowPlayer, redPlayer, greenPlayer)
-                    .build();
-
-            final BlockplusGame game = new BlockplusGame(initialContext);
-            final BlockplusGameContext context = game.start(4 * 16);
-
-            newRoom = new BlockplusRoom(this.ordinal, computeCode(clients), clients, new BlockplusGame(context), System.currentTimeMillis());
-            */
-            newRoom = new BlockplusRoom(this.ordinal, computeCode(clients), clients, new BlockplusGame(), System.currentTimeMillis());
-
+            newRoom = new BlockplusGame(this.ordinal, computeCode(clients), clients, new BlockplusGameContextBuilder().build(), System.currentTimeMillis());
         }
         else {
-            newRoom = new BlockplusRoom(this.ordinal, this.code, clients, this.game, this.timeStamp);
+            newRoom = new BlockplusGame(this.ordinal, this.code, clients, this.gameContext, this.timeStamp);
         }
-
         return newRoom;
     }
 
-    public RoomInterface<BlockplusGame> play(final MoveSubmitInterface moveSubmit) {
+    public GameInterface<BlockplusGameContext> play(final MoveSubmitInterface moveSubmit) {
 
         // TODO check that move is from current player        
         // TODO check that game is not over
         // TODO check that move is legal                
 
-        final BlockplusGame game = this.getApplication();
-        final BlockplusGameContext context = game.getInitialContext();
-        //final ColorInterface color = context.getColor();
+        final BlockplusGameContext context = this.getApplication();
 
         // TODO à revoir
         final JsonArray array = moveSubmit.getPositions();
@@ -232,11 +202,11 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
             nextOptions = nextContext.options();
         }
 
-        return new BlockplusRoom(this.getOrdinal(), this.getCode(), this.getClients(), new BlockplusGame(nextContext), this.getTimeStamp());
+        return new BlockplusGame(this.getOrdinal(), this.getCode(), this.getClients(), nextContext, this.getTimeStamp());
     }
 
     @Override
-    public RoomInterface<BlockplusGame> disconnect(final ClientInterface client) {
+    public GameInterface<BlockplusGameContext> disconnect(final ClientInterface client) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -247,15 +217,15 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
     }
 
     public void update(final ClientInterface client) {
-        final BlockplusGame game = this.getApplication();
-        final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(game);
+        final BlockplusGameContext context = this.getApplication();
+        final GameContextRepresentation gameRepresentation = new GameContextRepresentation(context);
         client.getIO().emit("color", gameRepresentation.encodeColor(this.getPlayer(client).getColor()));
         client.getIO().emit("update", gameRepresentation.toString());
     }
 
     public void update() {
-        final BlockplusGame game = this.getApplication();
-        final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(game);
+        final BlockplusGameContext context = this.getApplication();
+        final GameContextRepresentation gameRepresentation = new GameContextRepresentation(context);
         for (final ClientInterface client : this.getClients()) {
             client.getIO().emit("color", gameRepresentation.encodeColor(this.getPlayer(client).getColor()));
             client.getIO().emit("update", gameRepresentation.toString());
@@ -264,8 +234,8 @@ public class BlockplusRoom implements RoomInterface<BlockplusGame> {
 
     @Override
     public String toJson() {
-        final BlockplusGame game = this.getApplication();
-        final GameJSONRepresentation gameRepresentation = new GameJSONRepresentation(game);
+        final BlockplusGameContext context = this.getApplication();
+        final GameContextRepresentation gameRepresentation = new GameContextRepresentation(context);
         return gameRepresentation.encodeBoard().toString();
     }
 

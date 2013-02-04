@@ -27,8 +27,8 @@ public class Messages {
         return new Client(name);
     }
 
-    public MessageInterface newRoomConnection(final int ordinal) {
-        return new RoomConnection(ordinal);
+    public MessageInterface newGameConnection(final int ordinal) {
+        return new GameConnection(ordinal);
     }
 
     public MessageInterface newMoveSubmit(final int id, final JsonArray positions) {

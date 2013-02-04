@@ -18,17 +18,17 @@
 package transport.events;
 
 import transport.IOinterface;
-import transport.events.interfaces.RoomReconnectionInterface;
+import transport.events.interfaces.GameReconnectionInterface;
 
 import com.google.common.base.Objects;
 import com.google.gson.JsonObject;
 
-public final class RoomReconnection implements RoomReconnectionInterface {
+public final class GameReconnection implements GameReconnectionInterface {
 
     public static class Builder {
 
-        public static RoomReconnection build(final IOinterface io, final JsonObject data) {
-            return new RoomReconnection(io, data.get("link").getAsJsonObject());
+        public static GameReconnection build(final IOinterface io, final JsonObject data) {
+            return new GameReconnection(io, data.get("link").getAsJsonObject());
         }
 
     }
@@ -47,7 +47,7 @@ public final class RoomReconnection implements RoomReconnectionInterface {
         return this.link;
     }
 
-    private RoomReconnection(final IOinterface io, final JsonObject link) {
+    private GameReconnection(final IOinterface io, final JsonObject link) {
         this.io = io;
         this.link = link;
     }

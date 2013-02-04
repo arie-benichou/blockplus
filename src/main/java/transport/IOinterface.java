@@ -25,7 +25,7 @@ public interface IOinterface extends OnTextMessage {
 
     Connection getConnection();
 
-    Integer getRoom();
+    Integer getGame();
 
     void setRoom(Integer ordinal);
 

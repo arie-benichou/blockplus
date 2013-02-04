@@ -21,7 +21,8 @@ import transport.events.interfaces.ClientInterface;
 
 import com.google.common.collect.ImmutableList;
 
-public interface RoomInterface<T> {
+// TODO revoir l'interface
+public interface GameInterface<T> {
 
     Integer getOrdinal();
 
@@ -39,9 +40,9 @@ public interface RoomInterface<T> {
 
     int getCapacity();
 
-    RoomInterface<T> connect(ClientInterface client);
+    GameInterface<T> connect(ClientInterface client);
 
-    RoomInterface<T> disconnect(ClientInterface client);
+    GameInterface<T> disconnect(ClientInterface client);
 
     String toJson();
 

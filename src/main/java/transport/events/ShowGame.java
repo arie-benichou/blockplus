@@ -18,17 +18,17 @@
 package transport.events;
 
 import transport.IOinterface;
-import transport.events.interfaces.RoomConnectionInterface;
+import transport.events.interfaces.ShowGameInterface;
 
 import com.google.common.base.Objects;
 import com.google.gson.JsonObject;
 
-public final class RoomConnection implements RoomConnectionInterface {
+public final class ShowGame implements ShowGameInterface {
 
     public static class Builder {
 
-        public static RoomConnection build(final IOinterface io, final JsonObject data) {
-            return new RoomConnection(io, data.get("ordinal").getAsInt());
+        public static ShowGame build(final IOinterface io, final JsonObject data) {
+            return new ShowGame(io, data.get("ordinal").getAsInt());
         }
 
     }
@@ -47,7 +47,7 @@ public final class RoomConnection implements RoomConnectionInterface {
         return this.ordinal;
     }
 
-    private RoomConnection(final IOinterface io, final Integer ordinal) {
+    private ShowGame(final IOinterface io, final Integer ordinal) {
         this.io = io;
         this.ordinal = ordinal;
     }

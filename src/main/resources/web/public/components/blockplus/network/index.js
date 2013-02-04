@@ -69,7 +69,7 @@ var main = function() {
         var client = new Client(name, location);
         client.start(client.join);
 
-        var drawRoomNumber = function(context, ordinal) {
+        var drawGameNumber = function(context, ordinal) {
             context.fillStyle = "rgba(255,255,255,0.90)";
             context.textAlign = "center";
             context.font = "bold 425% sans-serif";
@@ -79,34 +79,34 @@ var main = function() {
             context.strokeText("" + ordinal, 100, 122);
         };
 
-        Client.protocol.register("rooms", function(data) {
-            $("#rooms").show();
-            var rooms = JSON.parse(data); // TODO à revoir coté serveur
-            for ( var i = 0; i < rooms.length; ++i) {
+        Client.protocol.register("games", function(data) {
+            $("#games").show();
+            var games = JSON.parse(data); // TODO à revoir coté serveur
+            for ( var i = 0; i < games.length; ++i) {
                 var canvas = document.createElement("canvas");
-                var ordinal = rooms[i];
-                canvas.setAttribute("id", "room-" + ordinal);
+                var ordinal = games[i];
+                canvas.setAttribute("id", "game-" + ordinal);
                 canvas.setAttribute("width", "200px");
                 canvas.setAttribute("height", "200px");
-                $("#rooms").append(canvas);
+                $("#games").append(canvas);
                 var context = canvas.getContext("2d");
                 context.fillStyle = "rgba(0,0,0,0.350)";
                 context.fillRect(0, 0, 200, 200);
-                drawRoomNumber(context, ordinal);
-                client.say(showRoom(ordinal));
+                drawGameNumber(context, ordinal);
+                client.say(showGame(ordinal));
                 $(canvas).click(function() {
-                    var roomConnection = function(ordinal) {
+                    var gameConnection = function(ordinal) {
                         var message = {
-                            type : 'RoomConnection',
+                            type : 'GameConnection',
                             data : {
                                 ordinal : ordinal
                             }
                         };
                         return message;
                     };
-                    Client.protocol.register("enterRoom", function(data) {
+                    Client.protocol.register("enterGame", function(data) {
                         // TODO ...
-                        Client.protocol.register("exitRoom", function(data) {
+                        Client.protocol.register("exitGame", function(data) {
                             // TODO ...
                         });
                         myGame = new Game(client);
@@ -114,7 +114,7 @@ var main = function() {
                     });
                     var id = this.getAttribute("id");
                     var n = id.substr(id.indexOf("-") + 1);
-                    client.say(roomConnection(n));
+                    client.say(gameConnection(n));
                 });
 
             }
@@ -140,17 +140,17 @@ var main = function() {
             });
         });
 
-        Client.protocol.register("room", function(data) {
-            var ordinal = data.room;
-            var canvas = document.getElementById('room-' + ordinal);
+        Client.protocol.register("game", function(data) {
+            var ordinal = data.game;
+            var canvas = document.getElementById('game-' + ordinal);
             var boardRendering = new BoardRendering(new CellRendering(canvas, 10, 10, 9.5, 9.5));
             boardRendering.clear("#2a2d30"); // TODO à revoir
             boardRendering.update(new Board(JSON.parse(data.board)));
         });
 
-        var showRoom = function(ordinal) {
+        var showGame = function(ordinal) {
             var object = {
-                type : 'ShowRoom',
+                type : 'ShowGame',
                 data : {
                     ordinal : ordinal
                 }

@@ -44,16 +44,16 @@ public class IO implements IOinterface {
         this.connection = connection;
     }
 
-    private transient Integer room = 0;
+    private transient Integer game = 0;
 
     @Override
-    public Integer getRoom() {
-        return this.room;
+    public Integer getGame() {
+        return this.game;
     }
 
     @Override
     public void setRoom(final Integer ordinal) {
-        this.room = ordinal;
+        this.game = ordinal;
     }
 
     public IO(final BlockplusServer server) {
@@ -118,7 +118,7 @@ public class IO implements IOinterface {
     public String toString() {
         return Objects.toStringHelper(this)
                 .add("server", this.getServer())
-                .add("room", this.getRoom())
+                .add("game", this.getGame())
                 .add("connection", this.getConnection())
                 .toString();
     }

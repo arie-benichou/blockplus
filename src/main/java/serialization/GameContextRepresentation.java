@@ -24,8 +24,8 @@ import java.util.Set;
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
 import blockplus.color.ColorInterface;
-import blockplus.game.BlockplusGame;
 import blockplus.game.BlockplusGameContext;
+import blockplus.game.BlockplusGameContextBuilder;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
@@ -40,16 +40,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import components.position.PositionInterface;
 
-public final class GameJSONRepresentation {
+public final class GameContextRepresentation {
 
-    private final BlockplusGame game;
+    private final BlockplusGameContext gameContext;
 
-    public BlockplusGame getGame() {
-        return this.game;
+    public BlockplusGameContext getGameContext() {
+        return this.gameContext;
     }
 
-    public GameJSONRepresentation(final BlockplusGame game) {
-        this.game = game;
+    public GameContextRepresentation(final BlockplusGameContext game) {
+        this.gameContext = game;
     }
 
     public String encodeColor(final ColorInterface color) {
@@ -60,7 +60,7 @@ public final class GameJSONRepresentation {
         final JsonObject boardState = new JsonObject();
         final JsonObject meta = new JsonObject();
         final JsonObject data = new JsonObject();
-        final Board board = this.getGame().getInitialContext().getBoard();
+        final Board board = this.getGameContext().getBoard();
         final int rows = board.rows();
         final int columns = board.columns();
         meta.addProperty("rows", rows);
@@ -84,7 +84,7 @@ public final class GameJSONRepresentation {
     // TODO enlever la pièce nulle ?
     public JsonElement encodePieces() {
         final JsonObject data = new JsonObject();
-        final BlockplusGameContext context = this.getGame().getInitialContext();
+        final BlockplusGameContext context = this.getGameContext();
         final List<PlayerInterface> players = context.getPlayers().getAllPlayers();
         for (final PlayerInterface player : players) {
             final ColorInterface color = player.getColor();
@@ -99,7 +99,7 @@ public final class GameJSONRepresentation {
     }
 
     public JsonElement encodeOptions() {
-        final List<Move> options = this.getGame().getInitialContext().options();
+        final List<Move> options = this.getGameContext().options();
         final Map<Pieces, List<Set<PositionInterface>>> legalPositionsByPiece = Maps.newTreeMap();
         for (final Move move : options) {
             if (!move.isNull()) { // TODO à revoir
@@ -119,8 +119,8 @@ public final class GameJSONRepresentation {
     @Override
     public String toString() {
         final JsonObject data = new JsonObject();
-        data.addProperty("color", this.getGame().getInitialContext().getColor().toString());
-        data.addProperty("isTerminal", !this.getGame().getInitialContext().hasNext());
+        data.addProperty("color", this.getGameContext().getColor().toString());
+        data.addProperty("isTerminal", !this.getGameContext().hasNext());
         data.add("board", this.encodeBoard());
         data.add("pieces", this.encodePieces());
         data.add("options", this.encodeOptions());
@@ -128,8 +128,8 @@ public final class GameJSONRepresentation {
     }
 
     public static void main(final String[] args) {
-        final BlockplusGame game = new BlockplusGame();
-        final GameJSONRepresentation gameJSONRepresentation = new GameJSONRepresentation(game);
+        final BlockplusGameContext game = new BlockplusGameContextBuilder().build();
+        final GameContextRepresentation gameJSONRepresentation = new GameContextRepresentation(game);
         System.out.println(gameJSONRepresentation);
         System.out.println(gameJSONRepresentation.encodePieces());
     }

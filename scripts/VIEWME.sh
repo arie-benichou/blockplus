@@ -1,2 +1,2 @@
 #!/bin/sh
-google-chrome http://localhost:8080;
+google-chrome http://localhost:8282;

@@ -21,10 +21,10 @@ import java.util.ArrayList;
 
 import transport.events.Client;
 import transport.events.interfaces.ClientInterface;
+import transport.events.interfaces.GameConnectionInterface;
+import transport.events.interfaces.GameReconnectionInterface;
 import transport.events.interfaces.MoveSubmitInterface;
-import transport.events.interfaces.RoomConnectionInterface;
-import transport.events.interfaces.RoomReconnectionInterface;
-import blockplus.game.BlockplusGame;
+import blockplus.game.BlockplusGameContext;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -47,56 +47,67 @@ public class BlockplusServerEvents {
 
     @Subscribe
     @AllowConcurrentEvents
-    public void onRoomConnection(final RoomConnectionInterface roomConnection) {
-        final RoomInterface<BlockplusGame> room = this.getServer().getRoom(roomConnection.getOrdinal());
-        if (room.isFull()) {
-            roomConnection.getIO().emit("info", "\"" + "Room " + room.getOrdinal() + " is full" + "\""); // TODO revoir emit
-            roomConnection.getIO().emit("fullRoom", "\"" + room.getOrdinal() + "\"");
+    public void onGameConnection(final GameConnectionInterface gameConnection) {
+        final GameInterface<BlockplusGameContext> game = this.getServer().getGame(gameConnection.getOrdinal());
+        if (game.isFull()) {
+            gameConnection.getIO().emit("info", "\"" + "Game " + game.getOrdinal() + " is full" + "\""); // TODO revoir emit
+            gameConnection.getIO().emit("fullGame", "\"" + game.getOrdinal() + "\"");
         }
         else {
-            final ClientInterface oldClient = this.getServer().getClient(roomConnection.getIO());
-            final ClientInterface newClient = new Client(roomConnection.getIO(), oldClient.getName(), room.getOrdinal());
+            final ClientInterface oldClient = this.getServer().getClient(gameConnection.getIO());
+            final ClientInterface newClient = new Client(gameConnection.getIO(), oldClient.getName(), game.getOrdinal());
             System.out.println();
             System.out.println(newClient.getName());
-            System.out.println(room.getOrdinal());
+            System.out.println(game.getOrdinal());
             System.out.println();
             this.getServer().updateClients(newClient.getIO(), newClient);
 
-            final BlockplusRoom newRoom = (BlockplusRoom) room.connect(newClient);
+            final BlockplusGame newGame = (BlockplusGame) game.connect(newClient);
 
-            final ImmutableList<ClientInterface> clients = newRoom.getClients();
-            this.getServer().updateRoom(newRoom.getOrdinal(), clients);
-            this.getServer().updateRooms(newRoom.getOrdinal(), newRoom);
+            final ImmutableList<ClientInterface> clients = newGame.getClients();
+            this.getServer().updateGame(newGame.getOrdinal(), clients);
+            this.getServer().updateGames(newGame.getOrdinal(), newGame);
 
             // TODO revoir emit
-            newClient.getIO().emit("enterRoom", "\"" + newRoom.getOrdinal() + "\"");
+            newClient.getIO().emit("enterGame", "\"" + newGame.getOrdinal() + "\"");
 
             for (final ClientInterface client : clients) {
-                client.getIO().emit("info", "\"" + newClient.getName() + " has joined room " + newRoom.getOrdinal() + "\""); // TODO revoir emit
+                client.getIO().emit("info", "\"" + newClient.getName() + " has joined game " + newGame.getOrdinal() + "\""); // TODO revoir emit
             }
 
-            // TODO !! add virtual client one by one until room is full
-            try {
-                BlockplusServer.main(new String[] { newRoom.getOrdinal().toString() }); // quick & very dirty
-            }
-            catch (final Exception e) {
-                e.printStackTrace();
-            }
-
-            if (newRoom.isFull()) {
+            if (newGame.isFull()) {
                 int k = 0;
-                for (final ClientInterface client : newRoom.getClients()) {
+                for (final ClientInterface client : newGame.getClients()) {
                     final JsonObject jsonObject = new JsonObject();
-                    jsonObject.add("room", new JsonPrimitive(newRoom.getOrdinal()));
-                    jsonObject.add("code", new JsonPrimitive(newRoom.getCode()));
-                    jsonObject.add("time", new JsonPrimitive(newRoom.getTimeStamp()));
+                    jsonObject.add("game", new JsonPrimitive(newGame.getOrdinal()));
+                    jsonObject.add("code", new JsonPrimitive(newGame.getCode()));
+                    jsonObject.add("time", new JsonPrimitive(newGame.getTimeStamp()));
                     jsonObject.add("name", new JsonPrimitive(client.getName()));
                     jsonObject.add("color", new JsonPrimitive(++k));
                     jsonObject.add("client", new JsonPrimitive(client.hashCode()));
                     //TODO ajouter le timeStamp de connexion et l'ip du client
                     client.getIO().emit("link", jsonObject.toString());
                 }
-                newRoom.update();
+                newGame.update();
+            }
+            else {
+                if (game.isEmpty()) { // TODO à revoir
+                    try {
+                        Thread.sleep(1000);
+                    }
+                    catch (final InterruptedException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                }
+                // TODO replace quick & dirty patch by a virtual client factory
+                try {
+                    Thread.sleep(500);
+                    BlockplusServer.main(new String[] { newGame.getOrdinal().toString() });
+                }
+                catch (final Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -105,50 +116,50 @@ public class BlockplusServerEvents {
     @AllowConcurrentEvents
     public void onMoveSubmit(final MoveSubmitInterface moveSubmit) {
         final ClientInterface client = this.getServer().getClient(moveSubmit.getIO());
-        final Integer room = client.getRoom();
-        final BlockplusRoom blockplusRoom = (BlockplusRoom) this.getServer().getRoom(room);
-        final BlockplusRoom newRoom = (BlockplusRoom) blockplusRoom.play(moveSubmit);
-        this.getServer().updateRooms(newRoom.getOrdinal(), newRoom);
-        newRoom.update();
+        final Integer game = client.getGame();
+        final BlockplusGame blockplusGame = (BlockplusGame) this.getServer().getGame(game);
+        final BlockplusGame newGame = (BlockplusGame) blockplusGame.play(moveSubmit);
+        this.getServer().updateGames(newGame.getOrdinal(), newGame);
+        newGame.update();
     }
 
     @Subscribe
     @AllowConcurrentEvents
-    public void onRoomReconnection(final RoomReconnectionInterface RoomReconnection) {
+    public void onGameReconnection(final GameReconnectionInterface GameReconnection) {
 
-        final JsonObject link = RoomReconnection.getLink();
+        final JsonObject link = GameReconnection.getLink();
 
         final String name = link.get("name").getAsString();
-        final Integer ordinal = link.get("room").getAsInt();
+        final Integer ordinal = link.get("game").getAsInt();
         final Integer colorIndex = link.get("color").getAsInt();
         final String code = link.get("code").getAsString();
         final int client = link.get("client").getAsInt();
         final long timeStamp = link.get("time").getAsLong();
 
-        final RoomInterface<BlockplusGame> room = this.getServer().getRoom(ordinal);
+        final GameInterface<BlockplusGameContext> game = this.getServer().getGame(ordinal);
 
-        if (room != null) {
-            if (room.getCode().equals(code)) {
-                final ClientInterface roomUser = room.getClients().get(colorIndex - 1);
-                if (roomUser.getName().equals(name)) {
-                    if (roomUser.hashCode() == client) {
-                        if (room.getTimeStamp() == timeStamp) {
-                            final ArrayList<ClientInterface> newUsers = Lists.newArrayList(room.getClients());
-                            final transport.events.Client newClient = new transport.events.Client(RoomReconnection.getIO(), name, ordinal);
+        if (game != null) {
+            if (game.getCode().equals(code)) {
+                final ClientInterface gameUser = game.getClients().get(colorIndex - 1);
+                if (gameUser.getName().equals(name)) {
+                    if (gameUser.hashCode() == client) {
+                        if (game.getTimeStamp() == timeStamp) {
+                            final ArrayList<ClientInterface> newUsers = Lists.newArrayList(game.getClients());
+                            final transport.events.Client newClient = new transport.events.Client(GameReconnection.getIO(), name, ordinal);
                             newUsers.set(colorIndex - 1, newClient);
-                            final IOinterface oldIo = room.getClients().get(colorIndex - 1).getIO();
+                            final IOinterface oldIo = game.getClients().get(colorIndex - 1).getIO();
                             oldIo.getConnection().close();
-                            final BlockplusRoom newRoom =
-                                                          new BlockplusRoom(ordinal, code, ImmutableList.copyOf(newUsers), room.getApplication(),
-                                                                  room.getTimeStamp());
-                            this.getServer().updateRooms(ordinal, newRoom);
-                            this.getServer().updateClients(RoomReconnection.getIO(), newClient);
+                            final BlockplusGame newGame =
+                                                          new BlockplusGame(ordinal, code, ImmutableList.copyOf(newUsers), game.getApplication(),
+                                                                  game.getTimeStamp());
+                            this.getServer().updateGames(ordinal, newGame);
+                            this.getServer().updateClients(GameReconnection.getIO(), newClient);
                             this.getServer().removeFromClients(oldIo);
 
                             link.addProperty("client", newClient.hashCode());
                             newClient.getIO().emit("link", link.toString());
 
-                            newRoom.update(newClient);
+                            newGame.update(newClient);
                         }
                     }
                 }

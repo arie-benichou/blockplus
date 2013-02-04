@@ -21,7 +21,7 @@ import transport.protocol.MessageInterface;
 
 import com.google.gson.JsonObject;
 
-public final class RoomConnection implements MessageInterface {
+public final class GameConnection implements MessageInterface {
 
     private final int ordinal;
 
@@ -29,7 +29,7 @@ public final class RoomConnection implements MessageInterface {
         return this.ordinal;
     }
 
-    public RoomConnection(final int ordinal) {
+    public GameConnection(final int ordinal) {
         this.ordinal = ordinal;
     }
 

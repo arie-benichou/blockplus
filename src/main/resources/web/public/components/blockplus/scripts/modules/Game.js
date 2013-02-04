@@ -167,7 +167,7 @@ Game.prototype = {
         };
         /*--------------------------------------------------8<--------------------------------------------------*
         // TODO extract class
-        var roomReconnection = function(data) {
+        var gameReconnection = function(data) {
             var message = {
                 type : 'RoomReconnection',
                 data : {
@@ -280,7 +280,7 @@ Game.prototype = {
         // localStorage.clear();
         var piece = document.getElementById("piece");
         createAllPiecesImages("/xml/pieces.xml", new BoardRendering(new CellRendering(piece, 13, 13, 12, 12)));
-        $("#rooms").hide();
+        $("#games").hide();
         $("#game").show();
         /*--------------------------------------------------8<--------------------------------------------------*/
     }

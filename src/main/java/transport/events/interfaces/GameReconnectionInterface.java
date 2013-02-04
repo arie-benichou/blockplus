@@ -17,8 +17,10 @@
 
 package transport.events.interfaces;
 
-public interface ShowRoomInterface extends EventInterface {
+import com.google.gson.JsonObject;
 
-    Integer getOrdinal();
+public interface GameReconnectionInterface extends EventInterface {
+
+    JsonObject getLink();
 
 }

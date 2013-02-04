@@ -3,13 +3,8 @@
  * Utiliser akka micro-kernel ? 
  * Tester vagrant
 -----------------------------------------------------------8<-----------------------------------------------------------
- + générer le fichier XML des pièces automatiquement
- + créer une room de démo didactique
  + revoir le package transport: event(source, message)
  + check messages origin
+ + générer le fichier XML des pièces automatiquement
+ + créer une démo didactique
  ----------------------------------------------------------8<-----------------------------------------------------------
- + corriger la confusion entre room et game
-   * l'entité game actuel ne sert plus à rien
-   * l'entité room actuel représente en fait l'entité game
-   * la future entité room reste donc à définir
-   

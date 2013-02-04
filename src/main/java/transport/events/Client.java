@@ -29,7 +29,7 @@ public final class Client implements ClientInterface {
 
         public static Client build(final IOinterface io, final JsonObject data) {
             // TODO à revoir
-            return new Client(io, data.get("name").getAsString(), data.has("room") ? data.get("room").getAsInt() : 0);
+            return new Client(io, data.get("name").getAsString(), data.has("game") ? data.get("game").getAsInt() : 0);
         }
 
     }
@@ -49,17 +49,17 @@ public final class Client implements ClientInterface {
     }
 
     @Override
-    public Integer getRoom() { // TODO à revoir
-        return this.room;
+    public Integer getGame() { // TODO à revoir
+        return this.game;
     }
 
     // TODO à revoir
-    private final Integer room;
+    private final Integer game;
 
-    public Client(final IOinterface io, final String name, final Integer room) {
+    public Client(final IOinterface io, final String name, final Integer game) {
         this.io = io;
         this.name = name;
-        this.room = room;
+        this.game = game;
     }
 
     @Override

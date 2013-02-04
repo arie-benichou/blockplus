@@ -17,7 +17,7 @@
 
 package transport.events.interfaces;
 
-public interface RoomConnectionInterface extends EventInterface {
+public interface ShowGameInterface extends EventInterface {
 
     Integer getOrdinal();
 

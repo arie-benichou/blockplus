@@ -39,13 +39,13 @@ import org.eclipse.jetty.websocket.WebSocketServlet;
 import transport.events.interfaces.ClientInterface;
 import transport.events.interfaces.EventInterface;
 import transport.events.interfaces.FeedbackInterface;
-import transport.events.interfaces.ShowRoomInterface;
+import transport.events.interfaces.ShowGameInterface;
 import transport.messages.Messages;
 import transport.protocol.MessageDecoder;
 import transport.protocol.MessageHandler;
 import transport.protocol.MessageHandlerInterface;
 import transport.protocol.MessageInterface;
-import blockplus.game.BlockplusGame;
+import blockplus.game.BlockplusGameContext;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -73,39 +73,40 @@ public class BlockplusServer extends WebSocketServlet {
         this.clientByIO.remove(io);
     }
 
-    private final Map<Integer, RoomInterface<BlockplusGame>> roomByOrdinal = Maps.newConcurrentMap();
+    // TODO utiliser un Futur<GameInterface<BlockplusGameContext>>
+    private final Map<Integer, GameInterface<BlockplusGameContext>> gameByOrdinal = Maps.newConcurrentMap();
 
-    public RoomInterface<BlockplusGame> getRoom(final Integer ordinal) {
-        return this.roomByOrdinal.get(ordinal);
+    public GameInterface<BlockplusGameContext> getGame(final Integer ordinal) {
+        return this.gameByOrdinal.get(ordinal);
     }
 
-    public void updateRooms(final Integer ordinal, final RoomInterface<BlockplusGame> newRoom) {
-        this.roomByOrdinal.put(ordinal, newRoom);
+    public void updateGames(final Integer ordinal, final GameInterface<BlockplusGameContext> newGame) {
+        this.gameByOrdinal.put(ordinal, newGame);
 
         // TODO asynch
         // TODO notifier uniquement les clients dans le patio
-        // TODO prendre en compte la pagination de rooms
-        if (newRoom.isFull()) {
+        // TODO prévoir une pagination
+        if (newGame.isFull()) {
             final JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("room", ordinal);
-            jsonObject.addProperty("board", newRoom.toJson());
+            jsonObject.addProperty("game", ordinal);
+            jsonObject.addProperty("board", newGame.toJson());
             for (final IOinterface io : this.clientByIO.keySet()) {
-                io.emit("room", jsonObject.toString());
+                io.emit("game", jsonObject.toString());
             }
         }
 
     }
 
-    private final Map<Integer, List<ClientInterface>> clientsByRoom = Maps.newConcurrentMap(); // TODO à virer
+    private final Map<Integer, List<ClientInterface>> clientsByGame = Maps.newConcurrentMap(); // TODO à virer
 
     //TODO add patio
 
-    public List<ClientInterface> getClientsByRoom(final Integer room) {
-        return this.clientsByRoom.get(room);
+    public List<ClientInterface> getClientsByGame(final Integer game) {
+        return this.clientsByGame.get(game);
     }
 
-    public void updateRoom(final Integer room, final ImmutableList<ClientInterface> roomUsers) {
-        this.clientsByRoom.put(room, roomUsers);
+    public void updateGame(final Integer gameOrdinal, final ImmutableList<ClientInterface> gameUsers) {
+        this.clientsByGame.put(gameOrdinal, gameUsers);
     }
 
     public Collection<ClientInterface> getClients() {
@@ -130,8 +131,8 @@ public class BlockplusServer extends WebSocketServlet {
 
         for (int i = 1; i <= 12; ++i) {
             final ImmutableList<ClientInterface> empty = ImmutableList.of();
-            this.clientsByRoom.put(i, empty);
-            this.roomByOrdinal.put(i, new BlockplusRoom(i, "", empty, null, 0));
+            this.clientsByGame.put(i, empty);
+            this.gameByOrdinal.put(i, new BlockplusGame(i, "", empty, null, 0));
         }
 
     }
@@ -170,11 +171,11 @@ public class BlockplusServer extends WebSocketServlet {
         return this.clientByIO.get(io);
     }
 
-    private List<Integer> getRooms() {
-        final Set<Integer> keySet = this.roomByOrdinal.keySet();
-        final ArrayList<Integer> rooms = Lists.newArrayList(keySet);
-        Collections.sort(rooms);
-        return rooms;
+    private List<Integer> getGames() {
+        final Set<Integer> keySet = this.gameByOrdinal.keySet();
+        final ArrayList<Integer> games = Lists.newArrayList(keySet);
+        Collections.sort(games);
+        return games;
     }
 
     @Subscribe
@@ -184,26 +185,22 @@ public class BlockplusServer extends WebSocketServlet {
         this.connect(newClient);
         newClient.getIO().emit("info", "\"" + "Welcome " + newClient.getName() + " !" + "\"");
         newClient.getIO().emit("welcome", "\"" + newClient.getName() + "\"");
-        final String rooms = new Gson().toJson(this.getRooms());
-        newClient.getIO().emit("rooms", "\"" + rooms + "\"");
+        final String game = new Gson().toJson(this.getGames());
+        newClient.getIO().emit("games", "\"" + game + "\"");
     }
 
     @Subscribe
     @AllowConcurrentEvents
-    public void onShowRoom(final ShowRoomInterface showRoom) {
-
-        final IOinterface io = showRoom.getIO();
-        final Integer ordinal = showRoom.getOrdinal();
-        final RoomInterface<BlockplusGame> room = this.roomByOrdinal.get(ordinal);
-
-        // TODO refactoring with updateRooms
-        if (room.isFull()) { // TODO à revoir
+    public void onShowGame(final ShowGameInterface showGame) {
+        final IOinterface io = showGame.getIO();
+        final Integer ordinal = showGame.getOrdinal();
+        final GameInterface<BlockplusGameContext> game = this.gameByOrdinal.get(ordinal);
+        if (game.isFull()) { // TODO à revoir
             final JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("room", ordinal);
-            jsonObject.addProperty("board", room.toJson());
-            io.emit("room", jsonObject.toString());
+            jsonObject.addProperty("game", ordinal);
+            jsonObject.addProperty("board", game.toJson());
+            io.emit("game", jsonObject.toString());
         }
-
     }
 
     @Subscribe
@@ -238,10 +235,10 @@ public class BlockplusServer extends WebSocketServlet {
         else System.out.println(deadEvent.getEvent());
     }
 
-    // TODO unit tests !
+    // TODO use other virtual clients for testing
     public static void main(final String[] args) throws Exception {
 
-        final int room = args.length > 0 ? Integer.parseInt(args[0]) : 2;
+        final int game = args.length > 0 ? Integer.parseInt(args[0]) : 1;
 
         final String host = "localhost";
         final int port = 8282;
@@ -252,43 +249,23 @@ public class BlockplusServer extends WebSocketServlet {
 
         final Messages messages = new Messages();
 
-        final VirtualClient[] virtualClients = new VirtualClient[4];
+        final WebSocketClient client = factory.newWebSocketClient();
+        client.setMaxIdleTime(60000 * 5);
+        client.setMaxTextMessageSize(1024 * 64);
 
-        //final WebSocketClient client = factory.newWebSocketClient();
+        final VirtualClient virtualClient = new VirtualClient("virtual-client", client, host, port, "network/io");
+        virtualClient.start();
 
-        Thread.sleep(1250);
+        // connection
+        final MessageInterface message1 = messages.newClient(virtualClient.getName());
+        virtualClient.send(message1);
 
-        for (int i = 1; i <= 4; ++i) {
+        // join game
+        final MessageInterface message2 = messages.newGameConnection(game);
+        virtualClient.send(message2);
 
-            final WebSocketClient client = factory.newWebSocketClient();
-            client.setMaxIdleTime(60000 * 5);
-            client.setMaxTextMessageSize(1024 * 64);
-
-            final VirtualClient virtualClient = new VirtualClient("virtual-client-" + i, client, host, port, "network/io");
-            virtualClients[i - 1] = virtualClient;
-            virtualClient.start();
-
-            // connection
-            final MessageInterface message1 = messages.newClient(virtualClient.getName());
-            virtualClient.send(message1);
-            ///Thread.sleep(100);
-
-            // join room 1
-            final MessageInterface message2 = messages.newRoomConnection(room);
-            virtualClient.send(message2);
-            Thread.sleep(250);
-            //System.out.println("----------------------------------------------------");
-
-        }
-
-        /*
-        Thread.sleep(1000 * 60 * 60);
-
-        for (final VirtualClient virtualClient : virtualClients) {
-            virtualClient.stop();
-        }
-
-        factory.stop();
-        */
+        //virtualClient.stop();
+        //factory.stop();
     }
+
 }

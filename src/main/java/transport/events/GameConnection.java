@@ -18,17 +18,17 @@
 package transport.events;
 
 import transport.IOinterface;
-import transport.events.interfaces.ShowRoomInterface;
+import transport.events.interfaces.GameConnectionInterface;
 
 import com.google.common.base.Objects;
 import com.google.gson.JsonObject;
 
-public final class ShowRoom implements ShowRoomInterface {
+public final class GameConnection implements GameConnectionInterface {
 
     public static class Builder {
 
-        public static ShowRoom build(final IOinterface io, final JsonObject data) {
-            return new ShowRoom(io, data.get("ordinal").getAsInt());
+        public static GameConnection build(final IOinterface io, final JsonObject data) {
+            return new GameConnection(io, data.get("ordinal").getAsInt());
         }
 
     }
@@ -47,7 +47,7 @@ public final class ShowRoom implements ShowRoomInterface {
         return this.ordinal;
     }
 
-    private ShowRoom(final IOinterface io, final Integer ordinal) {
+    private GameConnection(final IOinterface io, final Integer ordinal) {
         this.io = io;
         this.ordinal = ordinal;
     }
