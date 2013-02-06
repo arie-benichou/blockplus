@@ -45,7 +45,7 @@ import transport.protocol.MessageDecoder;
 import transport.protocol.MessageHandler;
 import transport.protocol.MessageHandlerInterface;
 import transport.protocol.MessageInterface;
-import blockplus.game.BlockplusGameContext;
+import blockplus.context.ContextInterface;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -74,13 +74,13 @@ public class BlockplusServer extends WebSocketServlet {
     }
 
     // TODO utiliser un Futur<GameInterface<BlockplusGameContext>>
-    private final Map<Integer, GameInterface<BlockplusGameContext>> gameByOrdinal = Maps.newConcurrentMap();
+    private final Map<Integer, GameInterface<ContextInterface>> gameByOrdinal = Maps.newConcurrentMap();
 
-    public GameInterface<BlockplusGameContext> getGame(final Integer ordinal) {
+    public GameInterface<ContextInterface> getGame(final Integer ordinal) {
         return this.gameByOrdinal.get(ordinal);
     }
 
-    public void updateGames(final Integer ordinal, final GameInterface<BlockplusGameContext> newGame) {
+    public void updateGames(final Integer ordinal, final GameInterface<ContextInterface> newGame) {
         this.gameByOrdinal.put(ordinal, newGame);
 
         // TODO asynch
@@ -194,7 +194,7 @@ public class BlockplusServer extends WebSocketServlet {
     public void onShowGame(final ShowGameInterface showGame) {
         final IOinterface io = showGame.getIO();
         final Integer ordinal = showGame.getOrdinal();
-        final GameInterface<BlockplusGameContext> game = this.gameByOrdinal.get(ordinal);
+        final GameInterface<ContextInterface> game = this.gameByOrdinal.get(ordinal);
         if (game.isFull()) { // TODO à revoir
             final JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("game", ordinal);
@@ -238,7 +238,7 @@ public class BlockplusServer extends WebSocketServlet {
     // TODO use other virtual clients for testing
     public static void main(final String[] args) throws Exception {
 
-        final int game = args.length > 0 ? Integer.parseInt(args[0]) : 1;
+        final int game = args.length > 0 ? Integer.parseInt(args[0]) : 6;
 
         final String host = "localhost";
         final int port = 8282;

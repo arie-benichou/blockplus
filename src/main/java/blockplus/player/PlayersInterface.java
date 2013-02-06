@@ -17,19 +17,12 @@
 
 package blockplus.player;
 
-import java.util.List;
-
 import blockplus.color.ColorInterface;
 
-public interface PlayersInterface {
+// TODO ? Player as composite pour les variantes de jeux
+public interface PlayersInterface extends Iterable<PlayerInterface> {
 
-    List<PlayerInterface> getDeadPlayers();
-
-    List<PlayerInterface> getAlivePlayers();
-
-    boolean hasAlivePlayers();
-
-    List<PlayerInterface> getAllPlayers();
+    boolean hasAlivePlayer();
 
     PlayerInterface get(ColorInterface color);
 

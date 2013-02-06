@@ -95,8 +95,17 @@ public final class PiecesBag implements Iterable<Pieces> {
         return this.asList().iterator();
     }
 
+    public boolean contains(final Pieces piece) {
+        return this.data.contains(piece);
+    }
+
     public PiecesBag remove(final Pieces piece) {
-        Preconditions.checkArgument(this.data.contains(piece));
+        // TODO !!! à revoir
+        if (piece.ordinal() == 0) {
+            final Multiset<Pieces> copy = HashMultiset.create();
+            return from(copy);
+        }
+        Preconditions.checkArgument(this.contains(piece), piece + " is not in " + this.data);
         final Multiset<Pieces> copy = HashMultiset.create(this.data);
         copy.remove(piece, 1);
         return from(copy);

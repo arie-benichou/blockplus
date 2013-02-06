@@ -26,6 +26,7 @@ import blockplus.board.Board;
 import blockplus.board.BoardLayer;
 import blockplus.board.State;
 import blockplus.color.ColorInterface;
+import blockplus.context.Context;
 import blockplus.move.Move;
 import blockplus.piece.NullPieceComponent;
 import blockplus.piece.PieceData;
@@ -77,7 +78,6 @@ public class Referee {
         return Iterables.concat(map.values());
     }
 
-    // TODO !! passer le contexte à l'arbitre
     // TODO ! pouvoir passer un Ordering/Comparator de Move
     public Set<Move> getLegalMoves(final Board board, final PlayerInterface player) {
         final ColorInterface color = player.getColor();
@@ -88,16 +88,13 @@ public class Referee {
         for (final Pieces piece : pieces)
             for (final PositionInterface potentialPosition : this.getPotentialPositions(board, color, positionsHavingPotential, piece))
                 legalMoves.addAll(this.getLegalMoves(board, color, piece, potentialPosition));
-
-        // TODO ! enlever cette responsabilité de l'arbitre:
-        // autoriser le coup nul pour un jeu en ajoutant explicitement la piece nulle au set de pièces légales du jeu 
         if (legalMoves.isEmpty()) return ImmutableSet.of(new Move(player.getColor(), NullPieceComponent.getInstance())); // TODO à revoir
-
         return legalMoves;
     }
 
-    public List<Move> getOrderedLegalMoves(final Board board, final PlayerInterface player) {
-        final List<Move> moves = Lists.newArrayList(this.getLegalMoves(board, player));
+    // TODO à revoir
+    public List<Move> getOrderedLegalMoves(final Context context) {
+        final List<Move> moves = Lists.newArrayList(this.getLegalMoves(context.getBoard(), context.getPlayer()));
         Collections.sort(moves);
         return moves;
     }

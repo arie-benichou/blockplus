@@ -101,8 +101,4 @@ public enum PrimeColors implements ColorInterface {
         return valueOf(name); // TODO
     }
 
-    public static void main(final String[] args) {
-        System.out.println(PrimeColors.get("Blue"));
-    }
-
 }

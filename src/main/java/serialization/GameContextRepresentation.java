@@ -24,8 +24,8 @@ import java.util.Set;
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
 import blockplus.color.ColorInterface;
-import blockplus.game.BlockplusGameContext;
-import blockplus.game.BlockplusGameContextBuilder;
+import blockplus.context.ContextBuilder;
+import blockplus.context.ContextInterface;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
@@ -42,13 +42,13 @@ import components.position.PositionInterface;
 
 public final class GameContextRepresentation {
 
-    private final BlockplusGameContext gameContext;
+    private final ContextInterface gameContext;
 
-    public BlockplusGameContext getGameContext() {
+    public ContextInterface getGameContext() {
         return this.gameContext;
     }
 
-    public GameContextRepresentation(final BlockplusGameContext game) {
+    public GameContextRepresentation(final ContextInterface game) {
         this.gameContext = game;
     }
 
@@ -84,9 +84,8 @@ public final class GameContextRepresentation {
     // TODO enlever la pièce nulle ?
     public JsonElement encodePieces() {
         final JsonObject data = new JsonObject();
-        final BlockplusGameContext context = this.getGameContext();
-        final List<PlayerInterface> players = context.getPlayers().getAllPlayers();
-        for (final PlayerInterface player : players) {
+        final ContextInterface context = this.getGameContext();
+        for (final PlayerInterface player : context.getPlayers()) {
             final ColorInterface color = player.getColor();
             final JsonArray jsonArray = new JsonArray();
             final PiecesBag pieces = player.getPieces();
@@ -119,8 +118,8 @@ public final class GameContextRepresentation {
     @Override
     public String toString() {
         final JsonObject data = new JsonObject();
-        data.addProperty("color", this.getGameContext().getColor().toString());
-        data.addProperty("isTerminal", !this.getGameContext().hasNext());
+        data.addProperty("color", this.getGameContext().get().toString());
+        data.addProperty("isTerminal", this.getGameContext().isTerminal());
         data.add("board", this.encodeBoard());
         data.add("pieces", this.encodePieces());
         data.add("options", this.encodeOptions());
@@ -128,7 +127,7 @@ public final class GameContextRepresentation {
     }
 
     public static void main(final String[] args) {
-        final BlockplusGameContext game = new BlockplusGameContextBuilder().build();
+        final ContextInterface game = new ContextBuilder().build();
         final GameContextRepresentation gameJSONRepresentation = new GameContextRepresentation(game);
         System.out.println(gameJSONRepresentation);
         System.out.println(gameJSONRepresentation.encodePieces());

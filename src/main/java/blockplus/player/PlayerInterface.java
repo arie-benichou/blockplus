@@ -19,20 +19,15 @@ package blockplus.player;
 
 import blockplus.color.ColorInterface;
 import blockplus.piece.PiecesBag;
-import blockplus.strategy.StrategyInterface;
 
 public interface PlayerInterface {
 
-    StrategyInterface getStrategy();
-
-    PiecesBag getPieces();
+    boolean isAlive();
 
     ColorInterface getColor();
 
-    boolean isDead();
+    PiecesBag getPieces();
 
-    boolean isAlive();
-
-    ColorInterface getOpponentColor();
+    PlayerInterface apply(PiecesBag bagOfPieces);
 
 }

@@ -20,7 +20,7 @@ package blockplus.strategy;
 import java.util.List;
 import java.util.Random;
 
-import blockplus.game.BlockplusGameContext;
+import blockplus.context.ContextInterface;
 import blockplus.move.Move;
 
 public final class RandomStrategy implements StrategyInterface {
@@ -28,13 +28,13 @@ public final class RandomStrategy implements StrategyInterface {
     private final Random random = new Random();
 
     @Override
-    public Move chooseMove(final BlockplusGameContext gameContext) {
+    public Move chooseMove(final ContextInterface gameContext) {
         final List<Move> options = gameContext.options();
         return options.get(this.random.nextInt(options.size()));
     }
 
     @Override
-    public List<Move> sort(final BlockplusGameContext context, final List<Move> options) {
+    public List<Move> sort(final ContextInterface context, final List<Move> options) {
         return options;
     }
 }

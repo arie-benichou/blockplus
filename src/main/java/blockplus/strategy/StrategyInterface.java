@@ -19,13 +19,13 @@ package blockplus.strategy;
 
 import java.util.List;
 
-import blockplus.game.BlockplusGameContext;
+import blockplus.context.ContextInterface;
 import blockplus.move.Move;
 
 public interface StrategyInterface {
 
-    List<Move> sort(BlockplusGameContext context, List<Move> options);
+    List<Move> sort(ContextInterface context, List<Move> options);
 
-    Move chooseMove(BlockplusGameContext context);
+    Move chooseMove(ContextInterface context);
 
 }

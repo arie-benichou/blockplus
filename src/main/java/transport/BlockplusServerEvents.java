@@ -24,7 +24,7 @@ import transport.events.interfaces.ClientInterface;
 import transport.events.interfaces.GameConnectionInterface;
 import transport.events.interfaces.GameReconnectionInterface;
 import transport.events.interfaces.MoveSubmitInterface;
-import blockplus.game.BlockplusGameContext;
+import blockplus.context.ContextInterface;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -48,7 +48,7 @@ public class BlockplusServerEvents {
     @Subscribe
     @AllowConcurrentEvents
     public void onGameConnection(final GameConnectionInterface gameConnection) {
-        final GameInterface<BlockplusGameContext> game = this.getServer().getGame(gameConnection.getOrdinal());
+        final GameInterface<ContextInterface> game = this.getServer().getGame(gameConnection.getOrdinal());
         if (game.isFull()) {
             gameConnection.getIO().emit("info", "\"" + "Game " + game.getOrdinal() + " is full" + "\""); // TODO revoir emit
             gameConnection.getIO().emit("fullGame", "\"" + game.getOrdinal() + "\"");
@@ -136,7 +136,7 @@ public class BlockplusServerEvents {
         final int client = link.get("client").getAsInt();
         final long timeStamp = link.get("time").getAsLong();
 
-        final GameInterface<BlockplusGameContext> game = this.getServer().getGame(ordinal);
+        final GameInterface<ContextInterface> game = this.getServer().getGame(ordinal);
 
         if (game != null) {
             if (game.getCode().equals(code)) {

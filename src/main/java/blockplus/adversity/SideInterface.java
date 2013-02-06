@@ -15,23 +15,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.strategy;
+package blockplus.adversity;
 
-import java.util.List;
+import com.google.common.base.Supplier;
 
-import blockplus.context.ContextInterface;
-import blockplus.move.Move;
+public interface SideInterface extends Supplier<Integer> {
 
-public final class FirstOptionStrategy implements StrategyInterface {
-
-    @Override
-    public Move chooseMove(final ContextInterface gameContext) {
-        return gameContext.options().get(0);
-    }
-
-    @Override
-    public List<Move> sort(final ContextInterface context, final List<Move> options) {
-        return options;
-    }
+    SideInterface next();
 
 }

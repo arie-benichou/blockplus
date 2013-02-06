@@ -15,23 +15,45 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.strategy;
+package blockplus.context;
 
 import java.util.List;
 
-import blockplus.context.ContextInterface;
+import blockplus.adversity.AdversityInterface;
+import blockplus.adversity.SideInterface;
+import blockplus.board.Board;
+import blockplus.color.ColorInterface;
 import blockplus.move.Move;
+import blockplus.player.PlayersInterface;
 
-public final class FirstOptionStrategy implements StrategyInterface {
+public interface ContextInterface {
 
-    @Override
-    public Move chooseMove(final ContextInterface gameContext) {
-        return gameContext.options().get(0);
-    }
+    /////////////////////////////
 
-    @Override
-    public List<Move> sort(final ContextInterface context, final List<Move> options) {
-        return options;
-    }
+    SideInterface getSide();
+
+    AdversityInterface<ColorInterface> getAdversity();
+
+    PlayersInterface getPlayers();
+
+    Board getBoard();
+
+    /////////////////////////////
+
+    boolean isTerminal();
+
+    ColorInterface get();
+
+    ColorInterface getNext();
+
+    List<Move> options();
+
+    /////////////////////////////
+
+    ContextInterface apply(Move move);
+
+    ContextInterface forward();
+
+    /////////////////////////////
 
 }
