@@ -17,6 +17,7 @@
 
 package blockplus.piece;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multiset.Entry;
 
+// TODO ? à revoir en utilsant une map<Pieces, Integer>
 public final class PiecesBag implements Iterable<Pieces> {
 
     private final static Multiset<Pieces> EMPTY_MULTI_SET = ImmutableMultiset.of();
@@ -38,7 +40,7 @@ public final class PiecesBag implements Iterable<Pieces> {
         for (final Entry<Pieces> entry : data.entrySet())
             for (int n = 0; n < entry.getCount(); ++n)
                 list.add(entry.getElement());
-        //Collections.sort(list); // TODO comparator
+        Collections.sort(list); // TODO comparator
         return list;
     }
 
