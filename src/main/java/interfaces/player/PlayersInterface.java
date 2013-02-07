@@ -17,14 +17,14 @@
 
 package interfaces.player;
 
-import blockplus.color.ColorInterface;
+import blockplus.context.Color;
 
 // TODO ? Player as composite pour les variantes de jeux
 public interface PlayersInterface {
 
     boolean hasAlivePlayer();
 
-    PlayerInterface get(ColorInterface color);
+    PlayerInterface get(Color color);
 
     PlayersInterface update(PlayerInterface newPlayer);
 

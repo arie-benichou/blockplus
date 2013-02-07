@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import blockplus.color.ColorInterface;
+import blockplus.context.Color;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -50,7 +50,7 @@ public final class Players implements PlayersInterface, Iterable<Player> {
     }
 
     private final Set<Player> players;
-    private final Map<ColorInterface, Player> playerByColor = Maps.newHashMap();
+    private final Map<Color, Player> playerByColor = Maps.newHashMap();
 
     private Players(final Set<Player> players) {
         Preconditions.checkState(players.size() == 4);
@@ -66,7 +66,7 @@ public final class Players implements PlayersInterface, Iterable<Player> {
     }
 
     @Override
-    public Player get(final ColorInterface color) {
+    public Player get(final Color color) {
         return this.playerByColor.get(color);
     }
 
@@ -76,7 +76,7 @@ public final class Players implements PlayersInterface, Iterable<Player> {
         Preconditions.checkArgument(playerInterface instanceof Player);
         final Player newPlayer = (Player) playerInterface;
         if (this.players.contains(newPlayer)) return this;
-        final ColorInterface color = newPlayer.getColor();
+        final Color color = newPlayer.getColor();
         final Builder builder = new Players.Builder();
         for (final Player player : this) {
             if (!player.getColor().equals(color)) builder.add(player);

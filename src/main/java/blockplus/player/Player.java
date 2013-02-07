@@ -18,7 +18,7 @@
 package blockplus.player;
 
 import interfaces.player.PlayerInterface;
-import blockplus.color.ColorInterface;
+import blockplus.context.Color;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 
@@ -26,10 +26,10 @@ import com.google.common.base.Objects;
 
 public final class Player implements PlayerInterface {
 
-    private final ColorInterface color;
+    private final Color color;
     private final PiecesBag bagOfPieces;
 
-    public Player(final ColorInterface color, final PiecesBag bagOfPieces) {
+    public Player(final Color color, final PiecesBag bagOfPieces) {
         this.color = color;
         this.bagOfPieces = bagOfPieces;
     }
@@ -38,7 +38,7 @@ public final class Player implements PlayerInterface {
         return new Player(this.getColor(), bagOfPieces);
     }
 
-    public ColorInterface getColor() {
+    public Color getColor() {
         return this.color;
     }
 

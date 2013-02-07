@@ -24,8 +24,7 @@ import java.util.Set;
 
 import transport.events.interfaces.ClientInterface;
 import transport.events.interfaces.MoveSubmitInterface;
-import blockplus.color.ColorInterface;
-import blockplus.color.PrimeColors;
+import blockplus.context.Color;
 import blockplus.context.Context;
 import blockplus.context.ContextBuilder;
 import blockplus.context.ContextRepresentation;
@@ -87,7 +86,7 @@ public class BlockplusGame implements GameInterface<Context> {
             final Builder<ClientInterface, Player> builder2 = new ImmutableMap.Builder<ClientInterface, Player>();
             int n = 0;
             for (final ClientInterface client : clients) {
-                final ColorInterface color = PrimeColors.get(this.SEQUENCE.get(n));
+                final Color color = Color.get(this.SEQUENCE.get(n));
                 final Player player = gameContext.getPlayers().get(color);
                 builder1.put(player, client);
                 builder2.put(client, player);
@@ -142,7 +141,7 @@ public class BlockplusGame implements GameInterface<Context> {
     }
 
     public ClientInterface getUserToPlay() {
-        final ColorInterface colorToPlay = this.getContext().getColor();
+        final Color colorToPlay = this.getContext().getColor();
         final PlayerInterface player = this.getContext().getPlayers().get(colorToPlay);
         return this.clientByPlayer.get(player);
     }
@@ -182,7 +181,7 @@ public class BlockplusGame implements GameInterface<Context> {
             positions.add(Position.from(row, column));
         }
 
-        final ColorInterface color = context.getColor();
+        final Color color = context.getColor();
         final PieceInterface piece = PieceComposite.from(moveSubmit.getId(), positions.iterator().next(), positions); // TODO à revoir
         final Move move = new Move(color, piece);
         Context nextContext = context.apply(move);

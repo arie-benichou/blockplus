@@ -15,31 +15,17 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.color;
+package blockplus.context;
 
-import java.util.List;
-import java.util.Set;
+public enum Color {
 
-import components.board.Symbol;
+    Blue,
+    Yellow,
+    Red,
+    Green;
 
-public interface ColorInterface extends Symbol, Iterable<ColorInterface> {
-
-    int size();
-
-    int count(ColorInterface color);
-
-    boolean contains(ColorInterface color);
-
-    boolean is(ColorInterface color);
-
-    boolean isEmpty();
-
-    ColorInterface remove(ColorInterface color);
-
-    Set<ColorInterface> set();
-
-    List<ColorInterface> list();
-
-    boolean isPrime();
+    public static Color get(final String name) {
+        return valueOf(name);
+    }
 
 }

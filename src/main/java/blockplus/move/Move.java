@@ -18,7 +18,7 @@
 package blockplus.move;
 
 import interfaces.move.MoveInterface;
-import blockplus.color.ColorInterface;
+import blockplus.context.Color;
 import blockplus.piece.PieceInterface;
 
 import com.google.common.base.Objects;
@@ -29,15 +29,15 @@ import components.position.PositionInterface;
 // TODO extract Comparator(s)
 public class Move implements Comparable<Move>, MoveInterface {
 
-    private final ColorInterface color;
+    private final Color color;
     private final PieceInterface piece;
 
-    public Move(final ColorInterface color, final PieceInterface piece) {
+    public Move(final Color color, final PieceInterface piece) {
         this.color = color;
         this.piece = piece;
     }
 
-    public ColorInterface getColor() {
+    public Color getColor() {
         return this.color;
     }
 

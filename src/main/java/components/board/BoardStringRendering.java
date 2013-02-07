@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package components.board.rendering;
+package components.board;
 
 import static components.position.Position.Position;
 
@@ -23,9 +23,8 @@ import java.util.Map;
 
 import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
-import components.board.BoardInterface;
 
-public final class StringRendering {
+public final class BoardStringRendering {
 
     private final Map<?, Character> symbolByObject;
 
@@ -38,7 +37,7 @@ public final class StringRendering {
         return symbol == null ? '?' : symbol;
     }
 
-    public StringRendering(final Map<?, Character> symbols) {
+    public BoardStringRendering(final Map<?, Character> symbols) {
         this.symbolByObject = symbols;
     }
 

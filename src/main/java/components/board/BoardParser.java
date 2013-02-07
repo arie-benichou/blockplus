@@ -27,7 +27,6 @@ import blockplus.board.State;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-import components.board.rendering.StringRendering;
 import components.position.PositionInterface;
 
 public final class BoardParser<T extends Symbol> {
@@ -105,7 +104,7 @@ public final class BoardParser<T extends Symbol> {
         final BoardParser<State> boardParser = BoardParser.from(symbolByCharacter, State.None, State.Other);
         final BoardInterface<State> board = boardParser.parse(data);
         final Map<State, Character> characterBySymbol = ImmutableMap.of(None, '0', Self, '1', Light, '2', Shadow, '3', Other, '?');
-        final StringRendering boardConsoleView = new StringRendering(characterBySymbol);
+        final BoardStringRendering boardConsoleView = new BoardStringRendering(characterBySymbol);
         System.out.println(boardConsoleView.apply(board));
     }
 

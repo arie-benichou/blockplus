@@ -28,7 +28,6 @@ import blockplus.adversity.Adversity;
 import blockplus.adversity.Side;
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
-import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.piece.NullPieceComponent;
 import blockplus.player.Player;
@@ -36,7 +35,7 @@ import blockplus.player.Players;
 
 import com.google.common.base.Predicate;
 
-public final class Context implements ContextInterface<ColorInterface> {
+public final class Context implements ContextInterface<Color> {
 
     // TODO à injecter
     private final static Predicate<Context> DEFAULT_PREDICATE = new Predicate<Context>() {
@@ -120,11 +119,11 @@ public final class Context implements ContextInterface<ColorInterface> {
         return this.getReferee().getLegalMoves(this);
     }
 
-    public ColorInterface getColor() {
+    public Color getColor() {
         return this.adversity.get(this.getSide());
     }
 
-    public Player getPlayer(final ColorInterface color) {
+    public Player getPlayer(final Color color) {
         return this.getPlayers().get(color);
     }
 

@@ -18,10 +18,10 @@
 package blockplus.context;
 
 import static blockplus.board.State.Light;
-import static blockplus.color.Colors.Blue;
-import static blockplus.color.Colors.Green;
-import static blockplus.color.Colors.Red;
-import static blockplus.color.Colors.Yellow;
+import static blockplus.context.Color.Blue;
+import static blockplus.context.Color.Green;
+import static blockplus.context.Color.Red;
+import static blockplus.context.Color.Yellow;
 import static components.position.Position.Position;
 
 import java.util.Set;
@@ -31,7 +31,6 @@ import blockplus.adversity.Adversity.Builder;
 import blockplus.adversity.Side;
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
-import blockplus.color.ColorInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
@@ -41,7 +40,7 @@ import com.google.common.collect.ImmutableSet;
 
 public final class ContextBuilder {
 
-    private final static Set<ColorInterface> COLORS = ImmutableSet.of(Blue, Yellow, Red, Green);
+    private final static Set<Color> COLORS = ImmutableSet.of(Blue, Yellow, Red, Green);
 
     private final static ImmutableSet.Builder<Pieces> LEGAL_PIECES_BUILDER = ImmutableSet.builder();
     static {
@@ -130,8 +129,8 @@ public final class ContextBuilder {
 
     /* TODO add some check
     private final Set<Pieces> legalPieces;
-    private final Set<ColorInterface> legalColors;
-    public ContextBuilder(final Set<ColorInterface> legalColors, final Set<Pieces> legalPieces) {
+    private final Set<Colors> legalColors;
+    public ContextBuilder(final Set<Colors> legalColors, final Set<Pieces> legalPieces) {
         Preconditions.checkArgument(!legalColors.isEmpty());
         Preconditions.checkArgument(!legalPieces.isEmpty());
         this.legalColors = ImmutableSet.copyOf(legalColors);

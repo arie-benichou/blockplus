@@ -25,7 +25,6 @@ import serialization.JSONSerializer;
 
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
-import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
@@ -53,7 +52,7 @@ public final class ContextRepresentation {
         this.gameContext = game;
     }
 
-    public String encodeColor(final ColorInterface color) {
+    public String encodeColor(final Color color) {
         return JSONSerializer.getInstance().toJson(color);
     }
 
@@ -66,8 +65,8 @@ public final class ContextRepresentation {
         final int columns = board.columns();
         meta.addProperty("rows", rows);
         meta.addProperty("columns", columns);
-        final Set<ColorInterface> colors = board.getColors();
-        for (final ColorInterface color : colors) {
+        final Set<Color> colors = board.getColors();
+        for (final Color color : colors) {
             final JsonArray jsonArray = new JsonArray();
             final BoardLayer layer = board.getLayer(color);
             final Set<PositionInterface> positions = layer.getSelves().keySet();
@@ -87,7 +86,7 @@ public final class ContextRepresentation {
         final JsonObject data = new JsonObject();
         final Context context = this.getGameContext();
         for (final Player player : context.getPlayers()) {
-            final ColorInterface color = player.getColor();
+            final Color color = player.getColor();
             final JsonArray jsonArray = new JsonArray();
             final PiecesBag pieces = player.getPieces();
             for (final Pieces piece : pieces) {

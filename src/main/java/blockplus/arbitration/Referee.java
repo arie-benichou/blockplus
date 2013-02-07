@@ -27,7 +27,7 @@ import java.util.Set;
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
 import blockplus.board.State;
-import blockplus.color.ColorInterface;
+import blockplus.context.Color;
 import blockplus.context.Context;
 import blockplus.move.Move;
 import blockplus.piece.NullPieceComponent;
@@ -48,7 +48,7 @@ import components.position.PositionInterface;
 // TODO extract interface
 public final class Referee implements RefereeInterface {
 
-    private List<Move> getLegalMoves(final Board board, final ColorInterface color, final Pieces piece, final PositionInterface position) {
+    private List<Move> getLegalMoves(final Board board, final Color color, final Pieces piece, final PositionInterface position) {
         final List<Move> legalMoves = Lists.newArrayList();
         for (final PieceInterface pieceInstance : piece) {
             final PieceInterface translatedPieceInstance = pieceInstance.translateTo(position);
@@ -58,7 +58,7 @@ public final class Referee implements RefereeInterface {
     }
 
     // TODO tester pas à pas => PieceInstanceMatcher
-    private Iterable<PositionInterface> getPotentialPositions(final Board board, final ColorInterface c, final Iterable<PositionInterface> p,
+    private Iterable<PositionInterface> getPotentialPositions(final Board board, final Color c, final Iterable<PositionInterface> p,
             final Pieces piece) {
 
         final int radius = PieceData.PieceData(piece.ordinal()).radius(); // TODO !! Pieces.radius()
@@ -83,7 +83,7 @@ public final class Referee implements RefereeInterface {
 
     // TODO ! pouvoir passer un Ordering/Comparator de Move
     public Set<Move> getLegalMoves(final Board board, final Player player) {
-        final ColorInterface color = player.getColor();
+        final Color color = player.getColor();
         final Map<PositionInterface, State> stillAlivePositionsByPriority = board.getLayer(color).getLights();
         final Iterable<PositionInterface> positionsHavingPotential = stillAlivePositionsByPriority.keySet();
         final Set<Move> legalMoves = Sets.newHashSet();

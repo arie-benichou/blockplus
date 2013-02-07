@@ -22,26 +22,26 @@ import interfaces.adversity.SideInterface;
 
 import java.util.Map;
 
-import blockplus.color.ColorInterface;
+import blockplus.context.Color;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-public final class Adversity implements AdversityInterface<ColorInterface> {
+public final class Adversity implements AdversityInterface<Color> {
 
     public final static class Builder {
 
-        private final Map<SideInterface, ColorInterface> colorBySide = Maps.newHashMap();
-        private final Map<ColorInterface, SideInterface> sideByColor = Maps.newHashMap();
+        private final Map<SideInterface, Color> colorBySide = Maps.newHashMap();
+        private final Map<Color, SideInterface> sideByColor = Maps.newHashMap();
 
-        public Builder add(final SideInterface side, final ColorInterface color) {
+        public Builder add(final SideInterface side, final Color color) {
             this.colorBySide.put(side, color);
             this.sideByColor.put(color, side);
             return this;
         }
 
-        public Builder remove(final ColorInterface color) {
+        public Builder remove(final Color color) {
             final SideInterface side = this.sideByColor.get(color);
             this.colorBySide.remove(side);
             this.sideByColor.remove(color);
@@ -53,26 +53,26 @@ public final class Adversity implements AdversityInterface<ColorInterface> {
         }
     }
 
-    private final Map<SideInterface, ColorInterface> colorBySide;
-    private final Map<ColorInterface, SideInterface> sideByColor;
+    private final Map<SideInterface, Color> colorBySide;
+    private final Map<Color, SideInterface> sideByColor;
 
-    private Adversity(final Map<SideInterface, ColorInterface> colorBySide, final Map<ColorInterface, SideInterface> sideByColor) {
-        this.colorBySide = new ImmutableMap.Builder<SideInterface, ColorInterface>().putAll(colorBySide).build();
-        this.sideByColor = new ImmutableMap.Builder<ColorInterface, SideInterface>().putAll(sideByColor).build();
+    private Adversity(final Map<SideInterface, Color> colorBySide, final Map<Color, SideInterface> sideByColor) {
+        this.colorBySide = new ImmutableMap.Builder<SideInterface, Color>().putAll(colorBySide).build();
+        this.sideByColor = new ImmutableMap.Builder<Color, SideInterface>().putAll(sideByColor).build();
     }
 
     @Override
-    public ColorInterface get(final SideInterface side) {
+    public Color get(final SideInterface side) {
         return this.colorBySide.get(side);
     }
 
     @Override
-    public ColorInterface getNext(final SideInterface side) {
+    public Color getNext(final SideInterface side) {
         return this.get(side.next());
     }
 
     @Override
-    public SideInterface getSide(final ColorInterface color) {
+    public SideInterface getSide(final Color color) {
         return this.sideByColor.get(color);
     }
 

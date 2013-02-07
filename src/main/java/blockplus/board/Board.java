@@ -20,7 +20,7 @@ package blockplus.board;
 import java.util.Map;
 import java.util.Set;
 
-import blockplus.color.ColorInterface;
+import blockplus.context.Color;
 import blockplus.piece.PieceInterface;
 
 import com.google.common.base.Preconditions;
@@ -32,7 +32,7 @@ public final class Board {
 
     public final static class Builder {
 
-        private static Set<ColorInterface> check(final Set<ColorInterface> colors) {
+        private static Set<Color> check(final Set<Color> colors) {
             Preconditions.checkArgument(colors != null);
             Preconditions.checkArgument(!colors.isEmpty());
             return colors;
@@ -43,9 +43,9 @@ public final class Board {
             return naturalInteger;
         }
 
-        private final Set<ColorInterface> colors;
+        private final Set<Color> colors;
 
-        private Set<ColorInterface> getColors() {
+        private Set<Color> getColors() {
             return this.colors;
         }
 
@@ -61,15 +61,15 @@ public final class Board {
 
         private final int columns;
 
-        private final Map<ColorInterface, BoardLayer> layerByColor = Maps.newHashMap();
+        private final Map<Color, BoardLayer> layerByColor = Maps.newHashMap();
 
-        public Builder(final Set<ColorInterface> colors, final int rows, final int columns) {
+        public Builder(final Set<Color> colors, final int rows, final int columns) {
             this.colors = check(colors);
             this.rows = check(rows);
             this.columns = check(columns);
         }
 
-        public Builder set(final ColorInterface color, final BoardLayer layer) {
+        public Builder set(final Color color, final BoardLayer layer) {
             Preconditions.checkArgument(this.getColors().contains(color));
             Preconditions.checkArgument(this.rows == layer.rows());
             Preconditions.checkArgument(this.columns == layer.columns());
@@ -79,7 +79,7 @@ public final class Board {
 
         public Board build() {
             if (this.layerByColor.isEmpty())
-                for (final ColorInterface color : this.getColors()) {
+                for (final Color color : this.getColors()) {
                     this.layerByColor.put(color, new BoardLayer(this.rows, this.columns));
                 }
             Preconditions.checkState(this.getColors().size() == this.layerByColor.size());
@@ -87,14 +87,14 @@ public final class Board {
         }
     }
 
-    public static Builder builder(final Set<ColorInterface> colors, final int rows, final int columns) {
+    public static Builder builder(final Set<Color> colors, final int rows, final int columns) {
         return new Board.Builder(colors, rows, columns);
     }
 
     // TODO sorted map
-    private final Map<ColorInterface, BoardLayer> layerByColor;
+    private final Map<Color, BoardLayer> layerByColor;
 
-    public Set<ColorInterface> getColors() {
+    public Set<Color> getColors() {
         return this.layerByColor.keySet();
     }
 
@@ -110,7 +110,7 @@ public final class Board {
         return this.columns;
     }
 
-    private Board(final Map<ColorInterface, BoardLayer> stateBoardByColor, final int rows, final int columns) {
+    private Board(final Map<Color, BoardLayer> stateBoardByColor, final int rows, final int columns) {
         this.layerByColor = ImmutableMap.copyOf(stateBoardByColor);
         this.rows = rows;
         this.columns = columns;
@@ -120,21 +120,21 @@ public final class Board {
         this(builder.layerByColor, builder.rows, builder.columns);
     }
 
-    public BoardLayer getLayer(final ColorInterface color) {
+    public BoardLayer getLayer(final Color color) {
         return this.layerByColor.get(color);
     }
 
-    public boolean isLegal(final ColorInterface color, final PieceInterface piece) {
+    public boolean isLegal(final Color color, final PieceInterface piece) {
         return this.getLayer(color).isLegal(piece.getSelfPositions());
     }
 
-    public Board apply(final ColorInterface color, final PieceInterface piece) {
-        final Map<ColorInterface, BoardLayer> newLayers = Maps.newHashMap();
+    public Board apply(final Color color, final PieceInterface piece) {
+        final Map<Color, BoardLayer> newLayers = Maps.newHashMap();
         final Map<PositionInterface, State> mutation = new BoardMutationBuilder()
                 .setOtherPositions(piece.getSelfPositions())
                 .build();
-        for (final ColorInterface anotherColor : this.getColors()) {
-            if (!anotherColor.is(color)) newLayers.put(anotherColor, this.getLayer(anotherColor).apply(mutation));
+        for (final Color anotherColor : this.getColors()) {
+            if (!anotherColor.equals(color)) newLayers.put(anotherColor, this.getLayer(anotherColor).apply(mutation));
             else newLayers.put(color, this.getLayer(color).apply(piece));
         }
         return new Board(newLayers, this.rows(), this.columns());
