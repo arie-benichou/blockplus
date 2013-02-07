@@ -61,30 +61,6 @@ public final class Color implements ColorInterface {
 
     }
 
-    /*
-    @SuppressWarnings("all")
-    public static ColorInterface Color(final ColorInterface color) {
-        if (color.isPrime()) return color;
-        final Multiset<ColorInterface> multiset = HashMultiset.create();
-        multiset.add(color);
-        return new Color(multiset);
-    }
-
-    @SuppressWarnings("all")
-    public static ColorInterface Color(final Iterable<ColorInterface> colors) {
-        if (Iterables.size(colors) == 1) return Color(colors.iterator().next());
-        return new Color(HashMultiset.create(colors));
-    }
-
-    @SuppressWarnings("all")
-    public static ColorInterface Color(final ColorInterface... colors) {
-        final Multiset<ColorInterface> multiset = HashMultiset.create();
-        for (final ColorInterface color : colors)
-            multiset.add(color);
-        return new Color(multiset);
-    }
-    */
-
     private static List<ColorInterface> computeList(final Multiset<ColorInterface> data) {
         final List<PrimeColors> primeColors = Lists.newArrayList();
         for (final Entry<ColorInterface> entry : data.entrySet())

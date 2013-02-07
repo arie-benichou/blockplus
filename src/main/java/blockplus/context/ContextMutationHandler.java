@@ -28,7 +28,7 @@ public class ContextMutationHandler {
 
     private Board getNewBoard(final Context context, final Move move) {
         final Board board = context.getBoard();
-        if (move.isNull()) return board; // TODO à mettre dans board.apply()
+        if (move.isNull()) return board; // TODO ? à mettre dans board.apply()
         return board.apply(move.getColor(), move.getPiece());
     }
 
@@ -44,7 +44,6 @@ public class ContextMutationHandler {
         return context.getPlayers().update(player);
     }
 
-    // TODO utiliser le ContextBuilder
     public Context apply(final Context context, final Move move) {
         final ContextBuilder contextBuilder = new ContextBuilder();
         contextBuilder.setSide(context.getSide());
