@@ -150,7 +150,7 @@ public class BlockplusServerEvents {
                             final IOinterface oldIo = game.getClients().get(colorIndex - 1).getIO();
                             oldIo.getConnection().close();
                             final BlockplusGame newGame =
-                                                          new BlockplusGame(ordinal, code, ImmutableList.copyOf(newUsers), game.getApplication(),
+                                                          new BlockplusGame(ordinal, code, ImmutableList.copyOf(newUsers), game.getContext(),
                                                                   game.getTimeStamp());
                             this.getServer().updateGames(ordinal, newGame);
                             this.getServer().updateClients(GameReconnection.getIO(), newClient);

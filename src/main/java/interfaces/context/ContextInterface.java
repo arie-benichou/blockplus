@@ -15,24 +15,24 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.context;
+package interfaces.context;
+
+import interfaces.adversity.AdversityInterface;
+import interfaces.adversity.SideInterface;
+import interfaces.player.PlayersInterface;
 
 import java.util.List;
 
-import blockplus.adversity.AdversityInterface;
-import blockplus.adversity.SideInterface;
 import blockplus.board.Board;
-import blockplus.color.ColorInterface;
 import blockplus.move.Move;
-import blockplus.player.PlayersInterface;
 
-public interface ContextInterface {
+public interface ContextInterface<T> {
 
     /////////////////////////////
 
     SideInterface getSide();
 
-    AdversityInterface<ColorInterface> getAdversity();
+    AdversityInterface<T> getAdversity();
 
     PlayersInterface getPlayers();
 
@@ -42,19 +42,17 @@ public interface ContextInterface {
 
     boolean isTerminal();
 
-    ColorInterface get();
-
-    ColorInterface getNext();
+    //T get();
 
     List<Move> options();
 
     /////////////////////////////
 
-    ContextInterface apply(Move move);
+    ContextInterface<T> apply(Move move);
 
-    Context forward(boolean skipOnNullOption); // TODO skip predicate
+    ContextInterface<T> forward(boolean skipOnNullOption); // TODO skip predicate
 
-    ContextInterface forward();
+    ContextInterface<T> forward();
 
     /////////////////////////////
 

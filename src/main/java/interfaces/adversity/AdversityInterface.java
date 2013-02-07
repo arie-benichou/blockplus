@@ -15,7 +15,8 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.adversity;
+package interfaces.adversity;
+
 
 public interface AdversityInterface<T> {
 

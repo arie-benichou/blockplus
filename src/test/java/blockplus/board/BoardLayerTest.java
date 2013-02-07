@@ -235,41 +235,6 @@ public class BoardLayerTest {
     }
 
     @Test
-    public void testGetOthers() {
-        {
-            final Map<PositionInterface, State> actual = this.boardLayer.getOthers();
-            final Map<PositionInterface, State> expected = Maps.newHashMap();
-            assertEquals(expected, actual);
-        }
-        {
-            final BoardLayer newBoardLayer = this.boardLayer.apply(Position(0, 0), Other);
-            final Map<PositionInterface, State> actual = newBoardLayer.getOthers();
-            final Map<PositionInterface, State> expected = Maps.newHashMap();
-            expected.put(Position(0, 0), Other);
-            assertEquals(expected, actual);
-        }
-    }
-
-    @Test
-    public void testGetShadows() {
-        {
-            final Map<PositionInterface, State> actual = this.boardLayer.getShadows();
-            final Map<PositionInterface, State> expected = Maps.newHashMap();
-            assertEquals(expected, actual);
-        }
-        {
-            final BoardLayer newBoardLayer = this.boardLayer.apply(Pieces.get(1).getInstances().getDistinctInstance(0).translateTo(Position(1, 1)));
-            final Map<PositionInterface, State> actual = newBoardLayer.getShadows();
-            final Map<PositionInterface, State> expected = Maps.newHashMap();
-            expected.put(Position(0, 1), Shadow);
-            expected.put(Position(1, 0), Shadow);
-            expected.put(Position(1, 2), Shadow);
-            expected.put(Position(2, 1), Shadow);
-            assertEquals(expected, actual);
-        }
-    }
-
-    @Test
     public void testGetLights() {
         {
             final Map<PositionInterface, State> actual = this.boardLayer.getLights();
@@ -289,47 +254,6 @@ public class BoardLayerTest {
     }
 
     @Test
-    public void testIsNone() {
-        assertFalse(this.boardLayer.isNone(Position(-1, 0)));
-        assertFalse(this.boardLayer.isNone(Position(0, -1)));
-        assertFalse(this.boardLayer.isNone(Position(this.boardLayer.rows(), 0)));
-        assertFalse(this.boardLayer.isNone(Position(0, this.boardLayer.columns())));
-        for (int row = 0; row < this.boardLayer.rows(); ++row)
-            for (int column = 0; column < this.boardLayer.columns(); ++column)
-                assertTrue(this.boardLayer.isNone(Position(row, column)));
-    }
-
-    @Test
-    public void testIsSelf() {
-        for (int row = 0; row < this.boardLayer.rows(); ++row)
-            for (int column = 0; column < this.boardLayer.columns(); ++column)
-                assertFalse(this.boardLayer.isSelf(Position(row, column)));
-        final PositionInterface position = Position(0, 0);
-        final BoardLayer newBoardLayer = this.boardLayer.apply(position, Self);
-        assertTrue(newBoardLayer.isSelf(position));
-    }
-
-    @Test
-    public void testIsOther() {
-        for (int row = 0; row < this.boardLayer.rows(); ++row)
-            for (int column = 0; column < this.boardLayer.columns(); ++column)
-                assertFalse(this.boardLayer.isOther(Position(row, column)));
-        final PositionInterface position = Position(0, 0);
-        final BoardLayer newBoardLayer = this.boardLayer.apply(position, Other);
-        assertTrue(newBoardLayer.isOther(position));
-    }
-
-    @Test
-    public void testIsShadow() {
-        for (int row = 0; row < this.boardLayer.rows(); ++row)
-            for (int column = 0; column < this.boardLayer.columns(); ++column)
-                assertFalse(this.boardLayer.isShadow(Position(row, column)));
-        final PositionInterface position = Position(0, 0);
-        final BoardLayer newBoardLayer = this.boardLayer.apply(position, Shadow);
-        assertTrue(newBoardLayer.isShadow(position));
-    }
-
-    @Test
     public void testIsLight() {
         for (int row = 0; row < this.boardLayer.rows(); ++row)
             for (int column = 0; column < this.boardLayer.columns(); ++column)
@@ -337,19 +261,6 @@ public class BoardLayerTest {
         final PositionInterface position = Position(0, 0);
         final BoardLayer newBoardLayer = this.boardLayer.apply(position, Light);
         assertTrue(newBoardLayer.isLight(position));
-    }
-
-    @Test
-    public void testIsSelfOrOther() {
-        for (int row = 0; row < this.boardLayer.rows(); ++row)
-            for (int column = 0; column < this.boardLayer.columns(); ++column)
-                assertFalse(this.boardLayer.isSelfOrOther(Position(row, column)));
-        final PositionInterface position1 = Position(0, 0);
-        final PositionInterface position2 = Position(0, 1);
-        BoardLayer newBoardLayer = this.boardLayer.apply(position1, Self);
-        newBoardLayer = newBoardLayer.apply(position2, Self);
-        assertTrue(newBoardLayer.isSelfOrOther(position1));
-        assertTrue(newBoardLayer.isSelfOrOther(position2));
     }
 
 }

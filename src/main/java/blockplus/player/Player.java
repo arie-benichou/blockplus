@@ -17,6 +17,7 @@
 
 package blockplus.player;
 
+import interfaces.player.PlayerInterface;
 import blockplus.color.ColorInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
@@ -33,17 +34,14 @@ public final class Player implements PlayerInterface {
         this.bagOfPieces = bagOfPieces;
     }
 
-    @Override
-    public PlayerInterface apply(final PiecesBag bagOfPieces) {
+    public Player apply(final PiecesBag bagOfPieces) {
         return new Player(this.getColor(), bagOfPieces);
     }
 
-    @Override
     public ColorInterface getColor() {
         return this.color;
     }
 
-    @Override
     public PiecesBag getPieces() {
         return this.bagOfPieces;
     }

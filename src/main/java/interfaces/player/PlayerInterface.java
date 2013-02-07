@@ -15,22 +15,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.board;
+package interfaces.player;
 
-import components.board.Symbol;
+public interface PlayerInterface {
 
-public enum Remaining implements Symbol {
-
-    NONE,
-    ONE,
-    TWO,
-    THREE,
-    ALL;
-
-    private static final Remaining[] VALUES = Remaining.values();
-
-    public static Remaining get(final int size) {
-        return VALUES[size];
-    }
+    boolean isAlive();
 
 }

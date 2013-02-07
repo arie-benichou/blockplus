@@ -17,6 +17,8 @@
 
 package blockplus.arbitration;
 
+import interfaces.arbitration.RefereeInterface;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,7 @@ import blockplus.piece.PieceData;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
-import blockplus.player.PlayerInterface;
+import blockplus.player.Player;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -44,7 +46,7 @@ import components.neighbourhood.Neighbourhood;
 import components.position.PositionInterface;
 
 // TODO extract interface
-public final class Referee {
+public final class Referee implements RefereeInterface {
 
     private List<Move> getLegalMoves(final Board board, final ColorInterface color, final Pieces piece, final PositionInterface position) {
         final List<Move> legalMoves = Lists.newArrayList();
@@ -80,7 +82,7 @@ public final class Referee {
     }
 
     // TODO ! pouvoir passer un Ordering/Comparator de Move
-    public Set<Move> getLegalMoves(final Board board, final PlayerInterface player) {
+    public Set<Move> getLegalMoves(final Board board, final Player player) {
         final ColorInterface color = player.getColor();
         final Map<PositionInterface, State> stillAlivePositionsByPriority = board.getLayer(color).getLights();
         final Iterable<PositionInterface> positionsHavingPotential = stillAlivePositionsByPriority.keySet();
@@ -94,7 +96,7 @@ public final class Referee {
     }
 
     // TODO à revoir
-    public List<Move> getOrderedLegalMoves(final Context context) {
+    public List<Move> getLegalMoves(final Context context) {
         final List<Move> moves = Lists.newArrayList(this.getLegalMoves(context.getBoard(), context.getPlayer()));
         Collections.sort(moves);
         return moves;

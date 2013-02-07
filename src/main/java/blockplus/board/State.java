@@ -31,8 +31,4 @@ public enum State implements Symbol {
         return this.equals(other);
     }
 
-    public boolean isSelfOrOther() {
-        return this.equals(Self) || this.equals(Other);
-    }
-
 }

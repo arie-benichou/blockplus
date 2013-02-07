@@ -17,6 +17,9 @@
 
 package blockplus.player;
 
+import interfaces.player.PlayerInterface;
+import interfaces.player.PlayersInterface;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -29,13 +32,13 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public final class Players implements PlayersInterface {
+public final class Players implements PlayersInterface, Iterable<Player> {
 
     public final static class Builder {
 
-        private final Set<PlayerInterface> players = Sets.newHashSet();
+        private final Set<Player> players = Sets.newHashSet();
 
-        public Builder add(final PlayerInterface player) {
+        public Builder add(final Player player) {
             this.players.add(player);
             return this;
         }
@@ -46,34 +49,36 @@ public final class Players implements PlayersInterface {
 
     }
 
-    private final Set<PlayerInterface> players;
-    private final Map<ColorInterface, PlayerInterface> playerByColor = Maps.newHashMap();
+    private final Set<Player> players;
+    private final Map<ColorInterface, Player> playerByColor = Maps.newHashMap();
 
-    private Players(final Set<PlayerInterface> players) {
+    private Players(final Set<Player> players) {
         Preconditions.checkState(players.size() == 4);
         this.players = ImmutableSet.copyOf(players);
-        for (final PlayerInterface player : this.players) {
+        for (final Player player : this.players) {
             this.playerByColor.put(player.getColor(), player);
         }
     }
 
     @Override
-    public Iterator<PlayerInterface> iterator() {
+    public Iterator<Player> iterator() {
         return this.players.iterator();
     }
 
     @Override
-    public PlayerInterface get(final ColorInterface color) {
+    public Player get(final ColorInterface color) {
         return this.playerByColor.get(color);
     }
 
     @Override
-    public Players update(final PlayerInterface newPlayer) {
-        Preconditions.checkArgument(newPlayer != null);
+    public Players update(final PlayerInterface playerInterface) { // TODO à revoir
+        Preconditions.checkArgument(playerInterface != null);
+        Preconditions.checkArgument(playerInterface instanceof Player);
+        final Player newPlayer = (Player) playerInterface;
         if (this.players.contains(newPlayer)) return this;
         final ColorInterface color = newPlayer.getColor();
         final Builder builder = new Players.Builder();
-        for (final PlayerInterface player : this) {
+        for (final Player player : this) {
             if (!player.getColor().equals(color)) builder.add(player);
         }
         builder.add(newPlayer);

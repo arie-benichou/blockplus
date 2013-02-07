@@ -32,7 +32,7 @@ public interface GameInterface<T> {
 
     ImmutableList<ClientInterface> getClients();
 
-    T getApplication();
+    T getContext();
 
     boolean isFull();
 

@@ -17,6 +17,7 @@
 
 package blockplus.move;
 
+import interfaces.move.MoveInterface;
 import blockplus.color.ColorInterface;
 import blockplus.piece.PieceInterface;
 
@@ -26,7 +27,7 @@ import components.position.PositionInterface;
 
 // TODO extract interface
 // TODO extract Comparator(s)
-public class Move implements Comparable<Move> {
+public class Move implements Comparable<Move>, MoveInterface {
 
     private final ColorInterface color;
     private final PieceInterface piece;

@@ -17,6 +17,9 @@
 
 package blockplus.adversity;
 
+import interfaces.adversity.AdversityInterface;
+import interfaces.adversity.SideInterface;
+
 import java.util.Map;
 
 import blockplus.color.ColorInterface;

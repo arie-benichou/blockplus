@@ -17,13 +17,15 @@
 
 package blockplus.context;
 
+import interfaces.player.PlayerInterface;
 import blockplus.board.Board;
 import blockplus.move.Move;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
-import blockplus.player.PlayerInterface;
+import blockplus.player.Player;
 import blockplus.player.Players;
 
+// TODO extract interface
 public final class ContextMutationHandler {
 
     private Board getNewBoard(final Context context, final Move move) {
@@ -32,8 +34,8 @@ public final class ContextMutationHandler {
         return board.apply(move.getColor(), move.getPiece());
     }
 
-    private PlayerInterface getNewPlayer(final Context context, final Move move) {
-        final PlayerInterface player = context.getPlayer();
+    private Player getNewPlayer(final Context context, final Move move) {
+        final Player player = context.getPlayer();
         final int pieceId = move.getPiece().getId();
         final PiecesBag pieces = player.getPieces();
         final PiecesBag newBagOfPieces = pieces.remove(Pieces.get(pieceId));

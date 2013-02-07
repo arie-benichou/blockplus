@@ -15,22 +15,22 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package serialization;
+package blockplus.context;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import serialization.JSONSerializer;
+
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
 import blockplus.color.ColorInterface;
-import blockplus.context.ContextBuilder;
-import blockplus.context.ContextInterface;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
-import blockplus.player.PlayerInterface;
+import blockplus.player.Player;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -41,15 +41,15 @@ import com.google.gson.JsonPrimitive;
 import components.position.PositionInterface;
 
 // TODO extract interface
-public final class GameContextRepresentation {
+public final class ContextRepresentation {
 
-    private final ContextInterface gameContext;
+    private final Context gameContext;
 
-    public ContextInterface getGameContext() {
+    public Context getGameContext() {
         return this.gameContext;
     }
 
-    public GameContextRepresentation(final ContextInterface game) {
+    public ContextRepresentation(final Context game) {
         this.gameContext = game;
     }
 
@@ -85,8 +85,8 @@ public final class GameContextRepresentation {
     // TODO enlever la pièce nulle ?
     public JsonElement encodePieces() {
         final JsonObject data = new JsonObject();
-        final ContextInterface context = this.getGameContext();
-        for (final PlayerInterface player : context.getPlayers()) {
+        final Context context = this.getGameContext();
+        for (final Player player : context.getPlayers()) {
             final ColorInterface color = player.getColor();
             final JsonArray jsonArray = new JsonArray();
             final PiecesBag pieces = player.getPieces();
@@ -119,7 +119,7 @@ public final class GameContextRepresentation {
     @Override
     public String toString() {
         final JsonObject data = new JsonObject();
-        data.addProperty("color", this.getGameContext().get().toString());
+        data.addProperty("color", this.getGameContext().getColor().toString());
         data.addProperty("isTerminal", this.getGameContext().isTerminal());
         data.add("board", this.encodeBoard());
         data.add("pieces", this.encodePieces());
@@ -128,8 +128,8 @@ public final class GameContextRepresentation {
     }
 
     public static void main(final String[] args) {
-        final ContextInterface game = new ContextBuilder().build();
-        final GameContextRepresentation gameJSONRepresentation = new GameContextRepresentation(game);
+        final Context game = new ContextBuilder().build();
+        final ContextRepresentation gameJSONRepresentation = new ContextRepresentation(game);
         System.out.println(gameJSONRepresentation);
         System.out.println(gameJSONRepresentation.encodePieces());
     }

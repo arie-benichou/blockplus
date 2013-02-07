@@ -17,20 +17,22 @@
 
 package transport;
 
+import interfaces.player.PlayerInterface;
+
 import java.util.List;
 import java.util.Set;
 
-import serialization.GameContextRepresentation;
 import transport.events.interfaces.ClientInterface;
 import transport.events.interfaces.MoveSubmitInterface;
 import blockplus.color.ColorInterface;
 import blockplus.color.PrimeColors;
 import blockplus.context.Context;
 import blockplus.context.ContextBuilder;
+import blockplus.context.ContextRepresentation;
 import blockplus.move.Move;
 import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
-import blockplus.player.PlayerInterface;
+import blockplus.player.Player;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
@@ -64,8 +66,8 @@ public class BlockplusGame implements GameInterface<Context> {
     private final Context gameContext;
     private final long timeStamp;
 
-    private ImmutableMap<PlayerInterface, ClientInterface> clientByPlayer;
-    private ImmutableMap<ClientInterface, PlayerInterface> playerByClient;
+    private ImmutableMap<Player, ClientInterface> clientByPlayer;
+    private ImmutableMap<ClientInterface, Player> playerByClient;
 
     public BlockplusGame(final int ordinal, final String code, final ImmutableList<ClientInterface> clients, final Context gameContext,
             final long timeStamp) {
@@ -81,12 +83,12 @@ public class BlockplusGame implements GameInterface<Context> {
             this.clientByPlayer = null;
         }
         else {
-            final Builder<PlayerInterface, ClientInterface> builder1 = new ImmutableMap.Builder<PlayerInterface, ClientInterface>();
-            final Builder<ClientInterface, PlayerInterface> builder2 = new ImmutableMap.Builder<ClientInterface, PlayerInterface>();
+            final Builder<Player, ClientInterface> builder1 = new ImmutableMap.Builder<Player, ClientInterface>();
+            final Builder<ClientInterface, Player> builder2 = new ImmutableMap.Builder<ClientInterface, Player>();
             int n = 0;
             for (final ClientInterface client : clients) {
                 final ColorInterface color = PrimeColors.get(this.SEQUENCE.get(n));
-                final PlayerInterface player = gameContext.getPlayers().get(color);
+                final Player player = gameContext.getPlayers().get(color);
                 builder1.put(player, client);
                 builder2.put(client, player);
                 ++n;
@@ -112,7 +114,7 @@ public class BlockplusGame implements GameInterface<Context> {
     }
 
     @Override
-    public Context getApplication() {
+    public Context getContext() {
         return this.gameContext;
     }
 
@@ -140,12 +142,12 @@ public class BlockplusGame implements GameInterface<Context> {
     }
 
     public ClientInterface getUserToPlay() {
-        final ColorInterface colorToPlay = this.getApplication().get();
-        final PlayerInterface player = this.getApplication().getPlayers().get(colorToPlay);
+        final ColorInterface colorToPlay = this.getContext().getColor();
+        final PlayerInterface player = this.getContext().getPlayers().get(colorToPlay);
         return this.clientByPlayer.get(player);
     }
 
-    public PlayerInterface getPlayer(final ClientInterface client) {
+    public Player getPlayer(final ClientInterface client) {
         return this.playerByClient.get(client);
     }
 
@@ -168,7 +170,7 @@ public class BlockplusGame implements GameInterface<Context> {
         // TODO check that game is not over
         // TODO check that move is legal                
 
-        final Context context = this.getApplication();
+        final Context context = this.getContext();
 
         // TODO à revoir
         final JsonArray array = moveSubmit.getPositions();
@@ -180,7 +182,7 @@ public class BlockplusGame implements GameInterface<Context> {
             positions.add(Position.from(row, column));
         }
 
-        final ColorInterface color = context.get();
+        final ColorInterface color = context.getColor();
         final PieceInterface piece = PieceComposite.from(moveSubmit.getId(), positions.iterator().next(), positions); // TODO à revoir
         final Move move = new Move(color, piece);
         Context nextContext = context.apply(move);
@@ -201,15 +203,15 @@ public class BlockplusGame implements GameInterface<Context> {
     }
 
     public void update(final ClientInterface client) {
-        final Context context = this.getApplication();
-        final GameContextRepresentation gameRepresentation = new GameContextRepresentation(context);
+        final Context context = this.getContext();
+        final ContextRepresentation gameRepresentation = new ContextRepresentation(context);
         client.getIO().emit("color", gameRepresentation.encodeColor(this.getPlayer(client).getColor()));
         client.getIO().emit("update", gameRepresentation.toString());
     }
 
     public void update() {
-        final Context context = this.getApplication();
-        final GameContextRepresentation gameRepresentation = new GameContextRepresentation(context);
+        final Context context = this.getContext();
+        final ContextRepresentation gameRepresentation = new ContextRepresentation(context);
         for (final ClientInterface client : this.getClients()) {
             client.getIO().emit("color", gameRepresentation.encodeColor(this.getPlayer(client).getColor()));
             client.getIO().emit("update", gameRepresentation.toString());
@@ -218,8 +220,8 @@ public class BlockplusGame implements GameInterface<Context> {
 
     @Override
     public String toJson() {
-        final Context context = this.getApplication();
-        final GameContextRepresentation gameRepresentation = new GameContextRepresentation(context);
+        final Context context = this.getContext();
+        final ContextRepresentation gameRepresentation = new ContextRepresentation(context);
         return gameRepresentation.encodeBoard().toString();
     }
 

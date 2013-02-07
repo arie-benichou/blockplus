@@ -17,7 +17,10 @@
 
 package blockplus.board;
 
-import static blockplus.board.State.*;
+import static blockplus.board.State.Light;
+import static blockplus.board.State.None;
+import static blockplus.board.State.Other;
+import static blockplus.board.State.Self;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,23 +63,6 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
 
     };
 
-    private final static Predicate<Entry<PositionInterface, State>> OTHER_PREDICATE = new Predicate<Map.Entry<PositionInterface, State>>() {
-
-        @Override
-        public boolean apply(@Nullable final Entry<PositionInterface, State> entry) {
-            return entry.getValue().is(Other);
-        }
-
-    };
-
-    private final static Predicate<Entry<PositionInterface, State>> SHADOW_PREDICATE = new Predicate<Map.Entry<PositionInterface, State>>() {
-
-        @Override
-        public boolean apply(@Nullable final Entry<PositionInterface, State> entry) {
-            return entry.getValue().is(Shadow);
-        }
-    };
-
     private final static Predicate<Entry<PositionInterface, State>> LIGHT_PREDICATE = new Predicate<Map.Entry<PositionInterface, State>>() {
 
         @Override
@@ -90,8 +76,6 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
     private final IsMutablePredicate isMutablePredicate;
 
     private transient volatile Map<PositionInterface, State> selves;
-    private transient volatile Map<PositionInterface, State> others;
-    private transient volatile Map<PositionInterface, State> shadows;
     private transient volatile Map<PositionInterface, State> lights;
 
     private BoardLayer(final BoardInterface<State> stateBoard) {
@@ -99,7 +83,6 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
         this.isMutablePredicate = new IsMutablePredicate(stateBoard);
     }
 
-    // TODO static factory method, then make it private    
     public BoardLayer(final int rows, final int columns) {
         this(Board.from(rows, columns, None, Other));
     }
@@ -130,32 +113,12 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
         return this.get().columns();
     }
 
-    public boolean isNone(final PositionInterface position) {
-        return this.get().get(position).is(None);
-    }
-
-    public boolean isSelf(final PositionInterface position) {
-        return this.getSelves().containsKey(position);
-    }
-
-    public boolean isShadow(final PositionInterface position) {
-        return this.getShadows().containsKey(position);
-    }
-
     public boolean isLight(final PositionInterface position) {
         return this.getLights().containsKey(position);
     }
 
-    public boolean isOther(final PositionInterface position) {
-        return this.getOthers().containsKey(position);
-    }
-
-    public boolean isSelfOrOther(final PositionInterface position) {
-        return this.isSelf(position) || this.isOther(position);
-    }
-
     public BoardLayer apply(final PieceInterface piece) {
-        final MutationBuilder boardMutationBuilder = new MutationBuilder()
+        final BoardMutationBuilder boardMutationBuilder = new BoardMutationBuilder()
                 .setSelfPositions(piece.getSelfPositions())
                 .setShadowPositions(piece.getShadowPositions())
                 .setLightPositions(piece.getLightPositions());
@@ -176,14 +139,6 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
         return new BoardLayer(this.get().apply(consistentMutation));
     }
 
-    public Map<PositionInterface, State> getShadows() {
-        Map<PositionInterface, State> value = this.shadows;
-        if (value == null) synchronized (this) {
-            if ((value = this.shadows) == null) this.shadows = value = this.get().filter(SHADOW_PREDICATE);
-        }
-        return value;
-    }
-
     public Map<PositionInterface, State> getLights() {
         Map<PositionInterface, State> value = this.lights;
         if (value == null) synchronized (this) {
@@ -196,14 +151,6 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
         Map<PositionInterface, State> value = this.selves;
         if (value == null) synchronized (this) {
             if ((value = this.selves) == null) this.selves = value = this.get().filter(SELF_PREDICATE);
-        }
-        return value;
-    }
-
-    public Map<PositionInterface, State> getOthers() {
-        Map<PositionInterface, State> value = this.others;
-        if (value == null) synchronized (this) {
-            if ((value = this.others) == null) this.others = value = this.get().filter(OTHER_PREDICATE);
         }
         return value;
     }

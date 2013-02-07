@@ -15,22 +15,17 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.board;
+package interfaces.player;
 
-import components.board.Symbol;
+import blockplus.color.ColorInterface;
 
-public enum Capacity implements Symbol {
+// TODO ? Player as composite pour les variantes de jeux
+public interface PlayersInterface {
 
-    NONE,
-    ONE,
-    TWO,
-    THREE,
-    FOUR;
+    boolean hasAlivePlayer();
 
-    private static final Capacity[] VALUES = Capacity.values();
+    PlayerInterface get(ColorInterface color);
 
-    public static Capacity get(final int size) {
-        return VALUES[size];
-    }
+    PlayersInterface update(PlayerInterface newPlayer);
 
 }

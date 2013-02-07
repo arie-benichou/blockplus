@@ -15,17 +15,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.player;
+package interfaces.adversity;
 
-import blockplus.color.ColorInterface;
+import com.google.common.base.Supplier;
 
-// TODO ? Player as composite pour les variantes de jeux
-public interface PlayersInterface extends Iterable<PlayerInterface> {
+public interface SideInterface extends Supplier<Integer> {
 
-    boolean hasAlivePlayer();
-
-    PlayerInterface get(ColorInterface color);
-
-    PlayersInterface update(PlayerInterface newPlayer);
+    SideInterface next();
 
 }

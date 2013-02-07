@@ -17,6 +17,9 @@
 
 package blockplus.context;
 
+import interfaces.arbitration.RefereeInterface;
+import interfaces.context.ContextInterface;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -28,12 +31,12 @@ import blockplus.board.Board;
 import blockplus.color.ColorInterface;
 import blockplus.move.Move;
 import blockplus.piece.NullPieceComponent;
-import blockplus.player.PlayerInterface;
+import blockplus.player.Player;
 import blockplus.player.Players;
 
 import com.google.common.base.Predicate;
 
-public final class Context implements ContextInterface {
+public final class Context implements ContextInterface<ColorInterface> {
 
     // TODO à injecter
     private final static Predicate<Context> DEFAULT_PREDICATE = new Predicate<Context>() {
@@ -53,9 +56,9 @@ public final class Context implements ContextInterface {
     }
 
     // TODO à injecter
-    private final static Referee REFEREE = new Referee();
+    private final static RefereeInterface REFEREE = new Referee();
 
-    private Referee getReferee() {
+    private RefereeInterface getReferee() {
         return REFEREE;
     }
 
@@ -113,18 +116,20 @@ public final class Context implements ContextInterface {
     }
 
     @Override
-    public ColorInterface get() {
+    public List<Move> options() {
+        return this.getReferee().getLegalMoves(this);
+    }
+
+    public ColorInterface getColor() {
         return this.adversity.get(this.getSide());
     }
 
-    @Override
-    public ColorInterface getNext() {
-        return this.adversity.getNext(this.getSide());
+    public Player getPlayer(final ColorInterface color) {
+        return this.getPlayers().get(color);
     }
 
-    @Override
-    public List<Move> options() {
-        return this.getReferee().getOrderedLegalMoves(this);
+    public Player getPlayer() {
+        return this.getPlayer(this.getColor());
     }
 
     @Override
@@ -134,7 +139,7 @@ public final class Context implements ContextInterface {
         if (skipOnNullOption) {
             final List<Move> nextOptions = nextContext.options();
             if (nextOptions.size() == 1 && nextOptions.get(0).isNull()) {// TODO extract Options class
-                if (nextContext.getPlayer().isAlive()) nextContext = nextContext.apply(new Move(nextContext.get(), NullPieceComponent.getInstance()));
+                if (nextContext.getPlayer().isAlive()) nextContext = nextContext.apply(new Move(nextContext.getColor(), NullPieceComponent.getInstance()));
                 nextContext = nextContext.forward();
             }
         }
@@ -144,18 +149,6 @@ public final class Context implements ContextInterface {
     @Override
     public Context forward() {
         return this.forward(true);
-    }
-
-    private PlayerInterface getPlayer(final ColorInterface color) {
-        return this.getPlayers().get(color);
-    }
-
-    public PlayerInterface getPlayer() {
-        return this.getPlayer(this.get());
-    }
-
-    public PlayerInterface getNextPlayer() {
-        return this.getPlayer(this.getNext());
     }
 
 }

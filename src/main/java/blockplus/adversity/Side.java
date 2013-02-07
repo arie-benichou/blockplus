@@ -17,6 +17,8 @@
 
 package blockplus.adversity;
 
+import interfaces.adversity.SideInterface;
+
 import com.google.common.base.Objects;
 
 public final class Side implements SideInterface {

@@ -25,61 +25,36 @@ import com.google.common.collect.Sets;
 import components.position.PositionInterface;
 
 // TODO ?! utiliser directement une HashMap mutable
-public final class MutationBuilder {
+public final class BoardMutationBuilder {
 
-    private Set<PositionInterface> nonePositions = Sets.newHashSet();
+    private final Set<PositionInterface> nonePositions = Sets.newHashSet();
     private Set<PositionInterface> potentialPositions = Sets.newHashSet();
     private Set<PositionInterface> selfPositions = Sets.newHashSet();
     private Set<PositionInterface> otherPositions = Sets.newHashSet();
     private Set<PositionInterface> shadowPositions = Sets.newHashSet();
 
-    public MutationBuilder reset() {
-        return new MutationBuilder();
+    public BoardMutationBuilder reset() {
+        return new BoardMutationBuilder();
     }
 
-    public MutationBuilder setNonePositions(final Set<PositionInterface> positions) {
-        this.nonePositions = positions;
-        return this;
-    }
-
-    public MutationBuilder setNonePositions(final PositionInterface... positions) {
-        return this.setNonePositions(Sets.newHashSet(positions));
-    }
-
-    public MutationBuilder setLightPositions(final Set<PositionInterface> positions) {
+    public BoardMutationBuilder setLightPositions(final Set<PositionInterface> positions) {
         this.potentialPositions = positions;
         return this;
     }
 
-    public MutationBuilder setPotentialPositions(final PositionInterface... positions) {
-        return this.setLightPositions(Sets.newHashSet(positions));
-    }
-
-    public MutationBuilder setSelfPositions(final Set<PositionInterface> positions) {
+    public BoardMutationBuilder setSelfPositions(final Set<PositionInterface> positions) {
         this.selfPositions = positions;
         return this;
     }
 
-    public MutationBuilder setSelfPositions(final PositionInterface... positions) {
-        return this.setSelfPositions(Sets.newHashSet(positions));
-    }
-
-    public MutationBuilder setShadowPositions(final Set<PositionInterface> positions) {
+    public BoardMutationBuilder setShadowPositions(final Set<PositionInterface> positions) {
         this.shadowPositions = positions;
         return this;
     }
 
-    public MutationBuilder setShadowPositions(final PositionInterface... positions) {
-        return this.setShadowPositions(Sets.newHashSet(positions));
-    }
-
-    public MutationBuilder setOtherPositions(final Set<PositionInterface> positions) {
+    public BoardMutationBuilder setOtherPositions(final Set<PositionInterface> positions) {
         this.otherPositions = positions;
         return this;
-    }
-
-    public MutationBuilder setOtherPositions(final PositionInterface... positions) {
-        return this.setOtherPositions(Sets.newHashSet(positions));
     }
 
     public Map<PositionInterface, State> build() {
