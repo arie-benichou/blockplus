@@ -36,7 +36,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import components.position.PositionInterface;
 
-public class BoardParser {
+public final class BoardParser {
 
     private final static Map<Character, ColorInterface> COLOR_BY_SYMBOL = Maps.newHashMap();
     static {

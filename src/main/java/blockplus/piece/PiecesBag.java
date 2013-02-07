@@ -28,6 +28,7 @@ import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multiset.Entry;
+// TODO extract interface
 // TODO ? utiliser les Bloom filters
 // TODO ? à revoir en utilsant une map<Pieces, Integer>
 

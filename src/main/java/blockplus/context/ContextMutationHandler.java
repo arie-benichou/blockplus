@@ -24,7 +24,7 @@ import blockplus.piece.PiecesBag;
 import blockplus.player.PlayerInterface;
 import blockplus.player.Players;
 
-public class ContextMutationHandler {
+public final class ContextMutationHandler {
 
     private Board getNewBoard(final Context context, final Move move) {
         final Board board = context.getBoard();

@@ -13,6 +13,7 @@ import com.google.common.collect.Sets;
 /**
  * Provides distinct instances for a given piece.
  */
+//TODO extract interface
 public final class PieceInstances implements Iterable<PieceInterface> {
 
     private static Set<PieceInterface> computeDistinctRotation(final PieceInterface oneSide) {

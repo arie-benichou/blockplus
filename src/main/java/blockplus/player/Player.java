@@ -23,7 +23,7 @@ import blockplus.piece.PiecesBag;
 
 import com.google.common.base.Objects;
 
-public class Player implements PlayerInterface {
+public final class Player implements PlayerInterface {
 
     private final ColorInterface color;
     private final PiecesBag bagOfPieces;

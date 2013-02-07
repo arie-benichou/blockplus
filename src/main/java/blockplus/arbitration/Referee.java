@@ -43,7 +43,8 @@ import com.google.common.collect.Sets;
 import components.neighbourhood.Neighbourhood;
 import components.position.PositionInterface;
 
-public class Referee {
+// TODO extract interface
+public final class Referee {
 
     private List<Move> getLegalMoves(final Board board, final ColorInterface color, final Pieces piece, final PositionInterface position) {
         final List<Move> legalMoves = Lists.newArrayList();

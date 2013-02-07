@@ -19,7 +19,7 @@ package blockplus.adversity;
 
 import com.google.common.base.Objects;
 
-public class Side implements SideInterface {
+public final class Side implements SideInterface {
 
     private final Integer id;
 

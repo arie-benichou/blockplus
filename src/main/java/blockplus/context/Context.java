@@ -33,7 +33,7 @@ import blockplus.player.Players;
 
 import com.google.common.base.Predicate;
 
-public class Context implements ContextInterface {
+public final class Context implements ContextInterface {
 
     // TODO à injecter
     private final static Predicate<Context> DEFAULT_PREDICATE = new Predicate<Context>() {

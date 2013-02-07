@@ -40,6 +40,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import components.position.PositionInterface;
 
+// TODO extract interface
 public final class GameContextRepresentation {
 
     private final ContextInterface gameContext;

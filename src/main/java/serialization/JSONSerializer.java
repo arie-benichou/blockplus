@@ -26,7 +26,7 @@ import components.position.Position;
 import components.position.PositionInterface;
 
 @Deprecated
-public class JSONSerializer {
+public final class JSONSerializer {
 
     private static final Gson INSTANCE = new GsonBuilder()
             .registerTypeAdapter(new TypeToken<PositionInterface>() {}.getType(), new PositionSerializer())
