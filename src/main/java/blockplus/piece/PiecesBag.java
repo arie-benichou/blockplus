@@ -28,8 +28,9 @@ import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multiset.Entry;
-
+// TODO ? utiliser les Bloom filters
 // TODO ? à revoir en utilsant une map<Pieces, Integer>
+
 public final class PiecesBag implements Iterable<Pieces> {
 
     private final static Multiset<Pieces> EMPTY_MULTI_SET = ImmutableMultiset.of();
@@ -102,11 +103,6 @@ public final class PiecesBag implements Iterable<Pieces> {
     }
 
     public PiecesBag remove(final Pieces piece) {
-        // TODO !!! à revoir
-        if (piece.ordinal() == 0) {
-            final Multiset<Pieces> copy = HashMultiset.create();
-            return from(copy);
-        }
         Preconditions.checkArgument(this.contains(piece), piece + " is not in " + this.data);
         final Multiset<Pieces> copy = HashMultiset.create(this.data);
         copy.remove(piece, 1);

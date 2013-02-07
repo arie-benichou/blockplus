@@ -45,7 +45,7 @@ import transport.protocol.MessageDecoder;
 import transport.protocol.MessageHandler;
 import transport.protocol.MessageHandlerInterface;
 import transport.protocol.MessageInterface;
-import blockplus.context.ContextInterface;
+import blockplus.context.Context;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -74,13 +74,13 @@ public class BlockplusServer extends WebSocketServlet {
     }
 
     // TODO utiliser un Futur<GameInterface<BlockplusGameContext>>
-    private final Map<Integer, GameInterface<ContextInterface>> gameByOrdinal = Maps.newConcurrentMap();
+    private final Map<Integer, GameInterface<Context>> gameByOrdinal = Maps.newConcurrentMap();
 
-    public GameInterface<ContextInterface> getGame(final Integer ordinal) {
+    public GameInterface<Context> getGame(final Integer ordinal) {
         return this.gameByOrdinal.get(ordinal);
     }
 
-    public void updateGames(final Integer ordinal, final GameInterface<ContextInterface> newGame) {
+    public void updateGames(final Integer ordinal, final GameInterface<Context> newGame) {
         this.gameByOrdinal.put(ordinal, newGame);
 
         // TODO asynch
@@ -194,7 +194,7 @@ public class BlockplusServer extends WebSocketServlet {
     public void onShowGame(final ShowGameInterface showGame) {
         final IOinterface io = showGame.getIO();
         final Integer ordinal = showGame.getOrdinal();
-        final GameInterface<ContextInterface> game = this.gameByOrdinal.get(ordinal);
+        final GameInterface<Context> game = this.gameByOrdinal.get(ordinal);
         if (game.isFull()) { // TODO à revoir
             final JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("game", ordinal);

@@ -118,7 +118,7 @@ public class VirtualClient implements WebSocket.OnTextMessage
                     final Pieces pieceObject = Pieces.valueOf(piece);
                     final MoveSubmit moveSubmit = new MoveSubmit(pieceObject.ordinal(), positions);
                     System.out.println();
-                    System.out.println(this);
+                    System.out.println(color);
                     System.out.println(moveSubmit);
                     try {
                         Thread.sleep(750);

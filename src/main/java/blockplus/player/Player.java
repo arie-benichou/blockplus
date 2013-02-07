@@ -50,7 +50,7 @@ public class Player implements PlayerInterface {
 
     @Override
     public boolean isAlive() {
-        return this.bagOfPieces.contains(Pieces.get(0));
+        return this.bagOfPieces.contains(Pieces.get(0)); // TODO Scala Lazy
     }
 
     @Override

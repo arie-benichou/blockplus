@@ -52,6 +52,8 @@ public interface ContextInterface {
 
     ContextInterface apply(Move move);
 
+    Context forward(boolean skipOnNullOption); // TODO skip predicate
+
     ContextInterface forward();
 
     /////////////////////////////

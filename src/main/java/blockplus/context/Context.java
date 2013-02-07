@@ -27,6 +27,7 @@ import blockplus.arbitration.Referee;
 import blockplus.board.Board;
 import blockplus.color.ColorInterface;
 import blockplus.move.Move;
+import blockplus.piece.NullPieceComponent;
 import blockplus.player.PlayerInterface;
 import blockplus.player.Players;
 
@@ -127,8 +128,22 @@ public class Context implements ContextInterface {
     }
 
     @Override
+    public Context forward(final boolean skipOnNullOption) {
+        if (this.isTerminal()) return this;
+        Context nextContext = new Context(this);
+        if (skipOnNullOption) {
+            final List<Move> nextOptions = nextContext.options();
+            if (nextOptions.size() == 1 && nextOptions.get(0).isNull()) {// TODO extract Options class
+                if (nextContext.getPlayer().isAlive()) nextContext = nextContext.apply(new Move(nextContext.get(), NullPieceComponent.getInstance()));
+                nextContext = nextContext.forward();
+            }
+        }
+        return nextContext;
+    }
+
+    @Override
     public Context forward() {
-        return new Context(this);
+        return this.forward(true);
     }
 
     private PlayerInterface getPlayer(final ColorInterface color) {
