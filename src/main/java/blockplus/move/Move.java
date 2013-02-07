@@ -25,9 +25,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import components.position.PositionInterface;
 
-// TODO extract interface
-// TODO extract Comparator(s)
-public class Move implements Comparable<Move>, MoveInterface {
+public class Move implements MoveInterface {
 
     private final Color color;
     private final PieceInterface piece;
@@ -68,22 +66,6 @@ public class Move implements Comparable<Move>, MoveInterface {
     }
 
     @Override
-    public int compareTo(final Move that) {
-
-        final int size1 = this.getPiece().getSelfPositions().size();
-        final int size2 = that.getPiece().getSelfPositions().size();
-        final int compare1 = size1 - size2;
-        if (compare1 < 0) return 1;
-        if (compare1 > 0) return -1;
-
-        final int compare2 = this.getPiece().getId() - that.getPiece().getId();
-        if (compare2 < 0) return 1;
-        if (compare2 > 0) return -1;
-
-        return that.getPosition().compareTo(this.getPosition());
-    }
-
-    @Override
     public String toString() {
         return Objects.toStringHelper(this)
                 .addValue(this.getColor())
@@ -91,8 +73,9 @@ public class Move implements Comparable<Move>, MoveInterface {
                 .toString();
     }
 
+    @Override
     public boolean isNull() {
-        return this.getPiece().getId() == 0; // TODO ? avoir un objet NullMove
+        return this.getPiece().getId() == 0;
     }
 
 }

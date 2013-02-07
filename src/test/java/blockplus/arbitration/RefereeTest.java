@@ -24,6 +24,7 @@ import static blockplus.context.Color.Yellow;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import interfaces.move.MoveInterface;
 
 import java.util.List;
 import java.util.Map;
@@ -97,16 +98,16 @@ public class RefereeTest {
         context = context.forward();
 
         {
-            final List<Move> options = context.options();
-            final Move move = options.iterator().next();
+            final List<MoveInterface> options = context.options();
+            final MoveInterface move = options.iterator().next();
             context = context.apply(move);
         }
 
         context = context.forward();
 
         {
-            final List<Move> options = context.options();
-            final Move move = options.iterator().next();
+            final List<MoveInterface> options = context.options();
+            final MoveInterface move = options.iterator().next();
             context = context.apply(move);
         }
 
@@ -133,7 +134,7 @@ public class RefereeTest {
         final Map<PositionInterface, State> lights = layer.getLights();
         assertTrue(!lights.isEmpty());
 
-        final List<Move> legalMoves = context.options();
+        final List<MoveInterface> legalMoves = context.options();
         assertEquals(1, legalMoves.size());
 
     }

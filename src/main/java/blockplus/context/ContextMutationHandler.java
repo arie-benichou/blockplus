@@ -29,9 +29,7 @@ import blockplus.player.Players;
 public final class ContextMutationHandler {
 
     private Board getNewBoard(final Context context, final Move move) {
-        final Board board = context.getBoard();
-        if (move.isNull()) return board; // TODO ? à mettre dans board.apply()
-        return board.apply(move.getColor(), move.getPiece());
+        return context.getBoard().apply(move);
     }
 
     private Player getNewPlayer(final Context context, final Move move) {

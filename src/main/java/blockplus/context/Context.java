@@ -19,6 +19,7 @@ package blockplus.context;
 
 import interfaces.arbitration.RefereeInterface;
 import interfaces.context.ContextInterface;
+import interfaces.move.MoveInterface;
 
 import java.util.List;
 
@@ -105,8 +106,8 @@ public final class Context implements ContextInterface<Color> {
     }
 
     @Override
-    public Context apply(final Move move) {
-        return this.getMoveHandler().apply(this, move);
+    public Context apply(final MoveInterface move) {
+        return this.getMoveHandler().apply(this, (Move) move);
     }
 
     @Override
@@ -115,8 +116,27 @@ public final class Context implements ContextInterface<Color> {
     }
 
     @Override
-    public List<Move> options() {
+    public List<MoveInterface> options() {
         return this.getReferee().getLegalMoves(this);
+    }
+
+    @Override
+    public Context forward(final boolean skipOnNullOption) {
+        if (this.isTerminal()) return this;
+        Context nextContext = new Context(this);
+        if (skipOnNullOption) {
+            final List<MoveInterface> nextOptions = nextContext.options();
+            if (nextOptions.size() == 1 && nextOptions.get(0).isNull()) {// TODO extract Options class
+                if (nextContext.getPlayer().isAlive()) nextContext = nextContext.apply(new Move(nextContext.getColor(), NullPieceComponent.getInstance()));
+                nextContext = nextContext.forward();
+            }
+        }
+        return nextContext;
+    }
+
+    @Override
+    public Context forward() {
+        return this.forward(true);
     }
 
     public Color getColor() {
@@ -129,25 +149,6 @@ public final class Context implements ContextInterface<Color> {
 
     public Player getPlayer() {
         return this.getPlayer(this.getColor());
-    }
-
-    @Override
-    public Context forward(final boolean skipOnNullOption) {
-        if (this.isTerminal()) return this;
-        Context nextContext = new Context(this);
-        if (skipOnNullOption) {
-            final List<Move> nextOptions = nextContext.options();
-            if (nextOptions.size() == 1 && nextOptions.get(0).isNull()) {// TODO extract Options class
-                if (nextContext.getPlayer().isAlive()) nextContext = nextContext.apply(new Move(nextContext.getColor(), NullPieceComponent.getInstance()));
-                nextContext = nextContext.forward();
-            }
-        }
-        return nextContext;
-    }
-
-    @Override
-    public Context forward() {
-        return this.forward(true);
     }
 
 }

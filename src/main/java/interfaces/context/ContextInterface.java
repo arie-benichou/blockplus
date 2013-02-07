@@ -19,41 +19,30 @@ package interfaces.context;
 
 import interfaces.adversity.AdversityInterface;
 import interfaces.adversity.SideInterface;
+import interfaces.board.BoardInterface;
+import interfaces.move.MoveInterface;
 import interfaces.player.PlayersInterface;
 
 import java.util.List;
 
-import blockplus.board.Board;
-import blockplus.move.Move;
-
 public interface ContextInterface<T> {
-
-    /////////////////////////////
-
-    SideInterface getSide();
-
-    AdversityInterface<T> getAdversity();
-
-    PlayersInterface getPlayers();
-
-    Board getBoard();
-
-    /////////////////////////////
 
     boolean isTerminal();
 
-    //T get();
+    SideInterface getSide();
 
-    List<Move> options();
+    BoardInterface getBoard();
 
-    /////////////////////////////
+    AdversityInterface<T> getAdversity();
 
-    ContextInterface<T> apply(Move move);
+    PlayersInterface<T> getPlayers();
 
-    ContextInterface<T> forward(boolean skipOnNullOption); // TODO skip predicate
+    ContextInterface<T> forward(boolean skipOnNullOption); // TODO use predicate
 
     ContextInterface<T> forward();
 
-    /////////////////////////////
+    List<MoveInterface> options();
+
+    ContextInterface<T> apply(MoveInterface move);
 
 }

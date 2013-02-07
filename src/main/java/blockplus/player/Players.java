@@ -32,7 +32,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public final class Players implements PlayersInterface, Iterable<Player> {
+public final class Players implements PlayersInterface<Color>, Iterable<Player> {
 
     public final static class Builder {
 
@@ -86,6 +86,7 @@ public final class Players implements PlayersInterface, Iterable<Player> {
     }
 
     // TODO compute boolean in builder
+    @Override
     public boolean hasAlivePlayer() {
         for (final PlayerInterface player : this) {
             if (player.isAlive()) return true;

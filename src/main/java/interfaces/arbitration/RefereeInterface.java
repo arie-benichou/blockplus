@@ -1,13 +1,16 @@
 
 package interfaces.arbitration;
 
-import java.util.List;
+import interfaces.context.ContextInterface;
+import interfaces.move.MoveInterface;
 
-import blockplus.context.Context;
-import blockplus.move.Move;
+import java.util.Comparator;
+import java.util.List;
 
 public interface RefereeInterface {
 
-    List<Move> getLegalMoves(Context context);
+    List<MoveInterface> getLegalMoves(ContextInterface<?> contextInterface, Comparator<MoveInterface> comparator);
+
+    List<MoveInterface> getLegalMoves(ContextInterface<?> contextInterface);
 
 }

@@ -17,10 +17,14 @@
 
 package blockplus.board;
 
+import interfaces.board.BoardInterface;
+import interfaces.move.MoveInterface;
+
 import java.util.Map;
 import java.util.Set;
 
 import blockplus.context.Color;
+import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 
 import com.google.common.base.Preconditions;
@@ -28,7 +32,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import components.position.PositionInterface;
 
-public final class Board {
+public final class Board implements BoardInterface {
 
     public final static class Builder {
 
@@ -124,11 +128,18 @@ public final class Board {
         return this.layerByColor.get(color);
     }
 
-    public boolean isLegal(final Color color, final PieceInterface piece) {
-        return this.getLayer(color).isLegal(piece.getSelfPositions());
+    @Override
+    public boolean isLegal(final MoveInterface moveInterface) {
+        final Move move = (Move) moveInterface;
+        return this.getLayer(move.getColor()).isLegal(move.getPiece().getSelfPositions());
     }
 
-    public Board apply(final Color color, final PieceInterface piece) {
+    @Override
+    public Board apply(final MoveInterface moveInterface) {
+        if (moveInterface.isNull()) return this;
+        final Move move = (Move) moveInterface;
+        final PieceInterface piece = move.getPiece();
+        final Color color = move.getColor();
         final Map<Color, BoardLayer> newLayers = Maps.newHashMap();
         final Map<PositionInterface, State> mutation = new BoardMutationBuilder()
                 .setOtherPositions(piece.getSelfPositions())
@@ -139,4 +150,5 @@ public final class Board {
         }
         return new Board(newLayers, this.rows(), this.columns());
     }
+
 }

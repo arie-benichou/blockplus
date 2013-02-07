@@ -17,12 +17,13 @@
 
 package blockplus.context;
 
+import interfaces.move.MoveInterface;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import serialization.JSONSerializer;
-
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
 import blockplus.move.Move;
@@ -98,10 +99,11 @@ public final class ContextRepresentation {
     }
 
     public JsonElement encodeOptions() {
-        final List<Move> options = this.getGameContext().options();
+        final List<MoveInterface> options = this.getGameContext().options();
         final Map<Pieces, List<Set<PositionInterface>>> legalPositionsByPiece = Maps.newTreeMap();
-        for (final Move move : options) {
-            if (!move.isNull()) { // TODO à revoir
+        for (final MoveInterface moveInterface : options) {
+            if (!moveInterface.isNull()) { // TODO à revoir
+                final Move move = (Move) moveInterface;
                 final PieceInterface piece = move.getPiece();
                 final Pieces key = Pieces.get(piece.getId());
                 List<Set<PositionInterface>> playablePositions = legalPositionsByPiece.get(key);

@@ -18,8 +18,11 @@
 package blockplus.arbitration;
 
 import interfaces.arbitration.RefereeInterface;
+import interfaces.context.ContextInterface;
+import interfaces.move.MoveInterface;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +33,7 @@ import blockplus.board.State;
 import blockplus.context.Color;
 import blockplus.context.Context;
 import blockplus.move.Move;
+import blockplus.move.MoveComparator;
 import blockplus.piece.NullPieceComponent;
 import blockplus.piece.PieceData;
 import blockplus.piece.PieceInterface;
@@ -45,14 +49,16 @@ import com.google.common.collect.Sets;
 import components.neighbourhood.Neighbourhood;
 import components.position.PositionInterface;
 
-// TODO extract interface
 public final class Referee implements RefereeInterface {
+
+    private static final MoveComparator MOVE_COMPARATOR = MoveComparator.getInstance();
 
     private List<Move> getLegalMoves(final Board board, final Color color, final Pieces piece, final PositionInterface position) {
         final List<Move> legalMoves = Lists.newArrayList();
         for (final PieceInterface pieceInstance : piece) {
             final PieceInterface translatedPieceInstance = pieceInstance.translateTo(position);
-            if (board.isLegal(color, translatedPieceInstance)) legalMoves.add(new Move(color, translatedPieceInstance));
+            final Move move = new Move(color, translatedPieceInstance);
+            if (board.isLegal(move)) legalMoves.add(move);
         }
         return legalMoves;
     }
@@ -81,8 +87,7 @@ public final class Referee implements RefereeInterface {
         return Iterables.concat(map.values());
     }
 
-    // TODO ! pouvoir passer un Ordering/Comparator de Move
-    public Set<Move> getLegalMoves(final Board board, final Player player) {
+    private Set<Move> getLegalMoves(final Board board, final Player player) {
         final Color color = player.getColor();
         final Map<PositionInterface, State> stillAlivePositionsByPriority = board.getLayer(color).getLights();
         final Iterable<PositionInterface> positionsHavingPotential = stillAlivePositionsByPriority.keySet();
@@ -95,10 +100,18 @@ public final class Referee implements RefereeInterface {
         return legalMoves;
     }
 
-    // TODO à revoir
-    public List<Move> getLegalMoves(final Context context) {
-        final List<Move> moves = Lists.newArrayList(this.getLegalMoves(context.getBoard(), context.getPlayer()));
-        Collections.sort(moves);
+    @Override
+    public List<MoveInterface> getLegalMoves(final ContextInterface<?> contextInterface, final Comparator<MoveInterface> comparator) {
+        final Context context = (Context) contextInterface;
+        final List<MoveInterface> moves = Lists.newArrayList();
+        moves.addAll(this.getLegalMoves(context.getBoard(), context.getPlayer()));
+        Collections.sort(moves, comparator);
         return moves;
     }
+
+    @Override
+    public List<MoveInterface> getLegalMoves(final ContextInterface<?> contextInterface) {
+        return this.getLegalMoves(contextInterface, MOVE_COMPARATOR);
+    }
+
 }
