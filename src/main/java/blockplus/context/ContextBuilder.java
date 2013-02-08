@@ -17,15 +17,16 @@
 
 package blockplus.context;
 
+import static blockplus.Color.Blue;
+import static blockplus.Color.Green;
+import static blockplus.Color.Red;
+import static blockplus.Color.Yellow;
 import static blockplus.board.State.Light;
-import static blockplus.context.Color.Blue;
-import static blockplus.context.Color.Green;
-import static blockplus.context.Color.Red;
-import static blockplus.context.Color.Yellow;
 import static components.position.Position.Position;
 
 import java.util.Set;
 
+import blockplus.Color;
 import blockplus.adversity.Adversity;
 import blockplus.adversity.Adversity.Builder;
 import blockplus.adversity.Side;
@@ -108,8 +109,9 @@ public final class ContextBuilder {
 
     private Players players = null;
 
-    public void setPlayers(final Players players) {
+    public ContextBuilder setPlayers(final Players players) {
         this.players = players;
+        return this;
     }
 
     private Players getPlayers() {
