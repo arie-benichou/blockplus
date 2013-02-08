@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.context;
+package serialization;
 
 import interfaces.move.MoveInterface;
 
@@ -23,9 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import serialization.JSONSerializer;
+import blockplus.Color;
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
+import blockplus.context.Context;
+import blockplus.context.ContextBuilder;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
