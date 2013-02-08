@@ -22,12 +22,12 @@ import interfaces.player.PlayerInterface;
 import java.util.List;
 import java.util.Set;
 
+import serialization.ContextRepresentation;
 import transport.events.interfaces.ClientInterface;
 import transport.events.interfaces.MoveSubmitInterface;
-import blockplus.context.Color;
+import blockplus.Color;
 import blockplus.context.Context;
 import blockplus.context.ContextBuilder;
-import blockplus.context.ContextRepresentation;
 import blockplus.move.Move;
 import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
