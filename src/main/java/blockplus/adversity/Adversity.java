@@ -22,7 +22,7 @@ import interfaces.adversity.SideInterface;
 
 import java.util.Map;
 
-import blockplus.context.Color;
+import blockplus.Color;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
@@ -54,6 +54,7 @@ public final class Adversity implements AdversityInterface<Color> {
     }
 
     private final Map<SideInterface, Color> colorBySide;
+
     private final Map<Color, SideInterface> sideByColor;
 
     private Adversity(final Map<SideInterface, Color> colorBySide, final Map<Color, SideInterface> sideByColor) {

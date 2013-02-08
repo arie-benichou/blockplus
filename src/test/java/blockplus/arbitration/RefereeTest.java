@@ -17,10 +17,10 @@
 
 package blockplus.arbitration;
 
-import static blockplus.context.Color.Blue;
-import static blockplus.context.Color.Green;
-import static blockplus.context.Color.Red;
-import static blockplus.context.Color.Yellow;
+import static blockplus.Color.Blue;
+import static blockplus.Color.Green;
+import static blockplus.Color.Red;
+import static blockplus.Color.Yellow;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

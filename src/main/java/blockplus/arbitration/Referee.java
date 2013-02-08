@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import blockplus.Color;
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
 import blockplus.board.State;
-import blockplus.context.Color;
 import blockplus.context.Context;
 import blockplus.move.Move;
 import blockplus.move.MoveComparator;
@@ -49,9 +49,10 @@ import com.google.common.collect.Sets;
 import components.neighbourhood.Neighbourhood;
 import components.position.PositionInterface;
 
+// TODO ? create class Options in this package
 public final class Referee implements RefereeInterface {
 
-    private static final MoveComparator MOVE_COMPARATOR = MoveComparator.getInstance();
+    private final static MoveComparator MOVE_COMPARATOR = MoveComparator.getInstance();
 
     private List<Move> getLegalMoves(final Board board, final Color color, final Pieces piece, final PositionInterface position) {
         final List<Move> legalMoves = Lists.newArrayList();
@@ -64,11 +65,8 @@ public final class Referee implements RefereeInterface {
     }
 
     // TODO tester pas à pas => PieceInstanceMatcher
-    private Iterable<PositionInterface> getPotentialPositions(final Board board, final Color c, final Iterable<PositionInterface> p,
-            final Pieces piece) {
-
+    private Iterable<PositionInterface> getPotentialPositions(final Board board, final Color c, final Iterable<PositionInterface> p, final Pieces piece) {
         final int radius = PieceData.PieceData(piece.ordinal()).radius(); // TODO !! Pieces.radius()
-
         final BoardLayer layer = board.getLayer(c);
         final Set<PositionInterface> extendedLegalPositions = Sets.newLinkedHashSet();
         final Map<PositionInterface, Set<PositionInterface>> map = Maps.newLinkedHashMap();

@@ -23,7 +23,7 @@ import interfaces.move.MoveInterface;
 import java.util.Map;
 import java.util.Set;
 
-import blockplus.context.Color;
+import blockplus.Color;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 
