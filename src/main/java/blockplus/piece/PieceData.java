@@ -238,10 +238,7 @@ public enum PieceData {
           -------------
     */
 
-    ENTRY17(
-            //Position(1, 1), // very bad idea, actually :-o
-            new int[][] { { 0, 0, 0, 1, 2 }, { 0, 1, 2, 0, 0 } }
-    ),
+    ENTRY17(new int[][] { { 0, 0, 0, 1, 2 }, { 0, 1, 2, 0, 0 } }),
 
     /*      0   1   2  
           -------------
@@ -293,7 +290,8 @@ public enum PieceData {
 
     /*----------------------------8<----------------------------*/
 
-    private static final String ENTRY_NAME_PATTERN = "ENTRY";
+    private final static String ENTRY_NAME_PATTERN = "ENTRY";
+
     private final static int DIMENSION = 2;
 
     private static PositionInterface extractPosition(final int[][] data, final int n) {
@@ -329,16 +327,40 @@ public enum PieceData {
     }
 
     private final PositionInterface referential;
+
+    public PositionInterface referential() {
+        return this.referential;
+    }
+
     private final Set<PositionInterface> positions;
+
+    public Set<PositionInterface> positions() {
+        return this.positions;
+    }
+
     private final Matrix matrix;
+
+    public Matrix matrix() {
+        return this.matrix;
+    }
+
     private int radius;
+
+    public int radius() {
+        return this.radius;
+    }
+
     private int size;
+
+    public int size() {
+        return this.size;
+    }
 
     /**
      * PieceData constructor.
      * 
      * @param referential
-     *            The fixed point in rotation
+     *            The fixed point in transformation
      * 
      * @param data
      *            The first data row contains row indexes and the second data
@@ -369,36 +391,15 @@ public enum PieceData {
         return this.ordinal();
     }
 
-    public int size() {
-        return this.size;
-    }
-
-    public PositionInterface referential() {
-        return this.referential;
-    }
-
-    public Set<PositionInterface> positions() {
-        return this.positions;
-    }
-
-    public Matrix matrix() {
-        return this.matrix;
-    }
-
-    public int radius() {
-        return this.radius;
-    }
-
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("\n id", this.id())
-                .add("\n size", this.size())
-                .add("\n radius", this.radius())
-                .add("\n positions", this.positions())
-                .add("\n matrix", this.matrix())
-                .add("\n referential", this.referential())
-                .addValue("\n")
+                .add("id", this.id())
+                .add("size", this.size())
+                .add("radius", this.radius())
+                .add("positions", this.positions())
+                .add("matrix", this.matrix())
+                .add("referential", this.referential())
                 .toString();
     }
 
