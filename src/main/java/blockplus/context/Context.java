@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import blockplus.Color;
 import blockplus.adversity.Adversity;
 import blockplus.adversity.Side;
 import blockplus.arbitration.Referee;
@@ -38,8 +39,8 @@ import com.google.common.base.Predicate;
 
 public final class Context implements ContextInterface<Color> {
 
-    // TODO à injecter
-    private final static Predicate<Context> DEFAULT_PREDICATE = new Predicate<Context>() {
+    // TODO inject
+    private final static Predicate<Context> TERMINATION_PREDICATE = new Predicate<Context>() {
 
         @Override
         public boolean apply(@Nullable final Context context) {
@@ -48,14 +49,7 @@ public final class Context implements ContextInterface<Color> {
 
     };
 
-    // TODO à injecter
-    private final static ContextMutationHandler MOVE_HANDLER = new ContextMutationHandler();
-
-    private ContextMutationHandler getMoveHandler() {
-        return MOVE_HANDLER;
-    }
-
-    // TODO à injecter
+    // TODO inject
     private final static RefereeInterface REFEREE = new Referee();
 
     private RefereeInterface getReferee() {
@@ -90,11 +84,7 @@ public final class Context implements ContextInterface<Color> {
         return this.board;
     }
 
-    public Context(
-            final Side side,
-            final Adversity adversity,
-            final Players players,
-            final Board board) {
+    public Context(final Side side, final Adversity adversity, final Players players, final Board board) {
         this.side = side;
         this.adversity = adversity;
         this.board = board;
@@ -107,16 +97,21 @@ public final class Context implements ContextInterface<Color> {
 
     @Override
     public Context apply(final MoveInterface move) {
-        return this.getMoveHandler().apply(this, (Move) move);
+        return new ContextBuilder()
+                .setSide(this.getSide())
+                .setAdversity(this.getAdversity())
+                .setPlayers(this.getPlayers().apply(this.getPlayer().apply(move)))
+                .setBoard(this.getBoard().apply(move))
+                .build();
     }
 
     @Override
     public boolean isTerminal() {
-        return DEFAULT_PREDICATE.apply(this);
+        return TERMINATION_PREDICATE.apply(this);
     }
 
     @Override
-    public List<MoveInterface> options() {
+    public List<MoveInterface> options() { // TODO Scala lazy
         return this.getReferee().getLegalMoves(this);
     }
 
@@ -126,7 +121,7 @@ public final class Context implements ContextInterface<Color> {
         Context nextContext = new Context(this);
         if (skipOnNullOption) {
             final List<MoveInterface> nextOptions = nextContext.options();
-            if (nextOptions.size() == 1 && nextOptions.get(0).isNull()) {// TODO extract Options class
+            if (nextOptions.size() == 1 && nextOptions.get(0).isNull()) {// TODO ? extract Options class
                 if (nextContext.getPlayer().isAlive()) nextContext = nextContext.apply(new Move(nextContext.getColor(), NullPieceComponent.getInstance()));
                 nextContext = nextContext.forward();
             }
