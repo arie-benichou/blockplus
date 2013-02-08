@@ -18,38 +18,38 @@
 package blockplus.move;
 
 import interfaces.move.MoveInterface;
-import blockplus.context.Color;
+import blockplus.Color;
 import blockplus.piece.PieceInterface;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import components.position.PositionInterface;
 
 public class Move implements MoveInterface {
 
     private final Color color;
+
+    public Color getColor() {
+        return this.color;
+    }
+
     private final PieceInterface piece;
+
+    public PieceInterface getPiece() {
+        return this.piece;
+    }
 
     public Move(final Color color, final PieceInterface piece) {
         this.color = color;
         this.piece = piece;
     }
 
-    public Color getColor() {
-        return this.color;
-    }
-
-    public PieceInterface getPiece() {
-        return this.piece;
-    }
-
-    public PositionInterface getPosition() {
-        return this.getPiece().getReferential();
+    @Override
+    public boolean isNull() {
+        return this.getPiece().getId() == 0;
     }
 
     @Override
-    // TODO à revoir + caching
-    public int hashCode() {
+    public int hashCode() { // TODO à revoir + caching
         return this.toString().hashCode();
     }
 
@@ -71,11 +71,6 @@ public class Move implements MoveInterface {
                 .addValue(this.getColor())
                 .addValue(this.getPiece())
                 .toString();
-    }
-
-    @Override
-    public boolean isNull() {
-        return this.getPiece().getId() == 0;
     }
 
 }

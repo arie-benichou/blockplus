@@ -25,7 +25,7 @@ public final class MoveComparator implements Comparator<MoveInterface> {
         final int compare2 = thisMove.getPiece().getId() - thatMove.getPiece().getId();
         if (compare2 < 0) return 1;
         if (compare2 > 0) return -1;
-        return thatMove.getPosition().compareTo(thisMove.getPosition());
+        return thatMove.getPiece().getReferential().compareTo(thisMove.getPiece().getReferential());
     }
 
     private MoveComparator() {}
