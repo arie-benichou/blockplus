@@ -30,14 +30,14 @@ public class MatrixTest {
 
     @Test
     public void testGetNumberOfRows() {
-        assertEquals(1, new Matrix(1, 2).getNumberOfRows());
-        assertEquals(2, new Matrix(2, 1).getNumberOfRows());
+        assertEquals(1, new Matrix(1, 2).rows());
+        assertEquals(2, new Matrix(2, 1).rows());
     }
 
     @Test
     public void testGetNumberOfColumns() {
-        assertEquals(1, new Matrix(2, 1).getNumberOfColumns());
-        assertEquals(2, new Matrix(1, 2).getNumberOfColumns());
+        assertEquals(1, new Matrix(2, 1).columns());
+        assertEquals(2, new Matrix(1, 2).columns());
     }
 
     @Test

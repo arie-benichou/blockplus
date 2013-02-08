@@ -28,16 +28,28 @@ public final class Matrix {
 
     public final static Matrix NULL = new Matrix(0, 0);
 
-    private final int numberOfRows;
-
-    public int getNumberOfRows() {
-        return this.numberOfRows;
+    public static String debug(final Matrix matrix) {
+        final int n = Math.max(String.valueOf(matrix.min()).length(), String.valueOf(matrix.max()).length());
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < matrix.rows(); ++i) {
+            for (int j = 0; j < matrix.columns(); ++j)
+                stringBuilder.append((Strings.padStart(String.valueOf(matrix.data[i][j]), n, ' ') + " "));
+            stringBuilder.append("\n");
+        }
+        stringBuilder.append("\n");
+        return stringBuilder.toString();
     }
 
-    private final int numberOfColumns;
+    private final int rows;
 
-    public int getNumberOfColumns() {
-        return this.numberOfColumns;
+    public int rows() {
+        return this.rows;
+    }
+
+    private final int columns;
+
+    public int columns() {
+        return this.columns;
     }
 
     private final int min;
@@ -56,69 +68,105 @@ public final class Matrix {
 
     private transient volatile Integer hashCode = null;
 
-    // TODO retourner la matrice nulle si numberOfRows * numberOfColumns = 0
-    public Matrix(final int numberOfRows, final int numberOfColumns, final int[][] data) {
-
-        Preconditions.checkArgument(numberOfRows >= 0);
-        Preconditions.checkArgument(numberOfColumns >= 0);
-
+    // TODO return null matrix if number of rows * number of columns = 0
+    public Matrix(final int expectedRows, final int expectedColumns, final int[][] data) {
+        Preconditions.checkArgument(expectedRows >= 0);
+        Preconditions.checkArgument(expectedColumns >= 0);
         final int rows = data.length;
-        Preconditions.checkArgument(numberOfRows == rows, numberOfRows + " != " + rows);
-
+        Preconditions.checkArgument(expectedRows == rows, expectedRows + " != " + rows);
         final int columns = rows > 0 ? data[0].length : 0;
-        Preconditions.checkArgument(numberOfColumns == columns, numberOfColumns + " != " + columns);
-
-        this.numberOfRows = numberOfRows;
-        this.numberOfColumns = numberOfColumns;
-        this.data = new int[numberOfRows][numberOfColumns];
-
+        Preconditions.checkArgument(expectedColumns == columns, expectedColumns + " != " + columns);
+        final int[][] copy = new int[rows][columns];
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
-
-        for (int i = 0; i < numberOfRows; ++i) {
-            for (int j = 0; j < numberOfColumns; ++j) {
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
                 final int value = data[i][j];
-                this.data[i][j] = value;
+                copy[i][j] = value;
                 min = Math.min(min, value);
                 max = Math.max(max, value);
             }
         }
-
+        this.rows = expectedRows;
+        this.columns = expectedColumns;
+        this.data = copy;
         this.min = min;
         this.max = max;
-
     }
 
-    public Matrix(final int numberOfRows, final int numberOfColumns, final int value) {
-
-        Preconditions.checkArgument(numberOfRows >= 0);
-        Preconditions.checkArgument(numberOfColumns >= 0);
-
-        this.numberOfRows = numberOfRows;
-        this.numberOfColumns = numberOfColumns;
-        this.data = new int[numberOfRows][numberOfColumns];
-
-        for (int i = 0; i < numberOfRows; ++i)
-            for (int j = 0; j < numberOfColumns; ++j)
+    public Matrix(final int rows, final int columns, final int value) {
+        Preconditions.checkArgument(rows >= 0);
+        Preconditions.checkArgument(columns >= 0);
+        this.rows = rows;
+        this.columns = columns;
+        this.data = new int[rows][columns];
+        for (int i = 0; i < rows; ++i)
+            for (int j = 0; j < columns; ++j)
                 this.data[i][j] = value;
-
         this.min = this.max = value;
     }
 
-    public Matrix(final int numberOfRows, final int numberOfColumns) {
-        this(numberOfRows, numberOfColumns, 0);
+    public Matrix(final int rows, final int columns) {
+        this(rows, columns, 0);
     }
 
-    @Override
-    public String toString() {
-        final ToStringHelper toStringHelper = Objects.toStringHelper(this)
-                .addValue(this.getNumberOfRows())
-                .addValue(this.getNumberOfColumns());
-        final StringBuilder stringBuilder = new StringBuilder("[");
-        for (int i = 0; i < this.getNumberOfRows(); ++i)
-            stringBuilder.append(Arrays.toString(this.data[i]));
-        stringBuilder.append("]");
-        return toStringHelper.addValue(stringBuilder.toString()).toString();
+    public int get(final int rowIndex, final int columnIndex) {
+        Preconditions.checkArgument(rowIndex >= 0 && rowIndex < this.rows());
+        Preconditions.checkArgument(columnIndex >= 0 && columnIndex < this.columns());
+        return this.data[rowIndex][columnIndex];
+    }
+
+    public Matrix transpose() {
+        final Matrix result = new Matrix(this.columns(), this.rows());
+        for (int i = 0; i < this.columns(); ++i)
+            for (int j = 0; j < this.rows(); ++j)
+                result.data[i][j] = this.data[j][i];
+        return result;
+    }
+
+    public Matrix add(final Matrix matrix) {
+        Preconditions.checkArgument(this.rows() == matrix.rows() && this.columns() == matrix.columns());
+        final Matrix result = new Matrix(this.rows(), this.columns());
+        for (int i = 0; i < this.rows(); ++i)
+            for (int j = 0; j < this.columns(); ++j)
+                result.data[i][j] = this.data[i][j] + matrix.data[i][j];
+        return result;
+    }
+
+    public Matrix multiply(final Matrix matrix) {
+        Preconditions.checkArgument(this.columns() == matrix.rows());
+        final Matrix result = new Matrix(this.rows(), matrix.columns());
+        for (int i = 0; i < this.rows(); ++i) {
+            for (int j = 0; j < matrix.columns(); ++j) {
+                int sum = 0;
+                for (int k = 0; k < this.columns(); ++k)
+                    sum += this.data[i][k] * matrix.data[k][j];
+                result.data[i][j] = sum;
+            }
+        }
+        return result;
+    }
+
+    public int min(final int rowIndex) {
+        Preconditions.checkArgument(rowIndex < this.rows);
+        int min = Integer.MAX_VALUE;
+        final int[] row = this.data[rowIndex];
+        for (final int value : row) {
+            if (value == this.min()) return this.min();
+            if (value < min) min = value;
+        }
+        return min;
+    }
+
+    public int max(final int rowIndex) {
+        Preconditions.checkArgument(rowIndex < this.rows);
+        int max = Integer.MIN_VALUE;
+        final int[] row = this.data[rowIndex];
+        for (final int value : row) {
+            if (value == this.max()) return this.max();
+            if (value > max) max = value;
+        }
+        return max;
     }
 
     @Override
@@ -137,84 +185,25 @@ public final class Matrix {
         if (object == this) return true;
         if (!(object instanceof Matrix)) return false;
         final Matrix that = (Matrix) object;
-        if (this.getNumberOfRows() != that.getNumberOfRows()) return false;
-        if (this.getNumberOfColumns() != that.getNumberOfColumns()) return false;
+        if (this.rows() != that.rows()) return false;
+        if (this.columns() != that.columns()) return false;
         final boolean haveSameHashCode = this.hashCode() == that.hashCode();
         boolean isEqual = true;
-        for (int i = 0; isEqual && i < this.getNumberOfRows(); ++i)
-            for (int j = 0; isEqual && j < this.getNumberOfColumns(); ++j)
+        for (int i = 0; isEqual && i < this.rows(); ++i)
+            for (int j = 0; isEqual && j < this.columns(); ++j)
                 if (this.data[i][j] != that.data[i][j]) isEqual = false;
         Preconditions.checkState(haveSameHashCode == isEqual);
         return isEqual;
     }
 
-    public int get(final int rowIndex, final int columnIndex) {
-        Preconditions.checkArgument(rowIndex >= 0 && rowIndex < this.getNumberOfRows());
-        Preconditions.checkArgument(columnIndex >= 0 && columnIndex < this.getNumberOfColumns());
-        return this.data[rowIndex][columnIndex];
-    }
-
-    public Matrix transpose() {
-        final Matrix result = new Matrix(this.getNumberOfColumns(), this.getNumberOfRows());
-        for (int i = 0; i < this.getNumberOfColumns(); ++i)
-            for (int j = 0; j < this.getNumberOfRows(); ++j)
-                result.data[i][j] = this.data[j][i];
-        return result;
-    }
-
-    public Matrix add(final Matrix matrix) {
-        Preconditions.checkArgument(this.getNumberOfRows() == matrix.getNumberOfRows() && this.getNumberOfColumns() == matrix.getNumberOfColumns());
-        final Matrix result = new Matrix(this.getNumberOfRows(), this.getNumberOfColumns());
-        for (int i = 0; i < this.getNumberOfRows(); ++i)
-            for (int j = 0; j < this.getNumberOfColumns(); ++j)
-                result.data[i][j] = this.data[i][j] + matrix.data[i][j];
-        return result;
-    }
-
-    public Matrix multiply(final Matrix matrix) {
-        Preconditions.checkArgument(this.getNumberOfColumns() == matrix.getNumberOfRows());
-        final Matrix result = new Matrix(this.getNumberOfRows(), matrix.getNumberOfColumns());
-        for (int i = 0; i < this.getNumberOfRows(); ++i) {
-            for (int j = 0; j < matrix.getNumberOfColumns(); ++j) {
-                int sum = 0;
-                for (int k = 0; k < this.getNumberOfColumns(); ++k)
-                    sum += this.data[i][k] * matrix.data[k][j];
-                result.data[i][j] = sum;
-            }
-        }
-        return result;
-    }
-
-    public int min(final int rowIndex) {
-        Preconditions.checkArgument(rowIndex < this.numberOfRows);
-        int min = Integer.MAX_VALUE;
-        final int[] row = this.data[rowIndex];
-        for (final int value : row) {
-            if (value == this.min()) return this.min();
-            if (value < min) min = value;
-        }
-        return min;
-    }
-
-    public int max(final int rowIndex) {
-        Preconditions.checkArgument(rowIndex < this.numberOfRows);
-        int max = Integer.MIN_VALUE;
-        final int[] row = this.data[rowIndex];
-        for (final int value : row) {
-            if (value == this.max()) return this.max();
-            if (value > max) max = value;
-        }
-        return max;
-    }
-
-    public void debug() {
-        final int n = Math.max(String.valueOf(this.min()).length(), String.valueOf(this.max()).length());
-        for (int i = 0; i < this.getNumberOfRows(); ++i) {
-            for (int j = 0; j < this.getNumberOfColumns(); ++j)
-                System.out.print(Strings.padStart(String.valueOf(this.data[i][j]), n, ' ') + " ");
-            System.out.println();
-        }
-        System.out.println();
+    @Override
+    public String toString() {
+        final ToStringHelper toStringHelper = Objects.toStringHelper(this).addValue(this.rows()).addValue(this.columns());
+        final StringBuilder stringBuilder = new StringBuilder("[");
+        for (int i = 0; i < this.rows(); ++i)
+            stringBuilder.append(Arrays.toString(this.data[i]));
+        stringBuilder.append("]");
+        return toStringHelper.addValue(stringBuilder.toString()).toString();
     }
 
 }
