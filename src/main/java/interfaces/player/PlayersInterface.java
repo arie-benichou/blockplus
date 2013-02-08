@@ -23,6 +23,6 @@ public interface PlayersInterface<T> {
 
     PlayerInterface get(T id);
 
-    PlayersInterface<T> update(PlayerInterface playerInterface);
+    PlayersInterface<T> apply(PlayerInterface playerInterface);
 
 }

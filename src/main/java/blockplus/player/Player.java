@@ -17,8 +17,10 @@
 
 package blockplus.player;
 
+import interfaces.move.MoveInterface;
 import interfaces.player.PlayerInterface;
-import blockplus.context.Color;
+import blockplus.Color;
+import blockplus.move.Move;
 import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 
@@ -27,28 +29,34 @@ import com.google.common.base.Objects;
 public final class Player implements PlayerInterface {
 
     private final Color color;
-    private final PiecesBag bagOfPieces;
-
-    public Player(final Color color, final PiecesBag bagOfPieces) {
-        this.color = color;
-        this.bagOfPieces = bagOfPieces;
-    }
-
-    public Player apply(final PiecesBag bagOfPieces) {
-        return new Player(this.getColor(), bagOfPieces);
-    }
 
     public Color getColor() {
         return this.color;
     }
 
+    private final PiecesBag pieces;
+
     public PiecesBag getPieces() {
-        return this.bagOfPieces;
+        return this.pieces;
+    }
+
+    public Player(final Color color, final PiecesBag pieces) {
+        this.color = color;
+        this.pieces = pieces;
+    }
+
+    public Player apply(final PiecesBag pieces) {
+        return new Player(this.getColor(), pieces);
+    }
+
+    public Player apply(final MoveInterface moveInterface) {
+        final Move move = (Move) moveInterface;
+        return this.apply(this.getPieces().remove(Pieces.get(move.getPiece().getId())));
     }
 
     @Override
     public boolean isAlive() {
-        return this.bagOfPieces.contains(Pieces.get(0)); // TODO Scala Lazy
+        return this.pieces.contains(Pieces.get(0)); // TODO Scala lazy
     }
 
     @Override
@@ -56,7 +64,7 @@ public final class Player implements PlayerInterface {
         return Objects.toStringHelper(this)
                 .add("alive", this.isAlive())
                 .add("color", this.getColor())
-                .add("pieces", this.bagOfPieces)
+                .add("pieces", this.getPieces())
                 .toString();
     }
 

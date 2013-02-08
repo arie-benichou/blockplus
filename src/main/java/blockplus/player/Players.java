@@ -21,73 +21,61 @@ import interfaces.player.PlayerInterface;
 import interfaces.player.PlayersInterface;
 
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
-import blockplus.context.Color;
+import blockplus.Color;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.Ordering;
 
 public final class Players implements PlayersInterface<Color>, Iterable<Player> {
 
     public final static class Builder {
 
-        private final Set<Player> players = Sets.newHashSet();
+        private final ImmutableSortedMap.Builder<Color, Player> playerByColorBuilder = new ImmutableSortedMap.Builder<Color, Player>(Ordering.natural());
 
         public Builder add(final Player player) {
-            this.players.add(player);
+            this.playerByColorBuilder.put(player.getColor(), player);
             return this;
         }
 
         public Players build() {
-            return new Players(this.players);
+            final ImmutableSortedMap<Color, Player> players = this.playerByColorBuilder.build();
+            Preconditions.checkState(players.size() == 4);
+            return new Players(players);
         }
 
-    }
-
-    private final Set<Player> players;
-    private final Map<Color, Player> playerByColor = Maps.newHashMap();
-
-    private Players(final Set<Player> players) {
-        Preconditions.checkState(players.size() == 4);
-        this.players = ImmutableSet.copyOf(players);
-        for (final Player player : this.players) {
-            this.playerByColor.put(player.getColor(), player);
-        }
     }
 
     @Override
     public Iterator<Player> iterator() {
-        return this.players.iterator();
+        return this.playerByColor.values().iterator();
     }
+
+    private final ImmutableSortedMap<Color, Player> playerByColor;
 
     @Override
     public Player get(final Color color) {
         return this.playerByColor.get(color);
     }
 
-    @Override
-    public Players update(final PlayerInterface playerInterface) { // TODO à revoir
-        Preconditions.checkArgument(playerInterface != null);
-        Preconditions.checkArgument(playerInterface instanceof Player);
-        final Player newPlayer = (Player) playerInterface;
-        if (this.players.contains(newPlayer)) return this;
-        final Color color = newPlayer.getColor();
-        final Builder builder = new Players.Builder();
-        for (final Player player : this) {
-            if (!player.getColor().equals(color)) builder.add(player);
-        }
-        builder.add(newPlayer);
-        return builder.build();
+    private Players(final ImmutableSortedMap<Color, Player> playerByColor) {
+        this.playerByColor = playerByColor;
     }
 
-    // TODO compute boolean in builder
     @Override
-    public boolean hasAlivePlayer() {
+    public Players apply(final PlayerInterface playerInterface) {
+        Preconditions.checkArgument(playerInterface instanceof Player);
+        final Player newPlayer = (Player) playerInterface;
+        final Builder builder = new Players.Builder();
+        for (final Player player : this)
+            if (!player.getColor().equals(newPlayer.getColor())) builder.add(player);
+        return builder.add(newPlayer).build();
+    }
+
+    @Override
+    public boolean hasAlivePlayer() { // TODO Scala lazy
         for (final PlayerInterface player : this) {
             if (player.isAlive()) return true;
         }
@@ -96,9 +84,7 @@ public final class Players implements PlayersInterface<Color>, Iterable<Player> 
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-                .addValue(this.players)
-                .toString();
+        return Objects.toStringHelper(this).addValue(this.playerByColor).toString();
     }
 
 }
