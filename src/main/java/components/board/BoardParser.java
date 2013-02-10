@@ -17,8 +17,12 @@
 
 package components.board;
 
-import static blockplus.board.State.*;
-import static components.position.Position.*;
+import static blockplus.board.State.Light;
+import static blockplus.board.State.None;
+import static blockplus.board.State.Other;
+import static blockplus.board.State.Self;
+import static blockplus.board.State.Shadow;
+import static components.position.Position.Position;
 
 import java.util.Map;
 
@@ -26,7 +30,6 @@ import blockplus.board.State;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-
 import components.position.PositionInterface;
 
 public final class BoardParser<T extends Symbol> {

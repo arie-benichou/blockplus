@@ -17,17 +17,16 @@
 
 package blockplus.piece;
 
-import static components.direction.Direction.*;
-import static components.position.Position.*;
-import static org.junit.Assert.*;
+import static components.direction.Direction.Direction;
+import static components.position.Position.Position;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import blockplus.piece.NullPieceComponent;
-import blockplus.piece.PieceInterface;
 
 import com.google.common.collect.ImmutableSet;
 import components.position.NullPosition;

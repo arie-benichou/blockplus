@@ -24,7 +24,7 @@ import blockplus.piece.PieceInterface;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-public class Move implements MoveInterface {
+public final class Move implements MoveInterface {
 
     private final Color color;
 

@@ -21,6 +21,6 @@ import transport.IOinterface;
 
 public interface MessageHandlerInterface {
 
-    Object handle(IOinterface IO, MessageInterface message);
+    Object handle(IOinterface io, MessageInterface message);
 
 }

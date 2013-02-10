@@ -33,7 +33,7 @@ public class IO implements IOinterface {
         return this.server;
     }
 
-    private transient Connection connection = null;
+    private Connection connection = null;
 
     @Override
     public Connection getConnection() {
@@ -44,7 +44,7 @@ public class IO implements IOinterface {
         this.connection = connection;
     }
 
-    private transient Integer game = 0;
+    private Integer game = 0;
 
     @Override
     public Integer getGame() {

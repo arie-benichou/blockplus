@@ -17,7 +17,7 @@
 
 package blockplus.piece;
 
-import static blockplus.piece.PieceComponent.*;
+import static blockplus.piece.PieceComponent.PieceComponent;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -155,17 +155,17 @@ public final class PieceComposite implements PieceInterface {
         return this.positions;
     }
 
-    private transient volatile Set<PieceInterface> components;
+    private volatile Set<PieceInterface> components;
 
-    private transient volatile Set<PositionInterface> corners;
-    private transient volatile Set<PositionInterface> sides;
+    private volatile Set<PositionInterface> corners;
+    private volatile Set<PositionInterface> sides;
 
-    private transient volatile Set<PositionInterface> lightPositions;
-    private transient volatile Set<PositionInterface> shadowPositions;
+    private volatile Set<PositionInterface> lightPositions;
+    private volatile Set<PositionInterface> shadowPositions;
 
-    private transient volatile PieceInterface rotated;
-    private transient volatile PieceInterface reflectedAlongVerticalAxis;
-    private transient volatile PieceInterface reflectedAlongHorizontalAxis;
+    private volatile PieceInterface rotated;
+    private volatile PieceInterface reflectedAlongVerticalAxis;
+    private volatile PieceInterface reflectedAlongHorizontalAxis;
 
     private PieceComposite(final int id, final PositionInterface referential, final Set<PositionInterface> positions) {
         this.id = id;
@@ -326,7 +326,6 @@ public final class PieceComposite implements PieceInterface {
     public String toString() {
         return Objects.toStringHelper(this)
                 .addValue("\n  " + this.getId())
-                //.addValue("\n  " + this.getReferential())
                 .addValue("\n  " + Joiner.on("\n  ").join(this.get()) + "\n")
                 .toString();
     }

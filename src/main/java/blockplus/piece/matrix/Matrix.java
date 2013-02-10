@@ -34,9 +34,9 @@ public final class Matrix {
         for (int i = 0; i < matrix.rows(); ++i) {
             for (int j = 0; j < matrix.columns(); ++j)
                 stringBuilder.append((Strings.padStart(String.valueOf(matrix.data[i][j]), n, ' ') + " "));
-            stringBuilder.append("\n");
+            stringBuilder.append('\n');
         }
-        stringBuilder.append("\n");
+        stringBuilder.append('\n');
         return stringBuilder.toString();
     }
 
@@ -66,7 +66,7 @@ public final class Matrix {
 
     private final int[][] data;
 
-    private transient volatile Integer hashCode = null;
+    private volatile Integer hashCode = null;
 
     // TODO return null matrix if number of rows * number of columns = 0
     public Matrix(final int expectedRows, final int expectedColumns, final int[][] data) {
@@ -199,10 +199,10 @@ public final class Matrix {
     @Override
     public String toString() {
         final ToStringHelper toStringHelper = Objects.toStringHelper(this).addValue(this.rows()).addValue(this.columns());
-        final StringBuilder stringBuilder = new StringBuilder("[");
+        final StringBuilder stringBuilder = new StringBuilder('[');
         for (int i = 0; i < this.rows(); ++i)
             stringBuilder.append(Arrays.toString(this.data[i]));
-        stringBuilder.append("]");
+        stringBuilder.append(']');
         return toStringHelper.addValue(stringBuilder.toString()).toString();
     }
 

@@ -19,7 +19,6 @@ package components.position;
 
 import java.util.Map;
 
-
 import com.google.common.collect.Maps;
 import components.direction.DirectionInterface;
 
@@ -145,8 +144,4 @@ public final class Position implements PositionInterface {
         return false;
     }
 
-    public static void main(final String[] args) {
-        final PositionInterface position = Position(1, 2);
-        System.out.println(position);
-    }
 }

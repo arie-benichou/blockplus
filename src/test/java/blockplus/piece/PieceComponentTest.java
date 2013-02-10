@@ -17,18 +17,19 @@
 
 package blockplus.piece;
 
-import static blockplus.piece.PieceComponent.*;
-import static components.direction.Direction.*;
-import static components.position.Position.*;
-import static org.junit.Assert.*;
+import static blockplus.piece.PieceComponent.PieceComponent;
+import static components.direction.Direction.Direction;
+import static components.position.Position.Position;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import blockplus.piece.PieceInterface;
 
 import com.google.common.collect.Sets;
 import components.position.PositionInterface;

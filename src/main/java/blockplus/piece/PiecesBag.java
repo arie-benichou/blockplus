@@ -70,7 +70,7 @@ public final class PiecesBag implements Iterable<Pieces> {
 
     private final Multiset<Pieces> data;
 
-    private transient volatile List<Pieces> piecesAsList;
+    private volatile List<Pieces> piecesAsList;
 
     private PiecesBag(final Multiset<Pieces> data) {
         this.data = data;

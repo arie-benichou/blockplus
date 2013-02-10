@@ -17,16 +17,15 @@
 
 package blockplus.piece;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
-
-import blockplus.piece.Pieces;
-import blockplus.piece.PiecesBag;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

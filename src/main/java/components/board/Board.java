@@ -17,7 +17,7 @@
 
 package components.board;
 
-import static components.position.Position.*;
+import static components.position.Position.Position;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +72,7 @@ public final class Board<T extends Symbol> implements BoardInterface<T> {
     private final T undefinedSymbol;
     private final SortedMap<PositionInterface, T> boardMutation;
 
-    private transient volatile Integer hashCode = null;;
+    private volatile Integer hashCode = null;;
 
     private SortedMap<PositionInterface, T> merge(final Map<PositionInterface, T> boardMutation, final Map<PositionInterface, T> mutationFragment) {
         final TreeMap<PositionInterface, T> merge = Maps.newTreeMap();

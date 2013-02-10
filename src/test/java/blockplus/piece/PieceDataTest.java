@@ -24,8 +24,6 @@ import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
-import blockplus.piece.PieceData;
-
 import com.google.common.collect.Sets;
 import components.position.NullPosition;
 
@@ -252,7 +250,9 @@ public class PieceDataTest {
         assertEquals(2, PieceData(15).radius());
 
         assertEquals(1, PieceData(16).radius());
+
         assertEquals(2, PieceData(17).radius());
+
         assertEquals(1, PieceData(18).radius());
         assertEquals(1, PieceData(19).radius());
         assertEquals(1, PieceData(20).radius());

@@ -57,13 +57,13 @@ public class VirtualClient implements WebSocket.OnTextMessage
         return this.uri;
     }
 
-    private transient Connection connection;
+    private Connection connection;
 
     public Connection getConnection() {
         return this.connection;
     }
 
-    private transient String color;
+    private String color;
 
     public VirtualClient(final String username, final WebSocketClient client, final String host, final int port, final String base) {
         this.name = username;

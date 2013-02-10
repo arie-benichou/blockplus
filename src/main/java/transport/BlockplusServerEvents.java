@@ -125,9 +125,9 @@ public class BlockplusServerEvents {
 
     @Subscribe
     @AllowConcurrentEvents
-    public void onGameReconnection(final GameReconnectionInterface GameReconnection) {
+    public void onGameReconnection(final GameReconnectionInterface gameReconnection) {
 
-        final JsonObject link = GameReconnection.getLink();
+        final JsonObject link = gameReconnection.getLink();
 
         final String name = link.get("name").getAsString();
         final Integer ordinal = link.get("game").getAsInt();
@@ -145,7 +145,7 @@ public class BlockplusServerEvents {
                     if (gameUser.hashCode() == client) {
                         if (game.getTimeStamp() == timeStamp) {
                             final ArrayList<ClientInterface> newUsers = Lists.newArrayList(game.getClients());
-                            final transport.events.Client newClient = new transport.events.Client(GameReconnection.getIO(), name, ordinal);
+                            final transport.events.Client newClient = new transport.events.Client(gameReconnection.getIO(), name, ordinal);
                             newUsers.set(colorIndex - 1, newClient);
                             final IOinterface oldIo = game.getClients().get(colorIndex - 1).getIO();
                             oldIo.getConnection().close();
@@ -153,7 +153,7 @@ public class BlockplusServerEvents {
                                                           new BlockplusGame(ordinal, code, ImmutableList.copyOf(newUsers), game.getContext(),
                                                                   game.getTimeStamp());
                             this.getServer().updateGames(ordinal, newGame);
-                            this.getServer().updateClients(GameReconnection.getIO(), newClient);
+                            this.getServer().updateClients(gameReconnection.getIO(), newClient);
                             this.getServer().removeFromClients(oldIo);
 
                             link.addProperty("client", newClient.hashCode());

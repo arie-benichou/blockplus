@@ -53,7 +53,7 @@ public final class PieceInstances implements Iterable<PieceInterface> {
         return this.piece;
     }
 
-    private transient volatile Map<Integer, PieceInterface> distinctInstances = null;
+    private volatile Map<Integer, PieceInterface> distinctInstances = null;
 
     // TODO passer un symbole Piece
     public PieceInstances(final int piece) {

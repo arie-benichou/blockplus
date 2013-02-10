@@ -145,8 +145,12 @@ public final class Board implements BoardInterface {
                 .setOtherPositions(piece.getSelfPositions())
                 .build();
         for (final Color anotherColor : this.getColors()) {
-            if (!anotherColor.equals(color)) newLayers.put(anotherColor, this.getLayer(anotherColor).apply(mutation));
-            else newLayers.put(color, this.getLayer(color).apply(piece));
+            if (anotherColor.equals(color)) {
+                newLayers.put(color, this.getLayer(color).apply(piece));
+            }
+            else {
+                newLayers.put(anotherColor, this.getLayer(anotherColor).apply(mutation));
+            }
         }
         return new Board(newLayers, this.rows(), this.columns());
     }

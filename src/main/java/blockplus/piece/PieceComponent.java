@@ -17,7 +17,7 @@
 
 package blockplus.piece;
 
-import static components.position.Position.*;
+import static components.position.Position.Position;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -156,9 +156,9 @@ public final class PieceComponent implements PieceInterface {
     private final PositionInterface referential;
     private final Set<PositionInterface> positions;
 
-    private transient volatile Set<PositionInterface> sides;
-    private transient volatile Set<PositionInterface> corners;
-    private transient volatile Set<PieceInterface> components;
+    private volatile Set<PositionInterface> sides;
+    private volatile Set<PositionInterface> corners;
+    private volatile Set<PieceInterface> components;
 
     // TODO ? envisager de pouvoir passer un référentiel
     private PieceComponent(final PositionInterface position) {
@@ -310,8 +310,8 @@ public final class PieceComponent implements PieceInterface {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).
-                addValue("(" + this.getReferential().row() + ", " + this.getReferential().column() + ")")
+        return Objects.toStringHelper(this)
+                .addValue("(" + this.getReferential().row() + ", " + this.getReferential().column() + ")")
                 .toString();
     }
 

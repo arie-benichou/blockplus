@@ -27,7 +27,6 @@ import blockplus.Color;
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
 import blockplus.context.Context;
-import blockplus.context.ContextBuilder;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
@@ -128,13 +127,6 @@ public final class ContextRepresentation {
         data.add("pieces", this.encodePieces());
         data.add("options", this.encodeOptions());
         return data.toString();
-    }
-
-    public static void main(final String[] args) {
-        final Context game = new ContextBuilder().build();
-        final ContextRepresentation gameJSONRepresentation = new ContextRepresentation(game);
-        System.out.println(gameJSONRepresentation);
-        System.out.println(gameJSONRepresentation.encodePieces());
     }
 
 }

@@ -75,8 +75,8 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
     private final BoardInterface<State> stateBoard;
     private final IsMutablePredicate isMutablePredicate;
 
-    private transient volatile Map<PositionInterface, State> selves;
-    private transient volatile Map<PositionInterface, State> lights;
+    private volatile Map<PositionInterface, State> selves;
+    private volatile Map<PositionInterface, State> lights;
 
     private BoardLayer(final BoardInterface<State> stateBoard) {
         this.stateBoard = stateBoard;
