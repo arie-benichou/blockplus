@@ -23,9 +23,14 @@ import com.google.common.base.Objects;
 
 public final class Side implements SideInterface {
 
+    @SuppressWarnings("all")
+    public static Side Side(final Integer id) { // TODO caching
+        return new Side(id);
+    }
+
     private final Integer id;
 
-    public Side(final Integer id) {
+    private Side(final Integer id) {
         this.id = id;
     }
 
@@ -50,7 +55,7 @@ public final class Side implements SideInterface {
 
     @Override
     public Side next() {
-        return new Side((this.get() + 1) % 4); // TODO caching factory
+        return Side((this.get() + 1) % 4);
     }
 
     @Override

@@ -21,6 +21,7 @@ import static blockplus.Color.Blue;
 import static blockplus.Color.Green;
 import static blockplus.Color.Red;
 import static blockplus.Color.Yellow;
+import static blockplus.adversity.Side.Side;
 import static blockplus.board.State.Light;
 import static components.position.Position.Position;
 
@@ -52,7 +53,7 @@ public final class ContextBuilder {
 
     private final static Set<Pieces> LEGAL_PIECES = LEGAL_PIECES_BUILDER.build();
 
-    private final static Side SIDE = new Side(0);
+    private final static Side SIDE = Side(0);
 
     private final static PiecesBag BAG_OF_PIECES = PiecesBag.from(LEGAL_PIECES);
 
@@ -67,10 +68,10 @@ public final class ContextBuilder {
 
     private final static Builder ADVERSITY_BUILDER = new Adversity.Builder();
     static {
-        ADVERSITY_BUILDER.add(new Side(0), Blue);
-        ADVERSITY_BUILDER.add(new Side(1), Yellow);
-        ADVERSITY_BUILDER.add(new Side(2), Red);
-        ADVERSITY_BUILDER.add(new Side(3), Green);
+        ADVERSITY_BUILDER.add(Side(0), Blue);
+        ADVERSITY_BUILDER.add(Side(1), Yellow);
+        ADVERSITY_BUILDER.add(Side(2), Red);
+        ADVERSITY_BUILDER.add(Side(3), Green);
     }
 
     private final static Adversity ADVERSITY = ADVERSITY_BUILDER.build();
