@@ -49,7 +49,7 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
         @Override
         public boolean apply(@Nullable final PositionInterface position) {
             final State state = this.stateBoard.get(position);
-            return state.is(None) || state.is(Light);
+            return state.equals(None) || state.equals(Light);
         }
 
     };
@@ -58,7 +58,7 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
 
         @Override
         public boolean apply(@Nullable final Entry<PositionInterface, State> entry) {
-            return entry.getValue().is(Self);
+            return entry.getValue().equals(Self);
         }
 
     };
@@ -67,7 +67,7 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
 
         @Override
         public boolean apply(@Nullable final Entry<PositionInterface, State> entry) {
-            return entry.getValue().is(Light);
+            return entry.getValue().equals(Light);
         }
 
     };

@@ -27,8 +27,4 @@ public enum State implements Symbol {
     Shadow,
     Light;
 
-    public boolean is(final Symbol other) {
-        return this.equals(other);
-    }
-
 }
