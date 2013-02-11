@@ -19,10 +19,29 @@ package interfaces.board;
 
 import interfaces.move.MoveInterface;
 
+/**
+ * Board interface for a game.
+ */
 public interface BoardInterface {
 
+    /**
+     * Returns true if a given move is legal is this board, false otherwise.
+     * 
+     * @param moveInterface
+     *            a given move
+     * 
+     * @return true if a given move is legal is this board, false otherwise
+     */
     boolean isLegal(MoveInterface moveInterface);
 
+    /**
+     * Applies a given move to this board.
+     * 
+     * @param moveInterface
+     *            a given move
+     * 
+     * @return a new board instance
+     */
     BoardInterface apply(MoveInterface moveInterface);
 
 }

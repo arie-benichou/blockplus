@@ -17,6 +17,12 @@
 
 package interfaces.adversity;
 
+/**
+ * Adversity interface for a game.
+ * 
+ * @param <T>
+ *            type for a player id
+ */
 public interface AdversityInterface<T> {
 
     T getOpponent(T object);

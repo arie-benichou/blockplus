@@ -23,10 +23,34 @@ import interfaces.move.MoveInterface;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Referee interface for a game.
+ */
 public interface RefereeInterface {
 
+    /**
+     * Returns a list of legal moves for a given context and a given moves
+     * comparator.
+     * 
+     * @param contextInterface
+     *            given game context
+     * 
+     * @param comparator
+     *            given moves comparator
+     * 
+     * @return list of legal moves for a given context and a given moves
+     *         comparator
+     */
     List<MoveInterface> getLegalMoves(ContextInterface<?> contextInterface, Comparator<MoveInterface> comparator);
 
+    /**
+     * Returns a list of legal moves for a given context
+     * 
+     * @param contextInterface
+     *            given game context
+     * 
+     * @return list of legal moves for a given context
+     */
     List<MoveInterface> getLegalMoves(ContextInterface<?> contextInterface);
 
 }

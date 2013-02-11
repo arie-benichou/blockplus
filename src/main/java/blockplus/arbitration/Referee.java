@@ -105,6 +105,7 @@ public final class Referee implements RefereeInterface {
         return legalMoves;
     }
 
+    // TODO delegate ordering to the future object Options
     @Override
     public List<MoveInterface> getLegalMoves(final ContextInterface<?> contextInterface, final Comparator<MoveInterface> comparator) {
         final Context context = (Context) contextInterface;

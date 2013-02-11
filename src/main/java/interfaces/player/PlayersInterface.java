@@ -17,12 +17,42 @@
 
 package interfaces.player;
 
+/**
+ * Players interface for a game.
+ * 
+ * @param <T>
+ *            type used by players id
+ */
 public interface PlayersInterface<T> {
 
+    /**
+     * Returns true if at least one player is still alive, false if all players
+     * are dead.
+     * 
+     * @return true if at least one player is still alive, false if all players
+     *         are dead
+     */
     boolean hasAlivePlayer();
 
+    /**
+     * Returns a player for a given id.
+     * 
+     * @param id
+     *            player id
+     * 
+     * @return a player for a given id
+     */
     PlayerInterface get(T id);
 
+    /**
+     * Update old player instance in thoses players with a given new player
+     * instance.
+     * 
+     * @param playerInterface
+     *            a given new player instance
+     * 
+     * @return a new instance of players
+     */
     PlayersInterface<T> apply(PlayerInterface playerInterface);
 
 }

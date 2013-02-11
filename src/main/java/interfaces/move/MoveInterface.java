@@ -17,8 +17,16 @@
 
 package interfaces.move;
 
+/**
+ * Move interface for a game.
+ */
 public interface MoveInterface {
 
+    /**
+     * Returns true if this move is a null move, false otherwise.
+     * 
+     * @return true if this move is a null move, false otherwise
+     */
     boolean isNull();
 
 }

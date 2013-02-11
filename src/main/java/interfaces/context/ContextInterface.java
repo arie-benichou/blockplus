@@ -24,26 +24,91 @@ import interfaces.player.PlayersInterface;
 
 import java.util.List;
 
+/**
+ * Context interface for a game.
+ * 
+ * @param <T>
+ *            type used by the sides of this context
+ */
 public interface ContextInterface<T> {
 
+    /**
+     * Returns true if this context is a leaf, false otherwise.
+     * 
+     * @return true if this context is a leaf, false otherwise
+     */
     boolean isTerminal();
 
+    /**
+     * Returns the current side to play.
+     * 
+     * @return the current side to play
+     */
     T getSide();
 
+    /**
+     * Returns the defined (but not necessary effective) successor of the
+     * current side to play.
+     * 
+     * @return the defined (but not necessary effective) successor of the
+     *         current side to play.
+     */
     T getNextSide();
 
-    BoardInterface getBoard();
-
+    /**
+     * Returns the adversity defined in this context.
+     * 
+     * @return the adversity defined in this context
+     */
     AdversityInterface<T> getAdversity();
 
+    /**
+     * Returns the board in this context.
+     * 
+     * @return the board in this context
+     */
+    BoardInterface getBoard();
+
+    /**
+     * Returns players in this context.
+     * 
+     * @return players in this context
+     */
     PlayersInterface<T> getPlayers();
 
+    /**
+     * Returns a successor of this context.
+     * 
+     * @param skipOnNullOption
+     *            will keep on moving forward if there is no option for the
+     *            current side to play in next context.
+     * 
+     * @return a successor of this context
+     */
     ContextInterface<T> forward(boolean skipOnNullOption); // TODO use predicate
 
+    /**
+     * Returns the effective successor of this context.
+     * 
+     * @return the effective successor of this context
+     */
     ContextInterface<T> forward();
 
+    /**
+     * Returns options in this context for the current side to play.
+     * 
+     * @return options in this context for the current side to play
+     */
     List<MoveInterface> options();
 
+    /**
+     * Applies a given move in this context.
+     * 
+     * @param move
+     *            a given move.
+     * 
+     * @return a new instance of context
+     */
     ContextInterface<T> apply(MoveInterface move);
 
 }

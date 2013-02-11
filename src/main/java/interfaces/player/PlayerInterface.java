@@ -20,10 +20,26 @@ package interfaces.player;
 import interfaces.move.MoveInterface;
 import blockplus.player.Player;
 
+/**
+ * Player interface for a game.
+ */
 public interface PlayerInterface {
 
+    /**
+     * Returns true if this player is still alive, false otherwise.
+     * 
+     * @return true if this player is still alive, false otherwise
+     */
     boolean isAlive();
 
+    /**
+     * Applies a given move by this player.
+     * 
+     * @param moveInterface
+     *            a given move
+     * 
+     * @return a new instance of player
+     */
     Player apply(MoveInterface moveInterface);
 
 }
