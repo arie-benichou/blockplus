@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import blockplus.Color;
@@ -35,9 +36,8 @@ import blockplus.context.Context;
 import blockplus.move.Move;
 import blockplus.move.MoveComparator;
 import blockplus.move.Moves;
-import blockplus.piece.PieceData;
 import blockplus.piece.PieceInterface;
-import blockplus.piece.Pieces;
+import blockplus.piece.PieceType;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 
@@ -54,7 +54,7 @@ public final class Referee implements RefereeInterface {
 
     private final static MoveComparator MOVE_COMPARATOR = MoveComparator.getInstance();
 
-    private List<Move> getLegalMoves(final Board board, final Color color, final Pieces piece, final PositionInterface position) {
+    private List<Move> getLegalMoves(final Board board, final Color color, final PieceType piece, final PositionInterface position) {
         final List<Move> legalMoves = Lists.newArrayList();
         for (final PieceInterface pieceInstance : piece) {
             final PieceInterface translatedPieceInstance = pieceInstance.translateTo(position);
@@ -65,8 +65,8 @@ public final class Referee implements RefereeInterface {
     }
 
     // TODO tester pas à pas => PieceInstanceMatcher
-    private Iterable<PositionInterface> getPotentialPositions(final Board board, final Color c, final Iterable<PositionInterface> p, final Pieces piece) {
-        final int radius = PieceData.PieceData(piece.ordinal()).radius(); // TODO !! Pieces.radius()
+    private Iterable<PositionInterface> getPotentialPositions(final Board board, final Color c, final Iterable<PositionInterface> p, final PieceType pieceType) {
+        final int radius = pieceType.radius();
         final BoardLayer layer = board.getLayer(c);
         final Set<PositionInterface> extendedLegalPositions = Sets.newLinkedHashSet();
         final Map<PositionInterface, Set<PositionInterface>> map = Maps.newLinkedHashMap();
@@ -91,10 +91,17 @@ public final class Referee implements RefereeInterface {
         final Iterable<PositionInterface> positionsHavingPotential = stillAlivePositionsByPriority.keySet();
         final Set<Move> legalMoves = Sets.newHashSet();
         final PiecesBag pieces = player.getPieces();
-        for (final Pieces piece : pieces)
-            for (final PositionInterface potentialPosition : this.getPotentialPositions(board, color, positionsHavingPotential, piece))
-                legalMoves.addAll(this.getLegalMoves(board, color, piece, potentialPosition));
-        if (legalMoves.isEmpty()) return ImmutableSet.of(Moves.getNullMove(player.getColor())); // TODO à revoir
+        for (final Entry<PieceType, Integer> entry : pieces) {
+            if (entry.getValue() > 0) {
+                final PieceType piece = entry.getKey();
+                for (final PositionInterface potentialPosition : this.getPotentialPositions(board, color, positionsHavingPotential, piece)) {
+                    legalMoves.addAll(this.getLegalMoves(board, color, piece, potentialPosition));
+                }
+            }
+        }
+        // TODO null move should be legal if in bag without using special case
+        if (legalMoves.isEmpty()) return ImmutableSet.of(Moves.getNullMove(player.getColor()));
+
         return legalMoves;
     }
 

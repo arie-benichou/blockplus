@@ -17,7 +17,7 @@
 
 package serialization;
 
-import blockplus.piece.Pieces;
+import blockplus.piece.PieceType;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,7 +31,7 @@ public final class JSONSerializer {
     private static final Gson INSTANCE = new GsonBuilder()
             .registerTypeAdapter(new TypeToken<PositionInterface>() {}.getType(), new PositionSerializer())
             .registerTypeAdapter(new TypeToken<Position>() {}.getType(), new PositionSerializer())
-            .registerTypeAdapter(new TypeToken<Pieces>() {}.getType(), new PiecesSerializer())
+            .registerTypeAdapter(new TypeToken<PieceType>() {}.getType(), new PiecesSerializer())
             .create();
 
     private JSONSerializer() {}

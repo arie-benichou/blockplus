@@ -21,6 +21,7 @@ import interfaces.move.MoveInterface;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import blockplus.Color;
@@ -29,7 +30,7 @@ import blockplus.board.BoardLayer;
 import blockplus.context.Context;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
-import blockplus.piece.Pieces;
+import blockplus.piece.PieceType;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 
@@ -81,9 +82,8 @@ public final class ContextRepresentation {
         return boardState;
     }
 
-    // TODO ordering in piecesBag
-    // TODO array of 0/1
-    // TODO enlever la pièce nulle ?
+    // TODO no more map filtering
+    // TODO remove null piece    
     public JsonElement encodePieces() {
         final JsonObject data = new JsonObject();
         final Context context = this.getGameContext();
@@ -91,8 +91,11 @@ public final class ContextRepresentation {
             final Color color = player.getColor();
             final JsonArray jsonArray = new JsonArray();
             final PiecesBag pieces = player.getPieces();
-            for (final Pieces piece : pieces) {
-                jsonArray.add(new JsonPrimitive(piece.ordinal()));
+            for (final Entry<PieceType, Integer> entry : pieces) {
+                if (entry.getValue() > 0) {
+                    final PieceType piece = entry.getKey();
+                    jsonArray.add(new JsonPrimitive(piece.ordinal()));
+                }
             }
             data.add(color.toString(), jsonArray);
         }
@@ -101,12 +104,12 @@ public final class ContextRepresentation {
 
     public JsonElement encodeOptions() {
         final List<MoveInterface> options = this.getGameContext().options();
-        final Map<Pieces, List<Set<PositionInterface>>> legalPositionsByPiece = Maps.newTreeMap();
+        final Map<PieceType, List<Set<PositionInterface>>> legalPositionsByPiece = Maps.newTreeMap();
         for (final MoveInterface moveInterface : options) {
             if (!moveInterface.isNull()) { // TODO à revoir
                 final Move move = (Move) moveInterface;
                 final PieceInterface piece = move.getPiece();
-                final Pieces key = Pieces.get(piece.getId());
+                final PieceType key = PieceType.get(piece.getId());
                 List<Set<PositionInterface>> playablePositions = legalPositionsByPiece.get(key);
                 if (playablePositions == null) {
                     playablePositions = Lists.newArrayList();

@@ -17,8 +17,13 @@
 
 package interfaces.player;
 
+import interfaces.move.MoveInterface;
+import blockplus.player.Player;
+
 public interface PlayerInterface {
 
     boolean isAlive();
+
+    Player apply(MoveInterface moveInterface);
 
 }

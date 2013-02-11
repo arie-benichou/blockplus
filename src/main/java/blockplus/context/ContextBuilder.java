@@ -32,7 +32,7 @@ import blockplus.adversity.AdversityOf4;
 import blockplus.adversity.AdversityOf4.Builder;
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
-import blockplus.piece.Pieces;
+import blockplus.piece.PieceType;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 import blockplus.player.Players;
@@ -41,18 +41,11 @@ import com.google.common.collect.ImmutableSet;
 
 public final class ContextBuilder {
 
-    private final static Set<Color> COLORS = ImmutableSet.of(Blue, Yellow, Red, Green);
+    private final static Set<Color> COLORS = ImmutableSet.of(Blue, Yellow, Red, Green); // TODO asSet();
 
-    private final static ImmutableSet.Builder<Pieces> LEGAL_PIECES_BUILDER = ImmutableSet.builder();
-    static {
-        for (final Pieces piece : Pieces.values()) {
-            LEGAL_PIECES_BUILDER.add(piece);
-        }
-    }
+    private final static Set<PieceType> LEGAL_PIECES = PieceType.asSet();
 
-    private final static Set<Pieces> LEGAL_PIECES = LEGAL_PIECES_BUILDER.build();
-
-    private final static PiecesBag BAG_OF_PIECES = PiecesBag.from(LEGAL_PIECES);
+    private final static PiecesBag BAG_OF_PIECES = new PiecesBag.Builder().addAll(LEGAL_PIECES).build();
 
     private final static blockplus.player.Players.Builder PLAYERS_BUILDER = new Players.Builder();
     static {

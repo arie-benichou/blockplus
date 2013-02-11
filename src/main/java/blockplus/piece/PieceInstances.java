@@ -13,8 +13,7 @@ import com.google.common.collect.Sets;
 /**
  * Provides distinct instances for a given piece.
  */
-//TODO extract interface
-public final class PieceInstances implements Iterable<PieceInterface> {
+final class PieceInstances implements Iterable<PieceInterface> {
 
     private static Set<PieceInterface> computeDistinctRotation(final PieceInterface oneSide) {
         final Set<PieceInterface> distinctRotationsForOneSide = Sets.newLinkedHashSet();
@@ -28,12 +27,11 @@ public final class PieceInstances implements Iterable<PieceInterface> {
         return distinctRotationsForOneSide;
     }
 
-    private static Set<PieceInterface> computeDistinctInstancesForEachSide(final int piece) {
+    private static Set<PieceInterface> computeDistinctInstancesForEachSide(final PieceType pieceType) {
         final Set<PieceInterface> distinctInstances = Sets.newLinkedHashSet();
-        final PieceData pieceData = PieceData.PieceData(piece); // TODO à revoir
-        final PieceInterface thisSide = PieceComposite.from(pieceData.id(), pieceData.referential(), pieceData.positions());
+        final PieceInterface thisSide = PieceComposite.from(pieceType.id(), pieceType.referential(), pieceType.positions());
         distinctInstances.addAll(computeDistinctRotation(thisSide));
-        final PieceInterface thatSide = thisSide.reflectAlongVerticalAxis(); // TODO ! PieceInterface.flip();
+        final PieceInterface thatSide = thisSide.reflectAlongVerticalAxis();
         distinctInstances.addAll(computeDistinctRotation(thatSide));
         return distinctInstances;
     }
@@ -47,17 +45,16 @@ public final class PieceInstances implements Iterable<PieceInterface> {
         return builder.build();
     }
 
-    private final int piece;
+    private final PieceType piece;
 
-    public int getPiece() {
+    public PieceType getPiece() {
         return this.piece;
     }
 
     private volatile Map<Integer, PieceInterface> distinctInstances = null;
 
-    // TODO passer un symbole Piece
-    public PieceInstances(final int piece) {
-        this.piece = piece;
+    PieceInstances(final PieceType pieceData) {
+        this.piece = pieceData;
     }
 
     private Map<Integer, PieceInterface> getDistinctInstances() {
@@ -69,13 +66,15 @@ public final class PieceInstances implements Iterable<PieceInterface> {
         return this.distinctInstances;
     }
 
-    public int getNumberOfDistinctInstances() {
+    /*
+    private int getNumberOfDistinctInstances() {
         return this.getDistinctInstances().size();
     }
 
-    public PieceInterface getDistinctInstance(final int instance) {
+    private PieceInterface getDistinctInstance(final int instance) {
         return this.getDistinctInstances().get(instance);
     }
+    */
 
     @Override
     public Iterator<PieceInterface> iterator() {

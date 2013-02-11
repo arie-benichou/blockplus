@@ -21,83 +21,47 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.Maps;
 
 public class PiecesBagTest {
 
+    private final static PiecesBag PIECESBAG_OF_1 = new PiecesBag.Builder().add(PieceType.get(1)).build();
+
     @Test
     public void testIsEmpty() {
-        assertTrue(PiecesBag.from().isEmpty());
-        assertFalse(PiecesBag.from(Pieces.get(1)).isEmpty());
+        assertTrue(PiecesBag.EMPTY.isEmpty());
+        assertFalse(PIECESBAG_OF_1.isEmpty());
     }
 
     @Test
     public void testIterator() {
-
         {
-            final PiecesBag bagOfPiece = PiecesBag.from();
+            final PiecesBag bagOfPiece = PiecesBag.EMPTY;
             assertFalse(bagOfPiece.iterator().hasNext());
         }
-
         {
-            final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1));
-            final List<Pieces> expectedPiece = new ArrayList<Pieces>();
-            expectedPiece.add(Pieces.get(1));
-            final List<Pieces> actualPiece = Lists.newArrayList(bagOfPiece);
-            assertEquals(expectedPiece, actualPiece);
+            final Map<PieceType, Integer> expected = Maps.newHashMap();
+            expected.put(PieceType.get(1), 1);
+            final Builder<PieceType, Integer> builder = new ImmutableMap.Builder<PieceType, Integer>();
+            for (final Entry<PieceType, Integer> entry : PIECESBAG_OF_1)
+                builder.put(entry);
+            assertEquals(expected, builder.build());
         }
-
-        {
-            final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1), Pieces.get(1));
-            final List<Pieces> expectedPiece = new ArrayList<Pieces>();
-            expectedPiece.add(Pieces.get(1));
-            expectedPiece.add(Pieces.get(1));
-            final List<Pieces> actualPiece = Lists.newArrayList(bagOfPiece);
-            assertEquals(expectedPiece, actualPiece);
-        }
-
-        {
-            final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1), Pieces.get(1), Pieces.get(2));
-            final Set<Pieces> expectedPiece = Sets.newHashSet(Pieces.get(1), Pieces.get(1), Pieces.get(2));
-            final Set<Pieces> actualPiece = Sets.newHashSet(bagOfPiece);
-            assertEquals(expectedPiece, actualPiece);
-        }
-
-        {
-            final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1), Pieces.get(1), Pieces.get(2), Pieces.get(3));
-            final Set<Pieces> expectedPiece = Sets.newHashSet(Pieces.get(1), Pieces.get(1), Pieces.get(2), Pieces.get(3));
-            final Set<Pieces> actualPiece = Sets.newHashSet(bagOfPiece);
-            assertEquals(expectedPiece, actualPiece);
-        }
-
     }
 
     @Test
-    public void testRemove() {
-
-        {
-            final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1));
-            assertFalse(bagOfPiece.isEmpty());
-            final PiecesBag newBagOfPiece = bagOfPiece.remove(Pieces.get(1));
-            assertTrue(newBagOfPiece.isEmpty());
-        }
-
-        {
-            final PiecesBag bagOfPiece = PiecesBag.from(Pieces.get(1), Pieces.get(1));
-            assertFalse(bagOfPiece.isEmpty());
-            PiecesBag newBagOfPiece = bagOfPiece;
-            newBagOfPiece = newBagOfPiece.remove(Pieces.get(1));
-            assertFalse(bagOfPiece.isEmpty());
-            newBagOfPiece = newBagOfPiece.remove(Pieces.get(1));
-            assertTrue(newBagOfPiece.isEmpty());
-        }
+    public void testWithdraw() {
+        final PiecesBag bagOfPiece = PIECESBAG_OF_1;
+        assertFalse(bagOfPiece.isEmpty());
+        final PiecesBag newBagOfPiece = bagOfPiece.withdraw(PieceType.get(1));
+        assertTrue(newBagOfPiece.isEmpty());
     }
 
 }

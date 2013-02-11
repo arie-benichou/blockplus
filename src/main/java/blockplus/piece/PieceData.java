@@ -34,7 +34,7 @@ import com.google.common.collect.Ordering;
 import components.position.NullPosition;
 import components.position.PositionInterface;
 
-public enum PieceData {
+enum PieceData {
 
     /*      
           NULL OBJECT
@@ -322,7 +322,7 @@ public enum PieceData {
     }
 
     @SuppressWarnings("all")
-    public final static PieceData PieceData(final int ordinal) {
+    final static PieceData PieceData(final int ordinal) {
         return PieceData.valueOf(ENTRY_NAME_PATTERN + ordinal);
     }
 
@@ -387,14 +387,9 @@ public enum PieceData {
         this(extractImplicitReferential(data), data);
     }
 
-    public int id() {
-        return this.ordinal();
-    }
-
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("id", this.id())
                 .add("size", this.size())
                 .add("radius", this.radius())
                 .add("positions", this.positions())

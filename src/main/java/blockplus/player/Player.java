@@ -21,11 +21,12 @@ import interfaces.move.MoveInterface;
 import interfaces.player.PlayerInterface;
 import blockplus.Color;
 import blockplus.move.Move;
-import blockplus.piece.Pieces;
+import blockplus.piece.PieceType;
 import blockplus.piece.PiecesBag;
 
 import com.google.common.base.Objects;
 
+// TODO hashcode, equals
 public final class Player implements PlayerInterface {
 
     private final Color color;
@@ -45,18 +46,17 @@ public final class Player implements PlayerInterface {
         this.pieces = pieces;
     }
 
-    public Player apply(final PiecesBag pieces) {
-        return new Player(this.getColor(), pieces);
-    }
-
-    public Player apply(final MoveInterface moveInterface) {
-        final Move move = (Move) moveInterface;
-        return this.apply(this.getPieces().remove(Pieces.get(move.getPiece().getId())));
+    @Override
+    public boolean isAlive() {
+        return this.pieces.contains(PieceType.get(0)); // TODO Scala lazy
     }
 
     @Override
-    public boolean isAlive() {
-        return this.pieces.contains(Pieces.get(0)); // TODO Scala lazy
+    public Player apply(final MoveInterface moveInterface) {
+        final Move move = (Move) moveInterface;
+        final PieceType piece = PieceType.get(move.getPiece().getId());
+        final PiecesBag remainingPieces = this.getPieces().withdraw(piece);
+        return new Player(this.getColor(), remainingPieces);
     }
 
     @Override

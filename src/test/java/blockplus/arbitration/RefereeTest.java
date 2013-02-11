@@ -21,6 +21,13 @@ import static blockplus.Color.Blue;
 import static blockplus.Color.Green;
 import static blockplus.Color.Red;
 import static blockplus.Color.Yellow;
+import static blockplus.piece.PieceType.PIECE0;
+import static blockplus.piece.PieceType.PIECE1;
+import static blockplus.piece.PieceType.PIECE12;
+import static blockplus.piece.PieceType.PIECE16;
+import static blockplus.piece.PieceType.PIECE17;
+import static blockplus.piece.PieceType.PIECE2;
+import static blockplus.piece.PieceType.PIECE3;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -38,9 +45,7 @@ import blockplus.context.Context;
 import blockplus.context.ContextBuilder;
 import blockplus.move.Move;
 import blockplus.move.Moves;
-import blockplus.piece.PieceInstances;
 import blockplus.piece.PieceInterface;
-import blockplus.piece.Pieces;
 import blockplus.piece.PiecesBag;
 import blockplus.player.Player;
 import blockplus.player.Players;
@@ -57,9 +62,9 @@ public class RefereeTest {
 
         // TODO ContextParser
         final ContextBuilder contextBuilder = new ContextBuilder();
-        final PiecesBag blueBag = PiecesBag.from(Pieces.PIECE0, Pieces.PIECE3, Pieces.PIECE12, Pieces.PIECE17);
-        final PiecesBag greenBag = PiecesBag.from(Pieces.PIECE0, Pieces.PIECE2, Pieces.PIECE16);
-        final PiecesBag bagOfPieces = PiecesBag.from(Pieces.PIECE0, Pieces.PIECE1);
+        final PiecesBag blueBag = new PiecesBag.Builder().addAll(PIECE0, PIECE3, PIECE12, PIECE17).build();
+        final PiecesBag greenBag = new PiecesBag.Builder().addAll(PIECE0, PIECE2, PIECE16).build();
+        final PiecesBag bagOfPieces = new PiecesBag.Builder().addAll(PIECE0, PIECE1).build();
         final Builder playersBuilder = new Players.Builder();
         playersBuilder.add(new Player(Blue, blueBag));
         playersBuilder.add(new Player(Green, greenBag));
@@ -83,14 +88,14 @@ public class RefereeTest {
         Context context = contextBuilder.build();
 
         {
-            final List<PieceInterface> pieceInstances = Lists.newArrayList(new PieceInstances(3));
+            final List<PieceInterface> pieceInstances = Lists.newArrayList(PIECE3);
             final PieceInterface piece = pieceInstances.get(1).translateTo(Position(0, 1));
             final Move move = Moves.getMove(Blue, piece);
             context = context.apply(move);
         }
 
         {
-            final List<PieceInterface> pieceInstances = Lists.newArrayList(new PieceInstances(12));
+            final List<PieceInterface> pieceInstances = Lists.newArrayList(PIECE12);
             final PieceInterface piece = pieceInstances.get(3).reflectAlongVerticalAxis().translateTo(Position(2, 4));
             final Move move = Moves.getMove(Blue, piece);
             context = context.apply(move);
@@ -115,14 +120,14 @@ public class RefereeTest {
         context = context.forward();
 
         {
-            final List<PieceInterface> pieceInstances = Lists.newArrayList(new PieceInstances(2));
+            final List<PieceInterface> pieceInstances = Lists.newArrayList(PIECE2);
             final PieceInterface piece = pieceInstances.get(1).translateTo(Position(7, 0));
             final Move move = Moves.getMove(Green, piece);
             context = context.apply(move);
         }
 
         {
-            final List<PieceInterface> pieceInstances = Lists.newArrayList(new PieceInstances(16));
+            final List<PieceInterface> pieceInstances = Lists.newArrayList(PIECE16);
             final PieceInterface piece = pieceInstances.get(3).translateTo(Position(5, 2));
             final Move move = Moves.getMove(Green, piece);
             context = context.apply(move);

@@ -17,115 +17,89 @@
 
 package blockplus.piece;
 
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.ImmutableMultiset;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multiset;
-import com.google.common.collect.Multiset.Entry;
-// TODO extract interface
-// TODO ? utiliser les Bloom filters
-// TODO ? à revoir en utilsant une map<Pieces, Integer>
+import com.google.common.collect.Maps;
 
-public final class PiecesBag implements Iterable<Pieces> {
+public final class PiecesBag implements Iterable<Entry<PieceType, Integer>> {
 
-    private final static Multiset<Pieces> EMPTY_MULTI_SET = ImmutableMultiset.of();
-    private final static PiecesBag EMPTY_BAG = new PiecesBag(EMPTY_MULTI_SET);
+    public final static PiecesBag EMPTY = new Builder().build();
 
-    private static List<Pieces> computeList(final Multiset<Pieces> data) {
-        final List<Pieces> list = Lists.newArrayList();
-        for (final Entry<Pieces> entry : data.entrySet())
-            for (int n = 0; n < entry.getCount(); ++n)
-                list.add(entry.getElement());
-        Collections.sort(list); // TODO comparator
-        return list;
-    }
+    public final static class Builder {
 
-    public static PiecesBag from() {
-        return EMPTY_BAG;
-    }
+        private final Map<PieceType, Integer> pieces;
 
-    public static PiecesBag from(final Pieces piece) {
-        final Multiset<Pieces> multiset = HashMultiset.create();
-        multiset.add(piece);
-        return new PiecesBag(multiset);
-    }
-
-    public static PiecesBag from(final Iterable<Pieces> pieces) {
-        return new PiecesBag(HashMultiset.create(pieces));
-    }
-
-    public static PiecesBag from(final Pieces... pieces) {
-        final Multiset<Pieces> multiset = HashMultiset.create();
-        for (final Pieces piece : pieces) {
-            multiset.add(piece);
+        public Builder(final Map<PieceType, Integer> pieces) {
+            this.pieces = Maps.newEnumMap(pieces);
         }
-        return new PiecesBag(multiset);
+
+        public Builder() {
+            this.pieces = Maps.newEnumMap(PieceType.class);
+        }
+
+        public Builder add(final PieceType piece) {
+            Integer integer = this.pieces.get(piece);
+            if (integer == null) integer = 0;
+            this.pieces.put(piece, integer + 1);
+            return this;
+        }
+
+        public Builder addAll(final Iterable<PieceType> pieces) {
+            for (final PieceType piece : pieces) {
+                this.add(piece);
+            }
+            return this;
+        }
+
+        public Builder addAll(final PieceType... pieces) {
+            for (final PieceType piece : pieces) {
+                this.add(piece);
+            }
+            return this;
+        }
+
+        public Builder remove(final PieceType piece) {
+            this.pieces.remove(piece);
+            return this;
+        }
+
+        public PiecesBag build() {
+            return new PiecesBag(this.pieces);
+        }
+
     }
 
-    private final Multiset<Pieces> data;
+    private final Map<PieceType, Integer> pieces;
 
-    private volatile List<Pieces> piecesAsList;
-
-    private PiecesBag(final Multiset<Pieces> data) {
-        this.data = data;
+    private PiecesBag(final Map<PieceType, Integer> pieces) {
+        this.pieces = pieces;
     }
 
     public boolean isEmpty() {
-        return this.data.isEmpty();
+        return this.pieces.isEmpty();
     }
 
-    // TODO ! immutable list
-    public List<Pieces> asList() {
-        List<Pieces> value = this.piecesAsList;
-        if (value == null)
-            synchronized (this) {
-                if ((value = this.piecesAsList) == null) this.piecesAsList = value = computeList(this.data);
-            }
-        return value;
+    public boolean contains(final PieceType piece) {
+        final Integer integer = this.pieces.get(piece);
+        return integer != null && integer > 0;
     }
 
-    public int size() {
-        return this.data.size();
+    public PiecesBag withdraw(final PieceType piece) {
+        Preconditions.checkState(this.contains(piece));
+        return new Builder(this.pieces).remove(piece).build();
     }
 
     @Override
-    public Iterator<Pieces> iterator() {
-        return this.asList().iterator();
-    }
-
-    public boolean contains(final Pieces piece) {
-        return this.data.contains(piece);
-    }
-
-    public PiecesBag remove(final Pieces piece) {
-        Preconditions.checkArgument(this.contains(piece), piece + " is not in " + this.data);
-        final Multiset<Pieces> copy = HashMultiset.create(this.data);
-        copy.remove(piece, 1);
-        return from(copy);
-    }
-
-    // TODO ! à revoir
-    // TODO !? Piece.getNumberOfCells()
-    // TODO ? caching
-    public int getWeight() {
-        int sum = 0;
-        for (final Pieces piece : this)
-            sum += piece.getInstances().getDistinctInstance(0).getSelfPositions().size();
-        return sum;
+    public Iterator<Entry<PieceType, Integer>> iterator() {
+        return this.pieces.entrySet().iterator();
     }
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-                .addValue("\n" + this.asList())
-                .addValue("\n" + this.getWeight())
-                .toString();
+        return this.pieces.toString();
     }
 
 }

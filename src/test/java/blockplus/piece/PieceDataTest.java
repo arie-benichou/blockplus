@@ -56,32 +56,6 @@ public class PieceDataTest {
     }
 
     @Test
-    public void testId() {
-        assertSame(PieceData.ENTRY0.ordinal(), PieceData(0).id());
-        assertSame(PieceData.ENTRY1.ordinal(), PieceData(1).id());
-        assertSame(PieceData.ENTRY2.ordinal(), PieceData(2).id());
-        assertSame(PieceData.ENTRY3.ordinal(), PieceData(3).id());
-        assertSame(PieceData.ENTRY4.ordinal(), PieceData(4).id());
-        assertSame(PieceData.ENTRY5.ordinal(), PieceData(5).id());
-        assertSame(PieceData.ENTRY6.ordinal(), PieceData(6).id());
-        assertSame(PieceData.ENTRY7.ordinal(), PieceData(7).id());
-        assertSame(PieceData.ENTRY8.ordinal(), PieceData(8).id());
-        assertSame(PieceData.ENTRY9.ordinal(), PieceData(9).id());
-        assertSame(PieceData.ENTRY10.ordinal(), PieceData(10).id());
-        assertSame(PieceData.ENTRY11.ordinal(), PieceData(11).id());
-        assertSame(PieceData.ENTRY12.ordinal(), PieceData(12).id());
-        assertSame(PieceData.ENTRY13.ordinal(), PieceData(13).id());
-        assertSame(PieceData.ENTRY14.ordinal(), PieceData(14).id());
-        assertSame(PieceData.ENTRY15.ordinal(), PieceData(15).id());
-        assertSame(PieceData.ENTRY16.ordinal(), PieceData(16).id());
-        assertSame(PieceData.ENTRY17.ordinal(), PieceData(17).id());
-        assertSame(PieceData.ENTRY18.ordinal(), PieceData(18).id());
-        assertSame(PieceData.ENTRY19.ordinal(), PieceData(19).id());
-        assertSame(PieceData.ENTRY20.ordinal(), PieceData(20).id());
-        assertSame(PieceData.ENTRY21.ordinal(), PieceData(21).id());
-    }
-
-    @Test
     public void testSize() {
         assertEquals(0, PieceData(0).size());
         assertEquals(1, PieceData(1).size());

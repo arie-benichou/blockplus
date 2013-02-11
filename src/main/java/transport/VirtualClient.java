@@ -27,7 +27,7 @@ import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketClient;
 
 import transport.messages.MoveSubmit;
-import blockplus.piece.Pieces;
+import blockplus.piece.PieceType;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -115,7 +115,7 @@ public class VirtualClient implements WebSocket.OnTextMessage
                     final JsonArray instances = entry.getValue().getAsJsonArray();
                     final int n = new Random().nextInt(instances.size());
                     final JsonArray positions = instances.get(n).getAsJsonArray();
-                    final Pieces pieceObject = Pieces.valueOf(piece);
+                    final PieceType pieceObject = PieceType.valueOf(piece);
                     final MoveSubmit moveSubmit = new MoveSubmit(pieceObject.ordinal(), positions);
                     System.out.println();
                     System.out.println(color);

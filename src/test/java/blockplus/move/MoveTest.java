@@ -12,14 +12,14 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import blockplus.piece.NullPieceComponent;
-import blockplus.piece.PieceInstances;
 import blockplus.piece.PieceInterface;
+import blockplus.piece.PieceType;
 
 public class MoveTest {
 
     private final static PieceInterface NULL_PIECE_INSTANCE = NullPieceComponent.getInstance();
 
-    private final static PieceInterface PIECE_INSTANCE = new PieceInstances(1).iterator().next();
+    private final static PieceInterface PIECE_INSTANCE = PieceType.PIECE1.iterator().next();
 
     private final static Move BLUE_MOVE = Moves.getMove(Blue, PIECE_INSTANCE);
     private final static Move YELLOW_MOVE = Moves.getMove(Yellow, PIECE_INSTANCE);
