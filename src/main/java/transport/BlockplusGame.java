@@ -141,7 +141,7 @@ public class BlockplusGame implements GameInterface<Context> {
     }
 
     public ClientInterface getUserToPlay() {
-        final Color colorToPlay = this.getContext().getColor();
+        final Color colorToPlay = this.getContext().getSide();
         final PlayerInterface player = this.getContext().getPlayers().get(colorToPlay);
         return this.clientByPlayer.get(player);
     }
@@ -181,7 +181,7 @@ public class BlockplusGame implements GameInterface<Context> {
             positions.add(Position.from(row, column));
         }
 
-        final Color color = context.getColor();
+        final Color color = context.getSide();
         final PieceInterface piece = PieceComposite.from(moveSubmit.getId(), positions.iterator().next(), positions); // TODO à revoir
         final Move move = new Move(color, piece);
         Context nextContext = context.apply(move);

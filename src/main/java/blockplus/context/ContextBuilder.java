@@ -21,7 +21,6 @@ import static blockplus.Color.Blue;
 import static blockplus.Color.Green;
 import static blockplus.Color.Red;
 import static blockplus.Color.Yellow;
-import static blockplus.adversity.Side.Side;
 import static blockplus.board.State.Light;
 import static components.position.Position.Position;
 
@@ -30,7 +29,6 @@ import java.util.Set;
 import blockplus.Color;
 import blockplus.adversity.Adversity;
 import blockplus.adversity.Adversity.Builder;
-import blockplus.adversity.Side;
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
 import blockplus.piece.Pieces;
@@ -53,8 +51,6 @@ public final class ContextBuilder {
 
     private final static Set<Pieces> LEGAL_PIECES = LEGAL_PIECES_BUILDER.build();
 
-    private final static Side SIDE = Side(0);
-
     private final static PiecesBag BAG_OF_PIECES = PiecesBag.from(LEGAL_PIECES);
 
     private final static blockplus.player.Players.Builder PLAYERS_BUILDER = new Players.Builder();
@@ -66,12 +62,14 @@ public final class ContextBuilder {
     }
     private final static Players PLAYERS = PLAYERS_BUILDER.build();
 
+    private final static Color CURRENT_SIDE = Blue;
+
     private final static Builder ADVERSITY_BUILDER = new Adversity.Builder();
     static {
-        ADVERSITY_BUILDER.add(Side(0), Blue);
-        ADVERSITY_BUILDER.add(Side(1), Yellow);
-        ADVERSITY_BUILDER.add(Side(2), Red);
-        ADVERSITY_BUILDER.add(Side(3), Green);
+        ADVERSITY_BUILDER.add(Blue);
+        ADVERSITY_BUILDER.add(Yellow);
+        ADVERSITY_BUILDER.add(Red);
+        ADVERSITY_BUILDER.add(Green);
     }
 
     private final static Adversity ADVERSITY = ADVERSITY_BUILDER.build();
@@ -86,15 +84,15 @@ public final class ContextBuilder {
             .set(Green, new BoardLayer(ROWS, COLUMNS).apply(Position(ROWS - 1, 0), Light))
             .build();
 
-    private Side side = null;
+    private Color currentSide = CURRENT_SIDE;
 
-    public ContextBuilder setSide(final Side side) {
-        this.side = side;
+    public ContextBuilder setCurrentSide(final Color side) {
+        this.currentSide = side;
         return this;
     }
 
-    private Side getSide() {
-        return (this.side == null) ? SIDE : this.side;
+    private Color getCurrentSide() {
+        return (this.currentSide == null) ? CURRENT_SIDE : this.currentSide;
     }
 
     private Adversity adversity = null;
@@ -145,7 +143,7 @@ public final class ContextBuilder {
     */
 
     public Context build() {
-        return new Context(this.getSide(), this.getAdversity(), this.getPlayers(), this.getBoard());
+        return new Context(this.getCurrentSide(), this.getBoard(), this.getPlayers(), this.getAdversity());
     }
 
 }

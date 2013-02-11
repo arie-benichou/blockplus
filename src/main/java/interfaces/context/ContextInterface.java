@@ -18,7 +18,6 @@
 package interfaces.context;
 
 import interfaces.adversity.AdversityInterface;
-import interfaces.adversity.SideInterface;
 import interfaces.board.BoardInterface;
 import interfaces.move.MoveInterface;
 import interfaces.player.PlayersInterface;
@@ -29,7 +28,9 @@ public interface ContextInterface<T> {
 
     boolean isTerminal();
 
-    SideInterface getSide();
+    T getSide();
+
+    T getNextSide();
 
     BoardInterface getBoard();
 

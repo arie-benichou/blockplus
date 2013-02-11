@@ -121,7 +121,7 @@ public final class ContextRepresentation {
     @Override
     public String toString() {
         final JsonObject data = new JsonObject();
-        data.addProperty("color", this.getGameContext().getColor().toString());
+        data.addProperty("color", this.getGameContext().getSide().toString());
         data.addProperty("isTerminal", this.getGameContext().isTerminal());
         data.add("board", this.encodeBoard());
         data.add("pieces", this.encodePieces());

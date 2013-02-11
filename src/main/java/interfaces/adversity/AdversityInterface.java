@@ -17,13 +17,8 @@
 
 package interfaces.adversity;
 
-
 public interface AdversityInterface<T> {
 
-    T get(SideInterface side);
-
-    SideInterface getSide(T object);
-
-    T getNext(SideInterface side);
+    T getOpponent(T object);
 
 }

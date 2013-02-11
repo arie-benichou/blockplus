@@ -27,7 +27,6 @@ import javax.annotation.Nullable;
 
 import blockplus.Color;
 import blockplus.adversity.Adversity;
-import blockplus.adversity.Side;
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
 import blockplus.move.Move;
@@ -56,10 +55,10 @@ public final class Context implements ContextInterface<Color> {
         return REFEREE;
     }
 
-    private final Side side;
+    private final Color side;
 
     @Override
-    public Side getSide() {
+    public Color getSide() {
         return this.side;
     }
 
@@ -84,21 +83,26 @@ public final class Context implements ContextInterface<Color> {
         return this.board;
     }
 
-    public Context(final Side side, final Adversity adversity, final Players players, final Board board) {
+    Context(final Color side, final Board board, final Players players, final Adversity adversity) {
         this.side = side;
-        this.adversity = adversity;
         this.board = board;
         this.players = players;
+        this.adversity = adversity;
+    }
+
+    @Override
+    public Color getNextSide() {
+        return this.getAdversity().getOpponent(this.getSide());
     }
 
     private Context(final Context context) {
-        this(context.getSide().next(), context.getAdversity(), context.getPlayers(), context.getBoard());
+        this(context.getNextSide(), context.getBoard(), context.getPlayers(), context.getAdversity());
     }
 
     @Override
     public Context apply(final MoveInterface move) {
         return new ContextBuilder()
-                .setSide(this.getSide())
+                .setCurrentSide(this.getSide())
                 .setAdversity(this.getAdversity())
                 .setPlayers(this.getPlayers().apply(this.getPlayer().apply(move)))
                 .setBoard(this.getBoard().apply(move))
@@ -122,7 +126,8 @@ public final class Context implements ContextInterface<Color> {
         if (skipOnNullOption) {
             final List<MoveInterface> nextOptions = nextContext.options();
             if (nextOptions.size() == 1 && nextOptions.get(0).isNull()) {// TODO ? extract Options class
-                if (nextContext.getPlayer().isAlive()) nextContext = nextContext.apply(new Move(nextContext.getColor(), NullPieceComponent.getInstance()));
+                if (nextContext.getPlayer().isAlive())
+                    nextContext = nextContext.apply(new Move(nextContext.getSide(), NullPieceComponent.getInstance()));
                 nextContext = nextContext.forward();
             }
         }
@@ -134,16 +139,8 @@ public final class Context implements ContextInterface<Color> {
         return this.forward(true);
     }
 
-    public Color getColor() {
-        return this.adversity.get(this.getSide());
-    }
-
-    public Player getPlayer(final Color color) {
-        return this.getPlayers().get(color);
-    }
-
     public Player getPlayer() {
-        return this.getPlayer(this.getColor());
+        return this.getPlayers().get(this.getSide());
     }
 
 }
