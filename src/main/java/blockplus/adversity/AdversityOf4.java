@@ -73,7 +73,7 @@ public final class AdversityOf4 implements AdversityInterface<Color> {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).addValue(this.sides).toString();
+        return Objects.toStringHelper(this).addValue(this.sides.values()).toString();
     }
 
 }
