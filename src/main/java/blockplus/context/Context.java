@@ -17,6 +17,7 @@
 
 package blockplus.context;
 
+import interfaces.adversity.AdversityInterface;
 import interfaces.arbitration.RefereeInterface;
 import interfaces.context.ContextInterface;
 import interfaces.move.MoveInterface;
@@ -26,7 +27,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import blockplus.Color;
-import blockplus.adversity.Adversity;
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
 import blockplus.move.Move;
@@ -62,10 +62,10 @@ public final class Context implements ContextInterface<Color> {
         return this.side;
     }
 
-    private final Adversity adversity;
+    private final AdversityInterface<Color> adversity;
 
     @Override
-    public Adversity getAdversity() {
+    public AdversityInterface<Color> getAdversity() {
         return this.adversity;
     }
 
@@ -83,7 +83,7 @@ public final class Context implements ContextInterface<Color> {
         return this.board;
     }
 
-    Context(final Color side, final Board board, final Players players, final Adversity adversity) {
+    Context(final Color side, final Board board, final Players players, final AdversityInterface<Color> adversity) {
         this.side = side;
         this.board = board;
         this.players = players;
@@ -102,7 +102,7 @@ public final class Context implements ContextInterface<Color> {
     @Override
     public Context apply(final MoveInterface move) {
         return new ContextBuilder()
-                .setCurrentSide(this.getSide())
+                .setSide(this.getSide())
                 .setAdversity(this.getAdversity())
                 .setPlayers(this.getPlayers().apply(this.getPlayer().apply(move)))
                 .setBoard(this.getBoard().apply(move))

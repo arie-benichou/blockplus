@@ -23,12 +23,13 @@ import static blockplus.Color.Red;
 import static blockplus.Color.Yellow;
 import static blockplus.board.State.Light;
 import static components.position.Position.Position;
+import interfaces.adversity.AdversityInterface;
 
 import java.util.Set;
 
 import blockplus.Color;
-import blockplus.adversity.Adversity;
-import blockplus.adversity.Adversity.Builder;
+import blockplus.adversity.AdversityOf4;
+import blockplus.adversity.AdversityOf4.Builder;
 import blockplus.board.Board;
 import blockplus.board.BoardLayer;
 import blockplus.piece.Pieces;
@@ -62,9 +63,9 @@ public final class ContextBuilder {
     }
     private final static Players PLAYERS = PLAYERS_BUILDER.build();
 
-    private final static Color CURRENT_SIDE = Blue;
+    private final static Color SIDE = Blue;
 
-    private final static Builder ADVERSITY_BUILDER = new Adversity.Builder();
+    private final static Builder ADVERSITY_BUILDER = new AdversityOf4.Builder();
     static {
         ADVERSITY_BUILDER.add(Blue);
         ADVERSITY_BUILDER.add(Yellow);
@@ -72,7 +73,7 @@ public final class ContextBuilder {
         ADVERSITY_BUILDER.add(Green);
     }
 
-    private final static Adversity ADVERSITY = ADVERSITY_BUILDER.build();
+    private final static AdversityInterface<Color> ADVERSITY = ADVERSITY_BUILDER.build();
 
     private final static int ROWS = 20;
     private final static int COLUMNS = 20;
@@ -84,25 +85,25 @@ public final class ContextBuilder {
             .set(Green, new BoardLayer(ROWS, COLUMNS).apply(Position(ROWS - 1, 0), Light))
             .build();
 
-    private Color currentSide = CURRENT_SIDE;
+    private Color side = SIDE;
 
-    public ContextBuilder setCurrentSide(final Color side) {
-        this.currentSide = side;
+    public ContextBuilder setSide(final Color side) {
+        this.side = side;
         return this;
     }
 
-    private Color getCurrentSide() {
-        return (this.currentSide == null) ? CURRENT_SIDE : this.currentSide;
+    private Color getSide() {
+        return (this.side == null) ? SIDE : this.side;
     }
 
-    private Adversity adversity = null;
+    private AdversityInterface<Color> adversity = null;
 
-    public ContextBuilder setAdversity(final Adversity adversity) {
+    public ContextBuilder setAdversity(final AdversityInterface<Color> adversity) {
         this.adversity = adversity;
         return this;
     }
 
-    public Adversity getAdversity() {
+    public AdversityInterface<Color> getAdversity() {
         return (this.adversity == null) ? ADVERSITY : this.adversity;
     }
 
@@ -143,7 +144,7 @@ public final class ContextBuilder {
     */
 
     public Context build() {
-        return new Context(this.getCurrentSide(), this.getBoard(), this.getPlayers(), this.getAdversity());
+        return new Context(this.getSide(), this.getBoard(), this.getPlayers(), this.getAdversity());
     }
 
 }
