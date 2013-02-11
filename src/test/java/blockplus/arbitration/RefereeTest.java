@@ -37,6 +37,7 @@ import blockplus.board.State;
 import blockplus.context.Context;
 import blockplus.context.ContextBuilder;
 import blockplus.move.Move;
+import blockplus.move.Moves;
 import blockplus.piece.PieceInstances;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
@@ -84,14 +85,14 @@ public class RefereeTest {
         {
             final List<PieceInterface> pieceInstances = Lists.newArrayList(new PieceInstances(3));
             final PieceInterface piece = pieceInstances.get(1).translateTo(Position(0, 1));
-            final Move move = new Move(Blue, piece);
+            final Move move = Moves.getMove(Blue, piece);
             context = context.apply(move);
         }
 
         {
             final List<PieceInterface> pieceInstances = Lists.newArrayList(new PieceInstances(12));
             final PieceInterface piece = pieceInstances.get(3).reflectAlongVerticalAxis().translateTo(Position(2, 4));
-            final Move move = new Move(Blue, piece);
+            final Move move = Moves.getMove(Blue, piece);
             context = context.apply(move);
         }
 
@@ -116,14 +117,14 @@ public class RefereeTest {
         {
             final List<PieceInterface> pieceInstances = Lists.newArrayList(new PieceInstances(2));
             final PieceInterface piece = pieceInstances.get(1).translateTo(Position(7, 0));
-            final Move move = new Move(Green, piece);
+            final Move move = Moves.getMove(Green, piece);
             context = context.apply(move);
         }
 
         {
             final List<PieceInterface> pieceInstances = Lists.newArrayList(new PieceInstances(16));
             final PieceInterface piece = pieceInstances.get(3).translateTo(Position(5, 2));
-            final Move move = new Move(Green, piece);
+            final Move move = Moves.getMove(Green, piece);
             context = context.apply(move);
         }
 

@@ -113,14 +113,14 @@ public class PieceComponentTest {
 
     @Test
     public void testToString() {
-        final String expected = "PieceComponent{(0, 0)}";
+        final String expected = "(0, 0)";
         final String actual = this.pieceComponent.toString();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testHashCode() {
-        final int expected = "PieceComponent{(0, 0)}".hashCode();
+        final int expected = "(0, 0)".hashCode();
         final int actual = this.pieceComponent.toString().hashCode();
         assertEquals(expected, actual);
     }

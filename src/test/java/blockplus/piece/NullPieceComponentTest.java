@@ -128,7 +128,7 @@ public class NullPieceComponentTest {
 
     @Test
     public void testToString() {
-        assertEquals(this.nullPieceComponent.getClass().getSimpleName(), this.nullPieceComponent.toString());
+        assertEquals("NULL", this.nullPieceComponent.toString());
     }
 
     @Test

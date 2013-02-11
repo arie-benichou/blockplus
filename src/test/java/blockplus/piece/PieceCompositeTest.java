@@ -117,24 +117,14 @@ public class PieceCompositeTest {
 
     @Test
     public void testToString() {
-        final String expected = "" +
-                "PieceComposite{" + "\n" +
-                "  2, " + "\n" +
-                "  PieceComponent{(0, 0)}" + "\n" +
-                "  PieceComponent{(0, 1)}" + "\n" +
-                "}";
+        final String expected = "PieceComposite{id=2, positions=(0, 0) (0, 1)}";
         final String actual = this.pieceComposite.toString();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testHashCode() {
-        final int expected = ("" +
-                "PieceComposite{" + "\n" +
-                "  2, " + "\n" +
-                "  PieceComponent{(0, 0)}" + "\n" +
-                "  PieceComponent{(0, 1)}" + "\n" +
-                "}").hashCode();
+        final int expected = "PieceComposite{id=2, positions=(0, 0) (0, 1)}".hashCode();
         final int actual = this.pieceComposite.toString().hashCode();
         assertEquals(expected, actual);
     }

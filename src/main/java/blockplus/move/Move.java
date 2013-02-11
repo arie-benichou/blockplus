@@ -38,7 +38,7 @@ public final class Move implements MoveInterface {
         return this.piece;
     }
 
-    public Move(final Color color, final PieceInterface piece) {
+    Move(final Color color, final PieceInterface piece) {
         this.color = color;
         this.piece = piece;
     }
@@ -49,7 +49,7 @@ public final class Move implements MoveInterface {
     }
 
     @Override
-    public int hashCode() { // TODO à revoir + caching
+    public int hashCode() { // TODO Scala lazy
         return this.toString().hashCode();
     }
 
@@ -68,8 +68,8 @@ public final class Move implements MoveInterface {
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .addValue(this.getColor())
-                .addValue(this.getPiece())
+                .add("color", this.getColor())
+                .add("piece", this.getPiece())
                 .toString();
     }
 

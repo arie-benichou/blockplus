@@ -29,8 +29,7 @@ import javax.annotation.Nullable;
 import blockplus.Color;
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
-import blockplus.move.Move;
-import blockplus.piece.NullPieceComponent;
+import blockplus.move.Moves;
 import blockplus.player.Player;
 import blockplus.player.Players;
 
@@ -126,8 +125,7 @@ public final class Context implements ContextInterface<Color> {
         if (skipOnNullOption) {
             final List<MoveInterface> nextOptions = nextContext.options();
             if (nextOptions.size() == 1 && nextOptions.get(0).isNull()) {// TODO ? extract Options class
-                if (nextContext.getPlayer().isAlive())
-                    nextContext = nextContext.apply(new Move(nextContext.getSide(), NullPieceComponent.getInstance()));
+                if (nextContext.getPlayer().isAlive()) nextContext = nextContext.apply(Moves.getNullMove(nextContext.getSide()));
                 nextContext = nextContext.forward();
             }
         }

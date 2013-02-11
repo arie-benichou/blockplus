@@ -325,8 +325,8 @@ public final class PieceComposite implements PieceInterface {
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .addValue("\n  " + this.getId())
-                .addValue("\n  " + Joiner.on("\n  ").join(this.get()) + "\n")
+                .add("id", this.getId())
+                .add("positions", Joiner.on(" ").join(this.get()))
                 .toString();
     }
 

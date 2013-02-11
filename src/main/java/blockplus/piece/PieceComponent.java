@@ -310,9 +310,7 @@ public final class PieceComponent implements PieceInterface {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-                .addValue("(" + this.getReferential().row() + ", " + this.getReferential().column() + ")")
-                .toString();
+        return "(" + this.getReferential().row() + ", " + this.getReferential().column() + ")";
     }
 
 }

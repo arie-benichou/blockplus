@@ -29,6 +29,7 @@ import blockplus.Color;
 import blockplus.context.Context;
 import blockplus.context.ContextBuilder;
 import blockplus.move.Move;
+import blockplus.move.Moves;
 import blockplus.piece.PieceComposite;
 import blockplus.piece.PieceInterface;
 import blockplus.player.Player;
@@ -183,7 +184,7 @@ public class BlockplusGame implements GameInterface<Context> {
 
         final Color color = context.getSide();
         final PieceInterface piece = PieceComposite.from(moveSubmit.getId(), positions.iterator().next(), positions); // TODO à revoir
-        final Move move = new Move(color, piece);
+        final Move move = Moves.getMove(color, piece);
         Context nextContext = context.apply(move);
         nextContext = nextContext.forward();
 

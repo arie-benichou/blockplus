@@ -110,11 +110,6 @@ public final class NullPieceComponent implements PieceInterface {
     }
 
     @Override
-    public String toString() {
-        return this.getClass().getSimpleName();
-    }
-
-    @Override
     public int hashCode() {
         return 0;
     }
@@ -144,6 +139,11 @@ public final class NullPieceComponent implements PieceInterface {
     @Override
     public PieceInterface reflectAlongHorizontalAxis() {
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "NULL";
     }
 
 }

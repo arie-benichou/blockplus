@@ -34,7 +34,7 @@ import blockplus.board.State;
 import blockplus.context.Context;
 import blockplus.move.Move;
 import blockplus.move.MoveComparator;
-import blockplus.piece.NullPieceComponent;
+import blockplus.move.Moves;
 import blockplus.piece.PieceData;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.Pieces;
@@ -58,7 +58,7 @@ public final class Referee implements RefereeInterface {
         final List<Move> legalMoves = Lists.newArrayList();
         for (final PieceInterface pieceInstance : piece) {
             final PieceInterface translatedPieceInstance = pieceInstance.translateTo(position);
-            final Move move = new Move(color, translatedPieceInstance);
+            final Move move = Moves.getMove(color, translatedPieceInstance);
             if (board.isLegal(move)) legalMoves.add(move);
         }
         return legalMoves;
@@ -94,7 +94,7 @@ public final class Referee implements RefereeInterface {
         for (final Pieces piece : pieces)
             for (final PositionInterface potentialPosition : this.getPotentialPositions(board, color, positionsHavingPotential, piece))
                 legalMoves.addAll(this.getLegalMoves(board, color, piece, potentialPosition));
-        if (legalMoves.isEmpty()) return ImmutableSet.of(new Move(player.getColor(), NullPieceComponent.getInstance())); // TODO à revoir
+        if (legalMoves.isEmpty()) return ImmutableSet.of(Moves.getNullMove(player.getColor())); // TODO à revoir
         return legalMoves;
     }
 
