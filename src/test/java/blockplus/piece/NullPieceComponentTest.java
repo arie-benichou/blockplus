@@ -22,7 +22,7 @@ import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
-import junit.framework.Assert;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -133,11 +133,11 @@ public class NullPieceComponentTest {
 
     @Test
     public void testEqualsObject() {
-        Assert.assertFalse(this.nullPieceComponent.equals(null));
-        Assert.assertTrue(this.nullPieceComponent.equals(this.nullPieceComponent));
-        Assert.assertFalse(this.nullPieceComponent.equals(new Object()));
-        Assert.assertFalse(this.nullPieceComponent.equals(Position(1, 1)));
-        Assert.assertTrue(this.nullPieceComponent.equals(NullPieceComponent.getInstance()));
-        Assert.assertTrue(NullPieceComponent.getInstance().equals(this.nullPieceComponent));
+        assertFalse(this.nullPieceComponent.equals(null));
+        assertTrue(this.nullPieceComponent.equals(this.nullPieceComponent));
+        assertFalse(this.nullPieceComponent.equals(new Object()));
+        assertFalse(this.nullPieceComponent.equals(Position(1, 1)));
+        assertTrue(this.nullPieceComponent.equals(NullPieceComponent.getInstance()));
+        assertTrue(NullPieceComponent.getInstance().equals(this.nullPieceComponent));
     }
 }
