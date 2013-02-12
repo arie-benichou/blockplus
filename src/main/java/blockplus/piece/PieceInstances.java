@@ -11,7 +11,7 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 /**
- * Provides distinct instances for a given piece.
+ * Provides distinct instances for a given type of piece.
  */
 final class PieceInstances implements Iterable<PieceInterface> {
 
