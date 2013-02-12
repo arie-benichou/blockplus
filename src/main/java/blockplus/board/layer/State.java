@@ -20,14 +20,35 @@ package blockplus.board.layer;
 import components.board.Symbol;
 
 /**
- * Possible states for a cell in a board's layer of a Blokus game.
+ * Possible states for a cell in a board's layer of a Blokus game.Each Blokus
+ * color is mapped on its own layer, so a board manages 4 layers of colors: one
+ * for Blue, one for Yellow, one for Red and one for Green.
  */
 public enum State implements Symbol {
 
+    /**
+     * State for a cell having an undefined state
+     */
     None,
+
+    /**
+     * State for a cell having a different color
+     */
     Other,
+
+    /**
+     * State for a cell having this color
+     */
     Self,
+
+    /**
+     * State for a cell that could never contain this color
+     */
     Shadow,
+
+    /**
+     * State for a cell that could contain this color
+     */
     Light;
 
 }
