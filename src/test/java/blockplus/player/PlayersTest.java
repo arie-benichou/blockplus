@@ -27,6 +27,26 @@ public class PlayersTest {
 
     private final static Players PLAYERS = new Players.Builder().add(PLAYER1, PLAYER2, PLAYER3, PLAYER4).build();
 
+    @Test(expected = IllegalStateException.class)
+    public void testBuildOfPlayersWithoutAnyPlayer() {
+        new Players.Builder().build();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testBuildOfPlayersWithOnlyOnePlayer() {
+        new Players.Builder().add(PLAYER1).build();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testBuildOfPlayersWithOnlyTwoPlayers() {
+        new Players.Builder().add(PLAYER1, PLAYER2).build();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testBuildOfPlayersWithOnlyThreePlayers() {
+        new Players.Builder().add(PLAYER1, PLAYER2, PLAYER3).build();
+    }
+
     @Test
     public void testGet() {
         assertEquals(Blue, PLAYERS.get(Blue).getColor());

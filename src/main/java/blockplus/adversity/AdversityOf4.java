@@ -38,26 +38,27 @@ public final class AdversityOf4 implements AdversityInterface<Color> {
 
         public Builder add(final Color color) {
             Preconditions.checkArgument(color != null);
-            Preconditions.checkArgument(!this.sides.contains(color));
+            Preconditions.checkState(!this.sides.contains(color));
             this.sides.add(color);
             return this;
         }
 
-        public Builder remove(final Color color) {
-            Preconditions.checkArgument(color != null);
-            Preconditions.checkArgument(this.sides.contains(color));
-            this.sides.remove(color);
+        public Builder add(final Color... colors) {
+            for (final Color color : colors) {
+                this.add(color);
+            }
             return this;
         }
 
         public AdversityOf4 build() {
-            Preconditions.checkArgument(SIDES == this.sides.size());
+            Preconditions.checkState(SIDES == this.sides.size());
             final ImmutableBiMap.Builder<Integer, Color> builder = new ImmutableBiMap.Builder<Integer, Color>();
             int i = -1;
             for (final Color color : this.sides)
                 builder.put(++i, color);
             return new AdversityOf4(builder.build());
         }
+
     }
 
     private final ImmutableBiMap<Integer, Color> sides;
