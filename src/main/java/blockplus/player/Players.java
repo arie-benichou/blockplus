@@ -40,6 +40,12 @@ public final class Players implements PlayersInterface<Color>, Iterable<Player> 
             return this;
         }
 
+        public Builder add(final Player... players) {
+            for (final Player player : players)
+                this.add(player);
+            return this;
+        }
+
         public Players build() {
             final ImmutableSortedMap<Color, Player> players = this.playerByColorBuilder.build();
             Preconditions.checkState(players.size() == 4);
@@ -84,7 +90,7 @@ public final class Players implements PlayersInterface<Color>, Iterable<Player> 
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).addValue(this.playerByColor).toString();
+        return Objects.toStringHelper(this).addValue(this.playerByColor.values()).toString();
     }
 
 }
