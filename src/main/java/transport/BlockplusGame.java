@@ -87,7 +87,7 @@ public class BlockplusGame implements GameInterface<Context> {
             final Builder<ClientInterface, Player> builder2 = new ImmutableMap.Builder<ClientInterface, Player>();
             int n = 0;
             for (final ClientInterface client : clients) {
-                final Color color = Color.get(this.SEQUENCE.get(n));
+                final Color color = Color.valueOf(this.SEQUENCE.get(n));
                 final Player player = gameContext.getPlayers().get(color);
                 builder1.put(player, client);
                 builder2.put(client, player);
@@ -125,7 +125,7 @@ public class BlockplusGame implements GameInterface<Context> {
 
     @Override
     public boolean isFull() {
-        return (this.getCapacity() - this.getClients().size()) == 0;
+        return this.getCapacity() - this.getClients().size() == 0;
     }
 
     @Override

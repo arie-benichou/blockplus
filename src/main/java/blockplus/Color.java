@@ -22,10 +22,6 @@ public enum Color {
     Blue,
     Yellow,
     Red,
-    Green;
-
-    public static Color get(final String name) {
-        return valueOf(name);
-    }
+    Green
 
 }
