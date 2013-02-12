@@ -39,8 +39,8 @@ import java.util.Map;
 import org.junit.Test;
 
 import blockplus.board.Board;
-import blockplus.board.BoardLayer;
-import blockplus.board.State;
+import blockplus.board.layer.Layer;
+import blockplus.board.layer.State;
 import blockplus.context.Context;
 import blockplus.context.ContextBuilder;
 import blockplus.move.Move;
@@ -74,10 +74,10 @@ public class RefereeTest {
 
         contextBuilder.setPlayers(players);
         final int rows = 8, columns = 5;
-        final BoardLayer blueLayer = new BoardLayer(rows, columns).apply(Position(0, 0), State.Light);
-        final BoardLayer yellowLayer = new BoardLayer(rows, columns).apply(Position(0, columns - 1), State.Light);
-        final BoardLayer redLayer = new BoardLayer(rows, columns).apply(Position(rows - 1, columns - 1), State.Light);
-        final BoardLayer greenLayer = new BoardLayer(rows, columns).apply(Position(rows - 1, 0), State.Light);
+        final Layer blueLayer = new Layer(rows, columns).apply(Position(0, 0), State.Light);
+        final Layer yellowLayer = new Layer(rows, columns).apply(Position(0, columns - 1), State.Light);
+        final Layer redLayer = new Layer(rows, columns).apply(Position(rows - 1, columns - 1), State.Light);
+        final Layer greenLayer = new Layer(rows, columns).apply(Position(rows - 1, 0), State.Light);
         final Board board = Board.builder(Sets.newHashSet(Blue, Yellow, Red, Green), rows, columns)
                 .set(Blue, blueLayer)
                 .set(Yellow, yellowLayer)
@@ -136,7 +136,7 @@ public class RefereeTest {
         context = context.forward();
 
         final Board finalBoard = context.getBoard();
-        final BoardLayer layer = finalBoard.getLayer(Blue);
+        final Layer layer = finalBoard.getLayer(Blue);
         final Map<PositionInterface, State> lights = layer.getLights();
         assertTrue(!lights.isEmpty());
 

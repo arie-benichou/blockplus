@@ -17,6 +17,9 @@
 
 package blockplus;
 
+/**
+ * Blokus game colors
+ */
 public enum Color {
 
     Blue,

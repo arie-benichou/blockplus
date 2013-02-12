@@ -30,8 +30,8 @@ import java.util.Set;
 
 import blockplus.Color;
 import blockplus.board.Board;
-import blockplus.board.BoardLayer;
-import blockplus.board.State;
+import blockplus.board.layer.Layer;
+import blockplus.board.layer.State;
 import blockplus.context.Context;
 import blockplus.move.Move;
 import blockplus.move.MoveComparator;
@@ -67,7 +67,7 @@ public final class Referee implements RefereeInterface {
     // TODO tester pas à pas => PieceInstanceMatcher
     private Iterable<PositionInterface> getPotentialPositions(final Board board, final Color c, final Iterable<PositionInterface> p, final PieceType pieceType) {
         final int radius = pieceType.radius();
-        final BoardLayer layer = board.getLayer(c);
+        final Layer layer = board.getLayer(c);
         final Set<PositionInterface> extendedLegalPositions = Sets.newLinkedHashSet();
         final Map<PositionInterface, Set<PositionInterface>> map = Maps.newLinkedHashMap();
         for (final PositionInterface positionHavingPotential : p) {

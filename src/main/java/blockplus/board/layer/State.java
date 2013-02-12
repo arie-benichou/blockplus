@@ -15,10 +15,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.board;
+package blockplus.board.layer;
 
 import components.board.Symbol;
 
+/**
+ * Possible states for a cell in a board's layer of a Blokus game.
+ */
 public enum State implements Symbol {
 
     None,

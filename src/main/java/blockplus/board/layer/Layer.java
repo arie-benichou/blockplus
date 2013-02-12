@@ -15,18 +15,19 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.board;
+package blockplus.board.layer;
 
-import static blockplus.board.State.Light;
-import static blockplus.board.State.None;
-import static blockplus.board.State.Other;
-import static blockplus.board.State.Self;
+import static blockplus.board.layer.State.Light;
+import static blockplus.board.layer.State.None;
+import static blockplus.board.layer.State.Other;
+import static blockplus.board.layer.State.Self;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
+import blockplus.board.BoardMutationBuilder;
 import blockplus.piece.PieceInterface;
 
 import com.google.common.base.Predicate;
@@ -36,7 +37,7 @@ import components.board.Board;
 import components.board.BoardInterface;
 import components.position.PositionInterface;
 
-public final class BoardLayer implements Supplier<BoardInterface<State>> {
+public final class Layer implements Supplier<BoardInterface<State>> {
 
     private final static class IsMutablePredicate implements Predicate<PositionInterface> {
 
@@ -78,12 +79,12 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
     private volatile Map<PositionInterface, State> selves;
     private volatile Map<PositionInterface, State> lights;
 
-    private BoardLayer(final BoardInterface<State> stateBoard) {
+    private Layer(final BoardInterface<State> stateBoard) {
         this.stateBoard = stateBoard;
         this.isMutablePredicate = new IsMutablePredicate(stateBoard);
     }
 
-    public BoardLayer(final int rows, final int columns) {
+    public Layer(final int rows, final int columns) {
         this(Board.from(rows, columns, None, Other));
     }
 
@@ -117,7 +118,7 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
         return this.getLights().containsKey(position);
     }
 
-    public BoardLayer apply(final PieceInterface piece) {
+    public Layer apply(final PieceInterface piece) {
         final BoardMutationBuilder boardMutationBuilder = new BoardMutationBuilder()
                 .setSelfPositions(piece.getSelfPositions())
                 .setShadowPositions(piece.getShadowPositions())
@@ -125,18 +126,18 @@ public final class BoardLayer implements Supplier<BoardInterface<State>> {
         return this.apply(boardMutationBuilder.build());
     }
 
-    public BoardLayer apply(final Map<PositionInterface, State> boardMutation) {
+    public Layer apply(final Map<PositionInterface, State> boardMutation) {
         final Map<PositionInterface, State> consistentMutations = Maps.newHashMap();
         for (final Entry<PositionInterface, State> mutation : boardMutation.entrySet())
             if (this.isMutable(mutation.getKey())) consistentMutations.put(mutation.getKey(), mutation.getValue());
-        return new BoardLayer(this.get().apply(consistentMutations));
+        return new Layer(this.get().apply(consistentMutations));
     }
 
-    public BoardLayer apply(final PositionInterface position, final State state) {
+    public Layer apply(final PositionInterface position, final State state) {
         if (!this.isMutable(position)) return this;
         final Map<PositionInterface, State> consistentMutation = Maps.newHashMap();
         consistentMutation.put(position, state);
-        return new BoardLayer(this.get().apply(consistentMutation));
+        return new Layer(this.get().apply(consistentMutation));
     }
 
     public Map<PositionInterface, State> getLights() {

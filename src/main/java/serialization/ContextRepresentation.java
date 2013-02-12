@@ -26,7 +26,7 @@ import java.util.Set;
 
 import blockplus.Color;
 import blockplus.board.Board;
-import blockplus.board.BoardLayer;
+import blockplus.board.layer.Layer;
 import blockplus.context.Context;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
@@ -71,7 +71,7 @@ public final class ContextRepresentation {
         final Set<Color> colors = board.getColors();
         for (final Color color : colors) {
             final JsonArray jsonArray = new JsonArray();
-            final BoardLayer layer = board.getLayer(color);
+            final Layer layer = board.getLayer(color);
             final Set<PositionInterface> positions = layer.getSelves().keySet();
             for (final PositionInterface position : positions)
                 jsonArray.add(new JsonPrimitive(columns * position.row() + (position.column() % rows))); // TODO extract method

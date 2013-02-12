@@ -15,13 +15,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.board;
+package blockplus.board.layer;
 
-import static blockplus.board.State.Light;
-import static blockplus.board.State.None;
-import static blockplus.board.State.Other;
-import static blockplus.board.State.Self;
-import static blockplus.board.State.Shadow;
+import static blockplus.board.layer.State.Light;
+import static blockplus.board.layer.State.None;
+import static blockplus.board.layer.State.Other;
+import static blockplus.board.layer.State.Self;
+import static blockplus.board.layer.State.Shadow;
 import static blockplus.piece.PieceType.PIECE1;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
@@ -35,6 +35,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import blockplus.board.layer.Layer;
+import blockplus.board.layer.State;
 import blockplus.piece.PieceType;
 
 import com.google.common.collect.Maps;
@@ -42,13 +44,13 @@ import com.google.common.collect.Sets;
 import components.board.BoardInterface;
 import components.position.PositionInterface;
 
-public class BoardLayerTest {
+public class LayerTest {
 
-    private BoardLayer boardLayer;
+    private Layer boardLayer;
 
     @Before
     public void setUp() throws Exception {
-        this.boardLayer = new BoardLayer(6, 4);
+        this.boardLayer = new Layer(6, 4);
     }
 
     @After
@@ -91,31 +93,31 @@ public class BoardLayerTest {
     @Test
     public void testApplyPositionInterfaceState() {
         {
-            final BoardLayer newBoardLayer = this.boardLayer.apply(Position(0, 0), Self);
+            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Self);
             final State expected = Self;
             final State actual = newBoardLayer.get().get(Position(0, 0));
             assertEquals(expected, actual);
         }
         {
-            final BoardLayer newBoardLayer = this.boardLayer.apply(Position(0, 0), Other);
+            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Other);
             final State expected = Other;
             final State actual = newBoardLayer.get().get(Position(0, 0));
             assertEquals(expected, actual);
         }
         {
-            final BoardLayer newBoardLayer = this.boardLayer.apply(Position(0, 0), Shadow);
+            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Shadow);
             final State expected = Shadow;
             final State actual = newBoardLayer.get().get(Position(0, 0));
             assertEquals(expected, actual);
         }
         {
-            final BoardLayer newBoardLayer = this.boardLayer.apply(Position(0, 0), Light);
+            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Light);
             final State expected = Light;
             final State actual = newBoardLayer.get().get(Position(0, 0));
             assertEquals(expected, actual);
         }
         {
-            final BoardLayer newBoardLayer = this.boardLayer.apply(Position(0, 0), None);
+            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), None);
             final State expected = None;
             final State actual = newBoardLayer.get().get(Position(0, 0));
             assertEquals(expected, actual);
@@ -131,7 +133,7 @@ public class BoardLayerTest {
         for (int row = 0; row < this.boardLayer.rows(); ++row)
             for (int column = 0; column < this.boardLayer.columns(); ++column)
                 assertFalse(this.boardLayer.isLegal(Sets.newHashSet(Position(row, column))));
-        final BoardLayer newBoardLayer = this.boardLayer.apply(Position(0, 0), Light);
+        final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Light);
         assertTrue(newBoardLayer.isLegal(Sets.newHashSet(Position(0, 0))));
     }
 
@@ -143,7 +145,7 @@ public class BoardLayerTest {
             mutations.put(Position(0, 1), Shadow);
             mutations.put(Position(1, 0), Shadow);
             mutations.put(Position(1, 1), Light);
-            final BoardLayer newBoardLayer = this.boardLayer.apply(mutations);
+            final Layer newBoardLayer = this.boardLayer.apply(mutations);
             {
                 final State expected = Self;
                 final State actual = newBoardLayer.get().get(Position(0, 0));
@@ -169,7 +171,7 @@ public class BoardLayerTest {
 
     @Test
     public void testApplyPieceInterface() {
-        final BoardLayer newBoardLayer = this.boardLayer.apply(PieceType.get(1).iterator().next().translateTo(Position(1, 1)));
+        final Layer newBoardLayer = this.boardLayer.apply(PieceType.get(1).iterator().next().translateTo(Position(1, 1)));
         {
             final State expected = Shadow;
             final State actual = newBoardLayer.get().get(Position(0, 1));
@@ -227,7 +229,7 @@ public class BoardLayerTest {
         }
         {
             // TODO ! à revoir
-            final BoardLayer newBoardLayer = this.boardLayer.apply(PieceType.get(1).iterator().next().translateTo(Position(1, 1)));
+            final Layer newBoardLayer = this.boardLayer.apply(PieceType.get(1).iterator().next().translateTo(Position(1, 1)));
             final Map<PositionInterface, State> actual = newBoardLayer.getSelves();
             final Map<PositionInterface, State> expected = Maps.newHashMap();
             expected.put(Position(1, 1), Self);
@@ -243,7 +245,7 @@ public class BoardLayerTest {
             assertEquals(expected, actual);
         }
         {
-            final BoardLayer newBoardLayer = this.boardLayer.apply(PIECE1.iterator().next().translateTo(Position(1, 1)));
+            final Layer newBoardLayer = this.boardLayer.apply(PIECE1.iterator().next().translateTo(Position(1, 1)));
             final Map<PositionInterface, State> actual = newBoardLayer.getLights();
             final Map<PositionInterface, State> expected = Maps.newHashMap();
             expected.put(Position(0, 0), Light);
@@ -260,7 +262,7 @@ public class BoardLayerTest {
             for (int column = 0; column < this.boardLayer.columns(); ++column)
                 assertFalse(this.boardLayer.isLight(Position(row, column)));
         final PositionInterface position = Position(0, 0);
-        final BoardLayer newBoardLayer = this.boardLayer.apply(position, Light);
+        final Layer newBoardLayer = this.boardLayer.apply(position, Light);
         assertTrue(newBoardLayer.isLight(position));
     }
 
