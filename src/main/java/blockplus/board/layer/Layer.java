@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
 import blockplus.board.BoardMutationBuilder;
 import blockplus.piece.PieceInterface;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
@@ -154,6 +155,29 @@ public final class Layer implements Supplier<BoardInterface<State>> {
             if ((value = this.selves) == null) this.selves = value = this.get().filter(SELF_PREDICATE);
         }
         return value;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) { // TODO use toString output
+        Preconditions.checkArgument(object instanceof Layer);
+        boolean isEqual = false;
+        if (object == this) isEqual = true;
+        else {
+            final Layer that = (Layer) object;
+            if (this.rows() == that.rows() && this.columns() == that.columns()) {
+                if (this.get().initialSymbol().equals(that.get().initialSymbol())) {
+                    if (this.get().undefinedSymbol().equals(that.get().undefinedSymbol())) {
+                        isEqual = this.get().filter(null).equals(that.get().filter(null));
+                    }
+                }
+            }
+        }
+        return isEqual;
     }
 
     @Override

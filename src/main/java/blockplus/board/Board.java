@@ -127,6 +127,8 @@ public final class Board implements BoardInterface {
     }
 
     public Layer getLayer(final Color color) {
+        //Preconditions.checkArgument(color != null);
+        //Preconditions.checkState(this.getColors().contains(color));
         return this.layerByColor.get(color);
     }
 
