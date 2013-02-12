@@ -15,6 +15,7 @@ import blockplus.piece.NullPieceComponent;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.PieceType;
 
+// FIXME test hashCode, equals
 public class MoveTest {
 
     private final static PieceInterface NULL_PIECE_INSTANCE = NullPieceComponent.getInstance();
@@ -94,16 +95,6 @@ public class MoveTest {
         assertEquals(NULL_PIECE_INSTANCE, YELLOW_NULL_MOVE.getPiece());
         assertEquals(NULL_PIECE_INSTANCE, RED_NULL_MOVE.getPiece());
         assertEquals(NULL_PIECE_INSTANCE, GREEN_NULL_MOVE.getPiece());
-    }
-
-    //@Test
-    public void testHashCode() {
-        //TODO fail("Not yet implemented");
-    }
-
-    //@Test
-    public void testEqualsObject() {
-        //TODO fail("Not yet implemented");
     }
 
     @Test

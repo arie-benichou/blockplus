@@ -18,15 +18,16 @@ import blockplus.move.Move;
 import blockplus.move.Moves;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.PieceType;
-import blockplus.piece.PiecesBag;
+import blockplus.piece.Pieces;
 
 import com.google.common.collect.Lists;
 
+// FIXME test hashCode, equals
 public class PlayerTest {
 
-    private final static PiecesBag PIECES_BAG = new PiecesBag.Builder().add(PIECE0).add(PIECE1).build();
+    private final static Pieces PIECES_BAG = new Pieces.Builder().add(PIECE0).add(PIECE1).build();
     private final static Player ALIVE_PLAYER = new Player(Blue, PIECES_BAG);
-    private final static Player DEAD_PLAYER = new Player(Green, PiecesBag.EMPTY);
+    private final static Player DEAD_PLAYER = new Player(Green, Pieces.EMPTY);
 
     @Test
     public void testGetColor() {
@@ -37,7 +38,7 @@ public class PlayerTest {
     @Test
     public void testGetPieces() {
         assertEquals(PIECES_BAG, ALIVE_PLAYER.getPieces());
-        assertEquals(PiecesBag.EMPTY, DEAD_PLAYER.getPieces());
+        assertEquals(Pieces.EMPTY, DEAD_PLAYER.getPieces());
     }
 
     @Test

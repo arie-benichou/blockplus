@@ -14,16 +14,17 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import blockplus.piece.PiecesBag;
+import blockplus.piece.Pieces;
 
 import com.google.common.collect.Lists;
 
+// FIXME test hashCode, equals
 public class PlayersTest {
 
-    private final static Player PLAYER1 = new Player(Blue, PiecesBag.EMPTY);
-    private final static Player PLAYER2 = new Player(Yellow, PiecesBag.EMPTY);
-    private final static Player PLAYER3 = new Player(Red, PiecesBag.EMPTY);
-    private final static Player PLAYER4 = new Player(Green, PiecesBag.EMPTY);
+    private final static Player PLAYER1 = new Player(Blue, Pieces.EMPTY);
+    private final static Player PLAYER2 = new Player(Yellow, Pieces.EMPTY);
+    private final static Player PLAYER3 = new Player(Red, Pieces.EMPTY);
+    private final static Player PLAYER4 = new Player(Green, Pieces.EMPTY);
 
     private final static Players PLAYERS = new Players.Builder().add(PLAYER1, PLAYER2, PLAYER3, PLAYER4).build();
 
@@ -62,7 +63,7 @@ public class PlayersTest {
 
     @Test
     public void testApply() {
-        final Player newPlayer = new Player(Blue, new PiecesBag.Builder().add(PIECE0).build());
+        final Player newPlayer = new Player(Blue, new Pieces.Builder().add(PIECE0).build());
         final Players newPlayers = PLAYERS.apply(newPlayer);
         assertTrue(newPlayers.hasAlivePlayer());
     }

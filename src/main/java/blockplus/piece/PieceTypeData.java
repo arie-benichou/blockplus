@@ -34,7 +34,7 @@ import com.google.common.collect.Ordering;
 import components.position.NullPosition;
 import components.position.PositionInterface;
 
-enum PieceData {
+enum PieceTypeData {
 
     /*      
           NULL OBJECT
@@ -322,8 +322,8 @@ enum PieceData {
     }
 
     @SuppressWarnings("all")
-    final static PieceData PieceData(final int ordinal) {
-        return PieceData.valueOf(ENTRY_NAME_PATTERN + ordinal);
+    final static PieceTypeData PieceData(final int ordinal) {
+        return PieceTypeData.valueOf(ENTRY_NAME_PATTERN + ordinal);
     }
 
     private final PositionInterface referential;
@@ -366,7 +366,7 @@ enum PieceData {
      *            The first data row contains row indexes and the second data
      *            row contains column indexes.
      */
-    private PieceData(final PositionInterface referential, final int[][] data) {
+    private PieceTypeData(final PositionInterface referential, final int[][] data) {
         this.size = data.length == 0 ? 0 : data[0].length;
         this.positions = extractPositions(data, this.size());
         Preconditions.checkArgument(this.positions().size() == this.size());
@@ -383,7 +383,7 @@ enum PieceData {
      *            row contains column indexes. The referential will be extracted
      *            from the first [row][column].
      */
-    private PieceData(final int[][] data) {
+    private PieceTypeData(final int[][] data) {
         this(extractImplicitReferential(data), data);
     }
 

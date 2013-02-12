@@ -21,6 +21,7 @@ import interfaces.board.BoardInterface;
 import interfaces.move.MoveInterface;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import blockplus.Color;
@@ -29,6 +30,7 @@ import blockplus.board.layer.State;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 
+import com.google.common.base.Equivalences;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -157,6 +159,29 @@ public final class Board implements BoardInterface {
             }
         }
         return new Board(newLayers, this.rows(), this.columns());
+    }
+
+    // TODO memoize
+    // TODO use toString
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.layerByColor);
+    }
+
+    // TODO use toString
+    @Override
+    public boolean equals(final Object object) {
+        Preconditions.checkArgument(object instanceof Board);
+        final Board that = (Board) object;
+        return Equivalences.equals().equivalent(this.layerByColor, that.layerByColor);
+    }
+
+    // TODO
+    // TODO memoize
+    // TODO use toString
+    @Override
+    public String toString() {
+        return "";
     }
 
 }

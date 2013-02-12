@@ -72,7 +72,7 @@ public class NeighbourhoodTest {
 
         {
             final int radius = 0;
-            final List<PositionInterface> expected = Lists.newArrayList(this.referential); // TODO ? à revoir...
+            final List<PositionInterface> expected = Lists.newArrayList(this.referential); // TODO à revoir
             final List<PositionInterface> neighboursPositions = Neighbourhood.getNeighboursPositions(this.referential, radius);
             assertEquals(expected, neighboursPositions);
         }

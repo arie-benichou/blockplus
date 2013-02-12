@@ -24,6 +24,7 @@ import java.util.Iterator;
 
 import blockplus.Color;
 
+import com.google.common.base.Equivalences;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSortedMap;
@@ -86,6 +87,18 @@ public final class Players implements PlayersInterface<Color>, Iterable<Player> 
             if (player.isAlive()) return true;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.playerByColor.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        Preconditions.checkArgument(object instanceof Players);
+        final Players that = (Players) object;
+        return Equivalences.equals().equivalent(this.playerByColor, that.playerByColor);
     }
 
     @Override

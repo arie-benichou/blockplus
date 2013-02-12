@@ -38,7 +38,7 @@ import blockplus.move.MoveComparator;
 import blockplus.move.Moves;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.PieceType;
-import blockplus.piece.PiecesBag;
+import blockplus.piece.Pieces;
 import blockplus.player.Player;
 
 import com.google.common.collect.ImmutableSet;
@@ -90,7 +90,7 @@ public final class Referee implements RefereeInterface {
         final Map<PositionInterface, State> stillAlivePositionsByPriority = board.getLayer(color).getLights();
         final Iterable<PositionInterface> positionsHavingPotential = stillAlivePositionsByPriority.keySet();
         final Set<Move> legalMoves = Sets.newHashSet();
-        final PiecesBag pieces = player.getPieces();
+        final Pieces pieces = player.getPieces();
         for (final Entry<PieceType, Integer> entry : pieces) {
             if (entry.getValue() > 0) {
                 final PieceType piece = entry.getKey();
@@ -106,6 +106,7 @@ public final class Referee implements RefereeInterface {
     }
 
     // TODO delegate ordering to the future object Options
+    // Options intentions: Referee should return list of option, not move ?
     @Override
     public List<MoveInterface> getLegalMoves(final ContextInterface<?> contextInterface, final Comparator<MoveInterface> comparator) {
         final Context context = (Context) contextInterface;

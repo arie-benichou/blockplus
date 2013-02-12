@@ -17,6 +17,7 @@ import blockplus.board.layer.Layer;
 
 import com.google.common.collect.ImmutableSet;
 
+// FIXME test hashCode, equals
 public class BoardTest {
 
     private final static int ROWS = 20;
@@ -53,12 +54,12 @@ public class BoardTest {
         assertEquals(expected, BOARD.getLayer(Green));
     }
 
-    // TODO @Test
+    // FIXME @Test
     public void testIsLegal() {
         fail("Not yet implemented");
     }
 
-    // TODO @Test
+    // FIXME @Test
     public void testApply() {
         fail("Not yet implemented");
     }

@@ -35,8 +35,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import blockplus.board.layer.Layer;
-import blockplus.board.layer.State;
 import blockplus.piece.PieceType;
 
 import com.google.common.collect.Maps;
@@ -44,6 +42,7 @@ import com.google.common.collect.Sets;
 import components.board.BoardInterface;
 import components.position.PositionInterface;
 
+// FIXME test hashCode, equals
 public class LayerTest {
 
     private Layer boardLayer;
@@ -228,7 +227,7 @@ public class LayerTest {
             assertEquals(expected, actual);
         }
         {
-            // TODO ! à revoir
+            // TODO à revoir
             final Layer newBoardLayer = this.boardLayer.apply(PieceType.get(1).iterator().next().translateTo(Position(1, 1)));
             final Map<PositionInterface, State> actual = newBoardLayer.getSelves();
             final Map<PositionInterface, State> expected = Maps.newHashMap();

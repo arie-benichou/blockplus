@@ -17,7 +17,7 @@
 
 package blockplus.piece;
 
-import static blockplus.piece.PieceData.PieceData;
+import static blockplus.piece.PieceTypeData.PieceData;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -61,9 +61,9 @@ public enum PieceType implements Iterable<PieceInterface> {
         return SET;
     }
 
-    private final PieceData data;
+    private final PieceTypeData data;
 
-    private PieceData getData() {
+    private PieceTypeData getData() {
         return this.data;
     }
 

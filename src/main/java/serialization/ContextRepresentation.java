@@ -31,7 +31,7 @@ import blockplus.context.Context;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.PieceType;
-import blockplus.piece.PiecesBag;
+import blockplus.piece.Pieces;
 import blockplus.player.Player;
 
 import com.google.common.collect.Lists;
@@ -90,7 +90,7 @@ public final class ContextRepresentation {
         for (final Player player : context.getPlayers()) {
             final Color color = player.getColor();
             final JsonArray jsonArray = new JsonArray();
-            final PiecesBag pieces = player.getPieces();
+            final Pieces pieces = player.getPieces();
             for (final Entry<PieceType, Integer> entry : pieces) {
                 if (entry.getValue() > 0) {
                     final PieceType piece = entry.getKey();

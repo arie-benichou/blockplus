@@ -21,12 +21,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.base.Equivalences;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
-public final class PiecesBag implements Iterable<Entry<PieceType, Integer>> {
+public final class Pieces implements Iterable<Entry<PieceType, Integer>> {
 
-    public final static PiecesBag EMPTY = new Builder().build();
+    public final static Pieces EMPTY = new Builder().build();
 
     public final static class Builder {
 
@@ -66,15 +68,15 @@ public final class PiecesBag implements Iterable<Entry<PieceType, Integer>> {
             return this;
         }
 
-        public PiecesBag build() {
-            return new PiecesBag(this.pieces);
+        public Pieces build() {
+            return new Pieces(this.pieces);
         }
 
     }
 
     private final Map<PieceType, Integer> pieces;
 
-    private PiecesBag(final Map<PieceType, Integer> pieces) {
+    private Pieces(final Map<PieceType, Integer> pieces) {
         this.pieces = pieces;
     }
 
@@ -87,7 +89,7 @@ public final class PiecesBag implements Iterable<Entry<PieceType, Integer>> {
         return integer != null && integer > 0;
     }
 
-    public PiecesBag withdraw(final PieceType piece) {
+    public Pieces withdraw(final PieceType piece) {
         Preconditions.checkState(this.contains(piece));
         return new Builder(this.pieces).remove(piece).build();
     }
@@ -102,4 +104,15 @@ public final class PiecesBag implements Iterable<Entry<PieceType, Integer>> {
         return this.pieces.toString();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.pieces);
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        Preconditions.checkArgument(object instanceof Pieces);
+        final Pieces that = (Pieces) object;
+        return Equivalences.equals().equivalent(this.pieces, that.pieces);
+    }
 }

@@ -37,6 +37,7 @@ public interface ContextInterface<T> {
      * 
      * @return true if this context is a leaf, false otherwise
      */
+    // TODO ? delegate to Referee interface
     boolean isTerminal();
 
     /**
@@ -85,7 +86,9 @@ public interface ContextInterface<T> {
      * 
      * @return a successor of this context
      */
-    ContextInterface<T> forward(boolean skipOnNullOption); // TODO use predicate
+    // TODO ? delegate to Referee interface
+    // TODO use predicate
+    ContextInterface<T> forward(boolean skipOnNullOption);
 
     /**
      * Returns the effective successor of this context.

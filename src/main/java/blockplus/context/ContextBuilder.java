@@ -33,7 +33,7 @@ import blockplus.adversity.AdversityOf4.Builder;
 import blockplus.board.Board;
 import blockplus.board.layer.Layer;
 import blockplus.piece.PieceType;
-import blockplus.piece.PiecesBag;
+import blockplus.piece.Pieces;
 import blockplus.player.Player;
 import blockplus.player.Players;
 
@@ -45,7 +45,7 @@ public final class ContextBuilder {
 
     private final static Set<PieceType> LEGAL_PIECES = PieceType.asSet();
 
-    private final static PiecesBag BAG_OF_PIECES = new PiecesBag.Builder().addAll(LEGAL_PIECES).build();
+    private final static Pieces BAG_OF_PIECES = new Pieces.Builder().addAll(LEGAL_PIECES).build();
 
     private final static blockplus.player.Players.Builder PLAYERS_BUILDER = new Players.Builder();
     static {

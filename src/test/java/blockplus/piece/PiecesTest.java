@@ -30,20 +30,21 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 
-public class PiecesBagTest {
+// FIXME test hashCode, equals
+public class PiecesTest {
 
-    private final static PiecesBag PIECESBAG_OF_1 = new PiecesBag.Builder().add(PieceType.get(1)).build();
+    private final static Pieces PIECESBAG_OF_1 = new Pieces.Builder().add(PieceType.get(1)).build();
 
     @Test
     public void testIsEmpty() {
-        assertTrue(PiecesBag.EMPTY.isEmpty());
+        assertTrue(Pieces.EMPTY.isEmpty());
         assertFalse(PIECESBAG_OF_1.isEmpty());
     }
 
     @Test
     public void testIterator() {
         {
-            final PiecesBag bagOfPiece = PiecesBag.EMPTY;
+            final Pieces bagOfPiece = Pieces.EMPTY;
             assertFalse(bagOfPiece.iterator().hasNext());
         }
         {
@@ -58,9 +59,9 @@ public class PiecesBagTest {
 
     @Test
     public void testWithdraw() {
-        final PiecesBag bagOfPiece = PIECESBAG_OF_1;
+        final Pieces bagOfPiece = PIECESBAG_OF_1;
         assertFalse(bagOfPiece.isEmpty());
-        final PiecesBag newBagOfPiece = bagOfPiece.withdraw(PieceType.get(1));
+        final Pieces newBagOfPiece = bagOfPiece.withdraw(PieceType.get(1));
         assertTrue(newBagOfPiece.isEmpty());
     }
 

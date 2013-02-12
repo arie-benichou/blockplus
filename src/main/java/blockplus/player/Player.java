@@ -22,9 +22,11 @@ import interfaces.player.PlayerInterface;
 import blockplus.Color;
 import blockplus.move.Move;
 import blockplus.piece.PieceType;
-import blockplus.piece.PiecesBag;
+import blockplus.piece.Pieces;
 
+import com.google.common.base.Equivalences;
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 // TODO hashcode, equals
 public final class Player implements PlayerInterface {
@@ -35,13 +37,13 @@ public final class Player implements PlayerInterface {
         return this.color;
     }
 
-    private final PiecesBag pieces;
+    private final Pieces pieces;
 
-    public PiecesBag getPieces() {
+    public Pieces getPieces() {
         return this.pieces;
     }
 
-    public Player(final Color color, final PiecesBag pieces) {
+    public Player(final Color color, final Pieces pieces) {
         this.color = color;
         this.pieces = pieces;
     }
@@ -55,8 +57,21 @@ public final class Player implements PlayerInterface {
     public Player apply(final MoveInterface moveInterface) {
         final Move move = (Move) moveInterface;
         final PieceType piece = PieceType.get(move.getPiece().getId());
-        final PiecesBag remainingPieces = this.getPieces().withdraw(piece);
+        final Pieces remainingPieces = this.getPieces().withdraw(piece);
         return new Player(this.getColor(), remainingPieces);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getColor(), this.getPieces());
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        Preconditions.checkArgument(object instanceof Player);
+        final Player that = (Player) object;
+        return this.getColor().equals(that.getColor())
+                && Equivalences.equals().equivalent(this.getPieces(), that.getPieces());
     }
 
     @Override

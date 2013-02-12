@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import blockplus.Color;
 
+// FIXME test hashCode, equals
 public class AdversityOf4Test {
 
     private final static AdversityOf4 ADVERSITY = new AdversityOf4.Builder().add(Blue, Yellow, Red, Green).build();

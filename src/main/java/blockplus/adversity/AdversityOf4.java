@@ -23,6 +23,7 @@ import java.util.Set;
 
 import blockplus.Color;
 
+import com.google.common.base.Equivalences;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableBiMap;
@@ -70,6 +71,18 @@ public final class AdversityOf4 implements AdversityInterface<Color> {
     @Override
     public Color getOpponent(final Color color) {
         return this.sides.get((this.sides.inverse().get(color) + 1) % 4);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.sides.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        Preconditions.checkArgument(object instanceof AdversityOf4);
+        final AdversityOf4 that = (AdversityOf4) object;
+        return Equivalences.equals().equivalent(this.sides, that.sides);
     }
 
     @Override

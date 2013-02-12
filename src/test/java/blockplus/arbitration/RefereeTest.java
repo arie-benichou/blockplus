@@ -46,7 +46,7 @@ import blockplus.context.ContextBuilder;
 import blockplus.move.Move;
 import blockplus.move.Moves;
 import blockplus.piece.PieceInterface;
-import blockplus.piece.PiecesBag;
+import blockplus.piece.Pieces;
 import blockplus.player.Player;
 import blockplus.player.Players;
 import blockplus.player.Players.Builder;
@@ -62,9 +62,9 @@ public class RefereeTest {
 
         // TODO ContextParser
         final ContextBuilder contextBuilder = new ContextBuilder();
-        final PiecesBag blueBag = new PiecesBag.Builder().addAll(PIECE0, PIECE3, PIECE12, PIECE17).build();
-        final PiecesBag greenBag = new PiecesBag.Builder().addAll(PIECE0, PIECE2, PIECE16).build();
-        final PiecesBag bagOfPieces = new PiecesBag.Builder().addAll(PIECE0, PIECE1).build();
+        final Pieces blueBag = new Pieces.Builder().addAll(PIECE0, PIECE3, PIECE12, PIECE17).build();
+        final Pieces greenBag = new Pieces.Builder().addAll(PIECE0, PIECE2, PIECE16).build();
+        final Pieces bagOfPieces = new Pieces.Builder().addAll(PIECE0, PIECE1).build();
         final Builder playersBuilder = new Players.Builder();
         playersBuilder.add(new Player(Blue, blueBag));
         playersBuilder.add(new Player(Green, greenBag));

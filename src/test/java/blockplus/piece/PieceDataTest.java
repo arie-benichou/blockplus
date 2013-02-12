@@ -17,7 +17,7 @@
 
 package blockplus.piece;
 
-import static blockplus.piece.PieceData.PieceData;
+import static blockplus.piece.PieceTypeData.PieceData;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -31,28 +31,28 @@ public class PieceDataTest {
 
     @Test
     public void testPieceData() {
-        assertSame(PieceData.ENTRY0, PieceData(0));
-        assertSame(PieceData.ENTRY1, PieceData(1));
-        assertSame(PieceData.ENTRY2, PieceData(2));
-        assertSame(PieceData.ENTRY3, PieceData(3));
-        assertSame(PieceData.ENTRY4, PieceData(4));
-        assertSame(PieceData.ENTRY5, PieceData(5));
-        assertSame(PieceData.ENTRY6, PieceData(6));
-        assertSame(PieceData.ENTRY7, PieceData(7));
-        assertSame(PieceData.ENTRY8, PieceData(8));
-        assertSame(PieceData.ENTRY9, PieceData(9));
-        assertSame(PieceData.ENTRY10, PieceData(10));
-        assertSame(PieceData.ENTRY11, PieceData(11));
-        assertSame(PieceData.ENTRY12, PieceData(12));
-        assertSame(PieceData.ENTRY13, PieceData(13));
-        assertSame(PieceData.ENTRY14, PieceData(14));
-        assertSame(PieceData.ENTRY15, PieceData(15));
-        assertSame(PieceData.ENTRY16, PieceData(16));
-        assertSame(PieceData.ENTRY17, PieceData(17));
-        assertSame(PieceData.ENTRY18, PieceData(18));
-        assertSame(PieceData.ENTRY19, PieceData(19));
-        assertSame(PieceData.ENTRY20, PieceData(20));
-        assertSame(PieceData.ENTRY21, PieceData(21));
+        assertSame(PieceTypeData.ENTRY0, PieceData(0));
+        assertSame(PieceTypeData.ENTRY1, PieceData(1));
+        assertSame(PieceTypeData.ENTRY2, PieceData(2));
+        assertSame(PieceTypeData.ENTRY3, PieceData(3));
+        assertSame(PieceTypeData.ENTRY4, PieceData(4));
+        assertSame(PieceTypeData.ENTRY5, PieceData(5));
+        assertSame(PieceTypeData.ENTRY6, PieceData(6));
+        assertSame(PieceTypeData.ENTRY7, PieceData(7));
+        assertSame(PieceTypeData.ENTRY8, PieceData(8));
+        assertSame(PieceTypeData.ENTRY9, PieceData(9));
+        assertSame(PieceTypeData.ENTRY10, PieceData(10));
+        assertSame(PieceTypeData.ENTRY11, PieceData(11));
+        assertSame(PieceTypeData.ENTRY12, PieceData(12));
+        assertSame(PieceTypeData.ENTRY13, PieceData(13));
+        assertSame(PieceTypeData.ENTRY14, PieceData(14));
+        assertSame(PieceTypeData.ENTRY15, PieceData(15));
+        assertSame(PieceTypeData.ENTRY16, PieceData(16));
+        assertSame(PieceTypeData.ENTRY17, PieceData(17));
+        assertSame(PieceTypeData.ENTRY18, PieceData(18));
+        assertSame(PieceTypeData.ENTRY19, PieceData(19));
+        assertSame(PieceTypeData.ENTRY20, PieceData(20));
+        assertSame(PieceTypeData.ENTRY21, PieceData(21));
     }
 
     @Test

@@ -23,9 +23,12 @@ import com.google.common.base.Supplier;
 import components.direction.DirectionInterface;
 import components.position.PositionInterface;
 
+// TODO extract TransformableInterface
+// TODO make distinction beetween an instance of PieceType and an instance of
+// Transformable
 public interface PieceInterface extends Iterable<PieceInterface>, Supplier<Set<PieceInterface>> {
 
-    int getId();
+    int getId(); // cf TODO
 
     PositionInterface getReferential();
 
