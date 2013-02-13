@@ -17,11 +17,11 @@
 
 package blockplus.board.layer;
 
-import static blockplus.board.layer.State.Light;
-import static blockplus.board.layer.State.None;
-import static blockplus.board.layer.State.Other;
-import static blockplus.board.layer.State.Self;
-import static blockplus.board.layer.State.Shadow;
+import static blockplus.board.layer.State.Metta;
+import static blockplus.board.layer.State.Nirvana;
+import static blockplus.board.layer.State.Mudita;
+import static blockplus.board.layer.State.Upekkha;
+import static blockplus.board.layer.State.Karuna;
 import static blockplus.piece.PieceType.PIECE1;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
@@ -73,7 +73,7 @@ public class LayerTest {
 
     @Test
     public void testGet() {
-        final BoardInterface<State> expected = components.board.Board.from(this.boardLayer.rows(), this.boardLayer.columns(), None, Other);
+        final BoardInterface<State> expected = components.board.Board.from(this.boardLayer.rows(), this.boardLayer.columns(), Nirvana, Mudita);
         final BoardInterface<State> actual = this.boardLayer.get();
         assertEquals(expected, actual);
     }
@@ -92,32 +92,32 @@ public class LayerTest {
     @Test
     public void testApplyPositionInterfaceState() {
         {
-            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Self);
-            final State expected = Self;
+            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Upekkha);
+            final State expected = Upekkha;
             final State actual = newBoardLayer.get().get(Position(0, 0));
             assertEquals(expected, actual);
         }
         {
-            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Other);
-            final State expected = Other;
+            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Mudita);
+            final State expected = Mudita;
             final State actual = newBoardLayer.get().get(Position(0, 0));
             assertEquals(expected, actual);
         }
         {
-            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Shadow);
-            final State expected = Shadow;
+            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Karuna);
+            final State expected = Karuna;
             final State actual = newBoardLayer.get().get(Position(0, 0));
             assertEquals(expected, actual);
         }
         {
-            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Light);
-            final State expected = Light;
+            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Metta);
+            final State expected = Metta;
             final State actual = newBoardLayer.get().get(Position(0, 0));
             assertEquals(expected, actual);
         }
         {
-            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), None);
-            final State expected = None;
+            final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Nirvana);
+            final State expected = Nirvana;
             final State actual = newBoardLayer.get().get(Position(0, 0));
             assertEquals(expected, actual);
         }
@@ -132,7 +132,7 @@ public class LayerTest {
         for (int row = 0; row < this.boardLayer.rows(); ++row)
             for (int column = 0; column < this.boardLayer.columns(); ++column)
                 assertFalse(this.boardLayer.isLegal(Sets.newHashSet(Position(row, column))));
-        final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Light);
+        final Layer newBoardLayer = this.boardLayer.apply(Position(0, 0), Metta);
         assertTrue(newBoardLayer.isLegal(Sets.newHashSet(Position(0, 0))));
     }
 
@@ -140,28 +140,28 @@ public class LayerTest {
     public void testApplyMapOfPositionInterfaceState() {
         {
             final HashMap<PositionInterface, State> mutations = Maps.newHashMap();
-            mutations.put(Position(0, 0), Self);
-            mutations.put(Position(0, 1), Shadow);
-            mutations.put(Position(1, 0), Shadow);
-            mutations.put(Position(1, 1), Light);
+            mutations.put(Position(0, 0), Upekkha);
+            mutations.put(Position(0, 1), Karuna);
+            mutations.put(Position(1, 0), Karuna);
+            mutations.put(Position(1, 1), Metta);
             final Layer newBoardLayer = this.boardLayer.apply(mutations);
             {
-                final State expected = Self;
+                final State expected = Upekkha;
                 final State actual = newBoardLayer.get().get(Position(0, 0));
                 assertEquals(expected, actual);
             }
             {
-                final State expected = Shadow;
+                final State expected = Karuna;
                 final State actual = newBoardLayer.get().get(Position(0, 1));
                 assertEquals(expected, actual);
             }
             {
-                final State expected = Shadow;
+                final State expected = Karuna;
                 final State actual = newBoardLayer.get().get(Position(1, 0));
                 assertEquals(expected, actual);
             }
             {
-                final State expected = Light;
+                final State expected = Metta;
                 final State actual = newBoardLayer.get().get(Position(1, 1));
                 assertEquals(expected, actual);
             }
@@ -172,48 +172,48 @@ public class LayerTest {
     public void testApplyPieceInterface() {
         final Layer newBoardLayer = this.boardLayer.apply(PieceType.get(1).iterator().next().translateTo(Position(1, 1)));
         {
-            final State expected = Shadow;
+            final State expected = Karuna;
             final State actual = newBoardLayer.get().get(Position(0, 1));
             assertEquals(expected, actual);
         }
         {
-            final State expected = Shadow;
+            final State expected = Karuna;
             final State actual = newBoardLayer.get().get(Position(1, 0));
             assertEquals(expected, actual);
         }
         {
-            final State expected = Shadow;
+            final State expected = Karuna;
             final State actual = newBoardLayer.get().get(Position(1, 2));
             assertEquals(expected, actual);
         }
         {
-            final State expected = Shadow;
+            final State expected = Karuna;
             final State actual = newBoardLayer.get().get(Position(2, 1));
             assertEquals(expected, actual);
         }
         {
-            final State expected = Self;
+            final State expected = Upekkha;
             final State actual = newBoardLayer.get().get(Position(1, 1));
             assertEquals(expected, actual);
         }
         {
-            final State expected = Light;
+            final State expected = Metta;
             final State actual = newBoardLayer.get().get(Position(0, 0));
             assertEquals(expected, actual);
         }
         {
-            final State expected = Light;
+            final State expected = Metta;
             final State actual = newBoardLayer.get().get(Position(0, 2));
             assertEquals(expected, actual);
         }
         {
-            final State expected = Light;
+            final State expected = Metta;
             final State actual = newBoardLayer.get().get(Position(2, 0));
             assertEquals(expected, actual);
         }
 
         {
-            final State expected = Light;
+            final State expected = Metta;
             final State actual = newBoardLayer.get().get(Position(2, 2));
             assertEquals(expected, actual);
         }
@@ -231,7 +231,7 @@ public class LayerTest {
             final Layer newBoardLayer = this.boardLayer.apply(PieceType.get(1).iterator().next().translateTo(Position(1, 1)));
             final Map<PositionInterface, State> actual = newBoardLayer.getSelves();
             final Map<PositionInterface, State> expected = Maps.newHashMap();
-            expected.put(Position(1, 1), Self);
+            expected.put(Position(1, 1), Upekkha);
             assertEquals(expected, actual);
         }
     }
@@ -247,10 +247,10 @@ public class LayerTest {
             final Layer newBoardLayer = this.boardLayer.apply(PIECE1.iterator().next().translateTo(Position(1, 1)));
             final Map<PositionInterface, State> actual = newBoardLayer.getLights();
             final Map<PositionInterface, State> expected = Maps.newHashMap();
-            expected.put(Position(0, 0), Light);
-            expected.put(Position(0, 2), Light);
-            expected.put(Position(2, 0), Light);
-            expected.put(Position(2, 2), Light);
+            expected.put(Position(0, 0), Metta);
+            expected.put(Position(0, 2), Metta);
+            expected.put(Position(2, 0), Metta);
+            expected.put(Position(2, 2), Metta);
             assertEquals(expected, actual);
         }
     }
@@ -261,7 +261,7 @@ public class LayerTest {
             for (int column = 0; column < this.boardLayer.columns(); ++column)
                 assertFalse(this.boardLayer.isLight(Position(row, column)));
         final PositionInterface position = Position(0, 0);
-        final Layer newBoardLayer = this.boardLayer.apply(position, Light);
+        final Layer newBoardLayer = this.boardLayer.apply(position, Metta);
         assertTrue(newBoardLayer.isLight(position));
     }
 

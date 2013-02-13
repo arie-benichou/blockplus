@@ -62,15 +62,15 @@ public final class BoardMutationBuilder {
     public Map<PositionInterface, State> build() {
         final ImmutableMap.Builder<PositionInterface, State> builder = new ImmutableMap.Builder<PositionInterface, State>();
         for (final PositionInterface position : this.selfPositions)
-            builder.put(position, State.Self);
+            builder.put(position, State.Upekkha);
         for (final PositionInterface position : this.shadowPositions)
-            builder.put(position, State.Shadow);
+            builder.put(position, State.Karuna);
         for (final PositionInterface position : this.potentialPositions)
-            builder.put(position, State.Light);
+            builder.put(position, State.Metta);
         for (final PositionInterface position : this.otherPositions)
-            builder.put(position, State.Other);
+            builder.put(position, State.Mudita);
         for (final PositionInterface position : this.nonePositions)
-            builder.put(position, State.None);
+            builder.put(position, State.Nirvana);
         return builder.build();
     }
 

@@ -74,10 +74,10 @@ public class RefereeTest {
 
         contextBuilder.setPlayers(players);
         final int rows = 8, columns = 5;
-        final Layer blueLayer = new Layer(rows, columns).apply(Position(0, 0), State.Light);
-        final Layer yellowLayer = new Layer(rows, columns).apply(Position(0, columns - 1), State.Light);
-        final Layer redLayer = new Layer(rows, columns).apply(Position(rows - 1, columns - 1), State.Light);
-        final Layer greenLayer = new Layer(rows, columns).apply(Position(rows - 1, 0), State.Light);
+        final Layer blueLayer = new Layer(rows, columns).apply(Position(0, 0), State.Metta);
+        final Layer yellowLayer = new Layer(rows, columns).apply(Position(0, columns - 1), State.Metta);
+        final Layer redLayer = new Layer(rows, columns).apply(Position(rows - 1, columns - 1), State.Metta);
+        final Layer greenLayer = new Layer(rows, columns).apply(Position(rows - 1, 0), State.Metta);
         final Board board = Board.builder(Sets.newHashSet(Blue, Yellow, Red, Green), rows, columns)
                 .set(Blue, blueLayer)
                 .set(Yellow, yellowLayer)

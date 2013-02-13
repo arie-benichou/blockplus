@@ -21,7 +21,7 @@ import static blockplus.Color.Blue;
 import static blockplus.Color.Green;
 import static blockplus.Color.Red;
 import static blockplus.Color.Yellow;
-import static blockplus.board.layer.State.Light;
+import static blockplus.board.layer.State.Metta;
 import static components.position.Position.Position;
 import interfaces.adversity.AdversityInterface;
 
@@ -72,10 +72,10 @@ public final class ContextBuilder {
     private final static int COLUMNS = 20;
 
     private final static Board BOARD = new Board.Builder(COLORS, ROWS, COLUMNS)
-            .set(Blue, new Layer(ROWS, COLUMNS).apply(Position(0, 0), Light))
-            .set(Yellow, new Layer(ROWS, COLUMNS).apply(Position(0, COLUMNS - 1), Light))
-            .set(Red, new Layer(ROWS, COLUMNS).apply(Position(ROWS - 1, COLUMNS - 1), Light))
-            .set(Green, new Layer(ROWS, COLUMNS).apply(Position(ROWS - 1, 0), Light))
+            .set(Blue, new Layer(ROWS, COLUMNS).apply(Position(0, 0), Metta))
+            .set(Yellow, new Layer(ROWS, COLUMNS).apply(Position(0, COLUMNS - 1), Metta))
+            .set(Red, new Layer(ROWS, COLUMNS).apply(Position(ROWS - 1, COLUMNS - 1), Metta))
+            .set(Green, new Layer(ROWS, COLUMNS).apply(Position(ROWS - 1, 0), Metta))
             .build();
 
     private Color side = SIDE;

@@ -5,7 +5,7 @@ import static blockplus.Color.Blue;
 import static blockplus.Color.Green;
 import static blockplus.Color.Red;
 import static blockplus.Color.Yellow;
-import static blockplus.board.layer.State.Light;
+import static blockplus.board.layer.State.Metta;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -81,10 +81,10 @@ public class ContextTest {
         final int rows = 20;
         final int columns = 20;
         final Board expected = new Board.Builder(Sets.newHashSet(Color.values()), rows, columns)
-                .set(Blue, new Layer(rows, columns).apply(Position(0, 0), Light))
-                .set(Yellow, new Layer(rows, columns).apply(Position(0, columns - 1), Light))
-                .set(Red, new Layer(rows, columns).apply(Position(rows - 1, columns - 1), Light))
-                .set(Green, new Layer(rows, columns).apply(Position(rows - 1, 0), Light))
+                .set(Blue, new Layer(rows, columns).apply(Position(0, 0), Metta))
+                .set(Yellow, new Layer(rows, columns).apply(Position(0, columns - 1), Metta))
+                .set(Red, new Layer(rows, columns).apply(Position(rows - 1, columns - 1), Metta))
+                .set(Green, new Layer(rows, columns).apply(Position(rows - 1, 0), Metta))
                 .build();
         assertEquals(expected, CONTEXT.getBoard());
     }

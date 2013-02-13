@@ -17,10 +17,10 @@
 
 package blockplus.board.layer;
 
-import static blockplus.board.layer.State.Light;
-import static blockplus.board.layer.State.None;
-import static blockplus.board.layer.State.Other;
-import static blockplus.board.layer.State.Self;
+import static blockplus.board.layer.State.Metta;
+import static blockplus.board.layer.State.Nirvana;
+import static blockplus.board.layer.State.Mudita;
+import static blockplus.board.layer.State.Upekkha;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -51,7 +51,7 @@ public final class Layer implements Supplier<BoardInterface<State>> {
         @Override
         public boolean apply(@Nullable final PositionInterface position) {
             final State state = this.stateBoard.get(position);
-            return state.equals(None) || state.equals(Light);
+            return state.equals(Nirvana) || state.equals(Metta);
         }
 
     };
@@ -60,7 +60,7 @@ public final class Layer implements Supplier<BoardInterface<State>> {
 
         @Override
         public boolean apply(@Nullable final Entry<PositionInterface, State> entry) {
-            return entry.getValue().equals(Self);
+            return entry.getValue().equals(Upekkha);
         }
 
     };
@@ -69,7 +69,7 @@ public final class Layer implements Supplier<BoardInterface<State>> {
 
         @Override
         public boolean apply(@Nullable final Entry<PositionInterface, State> entry) {
-            return entry.getValue().equals(Light);
+            return entry.getValue().equals(Metta);
         }
 
     };
@@ -86,7 +86,7 @@ public final class Layer implements Supplier<BoardInterface<State>> {
     }
 
     public Layer(final int rows, final int columns) {
-        this(Board.from(rows, columns, None, Other));
+        this(Board.from(rows, columns, Nirvana, Mudita));
     }
 
     public boolean isMutable(final PositionInterface position) {
