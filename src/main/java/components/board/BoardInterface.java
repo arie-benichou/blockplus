@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 import com.google.common.base.Predicate;
 import components.position.PositionInterface;
 
-public interface BoardInterface<T extends Symbol> {
+public interface BoardInterface<T> {
 
     int rows();
 

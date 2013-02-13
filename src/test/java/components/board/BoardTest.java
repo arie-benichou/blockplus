@@ -17,9 +17,6 @@
 
 package components.board;
 
-import static components.board.BoardTest.State.Initial;
-import static components.board.BoardTest.State.Other;
-import static components.board.BoardTest.State.Undefined;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -36,7 +33,7 @@ import components.position.PositionInterface;
 
 public class BoardTest {
 
-    enum State implements Symbol {
+    private enum State {
         Initial, Undefined, Other;
     }
 
@@ -44,7 +41,7 @@ public class BoardTest {
 
     @Before
     public void setUp() throws Exception {
-        this.board = Board.from(6, 4, Initial, Undefined);
+        this.board = Board.from(6, 4, State.Initial, State.Undefined);
     }
 
     @After
@@ -68,14 +65,14 @@ public class BoardTest {
 
     @Test
     public void testInitialSymbol() {
-        final State expected = Initial;
+        final State expected = State.Initial;
         final State actual = this.board.initialSymbol();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetUndefinedSymbol() {
-        final State expected = Undefined;
+        final State expected = State.Undefined;
         final State actual = this.board.undefinedSymbol();
         assertEquals(expected, actual);
     }
@@ -143,10 +140,10 @@ public class BoardTest {
         {
             final PositionInterface position = Position(0, 0);
             final Map<PositionInterface, State> mutations = Maps.newHashMap();
-            mutations.put(position, Other);
+            mutations.put(position, State.Other);
             BoardInterface<State> newBoard;
             newBoard = this.board.apply(mutations);
-            final State expected = Other;
+            final State expected = State.Other;
             final State actual = newBoard.get(position);
             assertSame(expected, actual);
             assertFalse(expected.equals(this.board.initialSymbol()));
@@ -160,10 +157,10 @@ public class BoardTest {
             final BoardInterface<State> copy = this.board.copy();
             final PositionInterface position = Position(0, 0);
             final Map<PositionInterface, State> mutations = Maps.newHashMap();
-            mutations.put(position, Other);
+            mutations.put(position, State.Other);
             BoardInterface<State> newBoard;
             newBoard = copy.apply(mutations);
-            final State expected = Other;
+            final State expected = State.Other;
             final State actual = newBoard.get(position);
             assertSame(expected, actual);
             assertFalse(expected.equals(this.board.initialSymbol()));
@@ -175,7 +172,7 @@ public class BoardTest {
     public void testToString() {
         final PositionInterface position = Position(0, 0);
         final Map<PositionInterface, State> mutations = Maps.newHashMap();
-        mutations.put(position, Other);
+        mutations.put(position, State.Other);
         final BoardInterface<State> newBoard = this.board.apply(mutations);
         final StringBuilder builder = new StringBuilder();
         builder.append("Board{");

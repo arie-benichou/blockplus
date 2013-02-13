@@ -35,7 +35,6 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import components.board.Board;
 import components.board.BoardInterface;
-import components.board.Symbol;
 import components.position.PositionInterface;
 
 public final class Layer implements Supplier<BoardInterface<State>> {
@@ -45,7 +44,7 @@ public final class Layer implements Supplier<BoardInterface<State>> {
      * mapped on its own layer, the board is made of 4 layers : one for Blue,
      * one for Yellow, one for Red and one for Green.
      */
-    public enum State implements Symbol {
+    public enum State {
 
         /**
          * State for a cell that could contain this layer's color

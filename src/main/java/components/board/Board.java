@@ -32,9 +32,9 @@ import com.google.common.collect.Maps;
 import components.position.PositionInterface;
 
 // TODO ! Builder
-public final class Board<T extends Symbol> implements BoardInterface<T> {
+public final class Board<T> implements BoardInterface<T> {
 
-    public static <T extends Symbol> BoardInterface<T> from(
+    public static <T> BoardInterface<T> from(
             final int rows, final int columns,
             final T initialPositionvalue,
             final T undefinedPositionvalue,
@@ -43,7 +43,7 @@ public final class Board<T extends Symbol> implements BoardInterface<T> {
         return new Board<T>(rows, columns, initialPositionvalue, undefinedPositionvalue, boardMutation, mutationFragment);
     }
 
-    public static <T extends Symbol> BoardInterface<T> from(
+    public static <T> BoardInterface<T> from(
             final int rows, final int columns,
             final T initialPositionvalue,
             final T undefinedPositionvalue,
@@ -51,18 +51,18 @@ public final class Board<T extends Symbol> implements BoardInterface<T> {
         return from(rows, columns, initialPositionvalue, undefinedPositionvalue, boardMutation, new HashMap<PositionInterface, T>());
     }
 
-    public static <T extends Symbol> BoardInterface<T> from(
+    public static <T> BoardInterface<T> from(
             final int rows, final int columns,
             final T initialPositionvalue,
             final T undefinedPositionvalue) {
         return from(rows, columns, initialPositionvalue, undefinedPositionvalue, new HashMap<PositionInterface, T>());
     }
 
-    public static <T extends Symbol> BoardInterface<T> from(final Board<T> board, final Map<PositionInterface, T> cells) {
+    public static <T> BoardInterface<T> from(final Board<T> board, final Map<PositionInterface, T> cells) {
         return from(board.rows(), board.columns(), board.initialSymbol(), board.undefinedSymbol(), board.boardMutation(), cells);
     }
 
-    public static <T extends Symbol> BoardInterface<T> from(final Board<T> board) {
+    public static <T> BoardInterface<T> from(final Board<T> board) {
         return from(board, new HashMap<PositionInterface, T>());
     }
 
