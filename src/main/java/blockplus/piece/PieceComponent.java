@@ -104,10 +104,12 @@ public final class PieceComponent implements PieceInterface {
     private final static PositionInterface ORIGIN = Position.ORIGIN;
     private final static PieceComponent UNIT = FACTORY.get(ORIGIN);
 
+    /* TODO à revoir plus tard...
     @SuppressWarnings("all")
     public static PieceComponent PieceComponent() {
         return UNIT;
     }
+    */
 
     @SuppressWarnings("all")
     public static PieceComponent PieceComponent(final PositionInterface position) {

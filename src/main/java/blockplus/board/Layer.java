@@ -70,7 +70,12 @@ public final class Layer implements Supplier<BoardInterface<State>> {
         /**
          * State for a stateless cell
          */
-        Nirvana
+        Nirvana;
+
+        static {
+            // only here for code coverage noise elimination
+            State.valueOf(Nirvana.toString());
+        }
 
     }
 
