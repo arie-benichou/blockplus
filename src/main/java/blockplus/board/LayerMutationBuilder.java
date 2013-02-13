@@ -20,14 +20,14 @@ package blockplus.board;
 import java.util.Map;
 import java.util.Set;
 
-import blockplus.board.layer.State;
+import blockplus.board.Layer.State;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import components.position.PositionInterface;
 
-// TODO ?! utiliser directement une HashMap mutable
-public final class BoardMutationBuilder {
+// TODO à revoir
+public final class LayerMutationBuilder {
 
     private final Set<PositionInterface> nonePositions = Sets.newHashSet();
     private Set<PositionInterface> potentialPositions = Sets.newHashSet();
@@ -35,26 +35,22 @@ public final class BoardMutationBuilder {
     private Set<PositionInterface> otherPositions = Sets.newHashSet();
     private Set<PositionInterface> shadowPositions = Sets.newHashSet();
 
-    public BoardMutationBuilder reset() {
-        return new BoardMutationBuilder();
-    }
-
-    public BoardMutationBuilder setLightPositions(final Set<PositionInterface> positions) {
+    public LayerMutationBuilder setLightPositions(final Set<PositionInterface> positions) {
         this.potentialPositions = positions;
         return this;
     }
 
-    public BoardMutationBuilder setSelfPositions(final Set<PositionInterface> positions) {
+    public LayerMutationBuilder setSelfPositions(final Set<PositionInterface> positions) {
         this.selfPositions = positions;
         return this;
     }
 
-    public BoardMutationBuilder setShadowPositions(final Set<PositionInterface> positions) {
+    public LayerMutationBuilder setShadowPositions(final Set<PositionInterface> positions) {
         this.shadowPositions = positions;
         return this;
     }
 
-    public BoardMutationBuilder setOtherPositions(final Set<PositionInterface> positions) {
+    public LayerMutationBuilder setOtherPositions(final Set<PositionInterface> positions) {
         this.otherPositions = positions;
         return this;
     }

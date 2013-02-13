@@ -25,8 +25,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import blockplus.Color;
-import blockplus.board.layer.Layer;
-import blockplus.board.layer.State;
+import blockplus.board.Layer.State;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 
@@ -146,17 +145,17 @@ public final class Board implements BoardInterface {
         final Move move = (Move) moveInterface;
         final PieceInterface piece = move.getPiece();
         final Color color = move.getColor();
-        final Map<Color, Layer> newLayers = Maps.newHashMap();
-        final Map<PositionInterface, State> mutation = new BoardMutationBuilder()
+        final Map<PositionInterface, State> selfMutation = new LayerMutationBuilder()
+                .setSelfPositions(piece.getSelfPositions())
+                .setShadowPositions(piece.getShadowPositions())
+                .setLightPositions(piece.getLightPositions()).build();
+        final Map<PositionInterface, State> otherMutation = new LayerMutationBuilder()
                 .setOtherPositions(piece.getSelfPositions())
                 .build();
+        final Map<Color, Layer> newLayers = Maps.newHashMap();
         for (final Color anotherColor : this.getColors()) {
-            if (anotherColor.equals(color)) {
-                newLayers.put(color, this.getLayer(color).apply(piece));
-            }
-            else {
-                newLayers.put(anotherColor, this.getLayer(anotherColor).apply(mutation));
-            }
+            if (anotherColor.equals(color)) newLayers.put(color, this.getLayer(color).apply(selfMutation));
+            else newLayers.put(anotherColor, this.getLayer(anotherColor).apply(otherMutation));
         }
         return new Board(newLayers, this.rows(), this.columns());
     }

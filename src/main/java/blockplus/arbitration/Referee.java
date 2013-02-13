@@ -30,8 +30,7 @@ import java.util.Set;
 
 import blockplus.Color;
 import blockplus.board.Board;
-import blockplus.board.layer.Layer;
-import blockplus.board.layer.State;
+import blockplus.board.Layer;
 import blockplus.context.Context;
 import blockplus.move.Move;
 import blockplus.move.MoveComparator;
@@ -87,8 +86,7 @@ public final class Referee implements RefereeInterface {
 
     private Set<Move> getLegalMoves(final Board board, final Player player) {
         final Color color = player.getColor();
-        final Map<PositionInterface, State> stillAlivePositionsByPriority = board.getLayer(color).getLights();
-        final Iterable<PositionInterface> positionsHavingPotential = stillAlivePositionsByPriority.keySet();
+        final Iterable<PositionInterface> positionsHavingPotential = board.getLayer(color).getLights().keySet();
         final Set<Move> legalMoves = Sets.newHashSet();
         final Pieces pieces = player.getPieces();
         for (final Entry<PieceType, Integer> entry : pieces) {

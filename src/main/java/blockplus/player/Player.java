@@ -17,6 +17,7 @@
 
 package blockplus.player;
 
+import static blockplus.piece.PieceType.PIECE0;
 import interfaces.move.MoveInterface;
 import interfaces.player.PlayerInterface;
 import blockplus.Color;
@@ -50,13 +51,13 @@ public final class Player implements PlayerInterface {
 
     @Override
     public boolean isAlive() {
-        return this.pieces.contains(PieceType.get(0)); // TODO Scala lazy
+        return this.pieces.contains(PIECE0); // TODO Scala lazy
     }
 
     @Override
     public Player apply(final MoveInterface moveInterface) {
         final Move move = (Move) moveInterface;
-        final PieceType piece = PieceType.get(move.getPiece().getId());
+        final PieceType piece = PieceType.get(move.getPiece().getId()); // TODO getType()
         final Pieces remainingPieces = this.getPieces().withdraw(piece);
         return new Player(this.getColor(), remainingPieces);
     }

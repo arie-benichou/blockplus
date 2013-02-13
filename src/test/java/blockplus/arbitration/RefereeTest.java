@@ -39,8 +39,8 @@ import java.util.Map;
 import org.junit.Test;
 
 import blockplus.board.Board;
-import blockplus.board.layer.Layer;
-import blockplus.board.layer.State;
+import blockplus.board.Layer;
+import blockplus.board.Layer.State;
 import blockplus.context.Context;
 import blockplus.context.ContextBuilder;
 import blockplus.move.Move;

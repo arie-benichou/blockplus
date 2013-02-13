@@ -13,7 +13,6 @@ import java.util.Set;
 import org.junit.Test;
 
 import blockplus.Color;
-import blockplus.board.layer.Layer;
 
 import com.google.common.collect.ImmutableSet;
 

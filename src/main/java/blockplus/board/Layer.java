@@ -15,20 +15,19 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.board.layer;
+package blockplus.board;
 
-import static blockplus.board.layer.State.Metta;
-import static blockplus.board.layer.State.Nirvana;
-import static blockplus.board.layer.State.Mudita;
-import static blockplus.board.layer.State.Upekkha;
+import static blockplus.board.Layer.State.Metta;
+import static blockplus.board.Layer.State.Mudita;
+import static blockplus.board.Layer.State.Nirvana;
+import static blockplus.board.Layer.State.Upekkha;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
-import blockplus.board.BoardMutationBuilder;
-import blockplus.piece.PieceInterface;
+import blockplus.board.Layer.State;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -36,9 +35,44 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import components.board.Board;
 import components.board.BoardInterface;
+import components.board.Symbol;
 import components.position.PositionInterface;
 
 public final class Layer implements Supplier<BoardInterface<State>> {
+
+    /**
+     * Possible states for a cell in a layer of a board. Since each color is
+     * mapped on its own layer, the board is made of 4 layers : one for Blue,
+     * one for Yellow, one for Red and one for Green.
+     */
+    public enum State implements Symbol {
+
+        /**
+         * State for a cell that could contain this layer's color
+         */
+        Metta,
+
+        /**
+         * State for a cell that can not contain this layer's color
+         */
+        Karuna,
+
+        /**
+         * State for a cell that contains a different layer's color
+         */
+        Mudita,
+
+        /**
+         * State for a cell that contains this layer's color
+         */
+        Upekkha,
+
+        /**
+         * State for a stateless cell
+         */
+        Nirvana
+
+    }
 
     private final static class IsMutablePredicate implements Predicate<PositionInterface> {
 
@@ -117,14 +151,6 @@ public final class Layer implements Supplier<BoardInterface<State>> {
 
     public boolean isLight(final PositionInterface position) {
         return this.getLights().containsKey(position);
-    }
-
-    public Layer apply(final PieceInterface piece) {
-        final BoardMutationBuilder boardMutationBuilder = new BoardMutationBuilder()
-                .setSelfPositions(piece.getSelfPositions())
-                .setShadowPositions(piece.getShadowPositions())
-                .setLightPositions(piece.getLightPositions());
-        return this.apply(boardMutationBuilder.build());
     }
 
     public Layer apply(final Map<PositionInterface, State> boardMutation) {

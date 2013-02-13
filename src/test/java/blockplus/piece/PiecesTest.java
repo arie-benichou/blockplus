@@ -17,6 +17,7 @@
 
 package blockplus.piece;
 
+import static blockplus.piece.PieceType.PIECE1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +34,7 @@ import com.google.common.collect.Maps;
 // FIXME test hashCode, equals
 public class PiecesTest {
 
-    private final static Pieces PIECESBAG_OF_1 = new Pieces.Builder().add(PieceType.get(1)).build();
+    private final static Pieces PIECESBAG_OF_1 = new Pieces.Builder().add(PIECE1).build();
 
     @Test
     public void testIsEmpty() {
@@ -49,7 +50,7 @@ public class PiecesTest {
         }
         {
             final Map<PieceType, Integer> expected = Maps.newHashMap();
-            expected.put(PieceType.get(1), 1);
+            expected.put(PIECE1, 1);
             final Builder<PieceType, Integer> builder = new ImmutableMap.Builder<PieceType, Integer>();
             for (final Entry<PieceType, Integer> entry : PIECESBAG_OF_1)
                 builder.put(entry);
@@ -61,7 +62,7 @@ public class PiecesTest {
     public void testWithdraw() {
         final Pieces bagOfPiece = PIECESBAG_OF_1;
         assertFalse(bagOfPiece.isEmpty());
-        final Pieces newBagOfPiece = bagOfPiece.withdraw(PieceType.get(1));
+        final Pieces newBagOfPiece = bagOfPiece.withdraw(PIECE1);
         assertTrue(newBagOfPiece.isEmpty());
     }
 

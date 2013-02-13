@@ -21,7 +21,7 @@ import static blockplus.Color.Blue;
 import static blockplus.Color.Green;
 import static blockplus.Color.Red;
 import static blockplus.Color.Yellow;
-import static blockplus.board.layer.State.Metta;
+import static blockplus.board.Layer.State.Metta;
 import static components.position.Position.Position;
 import interfaces.adversity.AdversityInterface;
 
@@ -31,7 +31,7 @@ import blockplus.Color;
 import blockplus.adversity.AdversityOf4;
 import blockplus.adversity.AdversityOf4.Builder;
 import blockplus.board.Board;
-import blockplus.board.layer.Layer;
+import blockplus.board.Layer;
 import blockplus.piece.PieceType;
 import blockplus.piece.Pieces;
 import blockplus.player.Player;
@@ -86,7 +86,7 @@ public final class ContextBuilder {
     }
 
     private Color getSide() {
-        return (this.side == null) ? SIDE : this.side;
+        return this.side == null ? SIDE : this.side;
     }
 
     private AdversityInterface<Color> adversity = null;
@@ -97,7 +97,7 @@ public final class ContextBuilder {
     }
 
     public AdversityInterface<Color> getAdversity() {
-        return (this.adversity == null) ? ADVERSITY : this.adversity;
+        return this.adversity == null ? ADVERSITY : this.adversity;
     }
 
     private Players players = null;
@@ -108,7 +108,7 @@ public final class ContextBuilder {
     }
 
     private Players getPlayers() {
-        return (this.players == null) ? PLAYERS : this.players;
+        return this.players == null ? PLAYERS : this.players;
     }
 
     private Board board = null;
@@ -119,7 +119,7 @@ public final class ContextBuilder {
     }
 
     private Board getBoard() {
-        return (this.board == null) ? BOARD : this.board;
+        return this.board == null ? BOARD : this.board;
     }
 
     /* TODO add some check

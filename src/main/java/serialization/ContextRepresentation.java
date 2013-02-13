@@ -26,7 +26,7 @@ import java.util.Set;
 
 import blockplus.Color;
 import blockplus.board.Board;
-import blockplus.board.layer.Layer;
+import blockplus.board.Layer;
 import blockplus.context.Context;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
@@ -74,7 +74,7 @@ public final class ContextRepresentation {
             final Layer layer = board.getLayer(color);
             final Set<PositionInterface> positions = layer.getSelves().keySet();
             for (final PositionInterface position : positions)
-                jsonArray.add(new JsonPrimitive(columns * position.row() + (position.column() % rows))); // TODO extract method
+                jsonArray.add(new JsonPrimitive(columns * position.row() + position.column() % rows)); // TODO extract method
             data.add(color.toString(), jsonArray);
         }
         boardState.add("dimension", meta);
@@ -109,7 +109,7 @@ public final class ContextRepresentation {
             if (!moveInterface.isNull()) { // TODO à revoir
                 final Move move = (Move) moveInterface;
                 final PieceInterface piece = move.getPiece();
-                final PieceType key = PieceType.get(piece.getId());
+                final PieceType key = PieceType.get(piece.getId()); // TODO getType
                 List<Set<PositionInterface>> playablePositions = legalPositionsByPiece.get(key);
                 if (playablePositions == null) {
                     playablePositions = Lists.newArrayList();
