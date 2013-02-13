@@ -20,11 +20,14 @@ import blockplus.board.Board;
 import blockplus.board.LayerMutationBuilder;
 import blockplus.move.Move;
 import blockplus.move.Moves;
+import blockplus.piece.PieceComposite;
+import blockplus.piece.PieceInterface;
 import blockplus.piece.PieceType;
 import blockplus.piece.Pieces;
 import blockplus.player.Player;
 import blockplus.player.Players;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 // FIXME test hashCode, equals
@@ -103,8 +106,28 @@ public class ContextTest {
     // FIXME à compléter
     @Test
     public void testOptions() {
-        final List<MoveInterface> actual = CONTEXT.options();
-        assertEquals(7, actual.size()); // TODO extract Options class
+
+        // TODO à revoir...
+        final PieceInterface p1 = PieceComposite.from(8, Position(0, 0), Sets.newHashSet(Position(0, 0), Position(0, 1), Position(1, 0), Position(1, 1)));
+        final PieceInterface p2 = PieceComposite.from(4, Position(0, 0), Sets.newHashSet(Position(0, 0), Position(0, 1), Position(1, 0)));
+        final PieceInterface p3 = PieceComposite.from(4, Position(0, 0), Sets.newHashSet(Position(0, 0), Position(0, 1), Position(1, 1)));
+        final PieceInterface p4 = PieceComposite.from(4, Position(0, 0), Sets.newHashSet(Position(0, 0), Position(1, 0), Position(1, 1)));
+        final PieceInterface p5 = PieceComposite.from(2, Position(0, 0), Sets.newHashSet(Position(0, 0), Position(0, 1)));
+        final PieceInterface p6 = PieceComposite.from(2, Position(0, 0), Sets.newHashSet(Position(0, 0), Position(1, 0)));
+        final PieceInterface p7 = PieceComposite.from(1, Position(0, 0), Sets.newHashSet(Position(0, 0)));
+
+        final List<Move> expected = Lists.newArrayList(
+                Moves.getMove(Blue, p1),
+                Moves.getMove(Blue, p2),
+                Moves.getMove(Blue, p3),
+                Moves.getMove(Blue, p4),
+                Moves.getMove(Blue, p5),
+                Moves.getMove(Blue, p6),
+                Moves.getMove(Blue, p7)
+                );
+
+        final List<MoveInterface> actual = CONTEXT.options(); // TODO extract Options class
+        assertEquals(expected, actual);
     }
 
     @Test
