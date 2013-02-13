@@ -157,9 +157,9 @@ public final class Layer implements Supplier<BoardInterface<State>> {
         return this.getLights().containsKey(position);
     }
 
-    public Layer apply(final Map<PositionInterface, State> boardMutation) {
+    public Layer apply(final Map<PositionInterface, State> layerMutation) {
         final Map<PositionInterface, State> consistentMutations = Maps.newHashMap();
-        for (final Entry<PositionInterface, State> mutation : boardMutation.entrySet())
+        for (final Entry<PositionInterface, State> mutation : layerMutation.entrySet())
             if (this.isMutable(mutation.getKey())) consistentMutations.put(mutation.getKey(), mutation.getValue());
         return new Layer(this.get().apply(consistentMutations));
     }

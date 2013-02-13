@@ -177,7 +177,6 @@ public final class Board implements BoardInterface {
 
     // TODO
     // TODO memoize
-    // TODO use toString
     @Override
     public String toString() {
         return "";
