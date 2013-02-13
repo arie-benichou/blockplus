@@ -27,22 +27,22 @@ import components.board.Symbol;
 public enum State implements Symbol {
 
     /**
-     * State for a cell that could contain this color
+     * State for a cell that could contain this layer's color
      */
     Metta,
 
     /**
-     * State for a cell that can not contain this color
+     * State for a cell that can not contain this layer's color
      */
     Karuna,
 
     /**
-     * State for a cell that contains a different color
+     * State for a cell that contains a different layer's color
      */
     Mudita,
 
     /**
-     * State for a cell that contains this color
+     * State for a cell that contains this layer's color
      */
     Upekkha,
 
