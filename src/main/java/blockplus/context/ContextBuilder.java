@@ -21,7 +21,6 @@ import static blockplus.Color.Blue;
 import static blockplus.Color.Green;
 import static blockplus.Color.Red;
 import static blockplus.Color.Yellow;
-import static blockplus.board.Layer.State.Metta;
 import static components.position.Position.Position;
 import interfaces.adversity.AdversityInterface;
 
@@ -31,7 +30,7 @@ import blockplus.Color;
 import blockplus.adversity.AdversityOf4;
 import blockplus.adversity.AdversityOf4.Builder;
 import blockplus.board.Board;
-import blockplus.board.Layer;
+import blockplus.board.LayerMutationBuilder;
 import blockplus.piece.PieceType;
 import blockplus.piece.Pieces;
 import blockplus.player.Player;
@@ -72,10 +71,10 @@ public final class ContextBuilder {
     private final static int COLUMNS = 20;
 
     private final static Board BOARD = new Board.Builder(COLORS, ROWS, COLUMNS)
-            .set(Blue, new Layer(ROWS, COLUMNS).apply(Position(0, 0), Metta))
-            .set(Yellow, new Layer(ROWS, COLUMNS).apply(Position(0, COLUMNS - 1), Metta))
-            .set(Red, new Layer(ROWS, COLUMNS).apply(Position(ROWS - 1, COLUMNS - 1), Metta))
-            .set(Green, new Layer(ROWS, COLUMNS).apply(Position(ROWS - 1, 0), Metta))
+            .addLayer(Blue, new LayerMutationBuilder().setLightPositions(Position(0, 0)).build())
+            .addLayer(Yellow, new LayerMutationBuilder().setLightPositions(Position(0, COLUMNS - 1)).build())
+            .addLayer(Red, new LayerMutationBuilder().setLightPositions(Position(ROWS - 1, COLUMNS - 1)).build())
+            .addLayer(Green, new LayerMutationBuilder().setLightPositions(Position(ROWS - 1, 0)).build())
             .build();
 
     private Color side = SIDE;

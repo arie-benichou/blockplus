@@ -40,6 +40,11 @@ public final class LayerMutationBuilder {
         return this;
     }
 
+    public LayerMutationBuilder setLightPositions(final PositionInterface... positions) {
+        this.setLightPositions(Sets.newHashSet(positions));
+        return this;
+    }
+
     public LayerMutationBuilder setSelfPositions(final Set<PositionInterface> positions) {
         this.selfPositions = positions;
         return this;

@@ -41,6 +41,7 @@ import org.junit.Test;
 import blockplus.board.Board;
 import blockplus.board.Layer;
 import blockplus.board.Layer.State;
+import blockplus.board.LayerMutationBuilder;
 import blockplus.context.Context;
 import blockplus.context.ContextBuilder;
 import blockplus.move.Move;
@@ -74,15 +75,11 @@ public class RefereeTest {
 
         contextBuilder.setPlayers(players);
         final int rows = 8, columns = 5;
-        final Layer blueLayer = new Layer(rows, columns).apply(Position(0, 0), State.Metta);
-        final Layer yellowLayer = new Layer(rows, columns).apply(Position(0, columns - 1), State.Metta);
-        final Layer redLayer = new Layer(rows, columns).apply(Position(rows - 1, columns - 1), State.Metta);
-        final Layer greenLayer = new Layer(rows, columns).apply(Position(rows - 1, 0), State.Metta);
         final Board board = Board.builder(Sets.newHashSet(Blue, Yellow, Red, Green), rows, columns)
-                .set(Blue, blueLayer)
-                .set(Yellow, yellowLayer)
-                .set(Red, redLayer)
-                .set(Green, greenLayer)
+                .addLayer(Blue, new LayerMutationBuilder().setLightPositions(Position(0, 0)).build())
+                .addLayer(Yellow, new LayerMutationBuilder().setLightPositions(Position(0, columns - 1)).build())
+                .addLayer(Red, new LayerMutationBuilder().setLightPositions(Position(rows - 1, columns - 1)).build())
+                .addLayer(Green, new LayerMutationBuilder().setLightPositions(Position(rows - 1, 0)).build())
                 .build();
         contextBuilder.setBoard(board);
         Context context = contextBuilder.build();

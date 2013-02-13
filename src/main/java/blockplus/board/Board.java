@@ -76,12 +76,20 @@ public final class Board implements BoardInterface {
             this.columns = check(columns);
         }
 
-        public Builder set(final Color color, final Layer layer) {
+        private Builder set(final Color color, final Layer layer) {
             Preconditions.checkArgument(this.getColors().contains(color));
             Preconditions.checkArgument(this.rows == layer.rows());
             Preconditions.checkArgument(this.columns == layer.columns());
             this.layerByColor.put(color, layer);
             return this;
+        }
+
+        public Builder addLayer(final Color color, final Map<PositionInterface, State> layerMutation) {
+            return this.set(color, new Layer(this.rows, this.columns).apply(layerMutation));
+        }
+
+        public Builder addLayer(final Color color) {
+            return this.set(color, new Layer(this.rows, this.columns));
         }
 
         public Board build() {
@@ -92,6 +100,7 @@ public final class Board implements BoardInterface {
             Preconditions.checkState(this.getColors().size() == this.layerByColor.size());
             return new Board(this);
         }
+
     }
 
     public static Builder builder(final Set<Color> colors, final int rows, final int columns) {

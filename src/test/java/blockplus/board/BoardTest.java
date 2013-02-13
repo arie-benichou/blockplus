@@ -23,10 +23,10 @@ public class BoardTest {
     private final static int COLUMNS = 20;
     private final static Set<Color> COLORS = ImmutableSet.of(Blue, Yellow, Red, Green);
     private final static Board BOARD = new Board.Builder(COLORS, ROWS, COLUMNS)
-            .set(Blue, new Layer(ROWS, COLUMNS))
-            .set(Yellow, new Layer(ROWS, COLUMNS))
-            .set(Red, new Layer(ROWS, COLUMNS))
-            .set(Green, new Layer(ROWS, COLUMNS))
+            .addLayer(Blue)
+            .addLayer(Yellow)
+            .addLayer(Red)
+            .addLayer(Green)
             .build();
 
     @Test

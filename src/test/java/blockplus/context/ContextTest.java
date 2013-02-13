@@ -5,7 +5,6 @@ import static blockplus.Color.Blue;
 import static blockplus.Color.Green;
 import static blockplus.Color.Red;
 import static blockplus.Color.Yellow;
-import static blockplus.board.Layer.State.Metta;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,7 +17,7 @@ import org.junit.Test;
 import blockplus.Color;
 import blockplus.adversity.AdversityOf4;
 import blockplus.board.Board;
-import blockplus.board.Layer;
+import blockplus.board.LayerMutationBuilder;
 import blockplus.move.Move;
 import blockplus.move.Moves;
 import blockplus.piece.PieceType;
@@ -32,11 +31,19 @@ import com.google.common.collect.Sets;
 public class ContextTest {
 
     private final static Pieces PIECES = new Pieces.Builder().addAll(PieceType.asSet()).build();
-    private static final Player PLAYER4 = new Player(Green, PIECES);
-    private static final Player PLAYER3 = new Player(Red, PIECES);
-    private static final Player PLAYER2 = new Player(Yellow, PIECES);
-    private static final Player PLAYER1 = new Player(Blue, PIECES);
-    private final static Context CONTEXT = new ContextBuilder().build();
+    private final static Player PLAYER4 = new Player(Green, PIECES);
+    private final static Player PLAYER3 = new Player(Red, PIECES);
+    private final static Player PLAYER2 = new Player(Yellow, PIECES);
+    private final static Player PLAYER1 = new Player(Blue, PIECES);
+    private final static int ROWS = 2;
+    private final static int COLUMNS = 2;
+    private final static Board BOARD = new Board.Builder(Sets.newHashSet(Color.values()), ROWS, COLUMNS)
+            .addLayer(Blue, new LayerMutationBuilder().setLightPositions(Position(0, 0)).build())
+            .addLayer(Yellow, new LayerMutationBuilder().setLightPositions(Position(0, COLUMNS - 1)).build())
+            .addLayer(Red, new LayerMutationBuilder().setLightPositions(Position(ROWS - 1, COLUMNS - 1)).build())
+            .addLayer(Green, new LayerMutationBuilder().setLightPositions(Position(ROWS - 1, 0)).build())
+            .build();
+    private final static Context CONTEXT = new ContextBuilder().setBoard(BOARD).build();
 
     @Test
     public void testGetSide() {
@@ -78,13 +85,11 @@ public class ContextTest {
 
     @Test
     public void testGetBoard() {
-        final int rows = 20;
-        final int columns = 20;
-        final Board expected = new Board.Builder(Sets.newHashSet(Color.values()), rows, columns)
-                .set(Blue, new Layer(rows, columns).apply(Position(0, 0), Metta))
-                .set(Yellow, new Layer(rows, columns).apply(Position(0, columns - 1), Metta))
-                .set(Red, new Layer(rows, columns).apply(Position(rows - 1, columns - 1), Metta))
-                .set(Green, new Layer(rows, columns).apply(Position(rows - 1, 0), Metta))
+        final Board expected = new Board.Builder(Sets.newHashSet(Color.values()), ROWS, COLUMNS)
+                .addLayer(Blue, new LayerMutationBuilder().setLightPositions(Position(0, 0)).build())
+                .addLayer(Yellow, new LayerMutationBuilder().setLightPositions(Position(0, COLUMNS - 1)).build())
+                .addLayer(Red, new LayerMutationBuilder().setLightPositions(Position(ROWS - 1, COLUMNS - 1)).build())
+                .addLayer(Green, new LayerMutationBuilder().setLightPositions(Position(ROWS - 1, 0)).build())
                 .build();
         assertEquals(expected, CONTEXT.getBoard());
     }
@@ -99,7 +104,7 @@ public class ContextTest {
     @Test
     public void testOptions() {
         final List<MoveInterface> actual = CONTEXT.options();
-        assertEquals(58, actual.size()); // TODO extract Options class
+        assertEquals(7, actual.size()); // TODO extract Options class
     }
 
     @Test
