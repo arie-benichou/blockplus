@@ -208,8 +208,7 @@ public final class Layer implements Supplier<CellsInterface<State>> {
                 .add("columns", this.columns())
                 .add("initial", this.get().initialSymbol())
                 .add("undefined", this.get().undefinedSymbol())
-                .add("mutation", this.get().filter(null))
+                .add("mutations", this.get().mutations())
                 .toString();
     }
-
 }

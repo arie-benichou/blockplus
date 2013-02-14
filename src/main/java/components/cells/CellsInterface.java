@@ -29,6 +29,8 @@ public interface CellsInterface<T> {
 
     int columns();
 
+    Map<PositionInterface, T> mutations();
+
     T get(PositionInterface position);
 
     T get(int rowIndex, int columnIndex);

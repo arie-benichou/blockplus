@@ -129,9 +129,9 @@ public class BoardTest {
         }
     }
 
-    @Ignore
+    @Test
     public void testToString() {
-        fail("Not yet implemented");
+        assertEquals("Board{rows=20, columns=20, data={\"Blue\":[],\"Yellow\":[],\"Red\":[],\"Green\":[]}}", BOARD.toString());
     }
 
     @Ignore

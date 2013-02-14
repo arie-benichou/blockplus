@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedMap.Builder;
 import com.google.common.collect.MapDifference;
@@ -36,6 +36,7 @@ import components.cells.CellsInterface;
 import components.position.PositionInterface;
 
 // TODO ? provides builder instead of static factory method
+// TODO ? CellsFragment
 public final class Cells<T> implements CellsInterface<T> {
 
     public static <T> CellsInterface<T> from(
@@ -63,7 +64,7 @@ public final class Cells<T> implements CellsInterface<T> {
     }
 
     private static <T> CellsInterface<T> from(final Cells<T> board, final Map<PositionInterface, T> cells) {
-        return from(board.rows(), board.columns(), board.initialSymbol(), board.undefinedSymbol(), board.boardMutation(), cells);
+        return from(board.rows(), board.columns(), board.initialSymbol(), board.undefinedSymbol(), board.mutations(), cells);
     }
 
     public static <T> CellsInterface<T> from(final Cells<T> cells) {
@@ -127,7 +128,8 @@ public final class Cells<T> implements CellsInterface<T> {
         return this.undefinedSymbol;
     }
 
-    private Map<PositionInterface, T> boardMutation() {
+    @Override
+    public Map<PositionInterface, T> mutations() {
         return this.boardMutation;
     }
 
@@ -163,14 +165,10 @@ public final class Cells<T> implements CellsInterface<T> {
         return Cells.from(this);
     }
 
-    // TODO ! add unit test
     @Override
     public Map<PositionInterface, T> filter(final Predicate<Entry<PositionInterface, T>> predicate) {
-        if (predicate == null) {
-            final Predicate<Entry<PositionInterface, T>> nullFilterPredicate = Predicates.alwaysTrue();
-            return Maps.filterEntries(this.boardMutation(), nullFilterPredicate);
-        }
-        return Maps.filterEntries(this.boardMutation(), predicate);
+        Preconditions.checkArgument(predicate != null);
+        return Maps.filterEntries(this.mutations(), predicate); // TODO ? allow predicate on initial symbol
     }
 
     // TODO memoize
@@ -194,27 +192,17 @@ public final class Cells<T> implements CellsInterface<T> {
         return value;
     }
 
-    // TODO use Guava Equivalences
     @Override
+    @SuppressWarnings("rawtypes")
     public boolean equals(final Object object) {
-        boolean isEqual = false;
-        if (object != null) {
-            if (object == this) isEqual = true;
-            else if (object instanceof CellsInterface) {
-                @SuppressWarnings("rawtypes")
-                final CellsInterface other = (CellsInterface) object;
-                if (this.rows == other.rows() && this.columns == other.columns()) {
-                    if (this.initialSymbol().equals(other.initialSymbol())) {
-                        if (this.undefinedSymbol.equals(other.undefinedSymbol())) {
-                            @SuppressWarnings("unchecked")
-                            final CellsInterface<T> that = other;
-                            isEqual = this.boardMutation().equals(that.filter(null));
-                        }
-                    }
-                }
-            }
-        }
-        return isEqual;
+        Preconditions.checkArgument(object instanceof CellsInterface, object);
+        if (object == this) return true;
+        final CellsInterface that = (CellsInterface) object;
+        return this.rows() == that.rows()
+                && this.columns() == that.columns()
+                && this.initialSymbol().equals(that.initialSymbol())
+                && this.undefinedSymbol().equals(that.undefinedSymbol())
+                && this.mutations().equals(that.mutations());
     }
 
 }

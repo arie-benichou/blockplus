@@ -40,7 +40,6 @@ import blockplus.piece.PieceInterface;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 import components.cells.CellsInterface;
 import components.position.PositionInterface;
 
@@ -222,7 +221,7 @@ public class LayerTest {
 
     @Test
     public void testToString() {
-        final String expected = "Layer{rows=6, columns=4, initial=Nirvana, undefined=Mudita, mutation={}}";
+        final String expected = "Layer{rows=6, columns=4, initial=Nirvana, undefined=Mudita, mutations={}}";
         final String actual = LAYER.toString();
         assertEquals(expected, actual);
     }

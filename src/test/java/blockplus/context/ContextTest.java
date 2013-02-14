@@ -156,9 +156,10 @@ public class ContextTest {
         assertEquals(expected, actual);
     }
 
-    @Ignore
+    @Test
     public void testToString() {
-        fail("Not yet implemented");
+        final String expected = "Context{Board{rows=2, columns=2, data={\"Blue\":[],\"Yellow\":[],\"Red\":[],\"Green\":[]}}}";
+        assertEquals(expected, CONTEXT.toString());
     }
 
     @Ignore

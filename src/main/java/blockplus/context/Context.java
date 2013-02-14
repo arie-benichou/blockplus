@@ -84,6 +84,8 @@ public final class Context implements ContextInterface<Color> {
         return this.board;
     }
 
+    private volatile List<MoveInterface> options;
+
     Context(final Color side, final Board board, final Players players, final AdversityInterface<Color> adversity) {
         this.side = side;
         this.board = board;
@@ -117,8 +119,12 @@ public final class Context implements ContextInterface<Color> {
     }
 
     @Override
-    public List<MoveInterface> options() { // TODO Scala lazy
-        return this.getReferee().getLegalMoves(this);
+    public List<MoveInterface> options() {
+        List<MoveInterface> value = this.options;
+        if (value == null) synchronized (this) {
+            if ((value = this.options) == null) this.options = value = this.getReferee().getLegalMoves(this);
+        }
+        return value;
     }
 
     @Override
@@ -137,11 +143,12 @@ public final class Context implements ContextInterface<Color> {
         return this.getPlayers().get(this.getSide());
     }
 
-    // TODO
     // TODO memoize
     @Override
     public String toString() {
-        return "";
+        return Objects.toStringHelper(this)
+                .addValue(this.getBoard())
+                .toString();
     }
 
     // TODO use toString
@@ -151,8 +158,7 @@ public final class Context implements ContextInterface<Color> {
         return Objects.hashCode(TERMINATION_PREDICATE, REFEREE, this.side, this.adversity, this.players, this.board);
     }
 
-    // TODO use hashCode
-    // TODO memoize
+    // TODO check collisions
     @Override
     public boolean equals(final Object object) {
         Preconditions.checkArgument(object instanceof Context);

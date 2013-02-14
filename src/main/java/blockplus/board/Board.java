@@ -28,11 +28,15 @@ import blockplus.board.Layer.State;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 
-import com.google.common.base.Equivalences;
 import com.google.common.base.Objects;
+import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Ordering;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import components.position.PositionInterface;
 
 public final class Board implements BoardInterface {
@@ -68,10 +72,10 @@ public final class Board implements BoardInterface {
 
         private final int columns;
 
-        private final Map<Color, Layer> layerByColor = Maps.newHashMap();
+        private final ImmutableSortedMap.Builder<Color, Layer> layerByColor = new ImmutableSortedMap.Builder<Color, Layer>(Ordering.natural());
 
         public Builder(final Set<Color> colors, final int rows, final int columns) {
-            this.colors = check(colors);
+            this.colors = ImmutableSortedSet.copyOf(check(colors));
             this.rows = check(rows);
             this.columns = check(columns);
         }
@@ -93,12 +97,19 @@ public final class Board implements BoardInterface {
         }
 
         public Board build() {
-            if (this.layerByColor.isEmpty())
-                for (final Color color : this.getColors()) {
+            ImmutableSortedMap<Color, Layer> layerByColor = this.layerByColor.build();
+            if (layerByColor.isEmpty()) {
+                /*
+                 * ImmutableSortedMap.Builder instances can be reused - it is safe to call build()
+                 * multiple times to build multiple maps in series. Each map is
+                 * a superset of the maps created before it.
+                 */
+                for (final Color color : this.getColors())
                     this.layerByColor.put(color, new Layer(this.rows, this.columns));
-                }
-            Preconditions.checkState(this.getColors().size() == this.layerByColor.size());
-            return new Board(this);
+                layerByColor = this.layerByColor.build();
+            }
+            else Preconditions.checkState(this.getColors().size() == layerByColor.size());
+            return new Board(this.getRows(), this.getColumns(), layerByColor);
         }
 
     }
@@ -126,14 +137,10 @@ public final class Board implements BoardInterface {
         return this.columns;
     }
 
-    private Board(final Map<Color, Layer> stateBoardByColor, final int rows, final int columns) {
-        this.layerByColor = ImmutableMap.copyOf(stateBoardByColor);
+    private Board(final int rows, final int columns, final ImmutableSortedMap<Color, Layer> layerByColor) {
         this.rows = rows;
         this.columns = columns;
-    }
-
-    private Board(final Builder builder) {
-        this(builder.layerByColor, builder.rows, builder.columns);
+        this.layerByColor = layerByColor;
     }
 
     public Layer getLayer(final Color color) {
@@ -161,12 +168,12 @@ public final class Board implements BoardInterface {
         final Map<PositionInterface, State> otherMutation = new LayerMutationBuilder()
                 .setOtherPositions(piece.getSelfPositions())
                 .build();
-        final Map<Color, Layer> newLayers = Maps.newHashMap();
+        final ImmutableSortedMap.Builder<Color, Layer> newLayers = new ImmutableSortedMap.Builder<Color, Layer>(Ordering.natural());
         for (final Color anotherColor : this.getColors()) {
             if (anotherColor.equals(color)) newLayers.put(color, this.getLayer(color).apply(selfMutation));
             else newLayers.put(anotherColor, this.getLayer(anotherColor).apply(otherMutation));
         }
-        return new Board(newLayers, this.rows(), this.columns());
+        return new Board(this.rows(), this.columns(), newLayers.build());
     }
 
     // TODO use toString
@@ -181,17 +188,31 @@ public final class Board implements BoardInterface {
     public boolean equals(final Object object) {
         Preconditions.checkArgument(object instanceof Board);
         final Board that = (Board) object;
-        return Equivalences.equals().equivalent(this.layerByColor, that.layerByColor);
+        return this.layerByColor.equals(that.layerByColor);
     }
 
     // TODO
     // TODO memoize
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        final ToStringHelper toStringHelper = Objects.toStringHelper(this)
                 .add("rows", this.rows())
-                .add("columns", this.columns())
-                .add("layers", this.layerByColor)
-                .toString();
+                .add("columns", this.columns());
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (final Color color : this.getColors()) {
+            stringBuilder.append(this.layerByColor.get(color).get().mutations());
+            stringBuilder.append(this.layerByColor.get(color).get().mutations());
+        }
+        final JsonObject data = new JsonObject();
+        for (final Color color : this.getColors()) {
+            final JsonArray jsonArray = new JsonArray();
+            final Layer layer = this.getLayer(color);
+            final Set<PositionInterface> positions = layer.getSelves().keySet();
+            for (final PositionInterface position : positions)
+                jsonArray.add(new JsonPrimitive(position.toString()));
+            data.add(color.toString(), jsonArray);
+        }
+        toStringHelper.add("data", data);
+        return toStringHelper.toString();
     }
 }
