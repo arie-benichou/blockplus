@@ -49,12 +49,12 @@ public final class Move implements MoveInterface {
     }
 
     @Override
-    public int hashCode() { // TODO Scala lazy
+    public int hashCode() { // TODO memoize
         return this.toString().hashCode();
     }
 
     @Override
-    public boolean equals(final Object object) { // TODO use Guava Equivalences
+    public boolean equals(final Object object) {
         if (object == null) return false;
         if (object == this) return true;
         if (!(object instanceof Move)) return false;

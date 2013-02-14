@@ -82,7 +82,7 @@ public final class Players implements PlayersInterface<Color>, Iterable<Player> 
     }
 
     @Override
-    public boolean hasAlivePlayer() { // TODO Scala lazy
+    public boolean hasAlivePlayer() { // TODO memoize
         for (final PlayerInterface player : this) {
             if (player.isAlive()) return true;
         }

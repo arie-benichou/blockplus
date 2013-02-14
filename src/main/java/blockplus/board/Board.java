@@ -118,7 +118,6 @@ public final class Board implements BoardInterface {
         return new Board.Builder(colors, rows, columns);
     }
 
-    // TODO sorted map
     private final Map<Color, Layer> layerByColor;
 
     public Set<Color> getColors() {
@@ -191,7 +190,6 @@ public final class Board implements BoardInterface {
         return this.layerByColor.equals(that.layerByColor);
     }
 
-    // TODO
     // TODO memoize
     @Override
     public String toString() {

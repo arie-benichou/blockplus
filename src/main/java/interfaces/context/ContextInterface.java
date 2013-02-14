@@ -78,7 +78,6 @@ public interface ContextInterface<T> {
     PlayersInterface<T> getPlayers();
 
     // TODO ? delegate to Referee interface
-    // TODO use predicate
     /**
      * Returns the effective successor of this context.
      * 

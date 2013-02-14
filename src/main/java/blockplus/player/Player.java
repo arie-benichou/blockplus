@@ -29,7 +29,6 @@ import com.google.common.base.Equivalences;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-// TODO hashcode, equals
 public final class Player implements PlayerInterface {
 
     private final Color color;
@@ -51,7 +50,7 @@ public final class Player implements PlayerInterface {
 
     @Override
     public boolean isAlive() {
-        return this.pieces.contains(PIECE0); // TODO Scala lazy
+        return this.pieces.contains(PIECE0); // TODO memoize
     }
 
     @Override
