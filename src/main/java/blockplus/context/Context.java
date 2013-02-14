@@ -23,6 +23,7 @@ import interfaces.context.ContextInterface;
 import interfaces.move.MoveInterface;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -33,6 +34,7 @@ import blockplus.move.Moves;
 import blockplus.player.Player;
 import blockplus.player.Players;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 
 public final class Context implements ContextInterface<Color> {
@@ -139,6 +141,29 @@ public final class Context implements ContextInterface<Color> {
 
     public Player getPlayer() {
         return this.getPlayers().get(this.getSide());
+    }
+
+    // TODO
+    // TODO memoize
+    @Override
+    public String toString() {
+        return "";
+    }
+
+    // TODO use toString
+    // TODO memoize
+    @Override
+    public int hashCode() {
+        return Objects.hash(TERMINATION_PREDICATE, REFEREE, this.side, this.adversity, this.players, this.board);
+    }
+
+    // TODO use hashCode
+    // TODO memoize
+    @Override
+    public boolean equals(final Object object) {
+        Preconditions.checkArgument(object instanceof Context);
+        final Context that = (Context) object;
+        return this.hashCode() == that.hashCode();
     }
 
 }

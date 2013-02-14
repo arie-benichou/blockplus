@@ -30,7 +30,7 @@ import blockplus.player.Players;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-// FIXME test hashCode, equals
+// FIXME test toString, hashCode, equals
 public class ContextTest {
 
     private final static Pieces PIECES = new Pieces.Builder().addAll(PieceType.asSet()).build();
@@ -131,13 +131,13 @@ public class ContextTest {
     }
 
     @Test
-    public void testForwardBoolean() {
-        // FIXME fail("Not yet implemented");
-    }
-
-    @Test
     public void testForward() {
-        // FIXME fail("Not yet implemented");
+        final Context expected = new ContextBuilder()
+                .setBoard(BOARD)
+                .setSide(Yellow)
+                .build();
+        final Context actual = CONTEXT.forward();
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -145,6 +145,11 @@ public class ContextTest {
         // FIXME fail("Not yet implemented");
         final Move move = Moves.getNullMove(Blue);
         CONTEXT.apply(move);
+    }
+
+    @Test
+    public void testForwardBoolean() {
+        // FIXME fail("Not yet implemented");
     }
 
 }
