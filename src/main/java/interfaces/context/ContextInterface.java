@@ -77,19 +77,8 @@ public interface ContextInterface<T> {
      */
     PlayersInterface<T> getPlayers();
 
-    /**
-     * Returns a successor of this context.
-     * 
-     * @param skipOnNullOption
-     *            will keep on moving forward if there is no option for the
-     *            current side to play in next context.
-     * 
-     * @return a successor of this context
-     */
     // TODO ? delegate to Referee interface
     // TODO use predicate
-    ContextInterface<T> forward(boolean skipOnNullOption);
-
     /**
      * Returns the effective successor of this context.
      * 

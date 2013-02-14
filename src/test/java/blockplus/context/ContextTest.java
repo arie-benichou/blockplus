@@ -97,13 +97,13 @@ public class ContextTest {
         assertEquals(expected, CONTEXT.getBoard());
     }
 
-    // FIXME à compléter
+    // TODO à compléter
     @Test
     public void testIsTerminal() {
         assertFalse(CONTEXT.isTerminal());
     }
 
-    // FIXME à compléter
+    // TODO à compléter
     @Test
     public void testOptions() {
 
@@ -130,6 +130,7 @@ public class ContextTest {
         assertEquals(expected, actual);
     }
 
+    // TODO à compléter
     @Test
     public void testForward() {
         final Context expected = new ContextBuilder()
@@ -140,16 +141,17 @@ public class ContextTest {
         assertEquals(expected, actual);
     }
 
+    // TODO à compléter
     @Test
     public void testApply() {
-        // FIXME fail("Not yet implemented");
         final Move move = Moves.getNullMove(Blue);
-        CONTEXT.apply(move);
-    }
-
-    @Test
-    public void testForwardBoolean() {
-        // FIXME fail("Not yet implemented");
+        final Players players = CONTEXT.getPlayers().apply(PLAYER1.apply(move));
+        final Context expected = new ContextBuilder()
+                .setBoard(BOARD)
+                .setPlayers(players)
+                .build();
+        final Context actual = CONTEXT.apply(move);
+        assertEquals(expected, actual);
     }
 
 }

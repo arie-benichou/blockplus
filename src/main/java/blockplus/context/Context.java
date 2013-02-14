@@ -102,6 +102,7 @@ public final class Context implements ContextInterface<Color> {
 
     @Override
     public Context apply(final MoveInterface move) {
+        // TODO check if the given move is a legal move
         return new ContextBuilder()
                 .setSide(this.getSide())
                 .setAdversity(this.getAdversity())
@@ -121,22 +122,15 @@ public final class Context implements ContextInterface<Color> {
     }
 
     @Override
-    public Context forward(final boolean skipOnNullOption) {
+    public Context forward() {
         if (this.isTerminal()) return this;
         Context nextContext = new Context(this);
-        if (skipOnNullOption) {
-            final List<MoveInterface> nextOptions = nextContext.options();
-            if (nextOptions.size() == 1 && nextOptions.get(0).isNull()) {// TODO ? extract Options class
-                if (nextContext.getPlayer().isAlive()) nextContext = nextContext.apply(Moves.getNullMove(nextContext.getSide()));
-                nextContext = nextContext.forward();
-            }
+        final List<MoveInterface> nextOptions = nextContext.options();
+        if (nextOptions.size() == 1 && nextOptions.get(0).isNull()) {// TODO ? extract Options class
+            if (nextContext.getPlayer().isAlive()) nextContext = nextContext.apply(Moves.getNullMove(nextContext.getSide()));
+            nextContext = nextContext.forward();
         }
         return nextContext;
-    }
-
-    @Override
-    public Context forward() {
-        return this.forward(true);
     }
 
     public Player getPlayer() {
