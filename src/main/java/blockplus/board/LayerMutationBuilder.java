@@ -29,7 +29,6 @@ import components.position.PositionInterface;
 // TODO à revoir
 public final class LayerMutationBuilder {
 
-    private final Set<PositionInterface> nonePositions = Sets.newHashSet();
     private Set<PositionInterface> potentialPositions = Sets.newHashSet();
     private Set<PositionInterface> selfPositions = Sets.newHashSet();
     private Set<PositionInterface> otherPositions = Sets.newHashSet();
@@ -49,26 +48,14 @@ public final class LayerMutationBuilder {
         return this;
     }
 
-    public LayerMutationBuilder setSelfPositions(final PositionInterface... positions) {
-        return this.setSelfPositions(Sets.newHashSet(positions));
-    }
-
     public LayerMutationBuilder setShadowPositions(final Set<PositionInterface> positions) {
         this.shadowPositions = positions;
         return this;
     }
 
-    public LayerMutationBuilder setShadowPositions(final PositionInterface... positions) {
-        return this.setShadowPositions(Sets.newHashSet(positions));
-    }
-
     public LayerMutationBuilder setOtherPositions(final Set<PositionInterface> positions) {
         this.otherPositions = positions;
         return this;
-    }
-
-    public LayerMutationBuilder setOtherPositions(final PositionInterface... positions) {
-        return this.setOtherPositions(Sets.newHashSet(positions));
     }
 
     public Map<PositionInterface, State> build() {
@@ -81,8 +68,6 @@ public final class LayerMutationBuilder {
             builder.put(position, State.Metta);
         for (final PositionInterface position : this.otherPositions)
             builder.put(position, State.Mudita);
-        for (final PositionInterface position : this.nonePositions)
-            builder.put(position, State.Nirvana);
         return builder.build();
     }
 
