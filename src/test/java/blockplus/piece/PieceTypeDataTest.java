@@ -27,7 +27,7 @@ import org.junit.Test;
 import com.google.common.collect.Sets;
 import components.position.NullPosition;
 
-public class PieceDataTest {
+public class PieceTypeDataTest {
 
     @Test
     public void testPieceData() {
