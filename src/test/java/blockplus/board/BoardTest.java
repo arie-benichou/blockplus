@@ -8,7 +8,6 @@ import static blockplus.Color.Yellow;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -85,14 +84,48 @@ public class BoardTest {
                     .addLayer(Red, BOARD.getLayer(Red))
                     .addLayer(Green, BOARD.getLayer(Green))
                     .build(); // TODO à revoir
-            assertNotEquals(board, BOARD);
             assertTrue(board.isLegal(move));
         }
     }
 
-    // FIXME @Test
+    @Test
     public void testApply() {
-        fail("Not yet implemented");
+        {
+            final Move move = Moves.getNullMove(Blue);
+            final Board expected = BOARD;
+            final Board actual = BOARD.apply(move);
+            assertEquals(expected, actual);
+        }
+        {
+            final PositionInterface position = Position(0, 0);
+            final PieceInterface p1 = PieceComposite.from(1, position, Sets.newHashSet(position)); // TODO à revoir
+            final Move move = Moves.getMove(Blue, p1);
+
+            final Map<PositionInterface, State> selfMutation = new LayerMutationBuilder()
+                    .setSelfPositions(p1.getSelfPositions())
+                    .setShadowPositions(p1.getShadowPositions())
+                    .setLightPositions(p1.getLightPositions())
+                    .build();
+
+            final Map<PositionInterface, State> othersMutation = new LayerMutationBuilder()
+                    .setOtherPositions(p1.getSelfPositions())
+                    .build();
+
+            final Board expected = Board.builder(BOARD.getColors(), BOARD.rows(), BOARD.columns())
+                    .addLayer(Blue, BOARD.getLayer(Blue).apply(selfMutation))
+                    .addLayer(Yellow, BOARD.getLayer(Yellow).apply(othersMutation))
+                    .addLayer(Red, BOARD.getLayer(Red).apply(othersMutation))
+                    .addLayer(Green, BOARD.getLayer(Green).apply(othersMutation))
+                    .build(); // TODO à revoir
+
+            final Board actual = BOARD.apply(move);
+
+            assertEquals(expected.getLayer(Blue), actual.getLayer(Blue));
+            assertEquals(expected.getLayer(Yellow), actual.getLayer(Yellow));
+            assertEquals(expected.getLayer(Red), actual.getLayer(Red));
+            assertEquals(expected.getLayer(Green), actual.getLayer(Green));
+            assertEquals(expected, actual);
+        }
     }
 
     // FIXME @Test

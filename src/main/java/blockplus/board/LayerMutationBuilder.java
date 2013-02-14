@@ -41,8 +41,7 @@ public final class LayerMutationBuilder {
     }
 
     public LayerMutationBuilder setLightPositions(final PositionInterface... positions) {
-        this.setLightPositions(Sets.newHashSet(positions));
-        return this;
+        return this.setLightPositions(Sets.newHashSet(positions));
     }
 
     public LayerMutationBuilder setSelfPositions(final Set<PositionInterface> positions) {
@@ -50,14 +49,26 @@ public final class LayerMutationBuilder {
         return this;
     }
 
+    public LayerMutationBuilder setSelfPositions(final PositionInterface... positions) {
+        return this.setSelfPositions(Sets.newHashSet(positions));
+    }
+
     public LayerMutationBuilder setShadowPositions(final Set<PositionInterface> positions) {
         this.shadowPositions = positions;
         return this;
     }
 
+    public LayerMutationBuilder setShadowPositions(final PositionInterface... positions) {
+        return this.setShadowPositions(Sets.newHashSet(positions));
+    }
+
     public LayerMutationBuilder setOtherPositions(final Set<PositionInterface> positions) {
         this.otherPositions = positions;
         return this;
+    }
+
+    public LayerMutationBuilder setOtherPositions(final PositionInterface... positions) {
+        return this.setOtherPositions(Sets.newHashSet(positions));
     }
 
     public Map<PositionInterface, State> build() {
