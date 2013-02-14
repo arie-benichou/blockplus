@@ -76,7 +76,7 @@ public final class Board implements BoardInterface {
             this.columns = check(columns);
         }
 
-        private Builder set(final Color color, final Layer layer) {
+        public Builder addLayer(final Color color, final Layer layer) {
             Preconditions.checkArgument(this.getColors().contains(color));
             Preconditions.checkArgument(this.rows == layer.rows());
             Preconditions.checkArgument(this.columns == layer.columns());
@@ -85,11 +85,11 @@ public final class Board implements BoardInterface {
         }
 
         public Builder addLayer(final Color color, final Map<PositionInterface, State> layerMutation) {
-            return this.set(color, new Layer(this.rows, this.columns).apply(layerMutation));
+            return this.addLayer(color, new Layer(this.rows, this.columns).apply(layerMutation));
         }
 
         public Builder addLayer(final Color color) {
-            return this.set(color, new Layer(this.rows, this.columns));
+            return this.addLayer(color, new Layer(this.rows, this.columns));
         }
 
         public Board build() {
@@ -145,7 +145,7 @@ public final class Board implements BoardInterface {
     @Override
     public boolean isLegal(final MoveInterface moveInterface) {
         final Move move = (Move) moveInterface;
-        return this.getLayer(move.getColor()).isLegal(move.getPiece().getSelfPositions());
+        return move.isNull() ? true : this.getLayer(move.getColor()).isLegal(move.getPiece().getSelfPositions());
     }
 
     @Override

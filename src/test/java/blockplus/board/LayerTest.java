@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.board.layer;
+package blockplus.board;
 
 import static blockplus.board.Layer.State.Karuna;
 import static blockplus.board.Layer.State.Metta;
