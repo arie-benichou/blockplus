@@ -56,6 +56,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import components.position.PositionInterface;
 
+// FIXME write a good set of tests
 public class RefereeTest {
 
     @Test

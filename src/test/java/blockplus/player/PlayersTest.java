@@ -9,16 +9,18 @@ import static blockplus.piece.PieceType.PIECE0;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import blockplus.piece.Pieces;
 
 import com.google.common.collect.Lists;
 
-// FIXME test hashCode, equals
+// FIXME add tests for hashCode, equals
 public class PlayersTest {
 
     private final static Player PLAYER1 = new Player(Blue, Pieces.EMPTY);
@@ -85,6 +87,16 @@ public class PlayersTest {
                 "]}";
         final String actual = PLAYERS.toString();
         assertEquals(expected, actual);
+    }
+
+    @Ignore
+    public void testHashCode() {
+        fail("Not yet implemented");
+    }
+
+    @Ignore
+    public void testEqualsObject() {
+        fail("Not yet implemented");
     }
 
 }

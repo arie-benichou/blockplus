@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package components.board;
+package components.cells;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 import com.google.common.base.Predicate;
 import components.position.PositionInterface;
 
-public interface BoardInterface<T> {
+public interface CellsInterface<T> {
 
     int rows();
 
@@ -33,9 +33,9 @@ public interface BoardInterface<T> {
 
     T get(int rowIndex, int columnIndex);
 
-    BoardInterface<T> apply(Map<PositionInterface, T> mutations);
+    CellsInterface<T> apply(Map<PositionInterface, T> mutations);
 
-    BoardInterface<T> copy();
+    CellsInterface<T> copy();
 
     T undefinedSymbol();
 

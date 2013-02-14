@@ -21,7 +21,6 @@ import interfaces.board.BoardInterface;
 import interfaces.move.MoveInterface;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import blockplus.Color;
@@ -30,6 +29,7 @@ import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 
 import com.google.common.base.Equivalences;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -169,8 +169,8 @@ public final class Board implements BoardInterface {
         return new Board(newLayers, this.rows(), this.columns());
     }
 
-    // TODO memoize
     // TODO use toString
+    // TODO memoize
     @Override
     public int hashCode() {
         return Objects.hashCode(this.layerByColor);
@@ -188,7 +188,10 @@ public final class Board implements BoardInterface {
     // TODO memoize
     @Override
     public String toString() {
-        return "";
+        return Objects.toStringHelper(this)
+                .add("rows", this.rows())
+                .add("columns", this.columns())
+                .add("layers", this.layerByColor)
+                .toString();
     }
-
 }

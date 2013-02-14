@@ -6,12 +6,14 @@ import static blockplus.Color.Green;
 import static blockplus.Color.Red;
 import static blockplus.Color.Yellow;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import blockplus.Color;
 
-// FIXME test hashCode, equals
+// FIXME add tests for hashCode, equals
 public class AdversityOf4Test {
 
     private final static AdversityOf4 ADVERSITY = new AdversityOf4.Builder().add(Blue, Yellow, Red, Green).build();
@@ -57,6 +59,16 @@ public class AdversityOf4Test {
     @Test
     public void testToString() {
         assertEquals("AdversityOf4{[Blue, Yellow, Red, Green]}", ADVERSITY.toString());
+    }
+
+    @Ignore
+    public void testHashCode() {
+        fail("Not yet implemented");
+    }
+
+    @Ignore
+    public void testEqualsObject() {
+        fail("Not yet implemented");
     }
 
 }

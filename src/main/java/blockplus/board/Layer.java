@@ -29,15 +29,16 @@ import javax.annotation.Nullable;
 
 import blockplus.board.Layer.State;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
-import components.board.Board;
-import components.board.BoardInterface;
+import components.cells.CellsInterface;
+import components.cells.immutable.Cells;
 import components.position.PositionInterface;
 
-public final class Layer implements Supplier<BoardInterface<State>> {
+public final class Layer implements Supplier<CellsInterface<State>> {
 
     /**
      * Possible states for a cell in a layer of a board. Since each color is
@@ -80,9 +81,9 @@ public final class Layer implements Supplier<BoardInterface<State>> {
 
     private final static class IsMutablePredicate implements Predicate<PositionInterface> {
 
-        private final BoardInterface<State> stateBoard;
+        private final CellsInterface<State> stateBoard;
 
-        public IsMutablePredicate(final BoardInterface<State> stateBoard) {
+        public IsMutablePredicate(final CellsInterface<State> stateBoard) {
             this.stateBoard = stateBoard;
         }
 
@@ -112,19 +113,19 @@ public final class Layer implements Supplier<BoardInterface<State>> {
 
     };
 
-    private final BoardInterface<State> stateBoard;
+    private final CellsInterface<State> stateBoard;
     private final IsMutablePredicate isMutablePredicate;
 
     private volatile Map<PositionInterface, State> selves;
     private volatile Map<PositionInterface, State> lights;
 
-    private Layer(final BoardInterface<State> stateBoard) {
+    private Layer(final CellsInterface<State> stateBoard) {
         this.stateBoard = stateBoard;
         this.isMutablePredicate = new IsMutablePredicate(stateBoard);
     }
 
     public Layer(final int rows, final int columns) {
-        this(Board.from(rows, columns, Nirvana, Mudita));
+        this(Cells.from(rows, columns, Nirvana, Mudita));
     }
 
     public boolean isMutable(final PositionInterface position) {
@@ -141,7 +142,7 @@ public final class Layer implements Supplier<BoardInterface<State>> {
     }
 
     @Override
-    public BoardInterface<State> get() {
+    public CellsInterface<State> get() {
         return this.stateBoard;
     }
 
@@ -187,32 +188,28 @@ public final class Layer implements Supplier<BoardInterface<State>> {
         return value;
     }
 
+    // TODO memoize
     @Override
     public int hashCode() {
         return this.toString().hashCode();
     }
 
     @Override
-    public boolean equals(final Object object) { // TODO use toString output
+    public boolean equals(final Object object) {
         Preconditions.checkArgument(object instanceof Layer);
-        boolean isEqual = false;
-        if (object == this) isEqual = true;
-        else {
-            final Layer that = (Layer) object;
-            if (this.rows() == that.rows() && this.columns() == that.columns()) {
-                if (this.get().initialSymbol().equals(that.get().initialSymbol())) {
-                    if (this.get().undefinedSymbol().equals(that.get().undefinedSymbol())) {
-                        isEqual = this.get().filter(null).equals(that.get().filter(null));
-                    }
-                }
-            }
-        }
-        return isEqual;
+        return this.get().equals(((Layer) object).get());
     }
 
+    // TODO memoize
     @Override
     public String toString() {
-        return this.get().toString();
+        return Objects.toStringHelper(this)
+                .add("rows", this.rows())
+                .add("columns", this.columns())
+                .add("initial", this.get().initialSymbol())
+                .add("undefined", this.get().undefinedSymbol())
+                .add("mutation", this.get().filter(null))
+                .toString();
     }
 
 }

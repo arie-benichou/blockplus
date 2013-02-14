@@ -8,10 +8,12 @@ import static blockplus.Color.Yellow;
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 import interfaces.move.MoveInterface;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import blockplus.Color;
@@ -30,7 +32,7 @@ import blockplus.player.Players;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-// FIXME test toString, hashCode, equals
+// FIXME add tests for toString, hashCode, equals
 public class ContextTest {
 
     private final static Pieces PIECES = new Pieces.Builder().addAll(PieceType.asSet()).build();
@@ -152,6 +154,21 @@ public class ContextTest {
                 .build();
         final Context actual = CONTEXT.apply(move);
         assertEquals(expected, actual);
+    }
+
+    @Ignore
+    public void testToString() {
+        fail("Not yet implemented");
+    }
+
+    @Ignore
+    public void testHashCode() {
+        fail("Not yet implemented");
+    }
+
+    @Ignore
+    public void testEqualsObject() {
+        fail("Not yet implemented");
     }
 
 }

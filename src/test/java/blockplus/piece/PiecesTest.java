@@ -21,17 +21,19 @@ import static blockplus.piece.PieceType.PIECE1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 
-// FIXME test hashCode, equals
+// FIXME add tests for toString, hashCode, equals
 public class PiecesTest {
 
     private final static Pieces PIECESBAG_OF_1 = new Pieces.Builder().add(PIECE1).build();
@@ -64,6 +66,21 @@ public class PiecesTest {
         assertFalse(bagOfPiece.isEmpty());
         final Pieces newBagOfPiece = bagOfPiece.withdraw(PIECE1);
         assertTrue(newBagOfPiece.isEmpty());
+    }
+
+    @Ignore
+    public void testToString() {
+        fail("Not yet implemented");
+    }
+
+    @Ignore
+    public void testHashCode() {
+        fail("Not yet implemented");
+    }
+
+    @Ignore
+    public void testEqualsObject() {
+        fail("Not yet implemented");
     }
 
 }

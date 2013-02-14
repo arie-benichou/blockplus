@@ -15,35 +15,39 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package components.board;
+package components.cells.immutable;
 
 import static components.position.Position.Position;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.ImmutableSortedMap.Builder;
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
+import components.cells.CellsInterface;
 import components.position.PositionInterface;
 
-// TODO ! Builder
-public final class Board<T> implements BoardInterface<T> {
+// TODO ? provides builder instead of static factory method
+public final class Cells<T> implements CellsInterface<T> {
 
-    public static <T> BoardInterface<T> from(
+    public static <T> CellsInterface<T> from(
             final int rows, final int columns,
             final T initialPositionvalue,
             final T undefinedPositionvalue,
             final Map<PositionInterface, T> boardMutation,
             final Map<PositionInterface, T> mutationFragment) {
-        return new Board<T>(rows, columns, initialPositionvalue, undefinedPositionvalue, boardMutation, mutationFragment);
+        return new Cells<T>(rows, columns, initialPositionvalue, undefinedPositionvalue, boardMutation, mutationFragment);
     }
 
-    public static <T> BoardInterface<T> from(
+    public static <T> CellsInterface<T> from(
             final int rows, final int columns,
             final T initialPositionvalue,
             final T undefinedPositionvalue,
@@ -51,53 +55,56 @@ public final class Board<T> implements BoardInterface<T> {
         return from(rows, columns, initialPositionvalue, undefinedPositionvalue, boardMutation, new HashMap<PositionInterface, T>());
     }
 
-    public static <T> BoardInterface<T> from(
+    public static <T> CellsInterface<T> from(
             final int rows, final int columns,
             final T initialPositionvalue,
             final T undefinedPositionvalue) {
         return from(rows, columns, initialPositionvalue, undefinedPositionvalue, new HashMap<PositionInterface, T>());
     }
 
-    public static <T> BoardInterface<T> from(final Board<T> board, final Map<PositionInterface, T> cells) {
+    private static <T> CellsInterface<T> from(final Cells<T> board, final Map<PositionInterface, T> cells) {
         return from(board.rows(), board.columns(), board.initialSymbol(), board.undefinedSymbol(), board.boardMutation(), cells);
     }
 
-    public static <T> BoardInterface<T> from(final Board<T> board) {
-        return from(board, new HashMap<PositionInterface, T>());
+    public static <T> CellsInterface<T> from(final Cells<T> cells) {
+        return from(cells, new HashMap<PositionInterface, T>());
     }
+
+    private final Map<PositionInterface, T> boardMutation;
 
     private final int rows;
     private final int columns;
     private final T initialSymbol;
     private final T undefinedSymbol;
-    private final SortedMap<PositionInterface, T> boardMutation;
 
-    private volatile Integer hashCode = null;;
+    private volatile Integer hashCode = null;
 
-    private SortedMap<PositionInterface, T> merge(final Map<PositionInterface, T> boardMutation, final Map<PositionInterface, T> mutationFragment) {
-        final TreeMap<PositionInterface, T> merge = Maps.newTreeMap();
-        if (mutationFragment.isEmpty()) merge.putAll(boardMutation);
-        else if (boardMutation.isEmpty()) merge.putAll(mutationFragment);
-        else {
-            merge.putAll(boardMutation);
-            for (final Entry<PositionInterface, T> mutation : mutationFragment.entrySet())
-                if (mutation.getValue().equals(this.initialSymbol())) merge.remove(mutation.getKey());
-                else merge.put(mutation.getKey(), mutation.getValue());
+    private static <T> Map<PositionInterface, T> merge(final T initialPositionvalue, final Map<PositionInterface, T> left, final Map<PositionInterface, T> right) {
+        final Builder<PositionInterface, T> builder = new ImmutableSortedMap.Builder<PositionInterface, T>(Ordering.natural());
+        final MapDifference<PositionInterface, T> difference = Maps.difference(left, right);
+        for (final Entry<PositionInterface, T> mutation : difference.entriesInCommon().entrySet())
+            if (!mutation.getValue().equals(initialPositionvalue)) builder.put(mutation);
+        for (final Entry<PositionInterface, T> mutation : difference.entriesOnlyOnLeft().entrySet())
+            if (!mutation.getValue().equals(initialPositionvalue)) builder.put(mutation);
+        for (final Entry<PositionInterface, T> mutation : difference.entriesOnlyOnRight().entrySet())
+            if (!mutation.getValue().equals(initialPositionvalue)) builder.put(mutation);
+        for (final Entry<PositionInterface, ValueDifference<T>> mutation : difference.entriesDiffering().entrySet()) {
+            final T rightValue = mutation.getValue().rightValue();
+            if (!rightValue.equals(initialPositionvalue)) builder.put(mutation.getKey(), rightValue);
         }
-        return merge;
+        return builder.build();
     }
 
-    private Board(
+    private Cells(
             final int rows, final int columns,
-            final T initialPositionvalue,
-            final T undefinedPositionvalue,
-            final Map<PositionInterface, T> boardMutation,
-            final Map<PositionInterface, T> nullMutation) {
+            final T initial, final T undefined,
+            final Map<PositionInterface, T> left, final Map<PositionInterface, T> right)
+    {
+        this.boardMutation = merge(initial, left, right);
         this.rows = rows;
         this.columns = columns;
-        this.initialSymbol = initialPositionvalue;
-        this.undefinedSymbol = undefinedPositionvalue;
-        this.boardMutation = this.merge(boardMutation, nullMutation);
+        this.initialSymbol = initial;
+        this.undefinedSymbol = undefined;
     }
 
     @Override
@@ -120,7 +127,7 @@ public final class Board<T> implements BoardInterface<T> {
         return this.undefinedSymbol;
     }
 
-    private SortedMap<PositionInterface, T> boardMutation() {
+    private Map<PositionInterface, T> boardMutation() {
         return this.boardMutation;
     }
 
@@ -147,17 +154,17 @@ public final class Board<T> implements BoardInterface<T> {
     }
 
     @Override
-    public BoardInterface<T> apply(final Map<PositionInterface, T> updatedPositions) {
-        return Board.from(this, updatedPositions);
+    public CellsInterface<T> apply(final Map<PositionInterface, T> updatedPositions) {
+        return Cells.from(this, updatedPositions);
     }
 
     @Override
-    public BoardInterface<T> copy() {
-        return Board.from(this);
+    public CellsInterface<T> copy() {
+        return Cells.from(this);
     }
 
+    // TODO ! add unit test
     @Override
-    // TODO add unit test
     public Map<PositionInterface, T> filter(final Predicate<Entry<PositionInterface, T>> predicate) {
         if (predicate == null) {
             final Predicate<Entry<PositionInterface, T>> nullFilterPredicate = Predicates.alwaysTrue();
@@ -166,19 +173,19 @@ public final class Board<T> implements BoardInterface<T> {
         return Maps.filterEntries(this.boardMutation(), predicate);
     }
 
+    // TODO memoize
     @Override
     public final String toString() {
         return Objects.toStringHelper(this)
-                .add("\n  rows", this.rows())
-                .add("\n  columns", this.columns())
-                .add("\n  initial", this.initialSymbol())
-                .add("\n  undefined", this.undefinedSymbol())
-                .add("\n  mutation", this.boardMutation + "\n")
+                .add("rows", this.rows())
+                .add("columns", this.columns())
+                .add("initial", this.initialSymbol())
+                .add("undefined", this.undefinedSymbol())
+                .add("mutation", this.boardMutation)
                 .toString();
     }
 
     @Override
-    // TODO add unit test
     public int hashCode() {
         Integer value = this.hashCode;
         if (value == null) synchronized (this) {
@@ -187,20 +194,20 @@ public final class Board<T> implements BoardInterface<T> {
         return value;
     }
 
+    // TODO use Guava Equivalences
     @Override
-    // TODO add unit test
     public boolean equals(final Object object) {
         boolean isEqual = false;
         if (object != null) {
             if (object == this) isEqual = true;
-            else if (object instanceof BoardInterface) {
+            else if (object instanceof CellsInterface) {
                 @SuppressWarnings("rawtypes")
-                final BoardInterface other = (BoardInterface) object;
+                final CellsInterface other = (CellsInterface) object;
                 if (this.rows == other.rows() && this.columns == other.columns()) {
                     if (this.initialSymbol().equals(other.initialSymbol())) {
                         if (this.undefinedSymbol.equals(other.undefinedSymbol())) {
                             @SuppressWarnings("unchecked")
-                            final BoardInterface<T> that = other;
+                            final CellsInterface<T> that = other;
                             isEqual = this.boardMutation().equals(that.filter(null));
                         }
                     }

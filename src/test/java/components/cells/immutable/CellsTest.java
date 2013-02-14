@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package components.board;
+package components.cells.immutable;
 
 import static components.position.Position.Position;
 import static org.junit.Assert.assertEquals;
@@ -29,79 +29,80 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
+import components.cells.CellsInterface;
 import components.position.PositionInterface;
 
-public class BoardTest {
+public class CellsTest {
 
     private enum State {
         Initial, Undefined, Other;
     }
 
-    private BoardInterface<State> board;
+    private CellsInterface<State> cells;
 
     @Before
     public void setUp() throws Exception {
-        this.board = Board.from(6, 4, State.Initial, State.Undefined);
+        this.cells = Cells.from(6, 4, State.Initial, State.Undefined);
     }
 
     @After
     public void tearDown() throws Exception {
-        this.board = null;
+        this.cells = null;
     }
 
     @Test
     public void testRows() {
         final int expected = 6;
-        final int actual = this.board.rows();
+        final int actual = this.cells.rows();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testColumns() {
         final int expected = 4;
-        final int actual = this.board.columns();
+        final int actual = this.cells.columns();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testInitialSymbol() {
         final State expected = State.Initial;
-        final State actual = this.board.initialSymbol();
+        final State actual = this.cells.initialSymbol();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetUndefinedSymbol() {
         final State expected = State.Undefined;
-        final State actual = this.board.undefinedSymbol();
+        final State actual = this.cells.undefinedSymbol();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetRowColumn() {
         {
-            final State expected = this.board.undefinedSymbol();
-            final State actual = this.board.get(-1, 0);
+            final State expected = this.cells.undefinedSymbol();
+            final State actual = this.cells.get(-1, 0);
             assertEquals(expected, actual);
         }
         {
-            final State expected = this.board.undefinedSymbol();
-            final State actual = this.board.get(0, -1);
+            final State expected = this.cells.undefinedSymbol();
+            final State actual = this.cells.get(0, -1);
             assertEquals(expected, actual);
         }
         {
-            final State expected = this.board.initialSymbol();
-            final State actual = this.board.get(0, 0);
+            final State expected = this.cells.initialSymbol();
+            final State actual = this.cells.get(0, 0);
             assertEquals(expected, actual);
         }
         {
-            final State expected = this.board.undefinedSymbol();
-            final State actual = this.board.get(this.board.rows(), 0);
+            final State expected = this.cells.undefinedSymbol();
+            final State actual = this.cells.get(this.cells.rows(), 0);
             assertEquals(expected, actual);
         }
         {
-            final State expected = this.board.undefinedSymbol();
-            final State actual = this.board.get(0, this.board.columns());
+            final State expected = this.cells.undefinedSymbol();
+            final State actual = this.cells.get(0, this.cells.columns());
             assertEquals(expected, actual);
         }
     }
@@ -109,28 +110,28 @@ public class BoardTest {
     @Test
     public void testGetPosition() {
         {
-            final State expected = this.board.undefinedSymbol();
-            final State actual = this.board.get(Position(-1, 0));
+            final State expected = this.cells.undefinedSymbol();
+            final State actual = this.cells.get(Position(-1, 0));
             assertEquals(expected, actual);
         }
         {
-            final State expected = this.board.undefinedSymbol();
-            final State actual = this.board.get(Position(0, -1));
+            final State expected = this.cells.undefinedSymbol();
+            final State actual = this.cells.get(Position(0, -1));
             assertEquals(expected, actual);
         }
         {
-            final State expected = this.board.initialSymbol();
-            final State actual = this.board.get(Position(0, 0));
+            final State expected = this.cells.initialSymbol();
+            final State actual = this.cells.get(Position(0, 0));
             assertEquals(expected, actual);
         }
         {
-            final State expected = this.board.undefinedSymbol();
-            final State actual = this.board.get(Position(this.board.rows(), 0));
+            final State expected = this.cells.undefinedSymbol();
+            final State actual = this.cells.get(Position(this.cells.rows(), 0));
             assertEquals(expected, actual);
         }
         {
-            final State expected = this.board.undefinedSymbol();
-            final State actual = this.board.get(Position(0, this.board.columns()));
+            final State expected = this.cells.undefinedSymbol();
+            final State actual = this.cells.get(Position(0, this.cells.columns()));
             assertEquals(expected, actual);
         }
     }
@@ -141,30 +142,30 @@ public class BoardTest {
             final PositionInterface position = Position(0, 0);
             final Map<PositionInterface, State> mutations = Maps.newHashMap();
             mutations.put(position, State.Other);
-            BoardInterface<State> newBoard;
-            newBoard = this.board.apply(mutations);
+            CellsInterface<State> newCells;
+            newCells = this.cells.apply(mutations);
             final State expected = State.Other;
-            final State actual = newBoard.get(position);
+            final State actual = newCells.get(position);
             assertSame(expected, actual);
-            assertFalse(expected.equals(this.board.initialSymbol()));
-            assertEquals(this.board.initialSymbol(), this.board.get(position));
+            assertFalse(expected.equals(this.cells.initialSymbol()));
+            assertEquals(this.cells.initialSymbol(), this.cells.get(position));
         }
     }
 
     @Test
     public void testCopy() {
         {
-            final BoardInterface<State> copy = this.board.copy();
+            final CellsInterface<State> copy = this.cells.copy();
             final PositionInterface position = Position(0, 0);
             final Map<PositionInterface, State> mutations = Maps.newHashMap();
             mutations.put(position, State.Other);
-            BoardInterface<State> newBoard;
-            newBoard = copy.apply(mutations);
+            CellsInterface<State> newCells;
+            newCells = copy.apply(mutations);
             final State expected = State.Other;
-            final State actual = newBoard.get(position);
+            final State actual = newCells.get(position);
             assertSame(expected, actual);
-            assertFalse(expected.equals(this.board.initialSymbol()));
-            assertEquals(this.board.initialSymbol(), this.board.get(position));
+            assertFalse(expected.equals(this.cells.initialSymbol()));
+            assertEquals(this.cells.initialSymbol(), this.cells.get(position));
         }
     }
 
@@ -173,23 +174,17 @@ public class BoardTest {
         final PositionInterface position = Position(0, 0);
         final Map<PositionInterface, State> mutations = Maps.newHashMap();
         mutations.put(position, State.Other);
-        final BoardInterface<State> newBoard = this.board.apply(mutations);
+        final CellsInterface<State> newCells = this.cells.apply(mutations);
         final StringBuilder builder = new StringBuilder();
-        builder.append("Board{");
-        builder.append('\n');
-        builder.append("  rows=6, ");
-        builder.append('\n');
-        builder.append("  columns=4, ");
-        builder.append('\n');
-        builder.append("  initial=Initial, ");
-        builder.append('\n');
-        builder.append("  undefined=Undefined, ");
-        builder.append('\n');
-        builder.append("  mutation={Position(0, 0)=Other}");
-        builder.append('\n');
+        builder.append("Cells{");
+        builder.append("rows=6, ");
+        builder.append("columns=4, ");
+        builder.append("initial=Initial, ");
+        builder.append("undefined=Undefined, ");
+        builder.append("mutation={Position(0, 0)=Other}");
         builder.append('}');
         final String expected = builder.toString();
-        final String actual = newBoard.toString();
+        final String actual = newCells.toString();
         assertEquals(expected, actual);
     }
 

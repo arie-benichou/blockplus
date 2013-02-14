@@ -14,6 +14,7 @@ import static org.junit.Assert.fail;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import blockplus.Color;
@@ -27,7 +28,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import components.position.PositionInterface;
 
-// FIXME test hashCode, equals
+// FIXME add tests for toString, hashCode, equals
 public class BoardTest {
 
     private final static int ROWS = 20;
@@ -128,17 +129,17 @@ public class BoardTest {
         }
     }
 
-    // FIXME @Test
+    @Ignore
     public void testToString() {
         fail("Not yet implemented");
     }
 
-    // FIXME @Test
+    @Ignore
     public void testHashCode() {
         fail("Not yet implemented");
     }
 
-    // FIXME @Test
+    @Ignore
     public void testEqualsObject() {
         fail("Not yet implemented");
     }
