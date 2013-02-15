@@ -119,4 +119,9 @@ public final class Referee implements RefereeInterface {
         return this.getLegalMoves(contextInterface, MOVE_COMPARATOR);
     }
 
+    @Override
+    public boolean isLegal(final ContextInterface<?> contextInterface, final MoveInterface moveInterface) {
+        return contextInterface.getBoard().isLegal(moveInterface);
+    }
+
 }

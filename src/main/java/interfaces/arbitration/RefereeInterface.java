@@ -53,4 +53,6 @@ public interface RefereeInterface {
      */
     List<MoveInterface> getLegalMoves(ContextInterface<?> contextInterface);
 
+    boolean isLegal(ContextInterface<?> contextInterface, MoveInterface moveInterface);
+
 }

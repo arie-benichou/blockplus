@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 import blockplus.Color;
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
+import blockplus.move.Move;
 import blockplus.move.Moves;
 import blockplus.player.Player;
 import blockplus.player.Players;
@@ -54,6 +55,12 @@ public final class Context implements ContextInterface<Color> {
 
     private RefereeInterface getReferee() {
         return REFEREE;
+    }
+
+    private final MoveHistory moveHistory;
+
+    public MoveHistory getMoveHistory() {
+        return this.moveHistory;
     }
 
     private final Color side;
@@ -86,8 +93,13 @@ public final class Context implements ContextInterface<Color> {
 
     private volatile List<MoveInterface> options;
 
-    Context(final Color side, final Board board, final Players players, final AdversityInterface<Color> adversity) {
+    Context(final Color side,
+            final MoveHistory moveHistory,
+            final Board board,
+            final Players players,
+            final AdversityInterface<Color> adversity) {
         this.side = side;
+        this.moveHistory = moveHistory;
         this.board = board;
         this.players = players;
         this.adversity = adversity;
@@ -99,18 +111,28 @@ public final class Context implements ContextInterface<Color> {
     }
 
     private Context(final Context context) {
-        this(context.getNextSide(), context.getBoard(), context.getPlayers(), context.getAdversity());
+        this(
+                context.getNextSide(),
+                context.getMoveHistory(),
+                context.getBoard(),
+                context.getPlayers(),
+                context.getAdversity());
+    }
+
+    private Context(final Context context, final MoveInterface move) {
+        this(
+                context.getSide(),
+                context.getMoveHistory().apply((Move) move),
+                context.getBoard().apply(move),
+                context.getPlayers().apply(context.getPlayer().apply(move)),
+                context.getAdversity());
     }
 
     @Override
     public Context apply(final MoveInterface move) {
-        // TODO check if the given move is a legal move
-        return new ContextBuilder()
-                .setSide(this.getSide())
-                .setAdversity(this.getAdversity())
-                .setPlayers(this.getPlayers().apply(this.getPlayer().apply(move)))
-                .setBoard(this.getBoard().apply(move))
-                .build();
+        // could use options().contains(move) if Options data structure was a sorted map...
+        Preconditions.checkState(this.getReferee().isLegal(this, move));
+        return new Context(this, move);
     }
 
     @Override
@@ -151,7 +173,7 @@ public final class Context implements ContextInterface<Color> {
                 .toString();
     }
 
-    // TODO use toString
+    // TODO ? use toString output
     // TODO memoize
     @Override
     public int hashCode() {
