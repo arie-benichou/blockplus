@@ -1,4 +1,5 @@
 #!/bin/sh
+
 ./scripts/CLEANFORME.sh;
 ./scripts/BUILDME.sh;
 ./scripts/RUNME.sh & \
