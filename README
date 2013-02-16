@@ -18,7 +18,7 @@ The prerequisites are:
 	 * JAVA >= 6
  	   http://java.com/en/download/
  	
- 	 * MAVEN >= 3
+ 	 * MAVEN >= 3.0.4
  	   http://maven.apache.org/download.html
  	   
 	 * Google Chrome :p

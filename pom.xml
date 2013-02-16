@@ -1,62 +1,155 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version='1.0' encoding='UTF-8'?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
 
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>fr.designpattern</groupId>
 	<artifactId>blockplus</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<inceptionYear>2012</inceptionYear>
+
 	<name>Block+</name>
-	<url>https://code.google.com/p/blockplus/</url>
+	<description>The Blokus game project</description>
+	<url>http://artefact.hd.free.fr/</url>
+
+	<inceptionYear>2012</inceptionYear>
+	<version>0.0.1-SNAPSHOT</version>
 
 	<packaging>war</packaging>
 
+	<licenses>
+		<license>
+			<name>GNU GPL v3</name>
+			<url>http://www.gnu.org/licenses/gpl.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>fr.free.hd.artefact</name>
+		<url>http://artefact.hd.free.fr</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>bmad</id>
+			<name>BMAD TEAM</name>
+			<url>https://code.google.com/p/blockplus/people/list</url>
+		</developer>
+	</developers>
+
+	<contributors />
+
+	<scm>
+		<url>https://code.google.com/p/blockplus/</url>
+		<connection>scm:git:https://code.google.com/p/blockplus/</connection>
+	</scm>
+
 	<properties>
+		<encoding>UTF-8</encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<scala.version>2.10.0</scala.version>
-		<maven.scala.version>2.14.3</maven.scala.version>
 		<webXml>${basedir}/src/main/resources/web/web.xml</webXml>
 		<sourceDirectory>${basedir}/src/main/resources/web/public/components/blockplus</sourceDirectory>
 	</properties>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>scala-tools.org</id>
-			<name>Scala-tools Maven2 Repository</name>
-			<url>http://scala-tools.org/repo-releases</url>
-		</pluginRepository>
-	</pluginRepositories>
+	<prerequisites>
+		<maven>3.0.4</maven>
+	</prerequisites>
 
 	<build>
-		<finalName>blockplus</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<!-- https://repository.sonatype.org/content/repositories/forge-sites/m2e-extras/0.15.0/N/0.15.0.201206251206/ -->
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>1.7</version>
 				</plugin>
 				<plugin>
-					<groupId>org.scala-tools</groupId>
-					<artifactId>maven-scala-plugin</artifactId>
-					<version>2.15.2</version>
+					<!-- http://alchim31.free.fr/m2e-scala/update-site/ -->
+					<groupId>net.alchim31.maven</groupId>
+					<artifactId>scala-maven-plugin</artifactId>
+					<version>3.1.3</version>
+					<configuration>
+						<jvmArgs>
+							<jvmArg>-Xms64m</jvmArg>
+							<jvmArg>-Xmx1024m</jvmArg>
+						</jvmArgs>
+						<args>
+							<arg>-unchecked</arg>
+							<arg>-deprecation</arg>
+							<arg>-explaintypes</arg>
+						</args>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.0</version>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.7</version>
+					<configuration>
+						<forkMode>once</forkMode>
+						<useFile>false</useFile>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.2</version>
+					<configuration>
+						<webXml>${webXml}</webXml>
+						<warSourceDirectory>${sourceDirectory}</warSourceDirectory>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>jetty-maven-plugin</artifactId>
+					<version>8.1.8.v20121106</version>
+					<configuration>
+						<scanIntervalSeconds>0</scanIntervalSeconds>
+						<webXml>${webXml}</webXml>
+						<webAppSourceDirectory>${sourceDirectory}</webAppSourceDirectory>
+						<connectors>
+							<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+								<port>8282</port>
+								<maxIdleTime>60000</maxIdleTime>
+							</connector>
+						</connectors>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.0</version>
+					<configuration>
+						<reportPlugins>
+							<plugin>
+								<artifactId>maven-project-info-reports-plugin</artifactId>
+								<version>2.6</version>
+							</plugin>
+							<plugin>
+								<groupId>net.alchim31.maven</groupId>
+								<artifactId>scala-maven-plugin</artifactId>
+							</plugin>
+						</reportPlugins>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
+
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<executions>
-					<!--
-						Add this update site to your Eclipse and install build-helper connector
-						https://repository.sonatype.org/content/repositories/forge-sites/m2e-extras/0.15.0/N/0.15.0.201206251206/
-					-->
 					<execution>
 						<id>add-source</id>
 						<phase>generate-sources</phase>
@@ -83,9 +176,10 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
-				<groupId>org.scala-tools</groupId>
-				<artifactId>maven-scala-plugin</artifactId>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>scala-compile-first</id>
@@ -104,13 +198,10 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
 				<executions>
 					<execution>
 						<phase>compile</phase>
@@ -120,51 +211,29 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<webXml>${webXml}</webXml>
-					<warSourceDirectory>${sourceDirectory}</warSourceDirectory>
-				</configuration>
+				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
+
 			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>8.1.8.v20121106</version>
-				<configuration>
-					<scanIntervalSeconds>0</scanIntervalSeconds>
-					<webAppConfig>
-						<contextPath>/</contextPath>
-					</webAppConfig>
-					<webXml>${webXml}</webXml>
-					<webAppSourceDirectory>${sourceDirectory}</webAppSourceDirectory>
-					<connectors>
-						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-							<port>8282</port>
-							<maxIdleTime>60000</maxIdleTime>
-						</connector>
-					</connectors>
-				</configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-			</plugin>
+
 		</plugins>
 	</build>
 
-	<!-- 
-	<repositories>
-		<repository>
-			<id>scala-tools.org</id>
-			<name>Scala-tools 
-		Maven2 Repository</name>
-			<url>http://scala-tools.org/repo-releases</url>
-		</repository>
-	</repositories>
-	 -->
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<version>3.1.3</version>
+			</plugin>
+		</plugins>
+	</reporting>
 
 	<dependencies>
 		<dependency>
@@ -189,11 +258,13 @@
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-websocket</artifactId>
 			<version>8.1.8.v20121106</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -203,7 +274,8 @@
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
-			<version>${scala.version}</version>
+			<version>2.10.0</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
