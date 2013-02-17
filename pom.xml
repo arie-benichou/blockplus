@@ -80,6 +80,7 @@
 							<arg>-unchecked</arg>
 							<arg>-deprecation</arg>
 							<arg>-explaintypes</arg>
+							<arg>-feature</arg>
 						</args>
 					</configuration>
 				</plugin>
