@@ -1,4 +1,4 @@
-package components.plane
+package components.plane.elements
 
 import org.junit.Assert._
 import org.junit.Test

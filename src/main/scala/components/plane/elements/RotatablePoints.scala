@@ -1,6 +1,5 @@
-package components.plane
+package components.plane.elements
 
-import scala.collection.immutable.TreeSet
 import com.google.common.base.Objects
 
 object RotatablePoints {
@@ -9,8 +8,9 @@ object RotatablePoints {
   def apply(): RotatablePoints = apply(Points.empty)
 }
 
-final class RotatablePoints private (private val points: Points)(implicit private val referential: Point) {
-  def isEmpty() = points.isEmpty
+final class RotatablePoints private (private val points: Points)(implicit val referential: Point) extends Iterable[Point] {
+  override def iterator = points.iterator
+  override def isEmpty() = points.isEmpty
   override def toString = Objects.toStringHelper(this).add("referential", referential).add("points", points).toString()
   override def hashCode = toString.hashCode()
   override def equals(other: Any) = {

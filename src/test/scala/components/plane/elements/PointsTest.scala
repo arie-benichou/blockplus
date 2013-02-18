@@ -1,9 +1,15 @@
-package components.plane
+package components.plane.elements
 
-import org.junit.Assert._
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotSame
+import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import scala.collection.immutable.TreeSet
 
+import components.plane.elements.Point.pairToPoint
+
+// TODO test iterator
 class PointsTest {
 
   @Test

@@ -1,4 +1,4 @@
-package components.plane
+package components.plane.elements
 
 import scala.collection.immutable.TreeSet
 
@@ -10,8 +10,9 @@ object Points {
   }
 }
 
-final class Points private (private val data: Set[Point]) {
-  def isEmpty() = data.isEmpty
+final class Points private (private val data: Set[Point]) extends Iterable[Point] {
+  override def iterator = data.iterator
+  override def isEmpty = data.isEmpty
   override def toString = data.mkString("{", ",", "}")
   override def hashCode = this.data.hashCode()
   override def equals(other: Any) = {

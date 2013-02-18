@@ -1,6 +1,4 @@
-package components.plane
-
-import scala.language.implicitConversions
+package components.plane.elements
 
 object Point {
   implicit val origin = new Point(0, 0)

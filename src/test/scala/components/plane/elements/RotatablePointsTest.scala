@@ -1,9 +1,11 @@
-package components.plane
+package components.plane.elements
 
 import org.junit.Assert._
 import org.junit.Test
-import scala.collection.immutable.TreeSet
 
+import components.plane.elements.Point.pairToPoint
+
+// TODO test iterator
 class RotatablePointsTest {
 
   @Test
