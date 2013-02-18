@@ -8,10 +8,10 @@ class PointTest {
 
   @Test
   def testCompanionObject() {
-    assertSame(Point.origin, Point(0, 0))
-    assertNotSame(Point.origin, Point(0, 1))
-    assertNotSame(Point.origin, Point(1, 0))
-    assertNotSame(Point.origin, Point(1, 1))
+    assertEquals(Point.origin, Point(0, 0))
+    assertNotEquals(Point.origin, Point(0, 1))
+    assertNotEquals(Point.origin, Point(1, 0))
+    assertNotEquals(Point.origin, Point(1, 1))
   }
 
   @Test

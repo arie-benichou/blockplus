@@ -23,17 +23,17 @@ class PointsTest {
   def testToString() {
     {
       val expected = "{(0,0)}"
-      val actual = Points(Point()).toString
+      val actual = Points(Point(0, 0)).toString
       assertEquals(expected, actual)
     }
     {
       val expected = "{(0,0),(0,1)}"
-      val actual = Points(Point(), Point(0, 1)).toString
+      val actual = Points(Point(0, 0), Point(0, 1)).toString
       assertEquals(expected, actual)
     }
     {
       val expected = "{(0,0),(0,1)}"
-      val actual = Points(Point(0, 1), Point()).toString
+      val actual = Points(Point(0, 1), Point(0, 0)).toString
       assertEquals(expected, actual)
     }
     {
@@ -57,7 +57,7 @@ class PointsTest {
     }
     {
       val expected = 1373063695.toString
-      val actual = Points(Point()).hashCode.toString
+      val actual = Points(Point(0, 0)).hashCode.toString
       assertEquals(expected, actual)
     }
     {

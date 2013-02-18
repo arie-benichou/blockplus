@@ -2,12 +2,6 @@ package components.plane.elements
 
 object Point {
   implicit val origin = new Point(0, 0)
-  def apply() = origin
-  def apply(xy: (Int, Int)) = xy match {
-    case (0, 0) => origin
-    case (x, y) => new Point(x, y)
-  }
-  def apply(x: Int, y: Int): Point = apply((x, y))
   implicit val ordering = new Ordering[Point] {
     def compare(point1: Point, point2: Point) = {
       if (point1.x < point2.x) -1
@@ -17,10 +11,13 @@ object Point {
       else 0
     }
   }
-  implicit def pairToPoint(xy: (Int, Int)) = Point(xy)
+  implicit def pairToPoint(xy: (Int, Int)) = xy match {
+    case (0, 0) => origin
+    case (x, y) => new Point(x, y)
+  }
 }
 
-final class Point private (val x: Int, val y: Int) {
+final case class Point(val x: Int, val y: Int) {
   override def toString = "(" + x + "," + y + ")"
   override def hashCode = this.toString().hashCode()
   override def equals(other: Any) = {
