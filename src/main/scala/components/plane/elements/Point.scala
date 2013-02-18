@@ -1,5 +1,7 @@
 package components.plane.elements
 
+import scala.language.implicitConversions
+
 object Point {
   implicit val origin = new Point(0, 0)
   implicit val ordering = new Ordering[Point] {
