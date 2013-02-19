@@ -3,7 +3,6 @@ package components.plane.applications
 import org.junit.Assert._
 import org.junit.Test
 import components.plane.elements.Point
-import components.plane.elements.RotatablePoints
 
 class RotationTest {
 
