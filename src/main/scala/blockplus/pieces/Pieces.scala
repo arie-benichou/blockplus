@@ -49,8 +49,8 @@ object Pieces {
     for (n <- (0 to 21)) {
       for (x <- (0 until 20)) {
         for (y <- (0 until 20)) {
-          PieceTemplates(Pieces.data(n)).on((x, y))
-          //PieceTemplates(Pieces.data(n)).on((x, y)).instances
+          //PieceTemplates(Pieces.data(n)).on((x, y))
+          PieceTemplates(Pieces.data(n)).on((x, y)).instances
         }
       }
       //Thread.sleep(500)
@@ -69,6 +69,23 @@ object Pieces {
      *   Space: ~ 270 Mo
      *   Time : ~ 2 s
      */
+
+    println
+
+    // quick cache test
+    stopwatch.reset().start()
+    for (n <- (0 to 21)) {
+      for (x <- (0 until 20)) {
+        for (y <- (0 until 20)) {
+          //PieceTemplates(Pieces.data(n)).on((x, y))
+          PieceTemplates(Pieces.data(n)).on((x, y)).instances
+        }
+      }
+    }
+    println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS))
+    println(PieceTemplates._instances)
+    println(PieceInstance._instances)
+
   }
 
 }
