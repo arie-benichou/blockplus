@@ -31,17 +31,17 @@ object PieceTemplates {
 
   private def computeDistinctRotations(pieceInstance: PieceInstance, anchor: Point) = {
     val r0 = pieceInstance
-    val r1 = new PieceInstance(
+    val r1 = PieceInstance(
       Rotation.rotate45(r0.self)(anchor),
       Rotation.rotate45(r0.light)(anchor),
       Rotation.rotate45(r0.shadow)(anchor)
     )
-    val r2 = new PieceInstance(
+    val r2 = PieceInstance(
       Rotation.rotate45(r1.self)(anchor),
       Rotation.rotate45(r1.light)(anchor),
       Rotation.rotate45(r1.shadow)(anchor)
     )
-    val r3 = new PieceInstance(
+    val r3 = PieceInstance(
       Rotation.rotate45(r2.self)(anchor),
       Rotation.rotate45(r2.light)(anchor),
       Rotation.rotate45(r2.shadow)(anchor)
@@ -50,13 +50,16 @@ object PieceTemplates {
   }
 
   private def computeDistinctInstances(template: PieceTemplates) = {
-    val thisSide = new PieceInstance(template.positions, template.light, template.shadow)
-    val thatSide = new PieceInstance(
-      Reflection.reflectX(template.positions)(template.anchor.x),
-      Reflection.reflectX(template.light)(template.anchor.x),
-      Reflection.reflectX(template.shadow)(template.anchor.x)
-    )
-    computeDistinctRotations(thisSide, template.anchor) ++ computeDistinctRotations(thatSide, template.anchor)
+    if (template.isEmpty) Set(PieceInstance.empty)
+    else {
+      val thisSide = PieceInstance(template.positions, template.light, template.shadow)
+      val thatSide = PieceInstance(
+        Reflection.reflectX(template.positions)(template.anchor.x),
+        Reflection.reflectX(template.light)(template.anchor.x),
+        Reflection.reflectX(template.shadow)(template.anchor.x)
+      )
+      computeDistinctRotations(thisSide, template.anchor) ++ computeDistinctRotations(thatSide, template.anchor)
+    }
   }
 
 }

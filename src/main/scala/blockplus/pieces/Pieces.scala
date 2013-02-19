@@ -32,30 +32,21 @@ object Pieces {
 
   def main(args: Array[String]) {
 
-    /*
-    val piece = Pieces.data(6)
-    val pieceTemplates = PieceTemplates(piece)
-    println(pieceTemplates)
-    pieceTemplates.instances.foreach(println)
-    println()
-    val p1 = PieceInstance((2, 8), (2, 9), (2, 10), (3, 8))
-    println(p1)
-    val p2 = pieceTemplates.instances.toList.head
-    println(p2)
-    println(p1 == p2)
-    */
-
     val stopwatch = new Stopwatch().start()
     for (n <- (0 to 21)) {
       for (x <- (0 until 20)) {
         for (y <- (0 until 20)) {
-          //PieceTemplates(Pieces.data(n)).on((x, y))
-          PieceTemplates(Pieces.data(n)).on((x, y)).instances
+          PieceTemplates(Pieces.data(n)).on((x, y))
+          //PieceTemplates(Pieces.data(n)).on((x, y)).instances
         }
       }
       //Thread.sleep(500)
     }
-    //Thread.sleep(2000)
+    //Thread.sleep(5000)
+
+    stopwatch.stop()
+
+    println
     println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS))
     println(PieceTemplates._instances)
     println(PieceInstance._instances)
@@ -65,9 +56,9 @@ object Pieces {
      *   Space: ~ 40 Mo
      *   Time : ~ 0.75 s
      *
-     *  full set && lazy values computed (67 200  instances of PieceInstance)
-     *   Space: ~ 270 Mo
-     *   Time : ~ 2 s
+     *  full set && lazy values computed (35 002  instances of PieceInstance)
+     *   Space: ~ 260 Mo
+     *   Time : ~ 2.25 s
      */
 
     println
@@ -82,9 +73,37 @@ object Pieces {
         }
       }
     }
+
+    println
+
     println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS))
     println(PieceTemplates._instances)
     println(PieceInstance._instances)
+
+    println
+
+    var s = 0
+    for (n <- (1 to 21)) {
+      s += 400 * PieceTemplates(Pieces.data(n)).instances.size
+    }
+    println(PieceInstance._instances <= s)
+
+    println
+
+    val p1 = PieceInstance((2, 8), (2, 9), (2, 10), (3, 8))
+    println(p1)
+
+    val piece = Pieces.data(6)
+    val pieceTemplates = PieceTemplates(piece).on(2, 8)
+    //println(pieceTemplates)
+    //pieceTemplates.instances.foreach(println)
+    val p2 = pieceTemplates.instances.head
+    println(p2)
+    println(p1 == p2)
+
+    println
+
+    println(PieceInstance._instances == 35002)
 
   }
 
