@@ -1,9 +1,6 @@
 package components.plane.applications
 
-import components.plane.elements.Points
 import components.plane.elements.Point
-import sun.org.mozilla.javascript.internal.ast.Yield
-import components.plane.elements.RotatablePoints
 
 object Translation {
 
@@ -11,6 +8,6 @@ object Translation {
     Point(point.x + vector._1, point.y + +vector._2)
 
   def translate(points: Iterable[Point])(vector: (Int, Int)): Iterable[Point] =
-    Points((for (point <- points) yield translate(point)(vector)).toSeq: _*)
+    for (point <- points) yield translate(point)(vector)
 
 }

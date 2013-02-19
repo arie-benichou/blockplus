@@ -3,7 +3,6 @@ package components.plane.applications
 import org.junit.Assert._
 import org.junit.Test
 import components.plane.elements.Point
-import components.plane.elements.Points
 import components.plane.elements.RotatablePoints
 
 class RotationTest {
@@ -42,16 +41,16 @@ class RotationTest {
   def testRotate45PointsWithReferential() {
     {
       val referential = Point(5, 4)
-      val points = Points((6, 3));
+      val points = List(Point(6, 3));
       val actual = Rotation.rotate45(points)(referential)
-      val expected = Points((4, 3))
+      val expected = List(Point(4, 3))
       assertEquals(expected, actual)
     }
     {
       val referential = Point(5, 4)
-      val points = Points((4, 2), (6, 3));
+      val points = List(Point(4, 2), Point(6, 3));
       val actual = Rotation.rotate45(points)(referential)
-      val expected = Points((3, 5), (4, 3))
+      val expected = List(Point(3, 5), Point(4, 3))
       assertEquals(expected, actual)
     }
 

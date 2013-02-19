@@ -5,7 +5,6 @@ import org.junit.Test
 
 import components.plane.elements.Point
 import components.plane.elements.Point.pairToPoint
-import components.plane.elements.Points
 
 class TranslationTest {
 
@@ -31,23 +30,23 @@ class TranslationTest {
   @Test
   def testTranslatePoints() {
     {
-      val actual = Translation.translate(Points((0, 1)))((0, 0))
-      val expected = Points((0, 1))
+      val actual = Translation.translate(List(Point(0, 1)))((0, 0))
+      val expected = List(Point(0, 1))
       assertEquals(expected, actual)
     }
     {
-      val actual = Translation.translate(Points((0, 1)))((1, 0))
-      val expected = Points((1, 1))
+      val actual = Translation.translate(List(Point(0, 1)))((1, 0))
+      val expected = List(Point(1, 1))
       assertEquals(expected, actual)
     }
     {
-      val actual = Translation.translate(Points((0, 1)))((0, 1))
-      val expected = Points((0, 2))
+      val actual = Translation.translate(List(Point(0, 1)))((0, 1))
+      val expected = List(Point(0, 2))
       assertEquals(expected, actual)
     }
     {
-      val actual = Translation.translate(Points((0, 1), (1, 0)))((1, 2))
-      val expected = Points((1, 3), (2, 2))
+      val actual = Translation.translate(List(Point(0, 1), Point(1, 0)))((1, 2))
+      val expected = List(Point(1, 3), Point(2, 2))
       assertEquals(expected, actual)
     }
   }

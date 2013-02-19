@@ -1,9 +1,6 @@
 package components.plane.applications
 
-import components.plane.elements.Points
 import components.plane.elements.Point
-import sun.org.mozilla.javascript.internal.ast.Yield
-import components.plane.elements.RotatablePoints
 
 object Rotation {
 
@@ -12,6 +9,5 @@ object Rotation {
     Point(point.y + referential.x - referential.y, -point.x + referential.x + referential.y)
 
   def rotate45(points: Iterable[Point])(implicit referential: Point): Iterable[Point] =
-    Points((for (point <- points) yield rotate45(point)(referential)).toSeq: _*)
-
+    for (point <- points) yield (rotate45(point)(referential))
 }
