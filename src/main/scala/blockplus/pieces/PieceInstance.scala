@@ -25,7 +25,13 @@ object PieceInstance {
   def apply(self: Point*): PieceInstance = apply(Set(self: _*))
 }
 
-final class PieceInstance private (val self: Iterable[Point], val light: Iterable[Point], val shadow: Iterable[Point]) extends Iterable[Point] {
+// TODO add piece type hinting (footprint)
+// see piece2.matching
+final class PieceInstance private (
+  val self: Iterable[Point],
+  val light: Iterable[Point], // TODO lazy
+  val shadow: Iterable[Point] // TODO lazy
+  ) extends Iterable[Point] {
   _instances += 1
   override def iterator = self.iterator
   override def isEmpty() = self.isEmpty

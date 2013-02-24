@@ -64,6 +64,8 @@ object PieceTemplates {
 
 }
 
+// TODO add piece type hinting (footprint)
+// see piece2.matching
 final class PieceTemplates private (private val pieceGraph: PieceGraph) extends Iterable[PieceInstance] {
 
   _instances += 1
