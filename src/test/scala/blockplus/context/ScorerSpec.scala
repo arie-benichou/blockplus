@@ -27,10 +27,8 @@ class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
 
   "after playing all pieces score should be 15 (and initial for others)" in {
     prop {
-      (moves: Seq[PieceType]) =>
-        val allMovesPlayed = moves.foldLeft(MoveHistory()) {
-          case (hist, pieceType) => hist.play(Moves.getMove(Color.Blue, pieceType.iterator.next))
-        }
+      (pieces: Seq[PieceType]) =>
+        val allMovesPlayed = playAll(pieces map { p => Moves.getMove(Color.Blue, p.iterator.next) })
         val scores = Scorer(allMovesPlayed)
         scores(Color.Blue) must_== 15
         prop { (c2: Color) =>
@@ -42,12 +40,11 @@ class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
   }
 
   "after playing all pieces score should be 15 for everyone" in {
-    val moves = Color.values map (c => (c -> allPiecesGen.arbitrary.sample.get)) toMap
-    val movesSeq = for {
-      (color, pieces) <- moves
+    val moves = for {
+      (color, pieces) <- Color.values map (_ -> allPiecesGen.arbitrary.sample.get) toMap;
       p <- pieces
     } yield Moves.getMove(color, p.iterator.next)
-    val history = Random.shuffle(movesSeq).foldLeft(MoveHistory()) { case (h, m) => h.play(m) }
+    val history = playAll(Random.shuffle(moves))
     for (c <- Color.values) Scorer(history)(c) must_== 15
   }
 
@@ -65,4 +62,7 @@ class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
       }
     }
   }
+
+  private def playAll(moves: Iterable[Move]): MoveHistory =
+    moves.foldLeft(MoveHistory()) { case (h, m) => h.play(m) }
 }
