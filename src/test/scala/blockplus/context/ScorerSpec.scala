@@ -19,6 +19,7 @@ class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
   implicit val colorGen = Arbitrary(Gen.oneOf(Color.values))
   implicit val pieceGen = Arbitrary(Gen.oneOf(PieceType.values flatMap (_.iterator)))
   implicit val allPiecesGen = Arbitrary(Gen.pick(21, PieceType.values filter (_.id != 0)) map (Random.shuffle(_)))
+  val pieceSequenceWithBonus = allPiecesGen.arbitrary filter hasBonus
 
   "initial score should be -89" in {
     val scores = Scorer(MoveHistory())
@@ -28,20 +29,32 @@ class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
   "after playing all pieces score should be 15 (and initial for others)" in {
     prop {
       (pieces: Seq[PieceType]) =>
-        val allMovesPlayed = playAll(pieces map { p => Moves.getMove(Color.Blue, p.iterator.next) })
-        val scores = Scorer(allMovesPlayed)
-        scores(Color.Blue) must_== 15
-        prop { (c2: Color) =>
-          c2 != Color.Blue ==> {
-            scores(c2) must_== initial
+        !hasBonus(pieces) ==> {
+          val allMovesPlayed = playAll(pieces map { p => Moves.getMove(Color.Blue, p.iterator.next) })
+          val scores = Scorer(allMovesPlayed)
+          scores(Color.Blue) must_== 15
+          prop { (c2: Color) =>
+            c2 != Color.Blue ==> {
+              scores(c2) must_== initial
+            }
           }
         }
     }
   }
 
+  "after playing all pieces score should be 15 (check for bonus 5 points)" in {
+    val prop = Prop.forAll(pieceSequenceWithBonus)(pieces => {
+      val allMovesPlayed = playAll(pieces map { p => Moves.getMove(Color.Blue, p.iterator.next) })
+      val scores = Scorer(allMovesPlayed)
+      scores(Color.Blue) must_== 20
+    })
+    val params = new Test.Parameters.Default { override val maxDiscardRatio: Float = 50 }
+    Test.check(params, prop).status must_== Test.Passed
+  }
+
   "after playing all pieces score should be 15 for everyone" in {
     val moves = for {
-      (color, pieces) <- Color.values map (_ -> allPiecesGen.arbitrary.sample.get) toMap;
+      (color, pieces) <- Color.values map (_ -> allPiecesGen.arbitrary.filter(!hasBonus(_)).sample.get) toMap;
       p <- pieces
     } yield Moves.getMove(color, p.iterator.next)
     val history = playAll(Random.shuffle(moves))
@@ -62,6 +75,8 @@ class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
       }
     }
   }
+
+  private def hasBonus(moves: Seq[PieceType]) = moves.last.size == 1
 
   private def playAll(moves: Iterable[Move]): MoveHistory =
     moves.foldLeft(MoveHistory()) { case (h, m) => h.play(m) }
