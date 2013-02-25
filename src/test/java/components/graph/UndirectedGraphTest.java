@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Collections;
 import java.util.Set;
 
 import org.junit.After;
@@ -81,12 +82,12 @@ public class UndirectedGraphTest {
         fail();
     }
 
-    @Ignore
+    @Test
     public void testLegalGetConnectedVerticeSet() {
-        assertFalse(this.graph.getConnectedEndPoints("A").equals(Sets.newHashSet("C")));
-        assertTrue(this.graph.getConnectedEndPoints("A").equals(Sets.newHashSet("B")));
-        assertFalse(this.graph.getConnectedEndPoints("B").equals(Sets.newHashSet("C")));
-        assertTrue(this.graph.getConnectedEndPoints("B").equals(Sets.newHashSet("A")));
+        assertFalse(this.graph.getConnectedEndPoints("A").equals(Collections.singletonList("C")));
+        assertTrue(this.graph.getConnectedEndPoints("A").equals(Collections.singletonList("B")));
+        assertFalse(this.graph.getConnectedEndPoints("B").equals(Collections.singletonList("C")));
+        assertTrue(this.graph.getConnectedEndPoints("B").equals(Collections.singletonList("A")));
     }
 
     @Test
