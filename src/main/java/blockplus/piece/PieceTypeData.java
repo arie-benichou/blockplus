@@ -34,7 +34,7 @@ import com.google.common.collect.Ordering;
 import components.position.NullPosition;
 import components.position.PositionInterface;
 
-enum PieceTypeData {
+public enum PieceTypeData {
 
     /*      
           NULL OBJECT
