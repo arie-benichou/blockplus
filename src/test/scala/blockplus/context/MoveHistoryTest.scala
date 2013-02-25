@@ -1,5 +1,6 @@
 package blockplus.context
 
+
 import org.junit._
 import org.junit.Assert._
 import blockplus.move.Moves
@@ -9,64 +10,65 @@ import scala.collection.immutable.Stack
 import blockplus.Color._
 import org.junit.rules.ExpectedException
 import java.util.NoSuchElementException
+import scala.collection.JavaConversions._
 
 class MoveHistoryTest {
 
   @Test
   def testApplyNullMove() {
     val given = Moves.getNullMove(Blue)
-    val actual = new MoveHistory().apply(given)
-    val expected = new MoveHistory()
+    val actual = MoveHistory().play(given)
+    val expected = MoveHistory()
     assertEquals(expected, actual)
   }
 
   @Test
   def testApplyMove() {
-    val given = Moves.getMove(Blue, PIECE1.iterator.next)
-    val actual = new MoveHistory().apply(given)
-    val expected = new MoveHistory(new Stack[Move].push(given))
+    val given = Moves.getMove(Blue, PIECE1.head)
+    val actual = MoveHistory().play(given)
+    val expected = MoveHistory(Stack(given))
     assertEquals(expected, actual)
   }
 
   @Test
   def testContainsMove() {
-    assertFalse(new MoveHistory().isEmpty)
-    val move = Moves.getMove(Blue, PIECE1.iterator.next)
-    assertTrue(new MoveHistory().apply(move).isEmpty)
+    assertFalse(MoveHistory().isEmpty)
+    val move = Moves.getMove(Blue, PIECE1.head)
+    assertTrue(MoveHistory().play(move).isEmpty)
   }
 
   @Test
   def testContainsMoveHavingColor() {
-    assertFalse(new MoveHistory().contains(Blue))
-    val move = Moves.getMove(Blue, PIECE1.iterator.next)
-    assertTrue(new MoveHistory().apply(move).contains(Blue))
-    assertFalse(new MoveHistory().apply(move).contains(Green))
+    assertFalse(MoveHistory().contains(Blue))
+    val move = Moves.getMove(Blue, PIECE1.head)
+    assertTrue(MoveHistory().play(move).contains(Blue))
+    assertFalse(MoveHistory().play(move).contains(Green))
   }
 
   @Test(expected = classOf[NoSuchElementException])
   def testLastMoveOnEmptyHistory() {
-    new MoveHistory().last
+    MoveHistory().last
   }
 
   @Test
   def testLastMove() {
     {
-      val move = Moves.getMove(Blue, PIECE1.iterator.next)
-      val actual = new MoveHistory().apply(move).last
+      val move = Moves.getMove(Blue, PIECE1.head)
+      val actual = MoveHistory().play(move).last
       val expected = move
       assertEquals(expected, actual)
     }
     {
-      val move1 = Moves.getMove(Blue, PIECE1.iterator.next)
-      val move2 = Moves.getMove(Yellow, PIECE1.iterator.next)
-      val move3 = Moves.getMove(Red, PIECE1.iterator.next)
-      val move4 = Moves.getMove(Green, PIECE1.iterator.next)
+      val move1 = Moves.getMove(Blue, PIECE1.head)
+      val move2 = Moves.getMove(Yellow, PIECE1.head)
+      val move3 = Moves.getMove(Red, PIECE1.head)
+      val move4 = Moves.getMove(Green, PIECE1.head)
 
-      val actual = new MoveHistory()
-        .apply(move1)
-        .apply(move2)
-        .apply(move3)
-        .apply(move4)
+      val actual = MoveHistory()
+        .play(move1)
+        .play(move2)
+        .play(move3)
+        .play(move4)
         .last
 
       val expected = move4
@@ -77,50 +79,50 @@ class MoveHistoryTest {
 
   @Test(expected = classOf[NoSuchElementException])
   def testLastMoveColorOnHistoryWithoutMoveOfThisColor() {
-    val move = Moves.getMove(Blue, PIECE1.iterator.next)
-    new MoveHistory().apply(move).last(Green)
+    val move = Moves.getMove(Blue, PIECE1.head)
+    MoveHistory().play(move).last(Green)
   }
 
   @Test
   def testLastMoveHavingColor() {
     {
-      val move1 = Moves.getMove(Blue, PIECE1.iterator.next)
-      val actual = new MoveHistory().apply(move1).last(Blue)
+      val move1 = Moves.getMove(Blue, PIECE1.head)
+      val actual = MoveHistory().play(move1).last(Blue)
       val expected = move1
       assertEquals(expected, actual)
     }
     {
-      val move1 = Moves.getMove(Blue, PIECE1.iterator.next)
-      val move2 = Moves.getMove(Green, PIECE1.iterator.next)
-      val actual = new MoveHistory()
-        .apply(move1)
-        .apply(move2)
+      val move1 = Moves.getMove(Blue, PIECE1.head)
+      val move2 = Moves.getMove(Green, PIECE1.head)
+      val actual = MoveHistory()
+        .play(move1)
+        .play(move2)
         .last(Blue)
       val expected = move1
       assertEquals(expected, actual)
     }
     {
-      val move1 = Moves.getMove(Blue, PIECE1.iterator.next)
-      val move2 = Moves.getMove(Blue, PIECE2.iterator.next)
-      val move3 = Moves.getMove(Green, PIECE1.iterator.next)
-      val actual = new MoveHistory()
-        .apply(move1)
-        .apply(move2)
-        .apply(move3)
+      val move1 = Moves.getMove(Blue, PIECE1.head)
+      val move2 = Moves.getMove(Blue, PIECE2.head)
+      val move3 = Moves.getMove(Green, PIECE1.head)
+      val actual = MoveHistory()
+        .play(move1)
+        .play(move2)
+        .play(move3)
         .last(Blue)
       val expected = move2
       assertEquals(expected, actual)
     }
     {
-      val move1 = Moves.getMove(Green, PIECE1.iterator.next)
-      val move2 = Moves.getMove(Blue, PIECE1.iterator.next)
-      val move3 = Moves.getMove(Blue, PIECE2.iterator.next)
-      val move4 = Moves.getMove(Blue, PIECE3.iterator.next)
-      val actual = new MoveHistory()
-        .apply(move1)
-        .apply(move2)
-        .apply(move3)
-        .apply(move4)
+      val move1 = Moves.getMove(Green, PIECE1.head)
+      val move2 = Moves.getMove(Blue, PIECE1.head)
+      val move3 = Moves.getMove(Blue, PIECE2.head)
+      val move4 = Moves.getMove(Blue, PIECE3.head)
+      val actual = MoveHistory()
+        .play(move1)
+        .play(move2)
+        .play(move3)
+        .play(move4)
         .last(Blue)
       val expected = move4
       assertEquals(expected, actual)
@@ -129,8 +131,8 @@ class MoveHistoryTest {
 
   @Test
   def testToString() {
-    val move = Moves.getMove(Blue, PIECE1.iterator.next)
-    val actual = new MoveHistory().apply(move).toString
+    val move = Moves.getMove(Blue, PIECE1.head)
+    val actual = MoveHistory().play(move).toString
     val expected = "Stack(Move{color=Blue, piece=PieceComposite{id=1, positions=(0, 0)}})"
     assertEquals(expected, actual)
   }

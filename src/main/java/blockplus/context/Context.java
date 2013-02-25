@@ -122,7 +122,7 @@ public final class Context implements ContextInterface<Color> {
     private Context(final Context context, final MoveInterface move) {
         this(
                 context.getSide(),
-                context.getMoveHistory().apply((Move) move),
+                context.getMoveHistory().play((Move) move),
                 context.getBoard().apply(move),
                 context.getPlayers().apply(context.getPlayer().apply(move)),
                 context.getAdversity());
