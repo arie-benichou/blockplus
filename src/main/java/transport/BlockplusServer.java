@@ -57,6 +57,7 @@ import com.google.common.eventbus.Subscribe;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+//TODO : non réellement serializable (les champs d'instance ne le sont pas). Est ce un probleme pour plus tard ?
 @SuppressWarnings("serial")
 public class BlockplusServer extends WebSocketServlet {
 

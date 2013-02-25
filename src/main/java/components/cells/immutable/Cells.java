@@ -195,7 +195,8 @@ public final class Cells<T> implements CellsInterface<T> {
     @Override
     @SuppressWarnings("rawtypes")
     public boolean equals(final Object object) {
-        Preconditions.checkArgument(object instanceof CellsInterface, object);
+    	if(object==null) return false;
+    	Preconditions.checkArgument(object instanceof CellsInterface, object);
         if (object == this) return true;
         final CellsInterface that = (CellsInterface) object;
         return this.rows() == that.rows()

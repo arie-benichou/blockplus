@@ -80,6 +80,7 @@ public final class AdversityOf4 implements AdversityInterface<Color> {
 
     @Override
     public boolean equals(final Object object) {
+    	if(object==null) return false;
         Preconditions.checkArgument(object instanceof AdversityOf4);
         final AdversityOf4 that = (AdversityOf4) object;
         return Equivalences.equals().equivalent(this.sides, that.sides);

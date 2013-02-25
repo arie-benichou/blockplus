@@ -34,18 +34,15 @@ object PieceTemplates {
     val r1 = PieceInstance(
       Rotation.rotate45(r0.self)(anchor),
       Rotation.rotate45(r0.light)(anchor),
-      Rotation.rotate45(r0.shadow)(anchor)
-    )
+      Rotation.rotate45(r0.shadow)(anchor))
     val r2 = PieceInstance(
       Rotation.rotate45(r1.self)(anchor),
       Rotation.rotate45(r1.light)(anchor),
-      Rotation.rotate45(r1.shadow)(anchor)
-    )
+      Rotation.rotate45(r1.shadow)(anchor))
     val r3 = PieceInstance(
       Rotation.rotate45(r2.self)(anchor),
       Rotation.rotate45(r2.light)(anchor),
-      Rotation.rotate45(r2.shadow)(anchor)
-    )
+      Rotation.rotate45(r2.shadow)(anchor))
     Set(r0, r1, r2, r3)
   }
 
@@ -56,8 +53,7 @@ object PieceTemplates {
       val thatSide = PieceInstance(
         Reflection.reflectX(template.positions)(template.anchor.x),
         Reflection.reflectX(template.light)(template.anchor.x),
-        Reflection.reflectX(template.shadow)(template.anchor.x)
-      )
+        Reflection.reflectX(template.shadow)(template.anchor.x))
       computeDistinctRotations(thisSide, template.anchor) ++ computeDistinctRotations(thatSide, template.anchor)
     }
   }
@@ -85,20 +81,6 @@ final class PieceTemplates private (private val pieceGraph: PieceGraph) extends 
   private lazy val shadow = sides -- positions
 
   override def isEmpty = pieceGraph.isEmpty
-
-  override def toString = Objects.toStringHelper(this)
-    .add("degree", degree)
-    .add("anchor", anchor)
-    .add("radius", radius)
-    .add("instances", instances.toString())
-    .toString()
-
-  override def hashCode = pieceGraph.hashCode()
-
-  override def equals(other: Any) = {
-    val that = other.asInstanceOf[PieceTemplates]
-    that != null && pieceGraph == that.pieceGraph
-  }
 
   def on(point: Point) = {
     val vector = (point.x - anchor.x, point.y - anchor.y)

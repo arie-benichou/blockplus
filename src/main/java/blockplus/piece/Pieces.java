@@ -111,6 +111,7 @@ public final class Pieces implements Iterable<Entry<PieceType, Integer>> {
 
     @Override
     public boolean equals(final Object object) {
+    	if(object==null) return false;
         Preconditions.checkArgument(object instanceof Pieces);
         final Pieces that = (Pieces) object;
         return Equivalences.equals().equivalent(this.pieces, that.pieces);

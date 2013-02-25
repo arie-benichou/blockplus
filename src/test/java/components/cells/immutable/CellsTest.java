@@ -27,8 +27,6 @@ import static org.junit.Assert.fail;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.annotation.Nullable;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -49,7 +47,7 @@ public class CellsTest {
     private final static Predicate<Entry<PositionInterface, State>> UNDEFINED_PREDICATE = new Predicate<Map.Entry<PositionInterface, State>>() {
 
         @Override
-        public boolean apply(@Nullable final Entry<PositionInterface, State> entry) {
+        public boolean apply(final Entry<PositionInterface, State> entry) {
             return entry.getValue().equals(State.Undefined);
         }
 
@@ -58,7 +56,7 @@ public class CellsTest {
     private final static Predicate<Entry<PositionInterface, State>> OTHER_PREDICATE = new Predicate<Map.Entry<PositionInterface, State>>() {
 
         @Override
-        public boolean apply(@Nullable final Entry<PositionInterface, State> entry) {
+        public boolean apply(final Entry<PositionInterface, State> entry) {
             return entry.getValue().equals(State.Other);
         }
 
@@ -295,9 +293,8 @@ public class CellsTest {
         assertEquals(CELLS.toString().hashCode(), CELLS.hashCode());
     }
 
-    @Test(expected = IllegalArgumentException.class)
     public void testEqualsWithNull() {
-        CELLS.equals(null);
+        assertFalse(CELLS.equals(null));
     }
 
     @Test(expected = IllegalArgumentException.class)

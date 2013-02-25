@@ -14,11 +14,5 @@ object PieceGraph {
 
 final class PieceGraph private (val positions: Iterable[Point])(implicit val anchor: Point) extends Iterable[Point] {
   override def iterator = positions.iterator
-  override def isEmpty() = positions.isEmpty
-  override def toString = Objects.toStringHelper(PieceGraph.this).add("anchor", anchor).add("positions", positions).toString()
-  override def hashCode = toString.hashCode()
-  override def equals(other: Any) = {
-    val that = other.asInstanceOf[PieceGraph]
-    that != null && anchor == that.anchor && positions == that.positions
-  }
+  override def isEmpty = positions.isEmpty
 }

@@ -24,8 +24,6 @@ import interfaces.move.MoveInterface;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import blockplus.Color;
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
@@ -44,7 +42,7 @@ public final class Context implements ContextInterface<Color> {
     private final static Predicate<Context> TERMINATION_PREDICATE = new Predicate<Context>() {
 
         @Override
-        public boolean apply(@Nullable final Context context) {
+        public boolean apply(final Context context) {
             return !context.getPlayers().hasAlivePlayer();
         }
 
@@ -183,7 +181,8 @@ public final class Context implements ContextInterface<Color> {
     // TODO check collisions
     @Override
     public boolean equals(final Object object) {
-        Preconditions.checkArgument(object instanceof Context);
+    	if(object==null) return false;
+    	Preconditions.checkArgument(object instanceof Context);
         final Context that = (Context) object;
         return this.hashCode() == that.hashCode();
     }

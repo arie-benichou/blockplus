@@ -98,7 +98,7 @@ public final class Layer implements Supplier<CellsInterface<State>> {
     private final static Predicate<Entry<PositionInterface, State>> SELF_PREDICATE = new Predicate<Map.Entry<PositionInterface, State>>() {
 
         @Override
-        public boolean apply(@Nullable final Entry<PositionInterface, State> entry) {
+        public boolean apply(final Entry<PositionInterface, State> entry) {
             return entry.getValue().equals(Upekkha);
         }
 
@@ -107,7 +107,7 @@ public final class Layer implements Supplier<CellsInterface<State>> {
     private final static Predicate<Entry<PositionInterface, State>> LIGHT_PREDICATE = new Predicate<Map.Entry<PositionInterface, State>>() {
 
         @Override
-        public boolean apply(@Nullable final Entry<PositionInterface, State> entry) {
+        public boolean apply(final Entry<PositionInterface, State> entry) {
             return entry.getValue().equals(Metta);
         }
 
@@ -196,6 +196,7 @@ public final class Layer implements Supplier<CellsInterface<State>> {
 
     @Override
     public boolean equals(final Object object) {
+    	if(object==null) return false;
         Preconditions.checkArgument(object instanceof Layer);
         return this.get().equals(((Layer) object).get());
     }

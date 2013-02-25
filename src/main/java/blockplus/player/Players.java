@@ -96,6 +96,7 @@ public final class Players implements PlayersInterface<Color>, Iterable<Player> 
 
     @Override
     public boolean equals(final Object object) {
+    	if(object==null) return false;
         Preconditions.checkArgument(object instanceof Players);
         final Players that = (Players) object;
         return Equivalences.equals().equivalent(this.playerByColor, that.playerByColor);

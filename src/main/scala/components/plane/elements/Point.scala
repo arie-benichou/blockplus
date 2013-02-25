@@ -20,10 +20,5 @@ object Point {
 }
 
 final case class Point(val x: Int, val y: Int) {
-  override def toString = "(" + x + "," + y + ")"
-  override def hashCode = this.toString().hashCode()
-  override def equals(other: Any) = {
-    val that = other.asInstanceOf[Point]
-    that != null && x == that.x && y == that.y
-  }
+  override def toString = s"($x,$y)"
 }

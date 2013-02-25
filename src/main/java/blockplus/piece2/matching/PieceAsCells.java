@@ -93,6 +93,7 @@ public final class PieceAsCells {
 
     @Override
     public boolean equals(final Object object) {
+    	if(object==null) return false;
         Preconditions.checkArgument(object instanceof PieceAsCells);
         final PieceAsCells that = (PieceAsCells) object;
         return this.getCells().equals(that.getCells());

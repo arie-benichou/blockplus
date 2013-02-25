@@ -34,11 +34,5 @@ final class PieceInstance private (
   ) extends Iterable[Point] {
   _instances += 1
   override def iterator = self.iterator
-  override def isEmpty() = self.isEmpty
-  override def toString = Objects.toStringHelper(this).add("self", self).add("light", light).add("shadow", shadow).toString()
-  override def hashCode = toString.hashCode()
-  override def equals(other: Any) = {
-    val that = other.asInstanceOf[PieceInstance]
-    that != null && self == that.self
-  }
+  override def isEmpty = self.isEmpty
 }

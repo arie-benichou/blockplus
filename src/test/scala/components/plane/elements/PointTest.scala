@@ -2,6 +2,7 @@ package components.plane.elements
 
 import org.junit.Assert._
 import org.junit.Test
+import org.junit.Ignore
 
 // TODO test ordering
 class PointTest {
@@ -21,7 +22,8 @@ class PointTest {
     assertEquals(expected, actual)
   }
 
-  @Test
+  //TODO : à supprimer sauf si on veut vraiment forcer la valeur du hash
+  @Ignore
   def testhashCode() {
     val actual = Point(0, 1).hashCode
     val expected = Point(0, 1).toString.hashCode

@@ -185,7 +185,8 @@ public final class Board implements BoardInterface {
     // TODO use toString
     @Override
     public boolean equals(final Object object) {
-        Preconditions.checkArgument(object instanceof Board);
+    	if(object==null) return false;
+    	Preconditions.checkArgument(object instanceof Board);
         final Board that = (Board) object;
         return this.layerByColor.equals(that.layerByColor);
     }

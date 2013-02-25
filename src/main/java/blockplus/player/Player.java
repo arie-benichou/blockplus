@@ -68,6 +68,7 @@ public final class Player implements PlayerInterface {
 
     @Override
     public boolean equals(final Object object) {
+    	if(object==null) return false;
         Preconditions.checkArgument(object instanceof Player);
         final Player that = (Player) object;
         return this.getColor().equals(that.getColor())
