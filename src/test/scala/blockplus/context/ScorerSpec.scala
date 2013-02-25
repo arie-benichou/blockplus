@@ -12,6 +12,7 @@ import blockplus.move.Moves
 import blockplus.piece.PieceInterface
 import blockplus.piece.PieceType
 import scala.util.Random
+import scala.collection.immutable.Stack
 
 class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
   val initial = -(1 + 2 + 3 + 3 + 5 * 4 + 12 * 5)
@@ -24,7 +25,7 @@ class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
     prop { (c: Color) => scores(c) must_== initial }
   }
 
-  "after playing all pieces score should be 15" in {
+  "after playing all pieces score should be 15 (and initial for others)" in {
     prop {
       (moves: Seq[PieceType]) =>
         val allMovesPlayed = moves.foldLeft(MoveHistory()) {
@@ -38,6 +39,16 @@ class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
           }
         }
     }
+  }
+
+  "after playing all pieces score should be 15 for everyone" in {
+    val moves = Color.values map (c => (c -> allPiecesGen.arbitrary.sample.get)) toMap
+    val movesSeq = for {
+      (color, pieces) <- moves
+      p <- pieces
+    } yield Moves.getMove(color, p.iterator.next)
+    val history = Random.shuffle(movesSeq).foldLeft(MoveHistory()) { case (h, m) => h.play(m) }
+    for (c <- Color.values) Scorer(history)(c) must_== 15
   }
 
   "after playing one piece score should be -89+piece.size and -89 for other colors" in {
