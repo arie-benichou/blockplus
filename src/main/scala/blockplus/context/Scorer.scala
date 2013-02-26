@@ -3,6 +3,7 @@ package blockplus.context
 import blockplus.Color
 import scala.collection.JavaConversions._
 import blockplus.move.Move
+import scala.language.postfixOps
 
 object Scorer {
   def apply(history: MoveHistory): Map[Color, Int] = (
