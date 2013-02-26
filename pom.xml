@@ -82,6 +82,11 @@
 							<arg>-explaintypes</arg>
 							<arg>-feature</arg>
 						</args>
+						<!-- 
+						<check>
+							<haltOnFailure>true</haltOnFailure>
+						</check>
+						 -->
 					</configuration>
 				</plugin>
 				<plugin>
@@ -98,8 +103,11 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.7</version>
 					<configuration>
-						<forkMode>once</forkMode>
 						<useFile>false</useFile>
+						<includes>
+							<include>**/*Test.class</include>
+							<include>**/*Spec.class</include>
+						</includes>
 					</configuration>
 				</plugin>
 				<plugin>
