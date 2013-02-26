@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import components.graph.GraphBuilder;
 
-public class GraphBuilderTestExceptions {
+public class GraphBuilderExceptionsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testIllegalBuilder1() {

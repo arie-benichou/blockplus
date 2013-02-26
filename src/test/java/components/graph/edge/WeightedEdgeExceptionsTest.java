@@ -19,7 +19,7 @@ package components.graph.edge;
 
 import org.junit.Test;
 
-public class WeightedEdgeTestExceptions {
+public class WeightedEdgeExceptionsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testNewEdgeWithEndpoint1BeingNull() {

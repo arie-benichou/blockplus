@@ -23,10 +23,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import components.graph.Graph;
-import components.graph.GraphBuilder;
-
-public class GraphTestExceptions {
+public class GraphExceptionsTest {
 
     private Graph<String> graph;
 
