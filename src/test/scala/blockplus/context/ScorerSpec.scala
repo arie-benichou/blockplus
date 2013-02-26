@@ -24,7 +24,8 @@ class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
   implicit val colorGen = Arbitrary(Gen.oneOf(Color.values))
   implicit val pieceGen = Arbitrary(Gen.oneOf(PieceType.values flatMap (_.iterator)))
   implicit val allPiecesGen = Arbitrary(Gen.pick(21, PieceType.values filter (_.id != 0)) map (Random.shuffle(_)))
-  val pieceSequenceWithBonus = allPiecesGen.arbitrary filter hasBonus
+  val allPiecesExceptOne = Arbitrary(Gen.pick(20, PieceType.values filter (p => p.id != 0 && p.id != 1)) map (Random.shuffle(_)))
+  val pieceSequenceWithBonus = allPiecesExceptOne.arbitrary map (_ ++ Seq(PieceType.PIECE1))
 
   "initial score should be -89" in {
     val scores = Scorer(MoveHistory())
@@ -47,15 +48,12 @@ class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
     }
   }
 
-  //FIXME : 'Exhausted' is not equal to 'Passed'
   "after playing all pieces score should be 15 (check for bonus 5 points)" in {
-    val prop = Prop.forAll(pieceSequenceWithBonus)(pieces => {
+    Prop.forAll(pieceSequenceWithBonus)(pieces => {
       val allMovesPlayed = playAll(pieces map { p => Moves.getMove(Color.Blue, p.iterator.next) })
       val scores = Scorer(allMovesPlayed)
       scores(Color.Blue) must_== 20
     })
-    val params = new Test.Parameters.Default { override val maxDiscardRatio: Float = 50 }
-    Test.check(params, prop).status must_== Test.Passed
   }
 
   "after playing all pieces score should be at least 15 for everyone" in {
