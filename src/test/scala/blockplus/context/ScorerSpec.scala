@@ -3,20 +3,22 @@ package blockplus.context
 import scala.Array.canBuildFrom
 import scala.collection.JavaConversions.asScalaIterator
 import scala.util.Random
+
+import org.junit.runner.RunWith
+
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen
 import org.scalacheck.Prop
-import org.scalacheck.Test
+
 import org.specs2.ScalaCheck
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.runner.JUnitRunner
+
 import blockplus.Color
 import blockplus.move.Move
 import blockplus.move.Moves
 import blockplus.piece.PieceInterface
 import blockplus.piece.PieceType
-import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
