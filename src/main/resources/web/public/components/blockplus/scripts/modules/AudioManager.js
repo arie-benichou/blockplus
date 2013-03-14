@@ -15,23 +15,35 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO caching
-var AudioManager = function(audio) {
-    this.audio = audio;
+// TODO use lowlag library: http://lowlag.alienbill.com/playground.cgi
+var AudioManager = function() {
+	this.audio = null;
+	this.cache = {};
 };
 
 AudioManager.prototype = {
 
-    constructor : AudioManager,
+	constructor : AudioManager,
 
-    play : function(url) {
-        this.audio.pause();
-        this.audio.src = url;
-        this.audio.oncanplay = this.audio.play();
-    },
+	load : function(url) {
+		console.log("loading " + url);
+		var audio = this.get(url);
+		audio.autobuffer = true;
+		audio.load();
+	},
 
-    pause : function() {
-        this.audio.pause();
-    }
+	play : function(url) {
+		if(this.audio != null) this.audio.pause();
+		this.audio = this.get(url).cloneNode(true);
+		this.audio.play();
+	},
+
+	get : function(url) {
+		if (url in this.cache) return this.cache[url];
+		var audio = new Audio();
+		audio.src = url;
+		this.cache[url] = audio;
+		return audio;
+	}
 
 };

@@ -124,15 +124,7 @@
         </div>
         
         <script type="text/javascript">
-      		$(document).ready(function() {
-            	var isCompliant = /chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
-            	if(isCompliant){
-            		main();  
-               	}
-            	else {
-            	    $('#browser').show();
-            	}
-      		});
+      		$(document).ready(main);
         </script>
 	</body>
 </html>
