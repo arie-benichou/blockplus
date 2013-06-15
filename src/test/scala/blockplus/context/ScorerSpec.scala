@@ -3,23 +3,21 @@ package blockplus.context
 import scala.Array.canBuildFrom
 import scala.collection.JavaConversions.asScalaIterator
 import scala.util.Random
-
 import org.junit.runner.RunWith
-
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen
 import org.scalacheck.Prop
-
 import org.specs2.ScalaCheck
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.runner.JUnitRunner
-
 import blockplus.Color
 import blockplus.move.Move
 import blockplus.move.Moves
 import blockplus.piece.PieceInterface
 import blockplus.piece.PieceType
+import org.junit.Ignore
 
+@Ignore
 @RunWith(classOf[JUnitRunner])
 class ScorerSpec extends SpecificationWithJUnit with ScalaCheck {
   val initial = -(1 + 2 + 3 + 3 + 5 * 4 + 12 * 5)
