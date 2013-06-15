@@ -6,3 +6,5 @@
 /.pmd
 /.metadata/
 /bin/
+/nohup.out
+/*.save
