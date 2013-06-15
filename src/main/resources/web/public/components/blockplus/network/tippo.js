@@ -17,12 +17,13 @@
 
 var main = function() {
 	/*-----------------------8<-----------------------*/
-	var minRegionSquareSide = 320 - 32;
+	var minRegionSquareSide = 320;
 	var maxPieceSize = 5;
-	var size = 14.4;
-	var scale = 2.222; // 20/(2*(5-1)+1)
-	var rows = 20;
-	var columns = 20;
+	var gridSide = 20;
+	var rows = gridSide;
+	var columns = gridSide;
+	var size = minRegionSquareSide / gridSide;
+	var scale = gridSide / (2 * (maxPieceSize - 1) + 1)
 	/*-----------------------8<-----------------------*/
 	var offsetToPositionBuilder = new OffsetToPositionBuilder(size, size);
 	var boardRendering = new BoardRendering(new CellRendering(document.getElementById('board'), size, size, size - 1, size - 1));
