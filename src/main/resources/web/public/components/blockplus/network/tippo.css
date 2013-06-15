@@ -1,0 +1,14 @@
+body {
+	background-color: #a0a6ab;
+	width: 480px;
+	height: 320px;
+	margin: 0 auto;
+}
+
+.tippo {
+	width: 480px;
+	height: 320px;
+	background-color: #aba;
+	border: 2px solid black;
+	margin: 10px auto;
+}

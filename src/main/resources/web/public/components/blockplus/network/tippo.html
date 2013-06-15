@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	
+	<head>
+        <meta charset="utf-8" />
+        
+        <link href="../images/favicon.png" rel="shortcut icon" />
+        <link href="tippo.css" rel="stylesheet"/>
+		
+		<script src="../scripts/library/jquery.min.js"></script>
+		
+        <script src="../scripts/modules/Colors.js"></script>		
+        <script src="../scripts/modules/Position.js"></script>
+		<script src="../scripts/modules/OffsetToPositionBuilder.js"></script>
+        <script src="../scripts/modules/Board.js"></script>		
+        <script src="../scripts/modules/CellRendering.js"></script>
+        <script src="../scripts/modules/BoardRendering.js"></script>
+        
+		<script src="tippo.js"></script>
+	</head>
+	
+	<body>
+		<div class="tippo">
+			<canvas id="board" width="320px" height="320px"></canvas>
+			<button id="zoom-out" style="float: right;">Zoom Out</button>
+		</div>
+		<script>
+  			$(document).ready(main);
+		</script>
+	</body>
+	
+</html>
