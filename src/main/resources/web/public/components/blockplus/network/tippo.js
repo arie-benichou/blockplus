@@ -17,10 +17,10 @@
 
 var main = function() {
 	/*-----------------------8<-----------------------*/
-	var minRegionSquareSide = 320;
+	var minRegionSquareSide = 320 - 32;
 	var maxPieceSize = 5;
-	var size = 16;
-	var scale = 2.222;
+	var size = 14.4;
+	var scale = 2.222; // 20/(2*(5-1)+1)
 	var rows = 20;
 	var columns = 20;
 	/*-----------------------8<-----------------------*/
@@ -104,7 +104,7 @@ var main = function() {
 		event.preventDefault();
 	});
 	$('#zoom-out').bind('click.1', initState1);
-	/*-----------------------8<-----------------------*/	
+	/*-----------------------8<-----------------------*/
 	initState1();
 	/*-----------------------8<-----------------------*/
 };
