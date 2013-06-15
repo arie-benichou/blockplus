@@ -18,10 +18,10 @@
 var main = function() {
 
     var computeLocation = function(suffix) {
-        return document.location.toString().replace('http://', 'ws://').replace('https://', 'wss://') + suffix;
+        return document.location.origin.toString().replace('http://', 'ws://').replace('https://', 'wss://') + suffix;
     };
 
-    var location = computeLocation("io");
+    var location = computeLocation("/network/io");
 
     // TODO à revoir
     Client.protocol.register("info", function(data) {
@@ -65,6 +65,8 @@ var main = function() {
         $("#user").val(name);
         if (name != input)
             return false;
+
+	$('#connection').hide();
 
         var client = new Client(name, location);
         client.start(client.join);
@@ -159,11 +161,5 @@ var main = function() {
         };
 
     });
-
-    $('#connection').on('shown', function() {
-        $('#user').focus();
-    });
-
-    $('#connection').modal('show');
-
+    
 };

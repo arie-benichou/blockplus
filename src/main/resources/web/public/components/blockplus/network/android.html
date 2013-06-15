@@ -6,13 +6,12 @@
 		
         <link href="../images/favicon.png" rel="shortcut icon" />
         
-        <link href="../styles/bootstrap.min.css" rel="stylesheet">
-        
         <link href="index.css" rel="stylesheet"/>
+	<link href="../styles/bootstrap.min.css" rel="stylesheet">
                 
         <script src="../scripts/library/jquery.min.js"></script>
         <script src="../scripts/library/bootstrap.min.js"></script>
-           
+
         <script src="../scripts/modules/Protocol.js"></script>
         <script src="../scripts/modules/Client.js"></script>
         <script src="../scripts/modules/Game.js"></script>
@@ -31,9 +30,7 @@
         <script src="../scripts/modules/PieceImageManager.js"></script>
         <script src="../scripts/modules/Options.js"></script>
         <script src="../scripts/modules/AudioManager.js"></script>
-        
-        <script src="index.js"></script>
-        
+                
         
 	</head>
 	<body>
@@ -48,22 +45,14 @@
             </div>
         </div>
         
-        <!-- connection -->
-        <div id="connection" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="label" aria-hidden="true">
-            <div class="modal-header">
-                <!-- 
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                 -->
-                <h3 id="label">Welcome !</h3>
-            </div>
-            <div class="modal-body">
-                <input type="text" id="user" maxlength="26" placeholder="Enter your name…" style="margin: 0;">
-            </div>
-            <div class="modal-footer">
-                <button id="connect" class="btn btn-primary" data-dismiss="modal">Connect</button>
-            </div>
-        </div>
-        
+        <!-- connection
+        <div id="connection" style="margin:0">
+            <h3 id="label">Welcome !</h3>
+	    <input type="text" id="user" maxlength="26">
+            <button id="connect">Connect</button>
+	</div>
+	-->
+
         <!-- games -->
         <div id="games" style="display: none;"></div>
         
@@ -101,34 +90,47 @@
             </div>
         </div>
         
-        <!-- feedback -->
-        <div id="feedback-dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="label" aria-hidden="true">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="label">Feedback</h3>
-            </div>
-            <div class="modal-body">
-                <p>Feature ideas, problem reports or general comments are welcome !</p>
-                <textarea id="feedback-content" rows="5" cols="20"></textarea>
-                </div>
-            <div class="modal-footer">
-                <button id="send-feedback" class="btn btn-primary" data-dismiss="modal">Send</button>
-            </div>
-        </div>        
-        <div id="feedback" data-toggle="modal" data-target="#feedback-dialog" style="display: none;">Send feedback</div>
-        
-        <!-- requirements -->
-        <div id="browser" style="display: none;">
-            <img src="http://www.google.fr/images/icons/product/chrome-48.png">
-            <a href="https://www.google.com/intl/en/chrome/browser/">Install Google Chrome</a>
-        </div>
-        
         <script type="text/javascript">
-      		$(document).ready(main);
-                $('#connection').on('shown', function() {
-                    $('#user').focus();
+
+    		 //$(document).ready(main);
+
+		 var computeLocation = function(suffix) {
+	 	 	return document.location.origin.toString().replace('http://', 'ws://').replace('https://', 'wss://') + suffix;
+		 };
+
+		var url  = computeLocation("/network/io");
+
+		var connection = function(name) {
+		        var object = {
+		       		type : 'Client',
+			        data : {name : name}
+		        };
+		        return object;
+		};
+
+		Client.message = connection; // TODO à revoir
+
+		var client = new Client("Android", url);
+	        client.start(client.join);
+
+		var gameConnection = function(n) {
+                	var message = {
+                            type : 'GameConnection',
+                            data : {ordinal : n}
+                        };
+                        return message;
+		};
+
+                Client.protocol.register("enterGame", function(data) {
+                        myGame = new Game(client);
+                        myGame.bigMess();
                 });
-               $('#connection').modal('show');
+
+                Client.protocol.register("games", function(data) {
+	                client.say(gameConnection(9));
+                });
+
         </script>
+
 	</body>
 </html>
