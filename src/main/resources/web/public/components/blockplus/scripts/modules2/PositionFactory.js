@@ -15,19 +15,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var PositionFactory = function(cellDimension) {
-	this.cellDimension = cellDimension;
+var PositionFactory = function() {
 };
 
 PositionFactory.prototype = {
 
 	constructor : PositionFactory,
-
-	getPositionFromOffset : function(x, y) {
-		var row = Math.floor(y / (this.cellDimension.height));
-		var column = Math.floor(x / (this.cellDimension.width));
-		return this.getPosition(row, column);
-	},
 
 	getPosition : function(row, column) {
 		return {

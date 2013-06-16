@@ -15,26 +15,38 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var CellRenderer = function(canvas, positionFactory, colors) {
-	this.canvas = canvas;
-	this.context = canvas.getContext("2d");
-	this.positionFactory = positionFactory;
-	this.colors = colors;
-	this.width = this.positionFactory.cellDimension.width;
-	this.height = this.positionFactory.cellDimension.height;
-};
+function Protocol(debug) {
+	this.debug = debug;
+	this.listeners = {};
+}
+Protocol.prototype = {
 
-CellRenderer.prototype = {
+	constructor : Protocol,
 
-	constructor : CellRenderer,
-
-	_update : function(row, column, color) {
-		this.context.fillStyle = color;
-		this.context.fillRect(this.width * column, this.height * row, this.width - 1, this.height - 1);
+	handle : function(message) {
+		var object = null;
+		try {
+			object = JSON.parse(message);
+		} catch (e) {
+			console.error(message);
+		}
+		if (object != null)
+			this.on(object);
 	},
 
-	update : function(position, color) {
-		this._update(position.row, position.column, (color in this.colors) ? this.colors[color] : color);
+	on : function(json) {
+		if (json.type in this.listeners)
+			this.listeners[json.type](json.data);
+		else if (this.debug) {
+			console.error(json);
+			console.error("Protocol has no listener defined for event of type: " + json.type);
+			console.error(json.data);
+		}
+
+	},
+
+	register : function(type, listener) {
+		this.listeners[type] = listener;
 	}
 
 };

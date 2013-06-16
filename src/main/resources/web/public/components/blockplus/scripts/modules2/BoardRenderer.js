@@ -15,46 +15,50 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var BoardRenderer = function(boardDimension, cellRenderer) {
-	this.boardDimension = boardDimension;
-	this.cellRenderer = cellRenderer;
+var BoardRenderer = function(canvas, cellDimension, colors) {
+	this.canvas = canvas;
+	this.context = canvas.getContext("2d");
+	this.cellWidth = cellDimension.width;
+	this.cellHeight = cellDimension.height;
+	this.colors = colors;	
 };
 
 BoardRenderer.prototype = {
 
 	constructor : BoardRenderer,
 
-	getCanvas : function() {
-		return this.cellRenderer.canvas;
+	_setFillStyle : function(style) {
+		this.context.fillStyle = style;
+	},
+	
+	_fillRect : function(x, y, width, height) {
+		this.context.fillRect(x, y, width, height);
+	},
+	
+	_drawCell : function(row, column) {
+		this._fillRect(this.cellWidth * column, this.cellHeight * row, this.cellWidth - 1, this.cellHeight - 1);
 	},
 
-	getContext : function(board) {
-		return this.cellRenderer.context;
+	renderCell : function(position, color) {
+		this._setFillStyle(color);
+		this._drawCell(position.row, position.column);
 	},
-
-	_updateCell : function(row, column, state) {
-		this.cellRenderer._update(row, column, state);
-	},
-
-	updateCell : function(position, state) {
-		this.cellRenderer.update(position, state);
-	},
-
-	update : function(board) {
-		this.getContext().fillStyle = "#a0a6ab";
-		this.getContext().fillRect(0, 0, this.getCanvas().width, this.getCanvas().height);
+	
+	render : function(board) {
+		this._setFillStyle("#a0a6ab");
+		this._fillRect(0, 0, this.canvas.width, this.canvas.height);
+		this._setFillStyle("#2a2d30");
 		for ( var i = 0; i < board.rows; ++i)
 			for ( var j = 0; j < board.columns; ++j)
-				this._updateCell(i, j, "#2a2d30");
-		for ( var color in board.get()) {
+				this._drawCell(i, j);
+		for ( var color in board.cells) {
 			var cells = board.getCells(color);
+			this._setFillStyle(this.colors[color]);
 			for ( var i = 0, n = cells.length; i < n; ++i) {
 				var index = cells[i];
-				var row = Math.floor(index / this.boardDimension.columns);
-				var column = index % this.boardDimension.rows;
-				this._updateCell(row, column, color);
+				this._drawCell(Math.floor(index / board.columns), index % board.rows);
 			}
 		}
-	},
+	},	
 
 };

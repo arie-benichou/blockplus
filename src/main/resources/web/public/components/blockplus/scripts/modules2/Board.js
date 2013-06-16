@@ -1,36 +1,17 @@
-/*
- * Copyright 2012-2013 ArteFact
- * 
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
-var Board = function(state) {
-    this.rows = state.dimension.rows;
-    this.columns = state.dimension.columns;
-    this.cells = state.cells;
+var Board = function(data) {
+	this.dimension = data.dimension;
+	this.rows = this.dimension.rows;
+	this.columns = this.dimension.columns;
+	this.size = this.columns * this.rows;
+	this.cells = data.cells;
 };
 
 Board.prototype = {
 
-    constructor : Board,
-    
-    get : function() {
-        return this.cells;
-    },    
+	constructor : Board,
 
-    getCells : function(color) {
-        return this.cells[color];
-    }
+	getCells : function(color) {
+		return this.cells[color];
+	}
 
 };

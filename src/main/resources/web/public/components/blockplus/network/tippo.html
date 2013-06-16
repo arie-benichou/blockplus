@@ -1,34 +1,104 @@
 <!DOCTYPE html>
-<html>
-	
+<html>	
 	<head>
         <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        
 		<title>Block+</title>
-        <!--  -->
+		
         <link href="../images/favicon.png" rel="shortcut icon" />
         <link href="tippo.css" rel="stylesheet"/>
-        <!--  -->        
-    	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-        <!--  -->
+		
 		<script src="../scripts/library/jquery.min.js"></script>
-        <!--  -->
-        <script src="../scripts/modules2/PositionFactory.js"></script>
-        <script src="../scripts/modules2/Colors.js"></script>        
-        <script src="../scripts/modules2/CellRenderer.js"></script>
+		
+		<script src="../scripts/modules2/Application.js"></script>        
+		<script src="../scripts/modules2/ViewPort.js"></script>
+        <script src="../scripts/modules2/PositionFactory.js"></script>        
         <script src="../scripts/modules2/BoardRenderer.js"></script>
         <script src="../scripts/modules2/Board.js"></script>        
-        <!--  -->        
-		<script src="tippo.js"></script>
+		<script src="../scripts/modules2/BoardManager.js"></script>
+		
+		<!--
+        <script src="../scripts/modules2/Protocol.js"></script>
+        <script src="../scripts/modules2/Client.js"></script>        
+		<script src="../scripts/modules2/Game.js"></script>
+        <script src="../scripts/modules2/Options.js"></script>
+		<script src="../scripts/modules2/GameState.js"></script>
+        <script src="../scripts/modules/SelectedPositions.js"></script>
+        -->
+        
 	</head>
-	
 	<body>
 		<div class="tippo">
 			<canvas id="board" width="320px" height="320px"></canvas>
 			<button id="zoom-out" style="float: right;">Zoom Out</button>
 		</div>
 		<script>
-  			$(document).ready(main);
+			var that = new Application();
+			var main = function() {
+				$('#zoom-out').hide();
+				$('#zoom-out').unbind('click');
+				$('#zoom-out').bind('click', main);
+				that.boardManager.unregister('click.2');
+				that.boardManager.renderer.context.restore();
+				that.boardManager.render();
+				var getPositionFromOffset = function(x, y) {
+					var row = Math.floor(y / (that.cellDimension.height));
+					var column = Math.floor(x / (that.cellDimension.width));
+					return that.positionFactory.getPosition(row, column);
+				};
+				var offsetToPosition1 = function(event, targetOffset) {
+					event.offsetX = event.pageX - targetOffset.left;
+					event.offsetY = event.pageY - targetOffset.top;
+					return getPositionFromOffset(event.offsetX, event.offsetY);
+				}
+				var offsetToPosition2 = function(event, targetOffset, scale, referential) {
+					event.offsetX = event.pageX - targetOffset.left;
+					event.offsetY = event.pageY - targetOffset.top;
+					var p = getPositionFromOffset(event.offsetX / scale.x, event.offsetY / scale.y);
+					return that.positionFactory.getPosition(p.row + referential.minY, p.column + referential.minX);
+				};
+				var computeNewReferential = function(position) {
+					var minY = position.row - that.neighbourhood;
+					var minX = position.column - that.neighbourhood;
+					var maxY = position.row + that.neighbourhood;
+					var maxX = position.column + that.neighbourhood;
+					if (maxY > (that.board.rows - 1))
+						minY -= (maxY - (that.board.rows - 1));
+					else if (minY < 0)
+						minY = 0;
+					if (maxX > (that.board.columns - 1))
+						minX -= (maxX - (that.board.columns - 1));
+					else if (minX < 0)
+						minX = 0;
+					return {
+						minX : minX,
+						minY : minY
+					};
+				};
+				var clickEventHandler1 = function(event) {
+					$('#zoom-out').show();
+					that.boardManager.unregister('click.1');
+					var position = offsetToPosition1(event, $(event.target).offset());
+					var referential = computeNewReferential(position);
+					var clickEventHandler2 = function(event) {
+						var position = offsetToPosition2(event, $(event.target).offset(), that.scale, referential);
+						that.boardManager.renderCell(position, "#FFF");
+					};
+					that.boardManager.register('click.2', clickEventHandler2);
+					var translation = {
+						x : -referential.minX * that.cellDimension.width * that.scale.x,
+						y : -referential.minY * that.cellDimension.height * that.scale.y
+					}
+					var context = that.boardManager.renderer.context;
+					context.save();
+					context.translate(translation.x, translation.y);
+					context.scale(that.scale.x, that.scale.y);
+					that.boardManager.render();
+				};
+				that.boardManager.register('click.1', clickEventHandler1);
+			};
+			main();
 		</script>
 	</body>
-	
 </html>
