@@ -8,7 +8,7 @@ Blockplus.Client = function(name, location) {
 
 Blockplus.Client.timeout = 5 * 1000;
 
-Blockplus.Client.protocol = new Protocol(false);
+Blockplus.Client.protocol = new Blockplus.Protocol(true);
 
 Blockplus.Client.prototype = {
 
@@ -25,7 +25,7 @@ Blockplus.Client.prototype = {
         var timeout = window.setTimeout(function() {
             clearInterval();
             console.error("Connection with server timed out.");
-        }, Client.timeout);
+        }, Blockplus.Client.timeout);
         var clearTimeout = function() {
             window.clearTimeout(timeout);
         };
@@ -52,7 +52,7 @@ Blockplus.Client.prototype = {
     // TODO incomingProtocol
     onmessage : function(message) {
         if (message.data)
-            Client.protocol.handle(message.data);
+            Blockplus.Client.protocol.handle(message.data);
     },
 
     onerror : function(message) {
@@ -73,7 +73,7 @@ Blockplus.Client.prototype = {
     },
 
     join : function(that) {
-        that.say(Client.message(that.name));
+        that.say(Blockplus.Client.message(that.name));
     }
 
 };

@@ -47,7 +47,8 @@ Blockplus.Application = function() {
 
 	this.boardRenderer = new Blockplus.BoardRenderer(document.getElementById('board'), this.cellDimension, this.colors);
 	this.positionFactory = new Blockplus.PositionFactory();
-	this.boardManager = new Blockplus.BoardManager(this.board, this.boardRenderer, this.positionFactory);
+	this.selectedPositions = new Blockplus.SelectedPositions();
+	this.boardManager = new Blockplus.BoardManager(this.board, this.boardRenderer, this.positionFactory, this.selectedPositions);
 
 	/*-----------------------8<-----------------------*/
 
@@ -82,7 +83,10 @@ Blockplus.Application = function() {
 			var offsetY = event.pageY - targetOffset.top;
 			var p = that.boardManager.position(offsetX / that.scale.x, offsetY / that.scale.y);
 			var position = that.positionFactory.getPosition(p.row + referential.minY, p.column + referential.minX);
-			that.boardManager.renderCell(position, "#FFF");
+			if (that.boardManager.hasSelection(position))
+				that.boardManager.unselect(position);
+			else
+				that.boardManager.select(position, 'Blue');
 		};
 		that.boardManager.register('click.2', clickEventHandler2);
 
@@ -96,7 +100,57 @@ Blockplus.Application = function() {
 		that.boardManager.renderer.context.restore();
 		that.boardManager.render();
 		that.boardManager.register('click.1', that.clickEventHandler1);
+		that.boardManager.clearSelection();
 	};
+
+	/*-------------------------------8<-------------------------------*/
+
+	var computeLocation = function(suffix) {
+		return document.location.origin.toString().replace('http://', 'ws://').replace('https://', 'wss://') + suffix;
+	};
+
+	var connection = function(name) {
+		var object = {
+			type : 'Client',
+			data : {
+				name : name
+			}
+		};
+		return object;
+	};
+
+	var gameConnection = function(n) {
+		var message = {
+			type : 'GameConnection',
+			data : {
+				ordinal : n
+			}
+		};
+		return message;
+	};
+
+	Blockplus.Client.message = connection; // TODO à revoir
+	Blockplus.Client.protocol.register("games", function(data) {
+		Blockplus.Client.protocol.register("enterGame", function(data) {
+			Blockplus.Client.protocol.register("color", function(data) {
+				var color = data;
+				//console.log(color);
+				that.boardManager.updateColor(color);
+				Blockplus.Client.protocol.register("update", function(data) {
+					var gameState = new Blockplus.GameState(data);
+					var game = new Blockplus.Game(client, color, gameState, that.boardManager);
+					game.update();
+				});
+			});
+		});
+		client.say(gameConnection(10));
+	});
+
+	var url = computeLocation("/network/io");
+	var client = new Blockplus.Client("Android", url);
+	client.start(client.join);
+
+	/*-------------------------------8<-------------------------------*/
 
 };
 

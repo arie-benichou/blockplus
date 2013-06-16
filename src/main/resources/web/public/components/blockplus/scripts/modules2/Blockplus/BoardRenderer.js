@@ -28,6 +28,11 @@ Blockplus.BoardRenderer.prototype = {
 		this._setFillStyle(color);
 		this._drawCell(position.row, position.column);
 	},
+	
+	renderEmptyCell : function(position) {
+		this._setFillStyle("#2a2d30");
+		this._drawCell(position.row, position.column);
+	},	
 
 	render : function(board) {
 		this._setFillStyle("#a0a6ab");
@@ -67,7 +72,7 @@ Blockplus.BoardRenderer.prototype = {
 	renderSelectedCell : function(position, color) {
 		this.context.save();
 		this.context.globalAlpha = 0.5;
-		this.updateCell(position, this.colors[color]);
+		this.renderCell(position, this.colors[color]);
 		this.context.restore();
 	},
 

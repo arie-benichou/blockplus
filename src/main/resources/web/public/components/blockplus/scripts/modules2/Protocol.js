@@ -1,9 +1,10 @@
 var Blockplus = Blockplus || {};
 
-Blockplus.Protocol(debug) = {
+Blockplus.Protocol = function(debug) {
 	this.debug = debug;
 	this.listeners = {};
-}
+};
+
 Blockplus.Protocol.prototype = {
 
 	constructor : Blockplus.Protocol,
@@ -23,9 +24,9 @@ Blockplus.Protocol.prototype = {
 		if (json.type in this.listeners)
 			this.listeners[json.type](json.data);
 		else if (this.debug) {
-			console.error(json);
-			console.error("Protocol has no listener defined for event of type: " + json.type);
-			console.error(json.data);
+			console.warn(json);
+			console.warn("Protocol has no listener defined for event of type: " + json.type);
+			console.warn(json.data);
 		}
 
 	},

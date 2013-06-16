@@ -1,18 +1,20 @@
 var Blockplus = Blockplus || {};
 
-Blockplus.BoardManager = function(board, renderer, positionFactory) {
-
-	this.board = board;
+Blockplus.BoardManager = function(board, renderer, positionFactory, selectedPositions) {
+	
 	this.renderer = renderer;
 	this.positionFactory = positionFactory;
-
-	// TODO ? à injecter
-	$(this.renderer.canvas).mousedown(function(event) {
+	
+	this.selectedPositions = selectedPositions;
+	
+	this.board = board;
+	this.color = "#000";
+	this.potentialPositions = {};
+	
+	this.register('mousedown', function(event) {
 		event.preventDefault();
-	});
-
-	var that = this;
-
+	}); // in order to avoid annoying behaviour...
+	
 };
 
 Blockplus.BoardManager.prototype = {
@@ -25,6 +27,10 @@ Blockplus.BoardManager.prototype = {
 
 	render : function(board) {
 		board == undefined ? this.renderer.render(this.board) : this.renderer.render(board);
+		for ( var potentialPosition in this.potentialPositions) {
+			var position = JSON.parse(potentialPosition); // TODO à revoir
+			this.renderPotentialCell(position, this.color);
+		}
 	},
 
 	renderPotentialCell : function(position, color) {
@@ -41,7 +47,7 @@ Blockplus.BoardManager.prototype = {
 			this.renderSelectedCell(position, color);
 		}
 	},
-	
+
 	register : function(name, handler) {
 		$(this.renderer.canvas).bind(name, handler);
 	},
@@ -55,7 +61,7 @@ Blockplus.BoardManager.prototype = {
 		var column = Math.floor(x / (this.renderer.cellWidth));
 		return this.positionFactory.getPosition(row, column);
 	},
-	
+
 	zoomInTopLeftCornerPosition : function(position, neighbourhood) {
 		var minY = position.row - neighbourhood;
 		var minX = position.column - neighbourhood;
@@ -73,6 +79,40 @@ Blockplus.BoardManager.prototype = {
 			minX : minX,
 			minY : minY
 		};
+	},
+	
+	clearSelection: function() {
+		this.selectedPositions.clear();
+	},
+	
+	selection: function() {
+		return this.selectedPositions.get();
 	},		
+	
+	hasSelection: function(position) {
+		return this.selectedPositions.contains(position);
+	},		
+	
+	select: function(position, color) {
+		this.renderSelectedCell(position, color);
+		this.selectedPositions.add(position);
+	},
+	
+	unselect: function(position) {
+		this.renderer.renderEmptyCell(position);
+		this.selectedPositions.remove(position);
+	},
+	
+	updateColor: function(color) {
+		this.color = color;
+	},		
+	
+	updateBoard: function(board) {
+		this.board = new Blockplus.Board(board);
+	},
+	
+	updatePotentialPositions: function(potentialPositions) {
+		this.potentialPositions = potentialPositions;
+	},
 
 };
