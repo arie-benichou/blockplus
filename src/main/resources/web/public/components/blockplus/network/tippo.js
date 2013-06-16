@@ -17,53 +17,79 @@
 
 var main = function() {
 	/*-----------------------8<-----------------------*/
-	var minRegionSquareSide = 320;
-	var maxPieceSize = 5;
-	var gridSide = 20;
-	var rows = gridSide;
-	var columns = gridSide;
-	var size = minRegionSquareSide / gridSide;
-	var scale = gridSide / (2 * (maxPieceSize - 1) + 1)
+	var boardDimension = {
+		rows : 20,
+		columns : 20,
+		size : function() {
+			return this.rows * this.columns;
+		}
+
+	};
 	/*-----------------------8<-----------------------*/
-	var offsetToPositionBuilder = new OffsetToPositionBuilder(size, size);
-	var boardRendering = new BoardRendering(new CellRendering(document.getElementById('board'), size, size, size - 1, size - 1));
+	var viewPort = {
+		minWidth : 320,
+		minHeight : 480,
+		min : function() {
+			return Math.min(this.minWidth, this.minHeight);
+		}
+	}
+	/*-----------------------8<-----------------------*/
+	var cellDimension = {
+		width : viewPort.min() / boardDimension.rows,
+		height : viewPort.min() /boardDimension.columns
+	}
+	/*-----------------------8<-----------------------*/
+	var maxPieceSize = 5;
+	var neighbourhood = maxPieceSize - 1;
+	/*-----------------------8<-----------------------*/
+	var scale = {
+		x : boardDimension.columns / (2 * neighbourhood + 1),
+		y : boardDimension.rows / (2 * neighbourhood + 1)
+	}
+	/*-----------------------8<-----------------------*/
+	var positionFactory = new PositionFactory(cellDimension);
+	var cellRenderer = new CellRenderer(document.getElementById('board'), positionFactory, Colors);
+	var boardRenderer = new BoardRenderer(boardDimension, cellRenderer);
+	/*-----------------------8<-----------------------*/
 	var data = {
 		dimension : {
-			rows : rows,
-			columns : columns
+			rows : boardDimension.rows,
+			columns : boardDimension.columns
 		},
 		cells : {
-			Blue : [ 84 ],
-			Yellow : [ 315 ],
-			Red : [ 216 ],
-			Green : [ 128 ]
+			Blue : [ 0, 21, 42, 63, 84, 105, 126, 147, 168, 189 ],
+			Yellow : [ 19, 38, 57, 76, 95, 114, 133, 152, 171, 190 ],
+			Red : [ 380, 361, 342, 323, 304, 285, 266, 247, 228, 209 ],
+			Green : [ 399, 378, 357, 336, 315, 294, 273, 252, 231, 210 ]
 		}
 	};
+	/*-----------------------8<-----------------------*/	
+	// TODO BoardManager et lui injecter le boardRenderer
 	var board = new Board(data);
-	/*-----------------------8<-----------------------*/
-	var offsetToPosition1 = function(targetOffset) {
+
+	var offsetToPosition1 = function(event, targetOffset) {
 		event.offsetX = event.pageX - targetOffset.left;
 		event.offsetY = event.pageY - targetOffset.top;
-		return offsetToPositionBuilder.build(event.offsetX, event.offsetY);
+		return positionFactory.getPositionFromOffset(event.offsetX, event.offsetY);
 	};
-	var offsetToPosition2 = function(targetOffset, scale, referential) {
+	var offsetToPosition2 = function(event, targetOffset, scale, referential) {
 		event.offsetX = event.pageX - targetOffset.left;
 		event.offsetY = event.pageY - targetOffset.top;
-		var position = offsetToPositionBuilder.build(event.offsetX / scale, event.offsetY / scale);
-		return new Position(position.row + referential.minY, position.column + referential.minX);
+		var p = positionFactory.getPositionFromOffset(event.offsetX / scale.x, event.offsetY / scale.y);
+		return positionFactory.getPosition(p.row + referential.minY, p.column + referential.minX);
 	};
-	/*-----------------------8<-----------------------*/
+	
 	var computeNewReferential = function(position) {
-		var minY = position.row - (maxPieceSize - 1);
-		var minX = position.column - (maxPieceSize - 1);
-		var maxY = position.row + (maxPieceSize - 1);
-		var maxX = position.column + (maxPieceSize - 1);
-		if (maxY > (rows - 1))
-			minY -= (maxY - (rows - 1));
+		var minY = position.row - neighbourhood;
+		var minX = position.column - neighbourhood;
+		var maxY = position.row + neighbourhood;
+		var maxX = position.column + neighbourhood;
+		if (maxY > (boardDimension.rows - 1))
+			minY -= (maxY - (boardDimension.rows - 1));
 		else if (minY < 0)
 			minY = 0;
-		if (maxX > (columns - 1))
-			minX -= (maxX - (columns - 1));
+		if (maxX > (boardDimension.columns - 1))
+			minX -= (maxX - (boardDimension.columns - 1));
 		else if (minX < 0)
 			minX = 0;
 		return {
@@ -71,41 +97,44 @@ var main = function() {
 			minY : minY
 		};
 	};
-	/*-----------------------8<-----------------------*/
+
 	var clickEventHandler1 = function(event) {
 		$('#zoom-out').show();
-		$(boardRendering.getCanvas()).unbind('click.1');
-		var position = offsetToPosition1($(event.target).offset());
+		$(boardRenderer.getCanvas()).unbind('click.1');
+		var position = offsetToPosition1(event, $(event.target).offset());
 		var referential = computeNewReferential(position);
 		var clickEventHandler2 = function(event) {
-			var position = offsetToPosition2($(event.target).offset(), scale, referential);
-			console.log(position);
-			boardRendering.updateCell(position, Colors.Blue);
+			var position = offsetToPosition2(event, $(event.target).offset(), scale, referential);
+			boardRenderer.updateCell(position, "#FFF");
 		};
-		$(boardRendering.getCanvas()).bind('click.2', clickEventHandler2);
-		var context = boardRendering.getContext();
+		$(boardRenderer.getCanvas()).bind('click.2', clickEventHandler2);
+		var context = boardRenderer.getContext();
 		context.save();
-		var xTranslation = -referential.minX * offsetToPositionBuilder.getOffsetX() * scale;
-		var yTranslation = -referential.minY * offsetToPositionBuilder.getOffsetY() * scale;
-		context.translate(xTranslation, yTranslation);
-		context.scale(scale, scale);
-		boardRendering.update(board);
+		var translation = {
+			x : -referential.minX * cellRenderer.width * scale.x,
+			y : -referential.minY * cellRenderer.height * scale.y
+		}
+		context.translate(translation.x, translation.y);
+		context.scale(scale.x, scale.y);
+		boardRenderer.update(board);
 	};
-	/*-----------------------8<-----------------------*/
+
 	var initState1 = function() {
 		$('#zoom-out').hide();
-		$(boardRendering.getCanvas()).unbind('click.2');
-		var context = boardRendering.getContext();
+		$(boardRenderer.getCanvas()).unbind('click.2');
+		var context = boardRenderer.getContext();
 		context.restore();
-		boardRendering.update(board);
-		$(boardRendering.getCanvas()).bind('click.1', clickEventHandler1);
+		boardRenderer.update(board);
+		$(boardRenderer.getCanvas()).bind('click.1', clickEventHandler1);
 	};
-	/*-----------------------8<-----------------------*/
-	$(boardRendering.getCanvas()).mousedown(function(event) {
+
+	$(boardRenderer.getCanvas()).mousedown(function(event) {
 		event.preventDefault();
 	});
+	
 	$('#zoom-out').bind('click.1', initState1);
-	/*-----------------------8<-----------------------*/
+	
 	initState1();
+	
 	/*-----------------------8<-----------------------*/
 };
