@@ -61,12 +61,12 @@ BoardRendering.prototype = {
     
     
     showPotentialCell : function(position, color) {//Colors[this.currentColor]
-    	var size = 16;
+    	var size = 34;
         var context = this.getContext();
         context.globalAlpha = 0.4;
         context.fillStyle = color;
         context.beginPath();
-        context.arc(size * position.column + size / 2, size * position.row + size / 2, 5, 0, Math.PI * 2, true);
+        context.arc(size * position.column + size / 2, size * position.row + size / 2, 7, 0, Math.PI * 2, true);
         context.closePath();
         context.fill();
         context.globalAlpha = 0.8;
