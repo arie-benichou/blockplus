@@ -43,7 +43,7 @@ Game.prototype = {
 	constructor : Game,
 
 	_updateBoard : function() {
-		this.boardManager.update(this.gameState.getBoard());
+		this.boardManager.render(this.gameState.getBoard());
 	},
 
 	_updateOptions : function() {
@@ -54,7 +54,7 @@ Game.prototype = {
 		this.potentialPositions = this.option.getPotentialPositions();
 		for ( var potentialPosition in this.potentialPositions) {
 			var position = JSON.parse(potentialPosition); // TODO à revoir
-			this.boardManager.showPotentialCell(position, Colors[this.currentColor]);
+			this.boardManager.renderPotentialCell(position, this.currentColor);
 		}
 
 	},
@@ -72,7 +72,7 @@ Game.prototype = {
 		this._updateOptions();
 		this.selectedPositions.clear();
 		this._updatePotentialPositions();
-		this.boardManager.showSelectedPotentialCells(this.selectedPositions.get(), this.currentColor);
+		//this.boardManager.showSelectedPotentialCells(this.selectedPositions.get(), this.currentColor);
 		this._updateOthers();
 	},
 
@@ -92,11 +92,18 @@ Game.prototype = {
 		/*--------------------------------------------------8<--------------------------------------------------*/
 		var that = this;
 		/*--------------------------------------------------8<--------------------------------------------------*/
+		
+		var getPositionFromOffset = function(x, y) {
+			var row = Math.floor(y / (that.cellDimension.height));
+			var column = Math.floor(x / (that.cellDimension.width));
+			return that.boardManager.positionFactory.getPosition(row, column);
+		};
+		
 		// TODO remove duplicate code
 		var offsetToPosition1 = function(event, targetOffset) {
 			event.offsetX = event.pageX - targetOffset.left;
 			event.offsetY = event.pageY - targetOffset.top;
-			return positionFactory.getPositionFromOffset(event.offsetX, event.offsetY);
+			return getPositionFromOffset(event.offsetX, event.offsetY);
 		};
 		/*--------------------------------------------------8<--------------------------------------------------*/		
 		// TODO ? appartient au futur BoardManager 

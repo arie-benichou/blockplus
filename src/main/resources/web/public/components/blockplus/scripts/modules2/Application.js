@@ -1,8 +1,8 @@
 var Application = function() {
 
 	this.viewPort = new ViewPort({
-		minWidth : 320,
-		minHeight : 480
+		maxWidth : 320,
+		maxHeight : 480
 	});
 
 	this.board = new Board({
@@ -31,22 +31,71 @@ var Application = function() {
 	};
 
 	/*-----------------------8<-----------------------*/
-	
+
 	this.maxPieceSize = 5;
-	
+
 	this.neighbourhood = this.maxPieceSize - 1;
-	
+
 	this.scale = {
 		x : this.board.columns / (2 * this.neighbourhood + 1),
 		y : this.board.rows / (2 * this.neighbourhood + 1)
 	};
-	
+
 	/*-----------------------8<-----------------------*/
-	
+
 	this.boardRenderer = new BoardRenderer(document.getElementById('board'), this.cellDimension, this.colors);
 	this.positionFactory = new PositionFactory();
 	this.boardManager = new BoardManager(this.board, this.boardRenderer, this.positionFactory);
-	
+
+	/*-----------------------8<-----------------------*/
+
+	var that = this;
+
+	/*-----------------------8<-----------------------*/
+	this.clickEventHandler1 = function(event) {
+
+		var targetOffset = $(event.target).offset();
+		var offsetX = event.pageX - targetOffset.left;
+		var offsetY = event.pageY - targetOffset.top;
+		var position = that.boardManager.position(offsetX, offsetY);
+
+		$('#zoom-out').show();
+		that.boardManager.unregister('click.1');
+
+		var referential = that.boardManager.zoomInTopLeftCornerPosition(position, that.neighbourhood);
+		var translation = {
+			x : -referential.minX * that.cellDimension.width * that.scale.x,
+			y : -referential.minY * that.cellDimension.height * that.scale.y
+		}
+
+		var context = that.boardManager.renderer.context;
+		context.save();
+		context.translate(translation.x, translation.y);
+		context.scale(that.scale.x, that.scale.y);
+		that.boardManager.render();
+
+		var clickEventHandler2 = function(event) {
+			var targetOffset = $(event.target).offset();
+			var offsetX = event.pageX - targetOffset.left;
+			var offsetY = event.pageY - targetOffset.top;
+			var p = that.boardManager.position(offsetX / that.scale.x, offsetY / that.scale.y);
+			var position = that.positionFactory.getPosition(p.row + referential.minY, p.column + referential.minX);
+			that.boardManager.renderCell(position, "#FFF");
+		};
+		that.boardManager.register('click.2', clickEventHandler2);
+
+	};
+
+	this.start = function() {
+		$('#zoom-out').hide();
+		$('#zoom-out').unbind('click');
+		$('#zoom-out').bind('click', that.start);
+		that.boardManager.unregister('click.2');
+		that.boardManager.renderer.context.restore();
+		that.boardManager.render();
+		that.boardManager.register('click.1', that.clickEventHandler1);
+	};
+
 };
 
 Application.prototype = {

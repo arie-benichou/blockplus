@@ -57,7 +57,8 @@ import com.google.common.eventbus.Subscribe;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-//TODO : non réellement serializable (les champs d'instance ne le sont pas). Est ce un probleme pour plus tard ?
+// TODO : non réellement serializable (les champs d'instance ne le sont pas).
+// Est ce un probleme pour plus tard ?
 @SuppressWarnings("serial")
 public class BlockplusServer extends WebSocketServlet {
 
@@ -130,7 +131,7 @@ public class BlockplusServer extends WebSocketServlet {
         final BlockplusServerEvents blockplusServerEvents = new BlockplusServerEvents(this); // TODO à injecter
         this.getEventBus().register(blockplusServerEvents);
 
-        for (int i = 1; i <= 12; ++i) {
+        for (int i = 1; i <= 24; ++i) {
             final ImmutableList<ClientInterface> empty = ImmutableList.of();
             this.clientsByGame.put(i, empty);
             this.gameByOrdinal.put(i, new BlockplusGame(i, "", empty, null, 0));

@@ -34,6 +34,29 @@ BoardManager.prototype = {
 
 	constructor : BoardManager,
 
+	renderCell : function(position, color) {
+		this.renderer.renderCell(position, color);
+	},
+
+	render : function(board) {
+		board == undefined ? this.renderer.render(this.board) : this.renderer.render(board);
+	},
+
+	renderPotentialCell : function(position, color) {
+		this.renderer.renderPotentialCell(position, color);
+	},
+
+	renderSelectedCell : function(position, color) {
+		this.renderer.renderSelectedCell(position, color);
+	},
+
+	renderSelectedCells : function(selectedPotentialPositions, color) {
+		for ( var selectedPotentialPosition in selectedPotentialPositions) {
+			var position = JSON.parse(selectedPotentialPosition);
+			this.renderSelectedCell(position, color);
+		}
+	},
+	
 	register : function(name, handler) {
 		$(this.renderer.canvas).bind(name, handler);
 	},
@@ -41,50 +64,30 @@ BoardManager.prototype = {
 	unregister : function(name) {
 		$(this.renderer.canvas).unbind(name);
 	},
+
+	position : function(x, y) {
+		var row = Math.floor(y / (this.renderer.cellHeight));
+		var column = Math.floor(x / (this.renderer.cellWidth));
+		return this.positionFactory.getPosition(row, column);
+	},
 	
-	renderCell: function(position, color) {
-		this.renderer.renderCell(position, color);
-	},	
-
-	render: function(board) {
-		board == undefined ? this.renderer.render(this.board): this.renderer.render(board);
-	}	
-
-//	getPositionFromOffset : function(x, y) {
-//		var row = Math.floor(y / (this.cellDimension.height));
-//		var column = Math.floor(x / (this.cellDimension.width));
-//		return this.getPosition(row, column);
-//	},
-//	
-//	showPotentialCell : function(position, color) {
-//		var size = 16;
-//		var context = this.renderer.context;
-//		context.globalAlpha = 0.4;
-//		context.fillStyle = color;
-//		context.beginPath();
-//		context.arc(size * position.column + size / 2, size * position.row + size / 2, 5, 0, Math.PI * 2, true);
-//		context.closePath();
-//		context.fill();
-//		context.globalAlpha = 0.8;
-//		context.lineWidth = 2;
-//		context.strokeStyle = color;
-//		context.stroke();
-//		context.globalAlpha = 1;
-//	},
-//
-//	showSelectedPotentialCell : function(position, currentColor) {
-//		var context = this.renderer.context;
-//		context.globalAlpha = 0.5;
-//		this.updateCell(position, currentColor); // TODO pouvoir passer alpha
-//		context.globalAlpha = 1;
-//	},
-//
-//	showSelectedPotentialCells : function(selectedPotentialPositions, currentColor) {
-//		for ( var selectedPotentialPosition in selectedPotentialPositions) {
-//			// TODO à revoir
-//			var position = JSON.parse(selectedPotentialPosition);
-//			this.showSelectedPotentialCell(position, currentColor);
-//		}
-//	},
+	zoomInTopLeftCornerPosition : function(position, neighbourhood) {
+		var minY = position.row - neighbourhood;
+		var minX = position.column - neighbourhood;
+		var maxY = position.row + neighbourhood;
+		var maxX = position.column + neighbourhood;
+		if (maxY > (this.board.rows - 1))
+			minY -= (maxY - (this.board.rows - 1));
+		else if (minY < 0)
+			minY = 0;
+		if (maxX > (this.board.columns - 1))
+			minX -= (maxX - (this.board.columns - 1));
+		else if (minX < 0)
+			minX = 0;
+		return {
+			minX : minX,
+			minY : minY
+		};
+	},		
 
 };

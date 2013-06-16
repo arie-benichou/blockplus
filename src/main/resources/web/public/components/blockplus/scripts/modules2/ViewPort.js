@@ -1,7 +1,7 @@
 var ViewPort = function(data) {
-	this.minWidth = data.minWidth;
-	this.minHeight = data.minHeight;
-	this.min = Math.min(this.minWidth, this.minHeight);
+	this.maxWidth = data.maxWidth;
+	this.maxHeight = data.maxHeight;
+	this.min = Math.min(this.maxWidth, this.maxHeight);
 };
 
 ViewPort.prototype = {
