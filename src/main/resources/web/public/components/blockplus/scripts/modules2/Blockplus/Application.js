@@ -1,11 +1,13 @@
-var Application = function() {
+var Blockplus = Blockplus || {};
 
-	this.viewPort = new ViewPort({
+Blockplus.Application = function() {
+
+	this.viewPort = new Blockplus.ViewPort({
 		maxWidth : 320,
 		maxHeight : 480
 	});
 
-	this.board = new Board({
+	this.board = new Blockplus.Board({
 		dimension : {
 			rows : 20,
 			columns : 20
@@ -43,9 +45,9 @@ var Application = function() {
 
 	/*-----------------------8<-----------------------*/
 
-	this.boardRenderer = new BoardRenderer(document.getElementById('board'), this.cellDimension, this.colors);
-	this.positionFactory = new PositionFactory();
-	this.boardManager = new BoardManager(this.board, this.boardRenderer, this.positionFactory);
+	this.boardRenderer = new Blockplus.BoardRenderer(document.getElementById('board'), this.cellDimension, this.colors);
+	this.positionFactory = new Blockplus.PositionFactory();
+	this.boardManager = new Blockplus.BoardManager(this.board, this.boardRenderer, this.positionFactory);
 
 	/*-----------------------8<-----------------------*/
 
@@ -98,8 +100,8 @@ var Application = function() {
 
 };
 
-Application.prototype = {
+Blockplus.Application.prototype = {
 
-	constructor : Application,
+	constructor : Blockplus.Application,
 
 };
