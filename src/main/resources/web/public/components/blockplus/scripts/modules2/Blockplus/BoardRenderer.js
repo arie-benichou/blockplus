@@ -29,11 +29,6 @@ Blockplus.BoardRenderer.prototype = {
 		this._drawCell(position.row, position.column);
 	},
 	
-	renderEmptyCell : function(position) {
-		this._setFillStyle("#2a2d30");
-		this._drawCell(position.row, position.column);
-	},	
-
 	render : function(board) {
 		this._setFillStyle("#a0a6ab");
 		this._fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -50,6 +45,18 @@ Blockplus.BoardRenderer.prototype = {
 			}
 		}
 	},
+	
+	renderEmptyCell : function(position) {
+		this._setFillStyle("#2a2d30");
+		this._drawCell(position.row, position.column);
+	},
+	
+	renderSelectedCell : function(position, color) {
+		this.context.save();
+		this.context.globalAlpha = 0.5;
+		this.renderCell(position, this.colors[color]);
+		this.context.restore();
+	},	
 
 	renderPotentialCell : function(position, color) {
 		this.context.save();
@@ -66,13 +73,6 @@ Blockplus.BoardRenderer.prototype = {
 		this.context.lineWidth = 2;
 		this.context.strokeStyle = this.colors[color];
 		this.context.stroke();
-		this.context.restore();
-	},
-	
-	renderSelectedCell : function(position, color) {
-		this.context.save();
-		this.context.globalAlpha = 0.5;
-		this.renderCell(position, this.colors[color]);
 		this.context.restore();
 	},
 

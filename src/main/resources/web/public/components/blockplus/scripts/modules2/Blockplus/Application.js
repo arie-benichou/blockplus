@@ -3,8 +3,12 @@ var Blockplus = Blockplus || {};
 Blockplus.Application = function() {
 
 	this.viewPort = new Blockplus.ViewPort({
-		maxWidth : $(window).width(), //320,
-		maxHeight : $(window).height() //480
+		
+		//maxWidth : $(window).width(),
+		//maxHeight : $(window).height()
+		
+		maxWidth : 320,
+		maxHeight : 480
 	});
 
 	this.board = new Blockplus.Board({
@@ -48,7 +52,7 @@ Blockplus.Application = function() {
 	this.boardRenderer = new Blockplus.BoardRenderer(document.getElementById('board'), this.cellDimension, this.colors);
 	this.positionFactory = new Blockplus.PositionFactory();
 	this.selectedPositions = new Blockplus.SelectedPositions();
-	this.boardManager = new Blockplus.BoardManager(this.board, this.boardRenderer, this.positionFactory, this.selectedPositions);
+	this.boardManager = new Blockplus.BoardManager(this.board, this.boardRenderer, this.positionFactory, this.selectedPositions, this.viewPort);
 
 	/*-----------------------8<-----------------------*/
 
@@ -62,7 +66,7 @@ Blockplus.Application = function() {
 		var offsetY = event.pageY - targetOffset.top;
 		var position = that.boardManager.position(offsetX, offsetY);
 
-		$('#zoom-out').show();
+		$('#controls').show();
 		that.boardManager.unregister('click.1');
 
 		var referential = that.boardManager.zoomInTopLeftCornerPosition(position, that.neighbourhood);
@@ -93,9 +97,9 @@ Blockplus.Application = function() {
 	};
 
 	this.start = function() {
-		$('#zoom-out').hide();
-		$('#zoom-out').unbind('click');
-		$('#zoom-out').bind('click', that.start);
+		$('#controls').hide();
+		$('#controls').unbind('click');
+		$('#controls').bind('click', that.start);
 		that.boardManager.unregister('click.2');
 		that.boardManager.renderer.context.restore();
 		that.boardManager.render();
@@ -142,7 +146,7 @@ Blockplus.Application = function() {
 				});
 			});
 		});
-		client.say(gameConnection(10));
+		client.say(gameConnection(18));
 	});
 
 	var url = computeLocation("/network/io");
