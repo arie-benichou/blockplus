@@ -3,8 +3,8 @@ var Blockplus = Blockplus || {};
 Blockplus.Application = function() {
 
 	this.viewPort = new Blockplus.ViewPort({
-		maxWidth : 320,
-		maxHeight : 480
+		maxWidth : $(window).width(), //320,
+		maxHeight : $(window).height() //480
 	});
 
 	this.board = new Blockplus.Board({
@@ -134,7 +134,6 @@ Blockplus.Application = function() {
 		Blockplus.Client.protocol.register("enterGame", function(data) {
 			Blockplus.Client.protocol.register("color", function(data) {
 				var color = data;
-				//console.log(color);
 				that.boardManager.updateColor(color);
 				Blockplus.Client.protocol.register("update", function(data) {
 					var gameState = new Blockplus.GameState(data);

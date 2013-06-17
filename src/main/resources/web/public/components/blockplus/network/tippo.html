@@ -16,7 +16,7 @@
 		<script src="../scripts/modules2/Blockplus/PositionFactory.js"></script>
 		<script src="../scripts/modules2/Blockplus/BoardRenderer.js"></script>
 		<script src="../scripts/modules2/Blockplus/Board.js"></script>
-		<script src="../scripts/modules2/Blockplus/SelectedPositions.js"></script>		
+		<script src="../scripts/modules2/Blockplus/SelectedPositions.js"></script>
 		<script src="../scripts/modules2/Blockplus/BoardManager.js"></script>
 		
 		<script src="../scripts/modules2/Protocol.js"></script>
@@ -24,15 +24,18 @@
 		<script src="../scripts/modules2/Game.js"></script>
 		<script src="../scripts/modules2/Options.js"></script>
 		<script src="../scripts/modules2/GameState.js"></script>
-		
 	</head>
 	<body>
 		<div>
-			<canvas id="board" width="320px" height="320px"></canvas>
-			<button id="zoom-out" style="float: right;">Zoom Out</button>
+			<div>
+				<canvas id="board"></canvas>
+			</div>
+			<div>
+				<button id="zoom-out">zoom out</button>
+			</div>
+			<script>
+				$(document).ready(new Blockplus.Application().start);
+			</script>
 		</div>
-		<script>
-			$(document).ready(new Blockplus.Application().start);
-		</script>
 	</body>
 </html>

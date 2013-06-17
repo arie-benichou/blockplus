@@ -11,6 +11,9 @@ Blockplus.BoardManager = function(board, renderer, positionFactory, selectedPosi
 	this.color = "#000";
 	this.potentialPositions = {};
 	
+	this.renderer.context.canvas.width = board.columns * this.renderer.cellWidth;
+	this.renderer.context.canvas.height = board.columns * this.renderer.cellHeight;
+	
 	this.register('mousedown', function(event) {
 		event.preventDefault();
 	}); // in order to avoid annoying behaviour...

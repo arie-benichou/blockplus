@@ -1,5 +1,12 @@
 body {
 	background-color: #a0a6ab;
-	width: 480px;
-	margin: 0 auto;
+	margin: 0;
+	/*
+	overflow: hidden;
+	*/
+}
+
+#zoom-out {
+	margin: 0;
+	padding: 10px; 
 }
