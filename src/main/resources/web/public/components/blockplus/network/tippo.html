@@ -18,12 +18,15 @@
 		<script src="../scripts/modules2/Blockplus/Board.js"></script>
 		<script src="../scripts/modules2/Blockplus/SelectedPositions.js"></script>
 		<script src="../scripts/modules2/Blockplus/BoardManager.js"></script>
+		<script src="../scripts/modules2/Blockplus/ControlPanelManager.js"></script>
+		<script src="../scripts/modules2/Blockplus/Game.js"></script>
+		<script src="../scripts/modules2/Blockplus/GameState.js"></script>
+		<script src="../scripts/modules2/Blockplus/Options.js"></script>
 		
 		<script src="../scripts/modules2/Protocol.js"></script>
 		<script src="../scripts/modules2/Client.js"></script>
-		<script src="../scripts/modules2/Game.js"></script>
-		<script src="../scripts/modules2/Options.js"></script>
-		<script src="../scripts/modules2/GameState.js"></script>
+		
+
 	</head>
 	<body>
 		<div id="content">
@@ -31,7 +34,7 @@
 				<canvas id="board"></canvas>
 			</div>
 			<div>
-				<canvas id="controls"></canvas>
+				<canvas id="control-panel"></canvas>
 			</div>
 			<script>
 				$(document).ready(new Blockplus.Application().start);

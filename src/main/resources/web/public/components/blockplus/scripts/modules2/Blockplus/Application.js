@@ -3,10 +3,10 @@ var Blockplus = Blockplus || {};
 Blockplus.Application = function() {
 
 	this.viewPort = new Blockplus.ViewPort({
-		
-		//maxWidth : $(window).width(),
-		//maxHeight : $(window).height()
-		
+
+		// maxWidth : $(window).width(),
+		// maxHeight : $(window).height()
+
 		maxWidth : 320,
 		maxHeight : 480
 	});
@@ -53,12 +53,14 @@ Blockplus.Application = function() {
 	this.positionFactory = new Blockplus.PositionFactory();
 	this.selectedPositions = new Blockplus.SelectedPositions();
 	this.boardManager = new Blockplus.BoardManager(this.board, this.boardRenderer, this.positionFactory, this.selectedPositions, this.viewPort);
+	this.controlPanelManager = new Blockplus.ControlPanelManager(document.getElementById('control-panel'), this.viewPort);
 
 	/*-----------------------8<-----------------------*/
 
 	var that = this;
 
 	/*-----------------------8<-----------------------*/
+	// TODO refactor to observer pattern...
 	this.clickEventHandler1 = function(event) {
 
 		var targetOffset = $(event.target).offset();
@@ -66,7 +68,8 @@ Blockplus.Application = function() {
 		var offsetY = event.pageY - targetOffset.top;
 		var position = that.boardManager.position(offsetX, offsetY);
 
-		$('#controls').show();
+		var p1 = position;
+
 		that.boardManager.unregister('click.1');
 
 		var referential = that.boardManager.zoomInTopLeftCornerPosition(position, that.neighbourhood);
@@ -81,6 +84,9 @@ Blockplus.Application = function() {
 		context.scale(that.scale.x, that.scale.y);
 		that.boardManager.render();
 
+		that.boardManager.select(p1, 'Blue');
+		that.controlPanelManager.handleSelection(that.boardManager.selectedPositions);
+
 		var clickEventHandler2 = function(event) {
 			var targetOffset = $(event.target).offset();
 			var offsetX = event.pageX - targetOffset.left;
@@ -91,15 +97,16 @@ Blockplus.Application = function() {
 				that.boardManager.unselect(position);
 			else
 				that.boardManager.select(position, 'Blue');
+			that.controlPanelManager.handleSelection(that.boardManager.selectedPositions, that.game.options.perfectMatch(that.boardManager.selectedPositions));
 		};
 		that.boardManager.register('click.2', clickEventHandler2);
 
 	};
 
 	this.start = function() {
-		$('#controls').hide();
-		$('#controls').unbind('click');
-		$('#controls').bind('click', that.start);
+		that.controlPanelManager.hide();
+		that.controlPanelManager.unregister('click');
+		that.controlPanelManager.register('click', that.start);
 		that.boardManager.unregister('click.2');
 		that.boardManager.renderer.context.restore();
 		that.boardManager.render();
@@ -141,12 +148,12 @@ Blockplus.Application = function() {
 				that.boardManager.updateColor(color);
 				Blockplus.Client.protocol.register("update", function(data) {
 					var gameState = new Blockplus.GameState(data);
-					var game = new Blockplus.Game(client, color, gameState, that.boardManager);
-					game.update();
+					that.game = new Blockplus.Game(client, color, gameState, that.boardManager);
+					that.game.update();
 				});
 			});
 		});
-		client.say(gameConnection(18));
+		client.say(gameConnection(1));
 	});
 
 	var url = computeLocation("/network/io");

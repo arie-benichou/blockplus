@@ -1,73 +1,79 @@
 var Blockplus = Blockplus || {};
 
 Blockplus.SelectedPositions = function() {
-    this.data = {};
-    this.size = 0;
+	this.data = {};
+	this.size = 0;
 };
 
 Blockplus.SelectedPositions.prototype = {
 
-    constructor : Blockplus.SelectedPositions,
+	constructor : Blockplus.SelectedPositions,
 
-    get : function() {
-        return this.data;
-    },
+	get : function() {
+		return this.data;
+	},
 
-    getSize : function() {
-        return this.size;
-    },
-    
-    isEmpty : function() {
-        return this.size == 0;
-    },    
+	getSize : function() {
+		return this.size;
+	},
 
-    add : function(position) {
-        this.data[JSON.stringify(position)] = true;
-        ++this.size;
-    },
+	isEmpty : function() {
+		return this.size == 0;
+	},
 
-    remove : function(position) {
-        delete this.data[JSON.stringify(position)];
-        --this.size;
-    },
+	add : function(position) {
+		this.data[JSON.stringify(position)] = true;
+		++this.size;
+	},
 
-    contains : function(position) {
-        return (JSON.stringify(position) in this.data);
-    },
+	remove : function(position) {
+		delete this.data[JSON.stringify(position)];
+		--this.size;
+	},
 
-    clear : function(position) {
-        this.data = {};
-        this.size = 0;
-    },
+	contains : function(position) {
+		return (JSON.stringify(position) in this.data);
+	},
 
-    getTopLeftPosition : function() {
-        var top = Infinity;
-        var left = Infinity;
-        for ( var entry in this.get()) {
-            var position = JSON.parse(entry);
-            var y = position.row;
-            var x = position.column;
-            if (y < top)
-                top = y;
-            if (x < left)
-                left = x;
-        }
-        return new Position(top, left);
-    },
+	clear : function(position) {
+		this.data = {};
+		this.size = 0;
+	},
 
-    getBottomRightPosition : function() {
-        var bottom = -Infinity;
-        var right = -Infinity;
-        for ( var entry in this.get()) {
-            var position = JSON.parse(entry);
-            var y = position.row;
-            var x = position.column;
-            if (y > bottom)
-                bottom = y;
-            if (x > right)
-                right = x;
-        }
-        return new Position(bottom, right);
-    }
+	getTopLeftPosition : function() {
+		var top = Infinity;
+		var left = Infinity;
+		for ( var entry in this.get()) {
+			var position = JSON.parse(entry);
+			var y = position.row;
+			var x = position.column;
+			if (y < top)
+				top = y;
+			if (x < left)
+				left = x;
+		}
+		return {
+			row : top,
+			column : left
+		};
+	},
+
+	getBottomRightPosition : function() {
+		var bottom = -Infinity;
+		var right = -Infinity;
+		for ( var entry in this.get()) {
+			var position = JSON.parse(entry);
+			var y = position.row;
+			var x = position.column;
+			if (y > bottom)
+				bottom = y;
+			if (x > right)
+				right = x;
+		}
+		return {
+			row : bottom,
+			column : right
+		};
+	}
 
 };
