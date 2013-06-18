@@ -110,8 +110,9 @@ Blockplus.BoardManager.prototype = {
 		this.selectedPositions.add(position);
 	},
 	
-	unselect: function(position) {
+	unselect: function(position, color) {
 		this.renderer.renderEmptyCell(position);
+		this.renderPotentialCell(position, color);
 		this.selectedPositions.remove(position);
 	},
 	

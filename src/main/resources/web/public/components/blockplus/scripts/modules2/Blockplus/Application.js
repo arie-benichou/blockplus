@@ -1,14 +1,19 @@
 var Blockplus = Blockplus || {};
 
+// TODO rendre optional le zoom
+// TODO le premier tap doit juste zoomer
+// TODO fournir un moyen de sortir du zoom (lors d'un zoom sur une region non jouable)
+// TODO afficher les pieces restantes
 Blockplus.Application = function() {
 
 	this.viewPort = new Blockplus.ViewPort({
 
-		// maxWidth : $(window).width(),
-		// maxHeight : $(window).height()
+		maxWidth : $(window).width(),
+		maxHeight : $(window).height(),
 
-		maxWidth : 320,
-		maxHeight : 480
+		// maxWidth : 320,
+		// maxHeight : 480-32
+
 	});
 
 	this.board = new Blockplus.Board({
@@ -60,6 +65,7 @@ Blockplus.Application = function() {
 	var that = this;
 
 	/*-----------------------8<-----------------------*/
+
 	// TODO refactor to observer pattern...
 	this.clickEventHandler1 = function(event) {
 
@@ -67,6 +73,10 @@ Blockplus.Application = function() {
 		var offsetX = event.pageX - targetOffset.left;
 		var offsetY = event.pageY - targetOffset.top;
 		var position = that.boardManager.position(offsetX, offsetY);
+
+		var isPotentialPosition = JSON.stringify(position) in that.game.options.getPotentialPositions();
+		if (!isPotentialPosition)
+			return;
 
 		var p1 = position;
 
@@ -85,7 +95,7 @@ Blockplus.Application = function() {
 		that.boardManager.render();
 
 		that.boardManager.select(p1, 'Blue');
-		that.controlPanelManager.handleSelection(that.boardManager.selectedPositions);
+		that.controlPanelManager.handleSelection(that.boardManager.selectedPositions, that.game.options.perfectMatch(that.boardManager.selectedPositions));
 
 		var clickEventHandler2 = function(event) {
 			var targetOffset = $(event.target).offset();
@@ -93,17 +103,57 @@ Blockplus.Application = function() {
 			var offsetY = event.pageY - targetOffset.top;
 			var p = that.boardManager.position(offsetX / that.scale.x, offsetY / that.scale.y);
 			var position = that.positionFactory.getPosition(p.row + referential.minY, p.column + referential.minX);
-			if (that.boardManager.hasSelection(position))
-				that.boardManager.unselect(position);
-			else
-				that.boardManager.select(position, 'Blue');
-			that.controlPanelManager.handleSelection(that.boardManager.selectedPositions, that.game.options.perfectMatch(that.boardManager.selectedPositions));
+
+			var isPotentialPosition = JSON.stringify(position) in that.game.options.getPotentialPositions();
+			if (isPotentialPosition) {
+				if (that.boardManager.hasSelection(position))
+					that.boardManager.unselect(position, 'Blue');
+				else
+					that.boardManager.select(position, 'Blue');
+				if (that.boardManager.selectedPositions.isEmpty()) {
+					that.start();
+				} else {
+					that.controlPanelManager.handleSelection(that.boardManager.selectedPositions, that.game.options
+							.perfectMatch(that.boardManager.selectedPositions));
+				}
+			}
 		};
 		that.boardManager.register('click.2', clickEventHandler2);
 
 	};
 
+	/*-------------------------------8<-------------------------------*/
+
+	// TODO ! se contenter des positions
+	this.moveSubmitHandler = function(event) {
+		var selectedPositions = that.boardManager.selectedPositions;
+		var pieceId = that.game.options.perfectMatch(selectedPositions);
+		var data = [];
+		for ( var position in selectedPositions.get()) {
+			var p = JSON.parse([ position ]);
+			data.push([ p.row, p.column ]);
+		}
+
+		var moveSubmit = function(id, positions) {
+			var object = {
+				type : 'MoveSubmit',
+				data : {
+					id : id,
+					positions : positions
+				}
+			};
+			return object;
+		};
+
+		that.client.say(moveSubmit(pieceId, data));
+	};
+
+	/*-------------------------------8<-------------------------------*/
+
 	this.start = function() {
+		if (!that.boardManager.selectedPositions.isEmpty()) {
+			that.moveSubmitHandler();
+		}
 		that.controlPanelManager.hide();
 		that.controlPanelManager.unregister('click');
 		that.controlPanelManager.register('click', that.start);
@@ -148,17 +198,17 @@ Blockplus.Application = function() {
 				that.boardManager.updateColor(color);
 				Blockplus.Client.protocol.register("update", function(data) {
 					var gameState = new Blockplus.GameState(data);
-					that.game = new Blockplus.Game(client, color, gameState, that.boardManager);
+					that.game = new Blockplus.Game(that.client, color, gameState, that.boardManager);
 					that.game.update();
 				});
 			});
 		});
-		client.say(gameConnection(1));
+		that.client.say(gameConnection(23));
 	});
 
 	var url = computeLocation("/network/io");
-	var client = new Blockplus.Client("Android", url);
-	client.start(client.join);
+	this.client = new Blockplus.Client("Android", url);
+	this.client.start(this.client.join);
 
 	/*-------------------------------8<-------------------------------*/
 

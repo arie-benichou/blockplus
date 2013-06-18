@@ -113,6 +113,7 @@ Blockplus.ControlPanelManager.prototype = {
 
 			}(topLeft, bottomRight);
 
+
 		}
 
 	},
