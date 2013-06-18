@@ -192,6 +192,14 @@ Blockplus.Application = function() {
 
 	Blockplus.Client.message = connection; // TODO à revoir
 	Blockplus.Client.protocol.register("games", function(data) {
+		
+		var room = 1;
+		
+		Blockplus.Client.protocol.register("fullGame", function(data) {
+			++room;
+			that.client.say(gameConnection(room));
+		});
+		
 		Blockplus.Client.protocol.register("enterGame", function(data) {
 			Blockplus.Client.protocol.register("color", function(data) {
 				var color = data;
@@ -203,7 +211,8 @@ Blockplus.Application = function() {
 				});
 			});
 		});
-		that.client.say(gameConnection(23));
+		
+		that.client.say(gameConnection(room));
 	});
 
 	var url = computeLocation("/network/io");
