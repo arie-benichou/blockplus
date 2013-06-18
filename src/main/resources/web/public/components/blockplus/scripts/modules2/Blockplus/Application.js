@@ -2,7 +2,8 @@ var Blockplus = Blockplus || {};
 
 // TODO rendre optional le zoom
 // TODO le premier tap doit juste zoomer
-// TODO fournir un moyen de sortir du zoom (lors d'un zoom sur une region non jouable)
+// TODO fournir un moyen de sortir du zoom (lors d'un zoom sur une region non
+// jouable)
 // TODO afficher les pieces restantes
 Blockplus.Application = function() {
 
@@ -11,8 +12,8 @@ Blockplus.Application = function() {
 		maxWidth : $(window).width(),
 		maxHeight : $(window).height(),
 
-		// maxWidth : 320,
-		// maxHeight : 480-32
+	// maxWidth : 320,
+	// maxHeight : 480-32
 
 	});
 
@@ -192,14 +193,21 @@ Blockplus.Application = function() {
 
 	Blockplus.Client.message = connection; // TODO à revoir
 	Blockplus.Client.protocol.register("games", function(data) {
-		
+
+		var max = JSON.parse(data).length;
 		var room = 1;
-		
+
 		Blockplus.Client.protocol.register("fullGame", function(data) {
-			++room;
-			that.client.say(gameConnection(room));
+			if (room < max) {
+				++room;
+				that.client.say(gameConnection(room));
+			}
+			else {
+				alert("server is full !");
+			}
+
 		});
-		
+
 		Blockplus.Client.protocol.register("enterGame", function(data) {
 			Blockplus.Client.protocol.register("color", function(data) {
 				var color = data;
@@ -211,7 +219,7 @@ Blockplus.Application = function() {
 				});
 			});
 		});
-		
+
 		that.client.say(gameConnection(room));
 	});
 
