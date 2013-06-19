@@ -24,8 +24,8 @@ img {
 	height: 576px;
 	background-color: #2a2d30;
 	overflow: hidden;
-	border: 3px solid white;
-	-webkit-border-radius: 8px;
+	border: 5px solid white;
+	-webkit-border-radius: 10px;
 }
 
 #splash {
