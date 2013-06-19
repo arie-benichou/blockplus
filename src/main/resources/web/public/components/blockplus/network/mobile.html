@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		
+		<title>Block+</title>
+		
+		<link href="../images/favicon.png" rel="shortcut icon" />
+		<link href="mobile.css" rel="stylesheet" />
+		
+		<script src="../scripts/library/jquery.min.js"></script>
+		
+		<script src="../scripts/modules2/Blockplus/Application.js"></script>
+		<script src="../scripts/modules2/Blockplus/ViewPort.js"></script>
+		<script src="../scripts/modules2/Blockplus/PositionFactory.js"></script>
+		
+		
+		<script src="../scripts/modules2/Blockplus/Board.js"></script>
+		<script src="../scripts/modules2/Blockplus/BoardRenderer.js"></script>
+		<script src="../scripts/modules2/Blockplus/BoardManager.js"></script>
+				
+		<script src="../scripts/modules2/Blockplus/SelectedPositions.js"></script>
+		<script src="../scripts/modules2/Blockplus/ControlPanelManager.js"></script>
+		<script src="../scripts/modules2/Blockplus/Game.js"></script>
+		<script src="../scripts/modules2/Blockplus/GameState.js"></script>
+		<script src="../scripts/modules2/Blockplus/Options.js"></script>
+		
+		<script src="../scripts/modules2/Blockplus/Piece.js"></script>
+		<script src="../scripts/modules2/Blockplus/PieceRenderer.js"></script>		
+		<script src="../scripts/modules2/Blockplus/PieceManager.js"></script>
+		
+		<script src="../scripts/modules2/Protocol.js"></script>
+		<script src="../scripts/modules2/Client.js"></script>
+		
+
+	</head>
+	<body>
+		<div id="content">
+			<div id="splash"></div>
+			<div>
+				<canvas id="board"></canvas>
+			</div>
+			<div>
+				<canvas id="control-panel"></canvas>
+			</div>
+			<div id="pieces"></div>
+			<script>
+				$(document).ready(new Blockplus.Application().start);
+			</script>
+		</div>
+	</body>
+</html>
