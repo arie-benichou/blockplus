@@ -1,7 +1,8 @@
 var Blockplus = Blockplus || {};
 
-// TODO rendre optional le zoom
+// TODO afficher la pièce jouée
 // TODO afficher les pieces restantes
+// TODO rendre optional le zoom
 Blockplus.Application = function() {
 
 	this.viewPort = new Blockplus.ViewPort({
@@ -9,8 +10,8 @@ Blockplus.Application = function() {
 		maxWidth : $(window).width(),
 		maxHeight : $(window).height(),
 
-	// maxWidth : 320,
-	// maxHeight : 480-32
+		//maxWidth : 320,
+		//maxHeight : 480 - 32
 
 	});
 
@@ -147,18 +148,32 @@ Blockplus.Application = function() {
 
 	/*-------------------------------8<-------------------------------*/
 
-	this.start = function() {
+	this.start = function() {		
+
+		that.boardManager.unregister('click.2');		
+		that.controlPanelManager.unregister('click');
+		
+		that.controlPanelManager.hide();		
+		that.controlPanelManager.register('click', that.start);
+		
 		if (!that.boardManager.selectedPositions.isEmpty()) {
+			that.boardManager.potentialPositions = {}; // TODO
+		}
+		
+		that.boardManager.renderer.context.restore();
+		that.boardManager.render();		
+		
+		if (!that.boardManager.selectedPositions.isEmpty()) {
+			console.log(that.boardManager.selectedPositions.get());
+			console.log(that.color);
+			that.boardManager.renderSelectedCells(that.boardManager.selectedPositions.get(), that.color);
 			that.moveSubmitHandler();
 		}
-		that.controlPanelManager.hide();
-		that.controlPanelManager.unregister('click');
-		that.controlPanelManager.register('click', that.start);
-		that.boardManager.unregister('click.2');
-		that.boardManager.renderer.context.restore();
-		that.boardManager.render();
-		that.boardManager.register('click.1', that.clickEventHandler1);
-		that.boardManager.clearSelection();
+		else {
+			that.boardManager.register('click.1', that.clickEventHandler1);
+		}
+		
+		that.boardManager.clearSelection();		
 	};
 
 	/*-------------------------------8<-------------------------------*/
@@ -205,11 +220,15 @@ Blockplus.Application = function() {
 
 		Blockplus.Client.protocol.register("enterGame", function(data) {
 			Blockplus.Client.protocol.register("color", function(data) {
-				var color = data;
-				that.boardManager.updateColor(color);
+				that.color = data;
+				that.boardManager.updateColor(that.color);
 				Blockplus.Client.protocol.register("update", function(data) {
 					var gameState = new Blockplus.GameState(data);
-					that.game = new Blockplus.Game(that.client, color, gameState, that.boardManager);
+					if(gameState.getColor() == that.color) {
+						that.boardManager.unregister('click.1');
+						that.boardManager.register('click.1', that.clickEventHandler1);
+					}
+					that.game = new Blockplus.Game(that.client, that.color, gameState, that.boardManager);
 					that.game.update();
 				});
 			});
