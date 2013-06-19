@@ -53,7 +53,7 @@ Blockplus.PieceRenderer.prototype = {
 		canvas.width = that.cellDimension.width * width;
 		canvas.height = that.cellDimension.height * height;
 
-		context.fillStyle = piece.getColor();
+		context.fillStyle = this.colors[piece.getColor()];
 		context.fillRect(0, 0, canvas.width, canvas.height);
 
 		for ( var position in selectedPositions.get()) {
@@ -70,7 +70,7 @@ Blockplus.PieceRenderer.prototype = {
 		var context2 = canvas2.getContext("2d");
 		canvas2.width = (1 + 5 + 1) * that.cellDimension.width + 0;
 		canvas2.height = (1 + 5 + 1) * that.cellDimension.height + 0;
-		context2.fillStyle = piece.getColor();
+		context2.fillStyle = this.colors[piece.getColor()];
 		context2.fillRect(0, 0, canvas2.width, canvas2.height);
 		var x = (canvas2.width - canvas.width) / 2;
 		var y = (canvas2.height - canvas.height) / 2;

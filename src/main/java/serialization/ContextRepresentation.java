@@ -82,26 +82,6 @@ public final class ContextRepresentation {
         return boardState;
     }
 
-    // TODO no more map filtering
-    // TODO remove null piece    
-    public JsonElement _encodePieces() {
-        final JsonObject data = new JsonObject();
-        final Context context = this.getGameContext();
-        for (final Player player : context.getPlayers()) {
-            final Color color = player.getColor();
-            final JsonArray jsonArray = new JsonArray();
-            final Pieces pieces = player.getPieces();
-            for (final Entry<PieceType, Integer> entry : pieces) {
-                if (entry.getValue() > 0) {
-                    final PieceType piece = entry.getKey();
-                    jsonArray.add(new JsonPrimitive(piece.ordinal()));
-                }
-            }
-            data.add(color.toString(), jsonArray);
-        }
-        return data;
-    }
-
     public JsonElement encodePieces() {
         final JsonObject data = new JsonObject();
         final Context context = this.getGameContext();

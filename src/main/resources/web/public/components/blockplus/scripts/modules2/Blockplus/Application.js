@@ -7,11 +7,11 @@ Blockplus.Application = function() {
 
 	this.viewPort = new Blockplus.ViewPort({
 
-		//maxWidth : $(window).width(),
-		//maxHeight : $(window).height(),
+		// maxWidth : $(window).width(),
+		// maxHeight : $(window).height(),
 
-	maxWidth : 400,
-	maxHeight : 600
+		maxWidth : 400,
+		maxHeight : 600
 
 	});
 
@@ -59,11 +59,61 @@ Blockplus.Application = function() {
 	this.boardManager = new Blockplus.BoardManager(this.board, this.boardRenderer, this.positionFactory, this.selectedPositions, this.viewPort);
 	this.controlPanelManager = new Blockplus.ControlPanelManager(document.getElementById('control-panel'), this.viewPort);
 	var pieceRenderer = new Blockplus.PieceRenderer(this.viewPort, this.colors);
-	this.pieceManager = new Blockplus.PieceManager(document.getElementById('pieces'), pieceRenderer, "/xml/pieces.xml");
 
 	/*-----------------------8<-----------------------*/
 
 	var that = this;
+
+	/*-----------------------8<-----------------------*/
+
+	var callBack = function() {
+		var data = [];
+		for ( var color in that.colors) {
+			data.push(that.pieceManager.piece(color, 21));
+		}
+		data.reverse();
+		console.debug(data);
+		// TODO request animation frame
+		var id = window.setInterval(function() {
+			if (data.length > 0) {
+				var img = document.createElement('img');
+				img.id = data.length;
+				$("#splash").append(img);
+				img.src = data.pop();
+			} else {
+				window.clearInterval(id);
+				var data2 = [];
+				for ( var color in that.colors) {
+					data2.push(that.pieceManager.piece(color, 21));
+					data2.push(that.pieceManager.piece(color, 8));
+					data2.push(that.pieceManager.piece(color, 1));
+				}
+				// data2.reverse();
+				var n = 2;
+				var t = 3;
+				var f = function() {
+					var id2 = window.setInterval(function() {
+						console.debug(n);
+						$("#4").attr('src', data2[n % t]);
+						$("#3").attr('src', data2[n % t + t]);
+						$("#2").attr('src', data2[n % t + t * 2]);
+						$("#1").attr('src', data2[n % t + t * 3]);
+						++n;
+						if ($("#splash").attr("style") == "display: none;") {
+							window.clearInterval(id2);
+						}
+					}, 150);
+				}
+				window.setTimeout(f, 150);
+			}
+
+		}, 150);
+
+	};
+
+	this.pieceManager = new Blockplus.PieceManager(document.getElementById('pieces'), pieceRenderer, "/xml/pieces.xml", this.positionFactory, callBack);
+
+	/*-----------------------8<-----------------------*/
 
 	/*-----------------------8<-----------------------*/
 
@@ -145,7 +195,7 @@ Blockplus.Application = function() {
 	/*-------------------------------8<-------------------------------*/
 
 	this.init = function() {
-		
+
 		that.boardManager.unregister('click.2');
 		that.controlPanelManager.unregister('click');
 
@@ -207,19 +257,20 @@ Blockplus.Application = function() {
 				++room;
 				that.client.say(gameConnection(room));
 			} else {
-				alert("server is full !");
+				console.error("server is full !");
 			}
 
 		});
 		Blockplus.Client.protocol.register("enterGame", function(data) {
-			
+
 			that.controlPanelManager.register('click', that.init);
-			
+
 			Blockplus.Client.protocol.register("color", function(data) {
 				that.color = data;
 				that.boardManager.updateColor(that.color);
 				Blockplus.Client.protocol.register("update", function(data) {
-					$("#splash").hide();					
+					$("#splash").hide();
+					window.clearInterval();
 					that.controlPanelManager.hide();
 					var gameState = new Blockplus.GameState(data);
 					if (gameState.getColor() == that.color) {

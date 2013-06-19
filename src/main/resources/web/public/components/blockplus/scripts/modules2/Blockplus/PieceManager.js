@@ -1,19 +1,19 @@
 var Blockplus = Blockplus || {};
 
-Blockplus.PieceManager = function(element, pieceRenderer, url) {
+Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory, callBack) {
 
 	this.element = element;
-
 	this.pieceRenderer = pieceRenderer;
-
 	this.pieces = {};
+	this.positionFactory = positionFactory;
+
+	console.debug(positionFactory);
 
 	var that = this;
 	jQuery.ajax(url, {
 		success : function(xmlDocument) {
 			var pieces = xmlDocument.evaluate("//piece", xmlDocument, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-			// TODO !!injecter Colors
-			for ( var color in application.colors) {
+			for ( var color in that.pieceRenderer.colors) {
 				for ( var i = 0; i < pieces.snapshotLength; ++i) {
 					var data = [];
 					var piece = pieces.snapshotItem(i);
@@ -24,52 +24,15 @@ Blockplus.PieceManager = function(element, pieceRenderer, url) {
 						var y = parseInt(node.snapshotItem(0).textContent);
 						var node = xmlDocument.evaluate(".//x/text()", position, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 						var x = parseInt(node.snapshotItem(0).textContent);
-						data.push(application.positionFactory.getPosition(y, x));
+						data.push(that.positionFactory.getPosition(y, x));
 					}
-					var canvas = that.pieceRenderer.render(new Blockplus.Piece(data, application.colors[color]));
+					var canvas = that.pieceRenderer.render(new Blockplus.Piece(data, color));
 					that.pieces[color + "." + piece.getAttribute("name")] = canvas.toDataURL("image/png");
 				}
 			}
-
-			// TODO à mettre dans Application
-			var data = [];
-			// TODO !!injecter Colors
-			for ( var color in application.colors) {
-				data.push(that.pieces[color + "." + "piece21"]);
-			}
-			data.reverse();
-			// TODO request animation frame
-			var id = window.setInterval(function() {
-				if (data.length > 0) {
-					var img = document.createElement('img');
-					img.id = data.length;
-					$("#splash").append(img);
-					img.src = data.pop();
-				} else {
-					window.clearInterval(id);
-					var data2 = [];
-					for ( var color in application.colors) {
-						data2.push(that.pieces[color + "." + "piece1"]);
-						data2.push(that.pieces[color + "." + "piece8"]);
-						data2.push(that.pieces[color + "." + "piece21"]);
-					}
-					data2.reverse();
-					var n = 0;
-					var t = 3;
-					// var id2 = window.setInterval(function() {
-					// $("#4").attr('src', data2[n % t]);
-					// $("#3").attr('src', data2[n % t + t]);
-					// $("#2").attr('src', data2[n % t + t * 2]);
-					// $("#1").attr('src', data2[n % t + t * 3]);
-					// ++n;
-					// }, 160);
-				}
-
-			}, 120);
+			callBack();
 		}
-
 	});
-
 };
 
 Blockplus.PieceManager.prototype = {
@@ -84,12 +47,16 @@ Blockplus.PieceManager.prototype = {
 		$(this.element).show();
 	},
 
+	piece : function(color, id) {
+		return this.pieces[color + '.' + "piece" + id];
+	},
+
 	update : function(color, pieces) {
 		$(this.element).html("");
 		for (id in pieces) {
 			var image = new Image();
 			image.setAttribute("id", "piece" + id);
-			image.src = this.pieces["Blue" + "." + "piece" + id];
+			image.src = this.piece(color, id);
 			image.setAttribute("class", pieces[id] ? "available" : "not-available");
 			this.element.appendChild(image);
 		}
