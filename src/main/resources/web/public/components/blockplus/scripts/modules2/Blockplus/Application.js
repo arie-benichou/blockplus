@@ -164,9 +164,10 @@ Blockplus.Application = function() {
 		that.boardManager.render();		
 		
 		if (!that.boardManager.selectedPositions.isEmpty()) {
-			console.log(that.boardManager.selectedPositions.get());
-			console.log(that.color);
-			that.boardManager.renderSelectedCells(that.boardManager.selectedPositions.get(), that.color);
+			that.boardManager.renderSelectedCells(that.boardManager.selectedPositions.get(), that.color);			
+			for (position in that.boardManager.selectedPositions.get()) {
+				that.boardManager.renderPotentialCell(JSON.parse(position), that.color);
+			}
 			that.moveSubmitHandler();
 		}
 		else {
