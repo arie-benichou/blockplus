@@ -64,7 +64,7 @@ public final class Pieces implements Iterable<Entry<PieceType, Integer>> {
         }
 
         public Builder remove(final PieceType piece) {
-            this.pieces.remove(piece);
+            this.pieces.put(piece, 0);
             return this;
         }
 
@@ -78,10 +78,6 @@ public final class Pieces implements Iterable<Entry<PieceType, Integer>> {
 
     private Pieces(final Map<PieceType, Integer> pieces) {
         this.pieces = pieces;
-    }
-
-    public boolean isEmpty() {
-        return this.pieces.isEmpty();
     }
 
     public boolean contains(final PieceType piece) {
@@ -111,7 +107,7 @@ public final class Pieces implements Iterable<Entry<PieceType, Integer>> {
 
     @Override
     public boolean equals(final Object object) {
-    	if(object==null) return false;
+        if (object == null) return false;
         Preconditions.checkArgument(object instanceof Pieces);
         final Pieces that = (Pieces) object;
         return Equivalences.equals().equivalent(this.pieces, that.pieces);

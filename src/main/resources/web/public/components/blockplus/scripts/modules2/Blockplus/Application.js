@@ -228,6 +228,9 @@ Blockplus.Application = function() {
 					}
 					that.game = new Blockplus.Game(that.client, that.color, gameState, that.boardManager);
 					that.game.update();
+					var pieces = gameState.getPieces(that.color);
+					console.log(pieces);
+					that.pieceManager.update(that.color, pieces);
 				});
 			});
 		});

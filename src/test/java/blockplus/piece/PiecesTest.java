@@ -39,12 +39,6 @@ public class PiecesTest {
     private final static Pieces PIECESBAG_OF_1 = new Pieces.Builder().add(PIECE1).build();
 
     @Test
-    public void testIsEmpty() {
-        assertTrue(Pieces.EMPTY.isEmpty());
-        assertFalse(PIECESBAG_OF_1.isEmpty());
-    }
-
-    @Test
     public void testIterator() {
         {
             final Pieces bagOfPiece = Pieces.EMPTY;
@@ -63,9 +57,9 @@ public class PiecesTest {
     @Test
     public void testWithdraw() {
         final Pieces bagOfPiece = PIECESBAG_OF_1;
-        assertFalse(bagOfPiece.isEmpty());
+        assertTrue(bagOfPiece.contains(PIECE1));
         final Pieces newBagOfPiece = bagOfPiece.withdraw(PIECE1);
-        assertTrue(newBagOfPiece.isEmpty());
+        assertFalse(newBagOfPiece.contains(PIECE1));
     }
 
     @Ignore

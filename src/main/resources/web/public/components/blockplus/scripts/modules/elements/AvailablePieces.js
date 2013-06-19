@@ -40,22 +40,15 @@ AvailablePieces.prototype = {
         $(this.getElement()).hide();
     },
 
-    update : function(color, availablePieces) {
-        for ( var i = 1; i <= 21; ++i) { // TODO à revoir
-            var key = getLocalStoreKey(color, "piece" + i);
-            var retrievedObject = localStorage.getItem(key);
-            var image = new Image();
-            image.setAttribute("id", "piece-" + i);
-            image.src = retrievedObject;
-            image.setAttribute("class", "not-available");
-            this.getElement().appendChild(image);
-        }
-        for ( var i = 0, n = availablePieces.length; i < n; ++i) {
-            var x = availablePieces[i];
-            if (x != 0) { // TODO à revoir
-                document.getElementById("piece-" + x).setAttribute("class", "available");
-            }
-        }
+    update : function(color, pieces) {
+		$(this.element).html("");
+		for (id in pieces) {
+			var image = new Image();
+			image.setAttribute("id", "piece" + id);
+			image.src = localStorage.getItem(getLocalStoreKey(color, "piece" + id));
+			image.setAttribute("class", pieces[id] ? "available" : "not-available");
+			this.element.appendChild(image);
+		}    	
     }
 
 };

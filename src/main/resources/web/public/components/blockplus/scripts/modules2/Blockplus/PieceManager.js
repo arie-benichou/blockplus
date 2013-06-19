@@ -12,8 +12,8 @@ Blockplus.PieceManager = function(element, pieceRenderer, url) {
 	jQuery.ajax(url, {
 		success : function(xmlDocument) {
 			var pieces = xmlDocument.evaluate("//piece", xmlDocument, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-			for ( var color in application.colors) { // TODO !!injecter
-				// Colors
+			// TODO !!injecter Colors
+			for ( var color in application.colors) {
 				for ( var i = 0; i < pieces.snapshotLength; ++i) {
 					var data = [];
 					var piece = pieces.snapshotItem(i);
@@ -26,20 +26,9 @@ Blockplus.PieceManager = function(element, pieceRenderer, url) {
 						var x = parseInt(node.snapshotItem(0).textContent);
 						data.push(application.positionFactory.getPosition(y, x));
 					}
-
 					var canvas = that.pieceRenderer.render(new Blockplus.Piece(data, application.colors[color]));
-					// console.log(canvas.toDataURL());
-
-					// var img = document.createElement('img');
-					// img.width = canvas.width;
-					// img.height = canvas.height;
-					// img.src = canvas.toDataURL();
-					// //$("#pieces").append(img); // TODO
-					// $("#pieces").html(img); // TODO
-
 					that.pieces[color + "." + piece.getAttribute("name")] = canvas.toDataURL("image/png");
 				}
-				// break;
 			}
 
 			// TODO à mettre dans Application
@@ -67,20 +56,16 @@ Blockplus.PieceManager = function(element, pieceRenderer, url) {
 					data2.reverse();
 					var n = 0;
 					var t = 3;
-					var id2 = window.setInterval(function() {
-						$("#4").attr('src', data2[n % t]);
-						$("#3").attr('src', data2[n % t + t]);
-						$("#2").attr('src', data2[n % t + t * 2]);
-						$("#1").attr('src', data2[n % t + t * 3]);
-						++n;
-					}, 160);
+					// var id2 = window.setInterval(function() {
+					// $("#4").attr('src', data2[n % t]);
+					// $("#3").attr('src', data2[n % t + t]);
+					// $("#2").attr('src', data2[n % t + t * 2]);
+					// $("#1").attr('src', data2[n % t + t * 3]);
+					// ++n;
+					// }, 160);
 				}
 
 			}, 120);
-
-			// TODO à mettre dans appli
-			that.update();
-
 		}
 
 	});
@@ -99,18 +84,14 @@ Blockplus.PieceManager.prototype = {
 		$(this.element).show();
 	},
 
-	update : function(pieces) {
-		$("#pieces").html("");
-		var data = [];
-		for ( var i = 1; i <= 21; ++i) {
-			data.push(this.pieces["Blue" + "." + "piece" + i]);
-		}
-		data.reverse();
-		for ( var i = 1; i <= 21; ++i) {
-			var img = document.createElement('img');
-			img.id = i;
-			$("#pieces").append(img);
-			img.src = data.pop();
+	update : function(color, pieces) {
+		$(this.element).html("");
+		for (id in pieces) {
+			var image = new Image();
+			image.setAttribute("id", "piece" + id);
+			image.src = this.pieces["Blue" + "." + "piece" + id];
+			image.setAttribute("class", pieces[id] ? "available" : "not-available");
+			this.element.appendChild(image);
 		}
 	},
 

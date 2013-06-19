@@ -44,3 +44,11 @@ img {
 #control-panel {
 	
 }
+
+.available {
+	opacity: 1;
+}
+
+.not-available {
+	opacity: 0.15;
+}
