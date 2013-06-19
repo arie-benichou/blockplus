@@ -1,17 +1,17 @@
 var Blockplus = Blockplus || {};
 
-// TODO afficher la pièce jouée
 // TODO afficher les pieces restantes
+// TODO proposer une pièce lorsque le matching retourne une seule piece
 // TODO rendre optional le zoom
 Blockplus.Application = function() {
 
 	this.viewPort = new Blockplus.ViewPort({
 
-		maxWidth : $(window).width(),
-		maxHeight : $(window).height(),
+		//maxWidth : $(window).width(),
+		//maxHeight : $(window).height(),
 
-		//maxWidth : 320,
-		//maxHeight : 480 - 32
+	maxWidth : 400,
+	maxHeight : 600
 
 	});
 
@@ -58,6 +58,8 @@ Blockplus.Application = function() {
 	this.selectedPositions = new Blockplus.SelectedPositions();
 	this.boardManager = new Blockplus.BoardManager(this.board, this.boardRenderer, this.positionFactory, this.selectedPositions, this.viewPort);
 	this.controlPanelManager = new Blockplus.ControlPanelManager(document.getElementById('control-panel'), this.viewPort);
+	var pieceRenderer = new Blockplus.PieceRenderer(this.viewPort, this.colors);
+	this.pieceManager = new Blockplus.PieceManager(document.getElementById('pieces'), pieceRenderer, "/xml/pieces.xml");
 
 	/*-----------------------8<-----------------------*/
 
@@ -72,12 +74,6 @@ Blockplus.Application = function() {
 		var offsetX = event.pageX - targetOffset.left;
 		var offsetY = event.pageY - targetOffset.top;
 		var position = that.boardManager.position(offsetX, offsetY);
-
-		/*
-		 * var isPotentialPosition = JSON.stringify(position) in
-		 * that.game.options.getPotentialPositions(); if (!isPotentialPosition)
-		 * return;
-		 */
 
 		that.boardManager.unregister('click.1');
 
@@ -108,12 +104,12 @@ Blockplus.Application = function() {
 					that.boardManager.select(position, 'Blue');
 				}
 				if (that.boardManager.selectedPositions.isEmpty()) {
-					that.start();
+					that.init();
 				} else {
 					that.controlPanelManager.handle(that.game.options, that.boardManager.selectedPositions, that.boardManager, 'Blue');
 				}
 			} else if (that.boardManager.selectedPositions.isEmpty()) {
-				that.start();
+				that.init();
 			}
 		};
 		that.boardManager.register('click.2', clickEventHandler2);
@@ -148,33 +144,32 @@ Blockplus.Application = function() {
 
 	/*-------------------------------8<-------------------------------*/
 
-	this.start = function() {		
-
-		that.boardManager.unregister('click.2');		
+	this.init = function() {
+		
+		that.boardManager.unregister('click.2');
 		that.controlPanelManager.unregister('click');
-		
-		that.controlPanelManager.hide();		
-		that.controlPanelManager.register('click', that.start);
-		
+
+		that.controlPanelManager.hide();
+		that.controlPanelManager.register('click', that.init);
+
 		if (!that.boardManager.selectedPositions.isEmpty()) {
 			that.boardManager.potentialPositions = {}; // TODO
 		}
-		
+
 		that.boardManager.renderer.context.restore();
-		that.boardManager.render();		
-		
+		that.boardManager.render();
+
 		if (!that.boardManager.selectedPositions.isEmpty()) {
-			that.boardManager.renderSelectedCells(that.boardManager.selectedPositions.get(), that.color);			
+			that.boardManager.renderSelectedCells(that.boardManager.selectedPositions.get(), that.color);
 			for (position in that.boardManager.selectedPositions.get()) {
 				that.boardManager.renderPotentialCell(JSON.parse(position), that.color);
 			}
 			that.moveSubmitHandler();
-		}
-		else {
+		} else {
 			that.boardManager.register('click.1', that.clickEventHandler1);
 		}
-		
-		that.boardManager.clearSelection();		
+
+		that.boardManager.clearSelection();
 	};
 
 	/*-------------------------------8<-------------------------------*/
@@ -205,10 +200,8 @@ Blockplus.Application = function() {
 
 	Blockplus.Client.message = connection; // TODO à revoir
 	Blockplus.Client.protocol.register("games", function(data) {
-
 		var max = JSON.parse(data).length;
 		var room = 1;
-
 		Blockplus.Client.protocol.register("fullGame", function(data) {
 			if (room < max) {
 				++room;
@@ -218,14 +211,18 @@ Blockplus.Application = function() {
 			}
 
 		});
-
 		Blockplus.Client.protocol.register("enterGame", function(data) {
+			
+			that.controlPanelManager.register('click', that.init);
+			
 			Blockplus.Client.protocol.register("color", function(data) {
 				that.color = data;
 				that.boardManager.updateColor(that.color);
 				Blockplus.Client.protocol.register("update", function(data) {
+					$("#splash").hide();					
+					that.controlPanelManager.hide();
 					var gameState = new Blockplus.GameState(data);
-					if(gameState.getColor() == that.color) {
+					if (gameState.getColor() == that.color) {
 						that.boardManager.unregister('click.1');
 						that.boardManager.register('click.1', that.clickEventHandler1);
 					}
@@ -234,13 +231,14 @@ Blockplus.Application = function() {
 				});
 			});
 		});
-
 		that.client.say(gameConnection(room));
 	});
 
-	var url = computeLocation("/network/io");
-	this.client = new Blockplus.Client("Android", url);
-	this.client.start(this.client.join);
+	this.start = function() {
+		var url = computeLocation("/network/io");
+		that.client = new Blockplus.Client("Android", url);
+		that.client.start(that.client.join);
+	}
 
 	/*-------------------------------8<-------------------------------*/
 

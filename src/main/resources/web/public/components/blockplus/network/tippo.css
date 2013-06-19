@@ -1,20 +1,46 @@
 body {
 	margin: 0 auto;
-	padding: 0;
+	padding: 3%;
 	background-color: #a0a6ab;
-	overflow: hidden;
 }
 
 canvas {
 	vertical-align: bottom;
 }
 
+img {
+	vertical-align: bottom;
+	margin: 1px;
+	-webkit-transition: all 0.4s ease-out;
+	-webkit-border-top-right-radius: 16px;
+	-webkit-border-bottom-right-radius: 16px;
+	-webkit-border-top-left-radius: 16px;
+	-webkit-border-bottom-left-radius: 16px;
+}
+
 #content {
-	border: 1px solid black;
+	margin: 0 auto;
+	width: 400px;
+	height: 600px;
 	background-color: #2a2d30;
+	overflow: hidden;
+	border: 8px solid white;
+	-webkit-border-radius: 8px;
+}
+
+#splash {
+	padding: 25px;
+	font-family: sans-serif;
+	font-size: 200%;
+	text-align: center;
+	color: white;
+	margin-top: 55%;
+}
+
+#pieces {
+	height: 100%;
 }
 
 #control-panel {
-	width: 100%;
-	height: 100%;
+	
 }

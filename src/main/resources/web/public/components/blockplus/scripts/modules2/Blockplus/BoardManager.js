@@ -21,7 +21,7 @@ Blockplus.BoardManager = function(board, renderer, positionFactory, selectedPosi
 	this.renderer.context.canvas.width = viewPort.min;
 	this.renderer.context.canvas.height = viewPort.min;
 	
-	console.log(this.renderer.context.canvas.width, this.renderer.context.canvas.height);
+	//console.log(this.renderer.context.canvas.width, this.renderer.context.canvas.height);
 	
 	this.register('mousedown', function(event) {
 		event.preventDefault();

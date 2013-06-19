@@ -115,6 +115,15 @@ public class BlockplusServerEvents {
     @Subscribe
     @AllowConcurrentEvents
     public void onMoveSubmit(final MoveSubmitInterface moveSubmit) {
+    /*
+        try {
+            Thread.sleep(3000);
+        }
+        catch (final InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        */
         final ClientInterface client = this.getServer().getClient(moveSubmit.getIO());
         final Integer game = client.getGame();
         final BlockplusGame blockplusGame = (BlockplusGame) this.getServer().getGame(game);
