@@ -61,9 +61,25 @@ Blockplus.ControlPanelManager.prototype = {
 		$(this.canvas).show();
 	},
 
-	handleSelection : function(selectedPositions, isPlayable) {
+	handle : function(options, selectedPositions, boardManager, color) {
 
-		console.log(selectedPositions, isPlayable);
+		var potentialPositions = options.matchPotentialPositions(selectedPositions);
+		console.log(potentialPositions);
+
+		for ( var position in options.getPotentialPositions()) {
+			if (!(position in selectedPositions.get())) {
+				var p = JSON.parse(position);
+				boardManager.renderEmptyCell(p);
+				if (position in potentialPositions) {
+					boardManager.renderPotentialCell(p, color);
+				}
+				else {
+					boardManager.renderPotentialCell2(p, color);
+				}
+			}
+		}
+
+		var isPlayable = options.perfectMatch(selectedPositions);
 
 		if (!isPlayable) {
 			this.hide();
@@ -100,7 +116,7 @@ Blockplus.ControlPanelManager.prototype = {
 					tmpBoardRendering.renderCell(p2, that.colors.Blue);
 				}
 
-				console.log(newCanvas.toDataURL());
+				// console.log(newCanvas.toDataURL());
 
 				that.context.fillStyle = "#2a2d30";
 				that.context.fillRect(0, 0, that.canvas.width, that.canvas.height);
@@ -112,7 +128,6 @@ Blockplus.ControlPanelManager.prototype = {
 				that.context.drawImage(newCanvas, x, y);
 
 			}(topLeft, bottomRight);
-
 
 		}
 

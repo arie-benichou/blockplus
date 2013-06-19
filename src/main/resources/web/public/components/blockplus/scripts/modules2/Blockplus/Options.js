@@ -69,6 +69,34 @@ Blockplus.Options.prototype = {
 		}
 		return matches;
 	},
+	
+	matchPotentialPositions : function(selectedPositions) {
+		var matches = {};
+		var min = selectedPositions.getSize();
+		var n = this.data.length;
+		for ( var i = 0; i < n; ++i) {
+			var pieceInstances = this.data[i];
+			if (pieceInstances.size >= min) {
+				var instances = pieceInstances.instances;
+				for ( var j = 0; j < instances.length; ++j) {
+					var instance = instances[j];					
+					var match = true;
+					for ( var position in selectedPositions.get()) {
+						if (!(position in instance)) {
+							match = false;
+							break;
+						}
+					}
+					if (match) {
+						for ( var position in instance) {
+							matches[position] = true;	
+						}
+					}
+				}
+			}
+		}
+		return matches;
+	},	
 
 	perfectMatch : function(selectedPositions) {
 		var min = selectedPositions.getSize();

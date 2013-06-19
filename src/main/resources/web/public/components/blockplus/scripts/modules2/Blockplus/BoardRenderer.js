@@ -60,7 +60,7 @@ Blockplus.BoardRenderer.prototype = {
 
 	renderPotentialCell : function(position, color) {
 		this.context.save();
-		this.context.globalAlpha = 0.4;
+		this.context.globalAlpha = 0.45;
 		this.context.fillStyle = this.colors[color];
 		this.context.beginPath();
 		var x = this.cellWidth * position.column + this.cellWidth / 2 - 1;
@@ -69,11 +69,31 @@ Blockplus.BoardRenderer.prototype = {
 		this.context.arc(x, y, r-(r/4), 0, Math.PI * 2, true);
 		this.context.closePath();
 		this.context.fill();
-		this.context.globalAlpha = 0.8;
+		this.context.globalAlpha = 0.9;
 		this.context.lineWidth = 2;
 		this.context.strokeStyle = this.colors[color];
 		this.context.stroke();
 		this.context.restore();
 	},
+	
+	renderPotentialCell2 : function(position, color) {
+		this.context.save();
+		this.context.globalAlpha = 0.45;
+		this.context.fillStyle = this.colors[color];
+		this.context.beginPath();
+		var x = this.cellWidth * position.column + this.cellWidth / 2 - 1;
+		var y = this.cellHeight * position.row + this.cellHeight / 2 - 1;
+		var r = (((this.cellWidth + this.cellHeight) / 2) / 2) - 2*2;
+		this.context.arc(x, y, r-(r/4), 0, Math.PI * 2, true);
+		this.context.closePath();
+		this.context.fill();
+		/*
+		this.context.globalAlpha = 0.4;
+		this.context.lineWidth = 2;
+		this.context.strokeStyle = this.colors[color];
+		this.context.stroke();
+		*/
+		this.context.restore();
+	},	
 
 };

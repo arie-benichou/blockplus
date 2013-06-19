@@ -36,6 +36,10 @@ Blockplus.BoardManager.prototype = {
 	renderCell : function(position, color) {
 		this.renderer.renderCell(position, color);
 	},
+	
+	renderEmptyCell : function(position) {
+		this.renderer.renderEmptyCell(position);
+	},
 
 	render : function(board) {
 		board == undefined ? this.renderer.render(this.board) : this.renderer.render(board);
@@ -48,6 +52,10 @@ Blockplus.BoardManager.prototype = {
 	renderPotentialCell : function(position, color) {
 		this.renderer.renderPotentialCell(position, color);
 	},
+	
+	renderPotentialCell2 : function(position, color) {
+		this.renderer.renderPotentialCell2(position, color);
+	},	
 
 	renderSelectedCell : function(position, color) {
 		this.renderer.renderSelectedCell(position, color);

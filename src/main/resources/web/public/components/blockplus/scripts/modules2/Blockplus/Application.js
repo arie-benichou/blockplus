@@ -1,9 +1,6 @@
 var Blockplus = Blockplus || {};
 
 // TODO rendre optional le zoom
-// TODO le premier tap doit juste zoomer
-// TODO fournir un moyen de sortir du zoom (lors d'un zoom sur une region non
-// jouable)
 // TODO afficher les pieces restantes
 Blockplus.Application = function() {
 
@@ -75,11 +72,11 @@ Blockplus.Application = function() {
 		var offsetY = event.pageY - targetOffset.top;
 		var position = that.boardManager.position(offsetX, offsetY);
 
-		var isPotentialPosition = JSON.stringify(position) in that.game.options.getPotentialPositions();
-		if (!isPotentialPosition)
-			return;
-
-		var p1 = position;
+		/*
+		 * var isPotentialPosition = JSON.stringify(position) in
+		 * that.game.options.getPotentialPositions(); if (!isPotentialPosition)
+		 * return;
+		 */
 
 		that.boardManager.unregister('click.1');
 
@@ -95,9 +92,6 @@ Blockplus.Application = function() {
 		context.scale(that.scale.x, that.scale.y);
 		that.boardManager.render();
 
-		that.boardManager.select(p1, 'Blue');
-		that.controlPanelManager.handleSelection(that.boardManager.selectedPositions, that.game.options.perfectMatch(that.boardManager.selectedPositions));
-
 		var clickEventHandler2 = function(event) {
 			var targetOffset = $(event.target).offset();
 			var offsetX = event.pageX - targetOffset.left;
@@ -109,14 +103,16 @@ Blockplus.Application = function() {
 			if (isPotentialPosition) {
 				if (that.boardManager.hasSelection(position))
 					that.boardManager.unselect(position, 'Blue');
-				else
+				else if (JSON.stringify(position) in that.game.options.matchPotentialPositions(that.boardManager.selectedPositions)) {
 					that.boardManager.select(position, 'Blue');
+				}
 				if (that.boardManager.selectedPositions.isEmpty()) {
 					that.start();
 				} else {
-					that.controlPanelManager.handleSelection(that.boardManager.selectedPositions, that.game.options
-							.perfectMatch(that.boardManager.selectedPositions));
+					that.controlPanelManager.handle(that.game.options, that.boardManager.selectedPositions, that.boardManager, 'Blue');
 				}
+			} else if (that.boardManager.selectedPositions.isEmpty()) {
+				that.start();
 			}
 		};
 		that.boardManager.register('click.2', clickEventHandler2);
@@ -201,8 +197,7 @@ Blockplus.Application = function() {
 			if (room < max) {
 				++room;
 				that.client.say(gameConnection(room));
-			}
-			else {
+			} else {
 				alert("server is full !");
 			}
 
