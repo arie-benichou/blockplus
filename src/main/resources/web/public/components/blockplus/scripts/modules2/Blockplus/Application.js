@@ -10,8 +10,8 @@ Blockplus.Application = function() {
 		// maxWidth : $(window).width(),
 		// maxHeight : $(window).height(),
 
-		maxWidth : 400,
-		maxHeight : 600
+		maxWidth :  $("#content").css("width").substr(0,3),
+		maxHeight : $("#content").css("height").substr(0,3)
 
 	});
 

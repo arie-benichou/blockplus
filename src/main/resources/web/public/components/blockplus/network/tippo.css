@@ -20,16 +20,16 @@ img {
 
 #content {
 	margin: 0 auto;
-	width: 400px;
-	height: 600px;
+	width: 392px;
+	height: 576px;
 	background-color: #2a2d30;
 	overflow: hidden;
-	border: 8px solid white;
+	border: 3px solid white;
 	-webkit-border-radius: 8px;
 }
 
 #splash {
-	padding: 25px;
+	padding: 5%;
 	font-family: sans-serif;
 	font-size: 200%;
 	text-align: center;
