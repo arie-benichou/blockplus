@@ -44,7 +44,7 @@ AvailablePieces.prototype = {
 		$(this.element).html("");
 		for (id in pieces) {
 			var image = new Image();
-			image.setAttribute("id", "piece" + id);
+			image.setAttribute("id", "piece-" + id);
 			image.src = localStorage.getItem(getLocalStoreKey(color, "piece" + id));
 			image.setAttribute("class", pieces[id] ? "available" : "not-available");
 			this.element.appendChild(image);
