@@ -15,7 +15,7 @@ Blockplus.PieceRenderer = function(viewPort, colors) {
 
 	this.cellDimension = {
 		width : (this.width - 7 * 2) / ((1 + 5 + 1) * 7),
-		height : (this.height - 3 * 2) / ((1 + 5 + 1) * 3)
+		height : (this.height - (33 + 2) - 3 * 2) / ((1 + 3 + 1) * 3)
 	};
 
 	console.log(this.cellDimension);

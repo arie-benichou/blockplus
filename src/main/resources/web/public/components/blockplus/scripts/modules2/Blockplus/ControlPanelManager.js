@@ -15,7 +15,7 @@ Blockplus.ControlPanelManager = function(canvas, viewPort) {
 
 	// TODO déterminer si Portrait ou Landscape
 	this.context.canvas.width = this.viewPort.min
-	this.context.canvas.height = this.viewPort.max - this.viewPort.min - (40 + 4); // players tabs + margin-top of pieces
+	this.context.canvas.height = this.viewPort.max - this.viewPort.min - (33 + 2);
 
 	var min = Math.min(this.context.canvas.width, this.context.canvas.height);
 
