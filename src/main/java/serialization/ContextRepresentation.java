@@ -36,6 +36,7 @@ import blockplus.player.Player;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -82,37 +83,56 @@ public final class ContextRepresentation {
         return boardState;
     }
 
-    public JsonElement encodePieces() {
+    public JsonElement _encodePieces() {
         final JsonObject data = new JsonObject();
         final Context context = this.getGameContext();
         for (final Player player : context.getPlayers()) {
             final Color color = player.getColor();
             final JsonObject jsonObject = new JsonObject();
             final Pieces pieces = player.getPieces();
-            System.out.println(pieces);
             for (final Entry<PieceType, Integer> entry : pieces) {
                 final int ordinal = entry.getKey().ordinal();
-                if (ordinal != 0) jsonObject.addProperty("" + ordinal, entry.getValue() > 0);
+                if (ordinal != 0) jsonObject.addProperty("" + ordinal, entry.getValue());
             }
             data.add(color.toString(), jsonObject);
         }
         return data;
     }
 
+    public JsonElement encodePieces() {
+        final JsonObject data = new JsonObject();
+        final Context context = this.getGameContext();
+        for (final Player player : context.getPlayers()) {
+            final Color color = player.getColor();
+            int bits = 0b1;
+            for (final Entry<PieceType, Integer> entry : player.getPieces()) {
+                bits = bits << 1 | entry.getValue();
+            }
+            data.add(color.toString(), new JsonPrimitive(bits));
+        }
+        return data;
+    }
+
     public JsonElement encodeOptions() {
         final List<MoveInterface> options = this.getGameContext().options();
-        final Map<PieceType, List<Set<PositionInterface>>> legalPositionsByPiece = Maps.newTreeMap();
+        final Map<Integer, List<Set<Integer>>> legalPositionsByPiece = Maps.newTreeMap();
         for (final MoveInterface moveInterface : options) {
             if (!moveInterface.isNull()) { // TODO à revoir
                 final Move move = (Move) moveInterface;
                 final PieceInterface piece = move.getPiece();
-                final PieceType key = PieceType.get(piece.getId()); // TODO getType
-                List<Set<PositionInterface>> playablePositions = legalPositionsByPiece.get(key);
+                final int key = piece.getId();
+                List<Set<Integer>> playablePositions = legalPositionsByPiece.get(key);
                 if (playablePositions == null) {
                     playablePositions = Lists.newArrayList();
                     legalPositionsByPiece.put(key, playablePositions);
                 }
-                playablePositions.add(piece.getSelfPositions());
+                final Set<Integer> positions = Sets.newHashSet();
+                for (final PositionInterface position : piece.getSelfPositions()) {
+                    // TODO position factory: id d'une position
+                    final int id = 20 * position.row() + position.column() % 20;
+                    positions.add(id);
+                }
+                playablePositions.add(positions);
             }
         }
         return JSONSerializer.getInstance().toJsonTree(legalPositionsByPiece);
@@ -127,6 +147,16 @@ public final class ContextRepresentation {
         data.add("pieces", this.encodePieces());
         data.add("options", this.encodeOptions());
         return data.toString();
+    }
+
+    public static void main(final String[] args) {
+        int data = 0b1;
+        for (int i = 0; i < 22; ++i) {
+            data = data << 1 | i % 2;
+        }
+        System.out.println();
+        System.out.println(data);
+        System.out.println(Integer.toBinaryString(data));
     }
 
 }

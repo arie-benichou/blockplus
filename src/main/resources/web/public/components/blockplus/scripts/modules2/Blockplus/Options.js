@@ -3,10 +3,10 @@ var Blockplus = Blockplus || {};
 Blockplus.Options = function(data) {
 	this.data = [];
 	this.potentialPositions = {};
-	for ( var p in data) {
-		var pieceInstances = data[p];
+	for ( var id in data) {
+		var pieceInstances = data[id];
 		var pieceInstancesObject = {
-			id : parseInt(p.substring(5, 7), 10),
+			id : id,
 			size : pieceInstances[0].length,
 			instances : []
 		};
@@ -16,13 +16,13 @@ Blockplus.Options = function(data) {
 			var size = pieceInstance.length;
 			var pieceInstanceObject = {};
 			for ( var j = 0; j < size; ++j) {
-				// TODO utiliser la factory
+				// TODO !! utiliser la factory
+				// TODO !! ajouter un champ index/id dans Position
+				var index = pieceInstance[j];
 				var p = {
-					row : pieceInstance[j][0],
-					column : pieceInstance[j][1]
+					row : Math.floor(index / 20),
+					column : index % 20
 				};
-				// TODO ? encoder les positions en index
-				// TODO ? ajouter un champ index/id dans Position
 				var json = JSON.stringify(p);
 				this.potentialPositions[json] = true;
 				pieceInstanceObject[json] = true;
@@ -69,7 +69,7 @@ Blockplus.Options.prototype = {
 		}
 		return matches;
 	},
-	
+
 	matchPotentialPositions : function(selectedPositions) {
 		var matches = {};
 		var min = selectedPositions.getSize();
@@ -79,7 +79,7 @@ Blockplus.Options.prototype = {
 			if (pieceInstances.size >= min) {
 				var instances = pieceInstances.instances;
 				for ( var j = 0; j < instances.length; ++j) {
-					var instance = instances[j];					
+					var instance = instances[j];
 					var match = true;
 					for ( var position in selectedPositions.get()) {
 						if (!(position in instance)) {
@@ -89,14 +89,14 @@ Blockplus.Options.prototype = {
 					}
 					if (match) {
 						for ( var position in instance) {
-							matches[position] = true;	
+							matches[position] = true;
 						}
 					}
 				}
 			}
 		}
 		return matches;
-	},	
+	},
 
 	perfectMatch : function(selectedPositions) {
 		var min = selectedPositions.getSize();

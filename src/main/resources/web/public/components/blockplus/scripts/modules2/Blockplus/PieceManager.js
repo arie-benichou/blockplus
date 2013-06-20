@@ -53,11 +53,11 @@ Blockplus.PieceManager.prototype = {
 
 	update : function(color, pieces) {
 		$(this.element).html("");
-		for (id in pieces) {
+		for ( var i = 1, n = pieces.length; i <= n; ++i) {
 			var image = new Image();
-			image.setAttribute("id", "piece" + id);
-			image.src = this.piece(color, id);
-			image.setAttribute("class", pieces[id] ? "available" : "not-available");
+			image.setAttribute("id", "piece" + i);
+			image.src = this.piece(color, i);
+			image.setAttribute("class", pieces.pop() ? "available" : "not-available");
 			this.element.appendChild(image);
 		}
 	},
