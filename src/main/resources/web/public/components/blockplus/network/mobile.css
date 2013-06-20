@@ -30,12 +30,14 @@ img {
 	background-color: #373B3F;
 	overflow: hidden;
 	width: 320px;
-	height: 455px;
+	height: 448px;
+	/*
 	width: 392px;
 	height: 576px;
 	margin-top: 50px;
 	border: 5px solid white;
 	border-radius: 10px;
+	*/
 }
 
 #splash {
