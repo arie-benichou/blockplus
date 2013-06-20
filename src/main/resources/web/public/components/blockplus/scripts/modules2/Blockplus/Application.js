@@ -77,7 +77,7 @@ Blockplus.Application = function() {
 		var id = window.setInterval(function() {
 			if (data.length > 0) {
 				var img = document.createElement('img');
-				img.id = data.length;
+				img.id = "p" + data.length;
 				$("#splash").append(img);
 				img.src = data.pop();
 			} else {
@@ -91,13 +91,19 @@ Blockplus.Application = function() {
 				// data2.reverse();
 				var n = 2;
 				var t = 3;
+				/*
+				$("#4").css('border', '3px solid #3971c4');
+				$("#3").css('border', '3px solid #eea435');
+				$("#2").css('border', '3px solid #cc2b2b');
+				$("#1").css('border', '3px solid #04a44b');
+				*/
 				var f = function() {
 					var id2 = window.setInterval(function() {
 						console.debug(n);
-						$("#4").attr('src', data2[n % t]);
-						$("#3").attr('src', data2[n % t + t]);
-						$("#2").attr('src', data2[n % t + t * 2]);
-						$("#1").attr('src', data2[n % t + t * 3]);
+						$("#p4").attr('src', data2[n % t]);
+						$("#p3").attr('src', data2[n % t + t]);
+						$("#p2").attr('src', data2[n % t + t * 2]);
+						$("#p1").attr('src', data2[n % t + t * 3]);
 						++n;
 						if ($("#splash").attr("style") == "display: none;") {
 							window.clearInterval(id2);

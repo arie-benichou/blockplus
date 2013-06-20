@@ -12,26 +12,27 @@ canvas {
 img {
 	vertical-align: bottom;
 	margin: 1px;
-	
-	-webkit-transition: all 0.4s ease-out;
-		
+	border-radius: 19px;
+
+	/*
 	border-top-right-radius: 16px;
 	border-bottom-right-radius: 39px;
 	border-top-left-radius: 39px;
 	border-bottom-left-radius: 16px;
+	*/
 }
 
 #content {
 	margin: 0 auto;
+	/*
 	background-color: #2a2d30;
+	*/
+	background-color: #373B3F;
 	overflow: hidden;
-	
 	width: 320px;
 	height: 455px;
-	
 	width: 392px;
 	height: 576px;
-	
 	margin-top: 50px;
 	border: 5px solid white;
 	border-radius: 10px;
@@ -53,6 +54,30 @@ img {
 
 #pieces {
 	margin-top: 0px;
+}
+
+#pieces img {
+	border: 2px solid #3971c4;
+}
+
+#splash img {
+	border-radius: 20px;
+}
+
+#p4 {
+	border: 5px solid #3971c4;
+}
+
+#p3 {
+	border: 5px solid #eea435;
+}
+
+#p2 {
+	border: 5px solid #cc2b2b;
+}
+
+#p1 {
+	border: 5px solid #04a44b;
 }
 
 #control-panel {
@@ -86,7 +111,7 @@ img {
 	font-size: 125%;
 	text-align: center;
 	color: white;
-	cursor: pointer;	
+	cursor: pointer;
 	line-height: 33px;
 	height: 33px;
 }

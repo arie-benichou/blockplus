@@ -102,7 +102,7 @@ Blockplus.ControlPanelManager.prototype = {
 				newCanvas.width = that.cellDimension.width * width;
 				newCanvas.height = that.cellDimension.height * height;
 
-				ctx.fillStyle = "#2a2d30";
+				ctx.fillStyle = "#373B3F";
 				ctx.fillRect(0, 0, that.canvas.width, that.canvas.height);
 
 				// tmpBoardRendering.clear("#2a2d30");
@@ -117,7 +117,7 @@ Blockplus.ControlPanelManager.prototype = {
 
 				// console.log(newCanvas.toDataURL());
 
-				that.context.fillStyle = "#2a2d30";
+				that.context.fillStyle = "#373B3F";
 				that.context.fillRect(0, 0, that.canvas.width, that.canvas.height);
 
 				var x = (that.context.canvas.width - newCanvas.width) / 2;
