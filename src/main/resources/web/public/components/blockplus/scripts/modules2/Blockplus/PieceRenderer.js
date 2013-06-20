@@ -69,7 +69,7 @@ Blockplus.PieceRenderer.prototype = {
 		var canvas2 = document.createElement('canvas');
 		var context2 = canvas2.getContext("2d");
 		canvas2.width = (1 + 5 + 1) * that.cellDimension.width + 0;
-		canvas2.height = (1 + 5 + 1) * that.cellDimension.height + 0;
+		canvas2.height = (1 + 3 + 1) * that.cellDimension.height + 0;
 		context2.fillStyle = this.colors[piece.getColor()];
 		context2.fillRect(0, 0, canvas2.width, canvas2.height);
 		var x = (canvas2.width - canvas.width) / 2;

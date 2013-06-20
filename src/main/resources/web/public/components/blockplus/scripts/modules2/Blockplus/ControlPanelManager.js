@@ -10,12 +10,12 @@ Blockplus.ControlPanelManager = function(canvas, viewPort) {
 
 	this.context = canvas.getContext("2d");
 
-	//console.log(this.context.canvas.width, this.context.canvas.height);
-	//console.log(viewPort);
+	// console.log(this.context.canvas.width, this.context.canvas.height);
+	// console.log(viewPort);
 
 	// TODO déterminer si Portrait ou Landscape
 	this.context.canvas.width = this.viewPort.min
-	this.context.canvas.height = this.viewPort.max - this.viewPort.min;
+	this.context.canvas.height = this.viewPort.max - this.viewPort.min - (40 + 4); // players tabs + margin-top of pieces
 
 	var min = Math.min(this.context.canvas.width, this.context.canvas.height);
 
@@ -24,7 +24,7 @@ Blockplus.ControlPanelManager = function(canvas, viewPort) {
 		height : min / (5 + 1)
 	};
 
-	//console.log(this.cellDimension);
+	// console.log(this.cellDimension);
 
 	// TODO à revoir
 	this.colors = {
@@ -64,7 +64,7 @@ Blockplus.ControlPanelManager.prototype = {
 	handle : function(options, selectedPositions, boardManager, color) {
 
 		var potentialPositions = options.matchPotentialPositions(selectedPositions);
-		//console.log(potentialPositions);
+		// console.log(potentialPositions);
 
 		for ( var position in options.getPotentialPositions()) {
 			if (!(position in selectedPositions.get())) {
@@ -72,8 +72,7 @@ Blockplus.ControlPanelManager.prototype = {
 				boardManager.renderEmptyCell(p);
 				if (position in potentialPositions) {
 					boardManager.renderPotentialCell(p, color);
-				}
-				else {
+				} else {
 					boardManager.renderPotentialCell2(p, color);
 				}
 			}

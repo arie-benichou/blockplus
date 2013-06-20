@@ -240,6 +240,15 @@ public class BlockplusServer extends WebSocketServlet {
     // TODO use other virtual clients for testing
     public static void main(final String[] args) throws Exception {
 
+        final Runtime runtime = Runtime.getRuntime();
+        runtime.exec("beep -f 200 -l 180");
+        Thread.sleep(190);
+        runtime.exec("beep -f 400 -l 200");
+        Thread.sleep(210);
+        runtime.exec("beep -f 600 -l 250");
+        Thread.sleep(260);
+        runtime.exec("beep -f 800 -l 300");
+
         final int game = args.length > 0 ? Integer.parseInt(args[0]) : 6;
 
         final String host = "localhost";

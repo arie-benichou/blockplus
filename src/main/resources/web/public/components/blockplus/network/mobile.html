@@ -1,54 +1,73 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-		
-		<title>Block+</title>
-		<meta property="og:image" content="../images/mobile-small.png" />
-		
-		<link href="../images/favicon.png" rel="shortcut icon" />
-		<link href="mobile.css" rel="stylesheet" />
-		
-		<script src="../scripts/library/jquery.min.js"></script>
-		
-		<script src="../scripts/modules2/Blockplus/Application.js"></script>
-		<script src="../scripts/modules2/Blockplus/ViewPort.js"></script>
-		<script src="../scripts/modules2/Blockplus/PositionFactory.js"></script>
-		
-		
-		<script src="../scripts/modules2/Blockplus/Board.js"></script>
-		<script src="../scripts/modules2/Blockplus/BoardRenderer.js"></script>
-		<script src="../scripts/modules2/Blockplus/BoardManager.js"></script>
-				
-		<script src="../scripts/modules2/Blockplus/SelectedPositions.js"></script>
-		<script src="../scripts/modules2/Blockplus/ControlPanelManager.js"></script>
-		<script src="../scripts/modules2/Blockplus/Game.js"></script>
-		<script src="../scripts/modules2/Blockplus/GameState.js"></script>
-		<script src="../scripts/modules2/Blockplus/Options.js"></script>
-		
-		<script src="../scripts/modules2/Blockplus/Piece.js"></script>
-		<script src="../scripts/modules2/Blockplus/PieceRenderer.js"></script>		
-		<script src="../scripts/modules2/Blockplus/PieceManager.js"></script>
-		
-		<script src="../scripts/modules2/Protocol.js"></script>
-		<script src="../scripts/modules2/Client.js"></script>
-		
+<html itemscope itemtype="http://schema.org/Product">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, user-scalable=no">
 
-	</head>
-	<body>
-		<div id="content">
-			<div id="splash"></div>
-			<div>
-				<canvas id="board"></canvas>
-			</div>
-			<div>
-				<canvas id="control-panel"></canvas>
-			</div>
-			<div id="pieces"></div>
-			<script>
-				$(document).ready(new Blockplus.Application().start);
-			</script>
+<title>Block+</title>
+
+<meta itemprop="name" content="Block+">
+<meta itemprop="description"
+	content="une version du jeu Blokus pour le petit écran !">
+<meta itemprop="image"
+	content="http://artefact.hd.free.fr/images/mobile-small.png">
+
+<meta property="og:title" content="Block+" />
+<meta property="og:description"
+	content="une version du jeu Blokus pour le petit écran !" />
+<meta property="og:image"
+	content="http://artefact.hd.free.fr/images/mobile-small.png" />
+
+<link href="../images/favicon.png" rel="shortcut icon" />
+<link href="mobile.css" rel="stylesheet" />
+
+<script src="../scripts/library/jquery.min.js"></script>
+
+<script src="../scripts/modules2/Blockplus/Application.js"></script>
+<script src="../scripts/modules2/Blockplus/ViewPort.js"></script>
+<script src="../scripts/modules2/Blockplus/PositionFactory.js"></script>
+
+
+<script src="../scripts/modules2/Blockplus/Board.js"></script>
+<script src="../scripts/modules2/Blockplus/BoardRenderer.js"></script>
+<script src="../scripts/modules2/Blockplus/BoardManager.js"></script>
+
+<script src="../scripts/modules2/Blockplus/SelectedPositions.js"></script>
+<script src="../scripts/modules2/Blockplus/ControlPanelManager.js"></script>
+<script src="../scripts/modules2/Blockplus/Game.js"></script>
+<script src="../scripts/modules2/Blockplus/GameState.js"></script>
+<script src="../scripts/modules2/Blockplus/Options.js"></script>
+
+<script src="../scripts/modules2/Blockplus/Piece.js"></script>
+<script src="../scripts/modules2/Blockplus/PieceRenderer.js"></script>
+<script src="../scripts/modules2/Blockplus/PieceManager.js"></script>
+
+<script src="../scripts/modules2/Protocol.js"></script>
+<script src="../scripts/modules2/Client.js"></script>
+
+
+</head>
+<body>
+	<div id="content">
+		<div id="splash"></div>
+		<div id="players">
+			<div id="blue" class="round player">000</div>
+			<div id="yellow" class="round player">000</div>
+			<div id="red" class="round player">000</div>
+			<div id="green" class="round player">000</div>
+			<div style="clear: both;"></div>
 		</div>
-	</body>
+		<div id="board-container">
+			<canvas id="board"></canvas>
+		</div>
+		<div>
+			<canvas id="control-panel"></canvas>
+		</div>
+		<div id="pieces"></div>
+		<script>
+			$(document).ready(new Blockplus.Application().start);
+		</script>		
+	</div>
+</body>
 </html>

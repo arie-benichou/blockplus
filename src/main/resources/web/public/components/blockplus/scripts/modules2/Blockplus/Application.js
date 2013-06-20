@@ -111,7 +111,7 @@ Blockplus.Application = function() {
 
 	};
 
-	this.pieceManager = new Blockplus.PieceManager(document.getElementById('pieces'), pieceRenderer, "/xml/pieces.xml", this.positionFactory, callBack);
+	this.pieceManager = new Blockplus.PieceManager(document.getElementById('pieces'), pieceRenderer, "/xml/pieces2.xml", this.positionFactory, callBack);
 
 	/*-----------------------8<-----------------------*/
 
@@ -295,6 +295,14 @@ Blockplus.Application = function() {
 	}
 
 	/*-------------------------------8<-------------------------------*/
+	
+	$("#content").bind('mousedown', function(event) {
+		event.preventDefault();
+	});
+	
+	$(".player").bind('click', function(event) {
+		alert("Not implented yet ! :p\n\nThis tab will show the score for the player of this color, and the remaining pieces for this player.")
+	});
 
 };
 
