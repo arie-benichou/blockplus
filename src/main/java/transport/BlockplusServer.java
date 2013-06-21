@@ -141,15 +141,6 @@ public class BlockplusServer extends WebSocketServlet {
 
     @Override
     public WebSocket doWebSocketConnect(final HttpServletRequest request, final String protocol) {
-        /*
-        try {
-            Thread.sleep(2 * 1000);
-        }
-        catch (final InterruptedException e) {
-            e.printStackTrace();
-        }
-        */
-        System.out.println(request);
         return new IO(this);
     }
 

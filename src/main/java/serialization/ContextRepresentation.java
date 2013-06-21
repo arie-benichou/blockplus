@@ -149,14 +149,4 @@ public final class ContextRepresentation {
         return data.toString();
     }
 
-    public static void main(final String[] args) {
-        int data = 0b1;
-        for (int i = 0; i < 22; ++i) {
-            data = data << 1 | i % 2;
-        }
-        System.out.println();
-        System.out.println(data);
-        System.out.println(Integer.toBinaryString(data));
-    }
-
 }
