@@ -93,7 +93,7 @@ public class BlockplusServerEvents {
             else {
                 if (game.isEmpty()) { // TODO à revoir
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(500);
                     }
                     catch (final InterruptedException e1) {
                         // TODO Auto-generated catch block
@@ -102,7 +102,7 @@ public class BlockplusServerEvents {
                 }
                 // TODO replace quick & dirty patch by a virtual client factory
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(250);
                     BlockplusServer.main(new String[] { newGame.getOrdinal().toString() });
                 }
                 catch (final Exception e) {
@@ -115,15 +115,15 @@ public class BlockplusServerEvents {
     @Subscribe
     @AllowConcurrentEvents
     public void onMoveSubmit(final MoveSubmitInterface moveSubmit) {
-    /*
-        try {
-            Thread.sleep(3000);
-        }
-        catch (final InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        */
+        /*
+            try {
+                Thread.sleep(3000);
+            }
+            catch (final InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            */
         final ClientInterface client = this.getServer().getClient(moveSubmit.getIO());
         final Integer game = client.getGame();
         final BlockplusGame blockplusGame = (BlockplusGame) this.getServer().getGame(game);

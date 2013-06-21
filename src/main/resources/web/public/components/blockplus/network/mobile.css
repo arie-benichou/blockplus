@@ -36,7 +36,7 @@ img {
 #splash {
 	padding: 5%;
 	font-family: sans-serif;
-	font-size: 200%;
+	font-size: 325%;
 	text-align: center;
 	color: white;
 	margin-top: 55%;
@@ -55,15 +55,34 @@ img {
 	margin-top: 0px;
 }
 
+.blue {
+	color: #3971c4;
+}
+
+.yellow {
+	color: #eea435;
+}
+
+.red {
+	color: #cc2b2b;
+}
+
+.green {
+	color: #04a44b;
+}
+
 #blue img {
 	border: 2px solid #3971c4;
 }
+
 #yellow  img {
 	border: 2px solid #eea435;
 }
+
 #red  img {
 	border: 2px solid #cc2b2b;
 }
+
 #green  img {
 	border: 2px solid #04a44b;
 }
