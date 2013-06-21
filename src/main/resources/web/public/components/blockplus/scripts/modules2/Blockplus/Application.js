@@ -1,6 +1,5 @@
 var Blockplus = Blockplus || {};
 
-// TODO afficher les pieces restantes
 // TODO proposer une pièce lorsque le matching retourne une seule piece
 // TODO rendre optional le zoom
 Blockplus.Application = function() {
@@ -88,15 +87,8 @@ Blockplus.Application = function() {
 					data2.push(that.pieceManager.piece(color, 8));
 					data2.push(that.pieceManager.piece(color, 1));
 				}
-				// data2.reverse();
 				var n = 2;
 				var t = 3;
-				/*
-				$("#4").css('border', '3px solid #3971c4');
-				$("#3").css('border', '3px solid #eea435');
-				$("#2").css('border', '3px solid #cc2b2b');
-				$("#1").css('border', '3px solid #04a44b');
-				*/
 				var f = function() {
 					var id2 = window.setInterval(function() {
 						console.debug(n);

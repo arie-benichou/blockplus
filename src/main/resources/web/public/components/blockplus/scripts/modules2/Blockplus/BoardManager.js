@@ -13,20 +13,9 @@ Blockplus.BoardManager = function(board, renderer, positionFactory, selectedPosi
 	
 	this.viewPort = viewPort;
 	
-	/*
-	this.renderer.context.canvas.width = board.columns * this.renderer.cellWidth;
-	this.renderer.context.canvas.height = board.columns * this.renderer.cellHeight;
-	*/
-	
 	this.renderer.context.canvas.width = viewPort.min;
 	this.renderer.context.canvas.height = viewPort.min;
-	
-	//console.log(this.renderer.context.canvas.width, this.renderer.context.canvas.height);
-	
-	this.register('mousedown', function(event) {
-		event.preventDefault();
-	}); // in order to avoid annoying behaviour...
-	
+		
 };
 
 Blockplus.BoardManager.prototype = {
