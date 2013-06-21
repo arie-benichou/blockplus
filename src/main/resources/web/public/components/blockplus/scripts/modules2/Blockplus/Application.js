@@ -51,23 +51,23 @@ Blockplus.Application = function() {
 	};
 
 	/*-----------------------8<-----------------------*/
+	
+	this.audioManager = new Blockplus.AudioManager("test");
 
 	this.boardRenderer = new Blockplus.BoardRenderer(document.getElementById('board'), this.cellDimension, this.colors);
 	this.positionFactory = new Blockplus.PositionFactory();
 	this.selectedPositions = new Blockplus.SelectedPositions();
 	this.boardManager = new Blockplus.BoardManager(this.board, this.boardRenderer, this.positionFactory, this.selectedPositions, this.viewPort);
-	this.controlPanelManager = new Blockplus.ControlPanelManager(document.getElementById('control-panel'), this.viewPort);
+	this.controlPanelManager = new Blockplus.ControlPanelManager(document.getElementById('control-panel'), this.viewPort, this.audioManager);
 	var pieceRenderer = new Blockplus.PieceRenderer(this.viewPort, this.colors);
-
-	/*-----------------------8<-----------------------*/
-
-	var that = this;
 
 	/*-----------------------8<-----------------------*/
 
 	this.pieceManager = new Blockplus.PieceManager(document.getElementById('pieces'), pieceRenderer, "/xml/pieces2.xml", this.positionFactory);
 
 	/*-----------------------8<-----------------------*/
+
+	var that = this;
 
 	/*-----------------------8<-----------------------*/
 
@@ -212,6 +212,7 @@ Blockplus.Application = function() {
 				that.client.say(gameConnection(room));
 			} else {
 				console.error("server is full !");
+				that.audioManager.play("../audio/none.ogg");
 			}
 
 		});
@@ -223,11 +224,16 @@ Blockplus.Application = function() {
 				that.color = data;
 				that.boardManager.updateColor(that.color);
 				Blockplus.Client.protocol.register("update", function(data) {
+
+					window.clearInterval(that.id);
 					$("#splash").hide();
+
 					window.clearInterval();
 					that.controlPanelManager.hide();
 					var gameState = new Blockplus.GameState(data);
 					if (gameState.getColor() == that.color) {
+						that.audioManager.play("../audio/you.ogg");
+
 						that.boardManager.unregister('click.1');
 						that.boardManager.register('click.1', that.clickEventHandler1);
 						that.pieceManager.show(that.color);
@@ -242,6 +248,11 @@ Blockplus.Application = function() {
 						console.debug(score);
 						$("#" + color).html(score);
 					}
+					
+					if (gameState.isTerminal()) {
+						that.audioManager.play("../audio/game-is-over.ogg");
+					}
+					
 
 				});
 			});
@@ -249,10 +260,29 @@ Blockplus.Application = function() {
 		that.client.say(gameConnection(room));
 	});
 
+	var animation = function() {
+		$("#splash").html('');
+		var images = [];
+		images.push(that.pieceManager.piece('Blue', 1));
+		images.push(that.pieceManager.piece('Blue', 8));
+		images.push(that.pieceManager.piece('Blue', 21));		
+
+		var img = document.createElement('img');
+		$("#splash").append(img);
+
+		// TODO request animation frame
+		var n = -1;
+		that.id = window.setInterval(function() {
+			console.debug('...');
+			img.src = images[++n % 3];
+		}, 125);
+	}
+
 	this.start = function() {
 		var url = computeLocation("/network/io");
 		that.client = new Blockplus.Client("Android", url);
 		that.client.start(that.client.join);
+		setTimeout(animation, 50);
 	}
 
 	/*-------------------------------8<-------------------------------*/

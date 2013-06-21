@@ -1,85 +1,95 @@
 <!DOCTYPE html>
 <html itemscope itemtype="http://schema.org/Product">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, user-scalable=no">
-
-<title>Block+</title>
-
-<meta itemprop="name" content="Block+">
-<meta itemprop="description"
-	content="une version du jeu Blokus pour le petit écran !">
-<meta itemprop="image"
-	content="http://artefact.hd.free.fr/images/mobile.png">
-
-<meta property="og:title" content="Block+" />
-<meta property="og:description"
-	content="une version du jeu Blokus pour le petit écran !" />
-<meta property="og:image"
-	content="http://artefact.hd.free.fr/images/mobile.png" />
-
-<link href="../images/favicon.png" rel="shortcut icon" />
-<link href="mobile.css" rel="stylesheet" />
-
-<script src="../scripts/library/jquery.min.js"></script>
-
-<script src="../scripts/modules2/Blockplus/Application.js"></script>
-<script src="../scripts/modules2/Blockplus/ViewPort.js"></script>
-<script src="../scripts/modules2/Blockplus/PositionFactory.js"></script>
-
-
-<script src="../scripts/modules2/Blockplus/Board.js"></script>
-<script src="../scripts/modules2/Blockplus/BoardRenderer.js"></script>
-<script src="../scripts/modules2/Blockplus/BoardManager.js"></script>
-
-<script src="../scripts/modules2/Blockplus/SelectedPositions.js"></script>
-<script src="../scripts/modules2/Blockplus/ControlPanelManager.js"></script>
-<script src="../scripts/modules2/Blockplus/Game.js"></script>
-<script src="../scripts/modules2/Blockplus/GameState.js"></script>
-<script src="../scripts/modules2/Blockplus/Options.js"></script>
-
-<script src="../scripts/modules2/Blockplus/Piece.js"></script>
-<script src="../scripts/modules2/Blockplus/PieceRenderer.js"></script>
-<script src="../scripts/modules2/Blockplus/PieceManager.js"></script>
-
-<script src="../scripts/modules2/Protocol.js"></script>
-<script src="../scripts/modules2/Client.js"></script>
-
-
-</head>
-<body>
-	<div id="content">
-		<div id="splash">
-			<span class="">B</span>
-			<span class="blue">l</span>
-			<span class="yellow">o</span>
-			<span class="red">c</span>
-			<span class="green">k</span>
-			<span>+</span></div>
-		<div id="players">
-			<div id="Blue" class="round player">000</div>
-			<div id="Yellow" class="round player">000</div>
-			<div id="Red" class="round player">000</div>
-			<div id="Green" class="round player">000</div>
-			<div style="clear: both;"></div>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, user-scalable=no">
+		
+		<title>Block+</title>
+		
+		<meta itemprop="name" content="Block+">
+		<meta itemprop="description"
+			content="une version du jeu Blokus pour le petit écran !">
+		<meta itemprop="image"
+			content="http://artefact.hd.free.fr/images/mobile.png">
+		
+		<meta property="og:title" content="Block+" />
+		<meta property="og:description"
+			content="une version du jeu Blokus pour le petit écran !" />
+		<meta property="og:image"
+			content="http://artefact.hd.free.fr/images/mobile.png" />
+		
+		<link href="../images/favicon.png" rel="shortcut icon" />
+		<link href="mobile.css" rel="stylesheet" />
+		
+		<script src="../scripts/library/jquery.min.js"></script>
+		
+		<script src="../scripts/modules2/Blockplus/Application.js"></script>
+		<script src="../scripts/modules2/Blockplus/ViewPort.js"></script>
+		<script src="../scripts/modules2/Blockplus/PositionFactory.js"></script>
+		
+		
+		<script src="../scripts/modules2/Blockplus/Board.js"></script>
+		<script src="../scripts/modules2/Blockplus/BoardRenderer.js"></script>
+		<script src="../scripts/modules2/Blockplus/BoardManager.js"></script>
+		
+		<script src="../scripts/modules2/Blockplus/SelectedPositions.js"></script>
+		<script src="../scripts/modules2/Blockplus/ControlPanelManager.js"></script>
+		<script src="../scripts/modules2/Blockplus/Game.js"></script>
+		<script src="../scripts/modules2/Blockplus/GameState.js"></script>
+		<script src="../scripts/modules2/Blockplus/Options.js"></script>
+		
+		<script src="../scripts/modules2/Blockplus/Piece.js"></script>
+		<script src="../scripts/modules2/Blockplus/PieceRenderer.js"></script>
+		<script src="../scripts/modules2/Blockplus/PieceManager.js"></script>
+		
+		<script src="../scripts/modules2/Blockplus/Protocol.js"></script>
+		<script src="../scripts/modules2/Blockplus/Client.js"></script>
+		
+		<script src="../scripts/modules2/Blockplus/AudioManager.js"></script>
+	</head>
+	<body>
+		<div id="content">
+			<audio id="test"></audio>
+			<div id="splash" onclick="new Blockplus.Application().start();">
+				<span class="">B</span>
+				<span class="blue">l</span>
+				<span class="yellow">o</span>
+				<span class="red">c</span>
+				<span class="green">k</span>
+				<span>+</span>
+			</div>
+			<div id="players">
+				<div id="Blue" class="round player"></div>
+				<div id="Yellow" class="round player"></div>
+				<div id="Red" class="round player"></div>
+				<div id="Green" class="round player"></div>
+				<div style="clear: both;"></div>
+			</div>
+			<div id="board-container">
+				<canvas id="board"></canvas>
+			</div>
+			<div>
+				<canvas id="control-panel"></canvas>
+			</div>
+			<div>
+				<div id="blue" class="pieces"></div>
+				<div id="yellow" class="pieces"></div>
+				<div id="red" class="pieces"></div>
+				<div id="green" class="pieces"></div>
+				<div style="clear: both;"></div>
+			</div>
+			<!-- 
+			<audio id="music" preload="auto">
+				<source src="../audio/index.ogg" type="audio/ogg"></source>
+				<source src="../audio/index.mp3" type="audio/mp3"></source>
+	        </audio>
+	         -->
+			<script>
+// 				$(document).ready(new Blockplus.Application().start);
+// 				$("#bypassbug").trigger('click');
+// 				document.getElementById('music').onclick();
+			</script>
 		</div>
-		<div id="board-container">
-			<canvas id="board"></canvas>
-		</div>
-		<div>
-			<canvas id="control-panel"></canvas>
-		</div>
-		<div>
-			<div id="blue" class="pieces"></div>
-			<div id="yellow" class="pieces"></div>
-			<div id="red" class="pieces"></div>
-			<div id="green" class="pieces"></div>
-			<div style="clear: both;"></div>
-		</div>
-		<script>
-			$(document).ready(new Blockplus.Application().start);
-		</script>		
-	</div>
-</body>
+	</body>
 </html>

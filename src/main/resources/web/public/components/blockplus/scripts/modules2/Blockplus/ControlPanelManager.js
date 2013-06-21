@@ -1,9 +1,8 @@
 var Blockplus = Blockplus || {};
 
-/*
- * TODO renommer en MoveProposalManager
- */
-Blockplus.ControlPanelManager = function(canvas, viewPort) {
+Blockplus.ControlPanelManager = function(canvas, viewPort, audioManager) {
+	
+	this.audioManager = audioManager;
 
 	this.canvas = canvas;
 	this.viewPort = viewPort;
@@ -83,6 +82,7 @@ Blockplus.ControlPanelManager.prototype = {
 		if (!isPlayable) {
 			this.hide();
 		} else {
+			//this.audioManager.play('../audio/subtle.ogg');
 			this.show();
 
 			var topLeft = selectedPositions.getTopLeftPosition();
