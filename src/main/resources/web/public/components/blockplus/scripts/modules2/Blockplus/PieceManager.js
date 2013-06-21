@@ -1,8 +1,8 @@
 var Blockplus = Blockplus || {};
 
-Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory, callBack) {
+Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory) {
 
-	this.element = element;
+	// this.element = element;
 	this.pieceRenderer = pieceRenderer;
 	this.pieces = {};
 	this.positionFactory = positionFactory;
@@ -30,7 +30,6 @@ Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory, 
 					that.pieces[color + "." + piece.getAttribute("name")] = canvas.toDataURL("image/png");
 				}
 			}
-			callBack();
 		}
 	});
 };
@@ -39,29 +38,30 @@ Blockplus.PieceManager.prototype = {
 
 	constructor : Blockplus.PieceManager,
 
-	hide : function() {
-		$(this.element).hide();
-	},
-
-	show : function() {
-		$(this.element).show();
-	},
+	/*
+	 * hide : function() { $(this.element).hide(); },
+	 * 
+	 * show : function() { $(this.element).show(); },
+	 */
 
 	piece : function(color, id) {
 		return this.pieces[color + '.' + "piece" + id];
 	},
 
 	update : function(color, pieces) {
-		$(this.element).html("");
-		$(this.element).removeClass();
-		$(this.element).addClass(color);
+		$("#" + color.toLowerCase()).html("");
 		for ( var i = 1, n = pieces.length; i <= n; ++i) {
 			var image = new Image();
 			image.setAttribute("id", "piece" + i);
 			image.src = this.piece(color, i);
 			image.setAttribute("class", pieces[n - i] ? "available" : "not-available");
-			this.element.appendChild(image);
+			$("#" + color.toLowerCase()).append(image);
 		}
+	},
+
+	show : function(color) {
+		$(".pieces").hide();
+		$("#" + color.toLowerCase()).show();
 	},
 
 };

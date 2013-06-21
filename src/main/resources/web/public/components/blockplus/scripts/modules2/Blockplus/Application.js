@@ -65,53 +65,7 @@ Blockplus.Application = function() {
 
 	/*-----------------------8<-----------------------*/
 
-	var callBack = function() {
-		var data = [];
-		for ( var color in that.colors) {
-			data.push(that.pieceManager.piece(color, 21));
-		}
-		data.reverse();
-		console.debug(data);
-		// TODO request animation frame
-		var id = window.setInterval(function() {
-			if (data.length > 0) {
-				var img = document.createElement('img');
-				//img.id = "p" + data.length;
-				$("#splash").append(img);
-				img.src = data.pop();
-			} else {
-				window.clearInterval(id);
-				var data2 = [];
-				for ( var color in that.colors) {
-					data2.push(that.pieceManager.piece(color, 21));
-					data2.push(that.pieceManager.piece(color, 8));
-					data2.push(that.pieceManager.piece(color, 1));
-				}
-				var n = 2;
-				var t = 3;
-				var f = function() {
-					var id2 = window.setInterval(function() {
-						console.debug(n);
-						/*
-						$("#p4").attr('src', data2[n % t]);
-						$("#p3").attr('src', data2[n % t + t]);
-						$("#p2").attr('src', data2[n % t + t * 2]);
-						$("#p1").attr('src', data2[n % t + t * 3]);
-						*/
-						++n;
-						if ($("#splash").attr("style") == "display: none;") {
-							window.clearInterval(id2);
-						}
-					}, 150);
-				}
-				window.setTimeout(f, 150);
-			}
-
-		}, 150);
-
-	};
-
-	this.pieceManager = new Blockplus.PieceManager(document.getElementById('pieces'), pieceRenderer, "/xml/pieces2.xml", this.positionFactory, callBack);
+	this.pieceManager = new Blockplus.PieceManager(document.getElementById('pieces'), pieceRenderer, "/xml/pieces2.xml", this.positionFactory);
 
 	/*-----------------------8<-----------------------*/
 
@@ -276,10 +230,19 @@ Blockplus.Application = function() {
 					if (gameState.getColor() == that.color) {
 						that.boardManager.unregister('click.1');
 						that.boardManager.register('click.1', that.clickEventHandler1);
-						that.pieceManager.update(gameState.getColor(), gameState.getPieces(that.color));
+						that.pieceManager.show(that.color);
 					}
 					that.game = new Blockplus.Game(that.client, that.color, gameState, that.boardManager);
 					that.game.update();
+					for (color in that.colors) {
+						that.pieceManager.update(color, gameState.getPieces(color));
+					}
+					for (color in that.colors) {
+						var score = that.boardManager.board.getCells(color).length;
+						console.debug(score);
+						$("#" + color).html(score);
+					}
+
 				});
 			});
 		});
@@ -300,9 +263,7 @@ Blockplus.Application = function() {
 
 	$(".player").bind('click', function(event) {
 		var color = $(this).attr('id');
-		console.debug(color);
-		console.debug(that.game.gameState.getPieces(color));
-		that.pieceManager.update(color, that.game.gameState.getPieces(color));
+		that.pieceManager.show(color);
 	});
 
 };

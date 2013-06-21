@@ -47,27 +47,24 @@ img {
 	border-top: 1px solid #a0a6ab;
 }
 
-#pieces {
-	margin-top: 0px;
-}
-
 #splash img {
 	border-radius: 20px;
 }
 
-#pieces.Blue img {
+.pieces {
+	margin-top: 0px;
+}
+
+#blue img {
 	border: 2px solid #3971c4;
 }
-
-#pieces.Yellow  img {
+#yellow  img {
 	border: 2px solid #eea435;
 }
-
-#pieces.Red  img {
+#red  img {
 	border: 2px solid #cc2b2b;
 }
-
-#pieces.Green  img {
+#green  img {
 	border: 2px solid #04a44b;
 }
 
