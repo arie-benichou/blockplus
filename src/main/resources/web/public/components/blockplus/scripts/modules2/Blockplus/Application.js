@@ -9,8 +9,8 @@ Blockplus.Application = function() {
 		// maxWidth : $(window).width(),
 		// maxHeight : $(window).height(),
 
-		maxWidth :  $("#content").css("width").substr(0,3),
-		maxHeight : $("#content").css("height").substr(0,3)
+		maxWidth : $("#content").css("width").substr(0, 3),
+		maxHeight : $("#content").css("height").substr(0, 3)
 
 	});
 
@@ -76,7 +76,7 @@ Blockplus.Application = function() {
 		var id = window.setInterval(function() {
 			if (data.length > 0) {
 				var img = document.createElement('img');
-				img.id = "p" + data.length;
+				//img.id = "p" + data.length;
 				$("#splash").append(img);
 				img.src = data.pop();
 			} else {
@@ -92,10 +92,12 @@ Blockplus.Application = function() {
 				var f = function() {
 					var id2 = window.setInterval(function() {
 						console.debug(n);
+						/*
 						$("#p4").attr('src', data2[n % t]);
 						$("#p3").attr('src', data2[n % t + t]);
 						$("#p2").attr('src', data2[n % t + t * 2]);
 						$("#p1").attr('src', data2[n % t + t * 3]);
+						*/
 						++n;
 						if ($("#splash").attr("style") == "display: none;") {
 							window.clearInterval(id2);
@@ -274,12 +276,10 @@ Blockplus.Application = function() {
 					if (gameState.getColor() == that.color) {
 						that.boardManager.unregister('click.1');
 						that.boardManager.register('click.1', that.clickEventHandler1);
+						that.pieceManager.update(gameState.getColor(), gameState.getPieces(that.color));
 					}
 					that.game = new Blockplus.Game(that.client, that.color, gameState, that.boardManager);
 					that.game.update();
-					var pieces = gameState.getPieces(that.color);
-					console.log(pieces);
-					that.pieceManager.update(that.color, pieces);
 				});
 			});
 		});
@@ -293,13 +293,16 @@ Blockplus.Application = function() {
 	}
 
 	/*-------------------------------8<-------------------------------*/
-	
+
 	$("#content").bind('mousedown', function(event) {
 		event.preventDefault();
 	});
-	
+
 	$(".player").bind('click', function(event) {
-		alert("Not implented yet ! :p\n\nThis tab will show the score for the player of this color, and the remaining pieces for this player.")
+		var color = $(this).attr('id');
+		console.debug(color);
+		console.debug(that.game.gameState.getPieces(color));
+		that.pieceManager.update(color, that.game.gameState.getPieces(color));
 	});
 
 };
