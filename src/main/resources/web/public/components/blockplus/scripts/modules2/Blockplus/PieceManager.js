@@ -2,18 +2,17 @@ var Blockplus = Blockplus || {};
 
 Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory) {
 
-	// this.element = element;
+	this.element = element;
 	this.pieceRenderer = pieceRenderer;
 	this.pieces = {};
 	this.positionFactory = positionFactory;
-
-	console.debug(positionFactory);
 
 	var that = this;
 	jQuery.ajax(url, {
 		success : function(xmlDocument) {
 			var pieces = xmlDocument.evaluate("//piece", xmlDocument, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 			for ( var color in that.pieceRenderer.colors) {
+				that.pieces[color] = {};
 				for ( var i = 0; i < pieces.snapshotLength; ++i) {
 					var data = [];
 					var piece = pieces.snapshotItem(i);
@@ -27,7 +26,7 @@ Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory) 
 						data.push(that.positionFactory.getPosition(y, x));
 					}
 					var canvas = that.pieceRenderer.render(new Blockplus.Piece(data, color));
-					that.pieces[color + "." + piece.getAttribute("name")] = canvas.toDataURL("image/png");
+					that.pieces[color][piece.getAttribute("id")] = canvas.toDataURL("image/png");
 				}
 			}
 		}
@@ -38,30 +37,29 @@ Blockplus.PieceManager.prototype = {
 
 	constructor : Blockplus.PieceManager,
 
-	/*
-	 * hide : function() { $(this.element).hide(); },
-	 * 
-	 * show : function() { $(this.element).show(); },
-	 */
+	container : function(color) {
+		return $("#" + this.element + " div." + color);
+	},
 
 	piece : function(color, id) {
-		return this.pieces[color + '.' + "piece" + id];
+		return this.pieces[color][id];
 	},
 
 	update : function(color, pieces) {
-		$("#" + color.toLowerCase()).html("");
+		var container = this.container(color);
+		container.html("");
 		for ( var i = 1, n = pieces.length; i <= n; ++i) {
 			var image = new Image();
-			image.setAttribute("id", "piece" + i);
 			image.src = this.piece(color, i);
 			image.setAttribute("class", pieces[n - i] ? "available" : "not-available");
-			$("#" + color.toLowerCase()).append(image);
+			container.append(image);
 		}
 	},
 
 	show : function(color) {
-		$(".pieces").hide();
-		$("#" + color.toLowerCase()).show();
+		var container = this.container(color);
+		$("#" + this.element + " div").hide();
+		container.show();
 	},
 
 };

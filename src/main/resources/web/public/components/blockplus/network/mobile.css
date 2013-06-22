@@ -20,17 +20,7 @@ img {
 	overflow: hidden;
 	width: 320px;
 	height: 455px;
-
-	/*
-	width: 392px;
-	height: 576px;
-	*/
-
-	/*
-	margin-top: 50px;
-	border: 5px solid white;
-	border-radius: 10px;
-	*/
+	transition: all 1s ease-in-out;
 }
 
 #splash {
@@ -44,83 +34,82 @@ img {
 	height: 100%;
 }
 
-#board-container {
-	border-top: 1px solid #a0a6ab;
-}
-
 #splash img {
 	border-radius: 20px;
 }
 
-.pieces {
-	margin-top: 0px;
-}
-
-.blue {
-	color: #3971c4;
-}
-
-.yellow {
-	color: #eea435;
-}
-
-.red {
-	color: #cc2b2b;
-}
-
-.green {
-	color: #04a44b;
-}
-
-#blue img {
-	border: 2px solid #3971c4;
-}
-
-#yellow  img {
-	border: 2px solid #eea435;
-}
-
-#red  img {
-	border: 2px solid #cc2b2b;
-}
-
-#green  img {
-	border: 2px solid #04a44b;
-}
-
-#control-panel {
-	
+#game {
+	transition: all 1s ease-in-out;
 }
 
 #players {
 	margin-top: 1px;
+	transition: all 1s ease-in-out;
 }
 
-#Blue {
-	background-color: #3971c4;
-}
-
-#Yellow {
-	background-color: #eea435;
-}
-
-#Red {
-	background-color: #cc2b2b;
-}
-
-#Green {
-	background-color: #04a44b;
-}
-
-.player {
+#players div {
 	width: 25%;
 	float: left;
 	font-family: sans-serif;
 	font-size: 125%;
 	text-align: center;
 	color: white;
-	line-height: 33px;
 	height: 33px;
+	line-height: 33px;
+	border-top-right-radius: 16px;
+	border-top-left-radius: 39px;
+	opacity: 0.75;
+	cursor: pointer;
+}
+
+#players div.Blue {
+	background-color: rgba(57, 113, 196, 1);
+}
+
+#players div.Yellow {
+	background-color: rgba(247, 177, 42, 1);
+}
+
+#players div.Red {
+	background-color: rgba(204, 43, 43, 1);
+}
+
+#players div.Green {
+	background-color: rgba(4, 164, 75, 1);
+}
+
+#board {
+	border-top: 1px solid #a0a6ab;
+	border-bottom: 1px solid #a0a6ab;
+	transition: all 1s ease-in-out;
+}
+
+#pieces {
+	
+}
+
+#control-panel {
+	
+}
+
+#pieces div img {
+	border: 2px solid #242A30;
+}
+
+#pieces div.Blue {
+	background-color: rgba(57, 113, 196, 0.45);
+}
+
+#pieces div.Yellow {
+	background-color: rgba(247, 177, 42, 0.45);
+}
+
+#pieces div.Red {
+	background-color: rgba(204, 43, 43, 0.45);
+}
+
+#pieces div.Green {
+	background-color: rgba(4, 164, 75, 0.45);
 }
 
 .available {
@@ -128,10 +117,13 @@ img {
 }
 
 .not-available {
-	opacity: 0.15;
+	opacity: 0.25;
 }
 
-.round {
-	border-top-right-radius: 16px;
-	border-top-left-radius: 39px;
+.not-visible {
+	opacity: 0.0;
+}
+
+.clear {
+	clear: both;
 }

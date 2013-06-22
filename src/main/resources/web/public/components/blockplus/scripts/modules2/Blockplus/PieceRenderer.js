@@ -52,11 +52,7 @@ Blockplus.PieceRenderer.prototype = {
 
 		canvas.width = that.cellDimension.width * width;
 		canvas.height = that.cellDimension.height * height;
-
-		// context.fillStyle = this.colors[piece.getColor()];
-		context.fillStyle = "#2a2d30";
-		context.fillRect(0, 0, canvas.width, canvas.height);
-
+		
 		for ( var position in selectedPositions.get()) {
 			var p1 = JSON.parse(position);
 			var p2 = {
@@ -64,6 +60,7 @@ Blockplus.PieceRenderer.prototype = {
 				column : p1.column - topLeft.column
 			}
 			tmpBoardRendering.renderCell(p2, "#FFF");
+			tmpBoardRendering.renderCell(p2, this.colors[piece.getColor()], 0.42);
 		}
 
 		// ///////////////////////////////////////////////
@@ -72,9 +69,12 @@ Blockplus.PieceRenderer.prototype = {
 		canvas2.width = (1 + 5 + 1) * that.cellDimension.width + 0;
 		canvas2.height = (1 + 3 + 1) * that.cellDimension.height + 0;
 
-		// context2.fillStyle = this.colors[piece.getColor()];
 		context2.fillStyle = "#2a2d30";
 		context2.fillRect(0, 0, canvas2.width, canvas2.height);
+
+		// context2.globalAlpha = 0.10;
+		// context2.fillStyle = this.colors[piece.getColor()];
+
 		var x = (canvas2.width - canvas.width) / 2;
 		var y = (canvas2.height - canvas.height) / 2;
 		context2.drawImage(canvas, x, y);

@@ -1,7 +1,9 @@
 var Blockplus = Blockplus || {};
 
-// TODO proposer une pièce lorsque le matching retourne une seule piece
-// TODO rendre optional le zoom
+// TODO ? proposer une pièce lorsque le matching retourne une seule piece
+// TODO ! ne pas effectuer le zoom-in si le zoom est un zoom mort (avertir avec un none sound)
+// TODO !? rendre optional le zoom
+
 Blockplus.Application = function() {
 
 	this.viewPort = new Blockplus.ViewPort({
@@ -20,10 +22,10 @@ Blockplus.Application = function() {
 			columns : 20
 		},
 		cells : {
-			Blue : [ 0, 21, 42, 63, 84, 105, 126, 147, 168, 189 ],
-			Yellow : [ 19, 38, 57, 76, 95, 114, 133, 152, 171, 190 ],
-			Red : [ 380, 361, 342, 323, 304, 285, 266, 247, 228, 209 ],
-			Green : [ 399, 378, 357, 336, 315, 294, 273, 252, 231, 210 ]
+			blue : [ 0, 21, 42, 63, 84, 105, 126, 147, 168, 189 ],
+			yellow : [ 19, 38, 57, 76, 95, 114, 133, 152, 171, 190 ],
+			red : [ 380, 361, 342, 323, 304, 285, 266, 247, 228, 209 ],
+			green : [ 399, 378, 357, 336, 315, 294, 273, 252, 231, 210 ]
 		}
 	});
 
@@ -34,7 +36,8 @@ Blockplus.Application = function() {
 
 	this.colors = {
 		Blue : "#3971c4",
-		Yellow : "#eea435",
+		// Yellow : "#eea435",
+		Yellow : "rgb(247, 177, 42)",
 		Red : "#cc2b2b",
 		Green : "#04a44b"
 	};
@@ -51,19 +54,19 @@ Blockplus.Application = function() {
 	};
 
 	/*-----------------------8<-----------------------*/
-	
+
 	this.audioManager = new Blockplus.AudioManager("test");
 
 	this.boardRenderer = new Blockplus.BoardRenderer(document.getElementById('board'), this.cellDimension, this.colors);
 	this.positionFactory = new Blockplus.PositionFactory();
 	this.selectedPositions = new Blockplus.SelectedPositions();
 	this.boardManager = new Blockplus.BoardManager(this.board, this.boardRenderer, this.positionFactory, this.selectedPositions, this.viewPort);
-	this.controlPanelManager = new Blockplus.ControlPanelManager(document.getElementById('control-panel'), this.viewPort, this.audioManager);
+	this.controlPanelManager = new Blockplus.ControlPanelManager(document.getElementById('control-panel'), this.viewPort, this.audioManager, this.colors);
 	var pieceRenderer = new Blockplus.PieceRenderer(this.viewPort, this.colors);
 
 	/*-----------------------8<-----------------------*/
 
-	this.pieceManager = new Blockplus.PieceManager(document.getElementById('pieces'), pieceRenderer, "/xml/pieces2.xml", this.positionFactory);
+	this.pieceManager = new Blockplus.PieceManager("pieces", pieceRenderer, "/xml/pieces.xml", this.positionFactory);
 
 	/*-----------------------8<-----------------------*/
 
@@ -73,6 +76,8 @@ Blockplus.Application = function() {
 
 	// TODO refactor to observer pattern...
 	this.clickEventHandler1 = function(event) {
+
+		console.debug("click");
 
 		var targetOffset = $(event.target).offset();
 		var offsetX = event.pageX - targetOffset.left;
@@ -103,14 +108,14 @@ Blockplus.Application = function() {
 			var isPotentialPosition = JSON.stringify(position) in that.game.options.getPotentialPositions();
 			if (isPotentialPosition) {
 				if (that.boardManager.hasSelection(position))
-					that.boardManager.unselect(position, 'Blue');
+					that.boardManager.unselect(position, that.color);
 				else if (JSON.stringify(position) in that.game.options.matchPotentialPositions(that.boardManager.selectedPositions)) {
-					that.boardManager.select(position, 'Blue');
+					that.boardManager.select(position, that.color);
 				}
 				if (that.boardManager.selectedPositions.isEmpty()) {
 					that.init();
 				} else {
-					that.controlPanelManager.handle(that.game.options, that.boardManager.selectedPositions, that.boardManager, 'Blue');
+					that.controlPanelManager.handle(that.game.options, that.boardManager.selectedPositions, that.boardManager, that.color);
 				}
 			} else if (that.boardManager.selectedPositions.isEmpty()) {
 				that.init();
@@ -232,8 +237,9 @@ Blockplus.Application = function() {
 					that.controlPanelManager.hide();
 					var gameState = new Blockplus.GameState(data);
 					if (gameState.getColor() == that.color) {
-						that.audioManager.play("../audio/you.ogg");
-
+						if (!gameState.isTerminal()) {
+							that.audioManager.play("../audio/you.ogg");	
+						}
 						that.boardManager.unregister('click.1');
 						that.boardManager.register('click.1', that.clickEventHandler1);
 						that.pieceManager.show(that.color);
@@ -243,16 +249,31 @@ Blockplus.Application = function() {
 					for (color in that.colors) {
 						that.pieceManager.update(color, gameState.getPieces(color));
 					}
+					
+					var leader;					
+					var bestScore = 0; 
 					for (color in that.colors) {
 						var score = that.boardManager.board.getCells(color).length;
-						console.debug(score);
-						$("#" + color).html(score);
+						if(score > bestScore) {
+							bestScore = score;
+							leader = color;
+						}
+						$("#players div." + color).html(score);
 					}
 					
+					console.debug(leader);
+
 					if (gameState.isTerminal()) {
-						that.audioManager.play("../audio/game-is-over.ogg");
+						that.audioManager.play("../audio/none.ogg");						
+						$("#board").css("opacity", 0.45);
+						$("#players div").css("opacity", 0.35);
+						$("#players div." + leader).css("opacity", 1);
+						$("#players div." + leader).css("font-weight", "bold");
+						that.pieceManager.show(leader);
+					} else {
+						$("#game").removeClass();
+						$("#board").removeClass();
 					}
-					
 
 				});
 			});
@@ -265,7 +286,7 @@ Blockplus.Application = function() {
 		var images = [];
 		images.push(that.pieceManager.piece('Blue', 1));
 		images.push(that.pieceManager.piece('Blue', 8));
-		images.push(that.pieceManager.piece('Blue', 21));		
+		images.push(that.pieceManager.piece('Blue', 21));
 
 		var img = document.createElement('img');
 		$("#splash").append(img);
@@ -291,8 +312,8 @@ Blockplus.Application = function() {
 		event.preventDefault();
 	});
 
-	$(".player").bind('click', function(event) {
-		var color = $(this).attr('id');
+	$("#players div").bind('click', function(event) {
+		var color = $(this).attr('class');
 		that.pieceManager.show(color);
 	});
 

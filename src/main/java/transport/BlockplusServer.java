@@ -131,7 +131,7 @@ public class BlockplusServer extends WebSocketServlet {
         final BlockplusServerEvents blockplusServerEvents = new BlockplusServerEvents(this); // TODO à injecter
         this.getEventBus().register(blockplusServerEvents);
 
-        for (int i = 1; i <= 24; ++i) {
+        for (int i = 1; i <= 48; ++i) {
             final ImmutableList<ClientInterface> empty = ImmutableList.of();
             this.clientsByGame.put(i, empty);
             this.gameByOrdinal.put(i, new BlockplusGame(i, "", empty, null, 0));

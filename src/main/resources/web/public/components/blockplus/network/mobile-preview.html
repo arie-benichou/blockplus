@@ -50,47 +50,40 @@
 		<script src="../scripts/modules2/Blockplus/AudioManager.js"></script>
 	</head>
 	<body>
-		<div id="content">
-			<audio id="test"></audio>
+		<div id="content" class="not-visible">
 			<div id="splash" onclick="new Blockplus.Application().start();">
-				<span class="">B</span>
-				<span class="blue">l</span>
-				<span class="yellow">o</span>
-				<span class="red">c</span>
-				<span class="green">k</span>
+				<span>B</span>
+				<span style="color: #3971c4">l</span>
+				<span style="color: #eea435">o</span>
+				<span style="color: #cc2b2b">c</span>
+				<span style="color: #04a44b">k</span>
 				<span>+</span>
 			</div>
-			<div id="players">
-				<div id="Blue" class="round player"></div>
-				<div id="Yellow" class="round player"></div>
-				<div id="Red" class="round player"></div>
-				<div id="Green" class="round player"></div>
-				<div style="clear: both;"></div>
-			</div>
-			<div id="board-container">
+			<audio id="test"></audio>			
+			<div id="game" class="not-visible">
+				<div id="players">
+					<div class="Blue"></div>
+					<div class="Yellow"></div>
+					<div class="Red"></div>
+					<div class="Green"></div>
+				</div>
+				<div class="clear"></div>
 				<canvas id="board"></canvas>
-			</div>
-			<div>
+				<div class="clear"></div>
 				<canvas id="control-panel"></canvas>
+				<div id="pieces">
+					<div class="Blue"></div>
+					<div class="Yellow"></div>
+					<div class="Red"></div>
+					<div class="Green"></div>
+				</div>
+				<div class="clear"></div>
 			</div>
-			<div>
-				<div id="blue" class="pieces"></div>
-				<div id="yellow" class="pieces"></div>
-				<div id="red" class="pieces"></div>
-				<div id="green" class="pieces"></div>
-				<div style="clear: both;"></div>
-			</div>
-			<!-- 
-			<audio id="music" preload="auto">
-				<source src="../audio/index.ogg" type="audio/ogg"></source>
-				<source src="../audio/index.mp3" type="audio/mp3"></source>
-	        </audio>
-	         -->
 			<script>
-// 				$(document).ready(new Blockplus.Application().start);
-// 				$("#bypassbug").trigger('click');
-// 				document.getElementById('music').onclick();
-			</script>
+				$(document).ready(function() {
+					$("#content").removeClass()					
+				});
+			</script>			
 		</div>
 	</body>
 </html>

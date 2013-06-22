@@ -1,16 +1,14 @@
 var Blockplus = Blockplus || {};
 
-Blockplus.ControlPanelManager = function(canvas, viewPort, audioManager) {
+Blockplus.ControlPanelManager = function(canvas, viewPort, audioManager, colors) {
 	
+	this.colors = colors;
 	this.audioManager = audioManager;
 
 	this.canvas = canvas;
 	this.viewPort = viewPort;
 
 	this.context = canvas.getContext("2d");
-
-	// console.log(this.context.canvas.width, this.context.canvas.height);
-	// console.log(viewPort);
 
 	// TODO déterminer si Portrait ou Landscape
 	this.context.canvas.width = this.viewPort.min
@@ -22,21 +20,6 @@ Blockplus.ControlPanelManager = function(canvas, viewPort, audioManager) {
 		width : min / (5 + 1),
 		height : min / (5 + 1)
 	};
-
-	// console.log(this.cellDimension);
-
-	// TODO à revoir
-	this.colors = {
-		Blue : "#3971c4",
-		Yellow : "#eea435",
-		Red : "#cc2b2b",
-		Green : "#04a44b"
-	};
-
-	// in order to avoid annoying behaviour...
-	this.register('mousedown', function(event) {
-		event.preventDefault();
-	});
 
 };
 
@@ -112,7 +95,7 @@ Blockplus.ControlPanelManager.prototype = {
 						row : p1.row - topLeft.row,
 						column : p1.column - topLeft.column
 					}
-					tmpBoardRendering.renderCell(p2, that.colors.Blue);
+					tmpBoardRendering.renderCell(p2, that.colors[color]);
 				}
 
 				// console.log(newCanvas.toDataURL());

@@ -29,6 +29,14 @@ Blockplus.BoardRenderer.prototype = {
 		this._drawCell(position.row, position.column);
 	},
 	
+	renderCell : function(position, color, alpha) {
+		this.context.save();
+		this.context.globalAlpha = alpha;
+		this._setFillStyle(color);
+		this._drawCell(position.row, position.column);
+		this.context.restore();
+	},	
+	
 	render : function(board) {
 		this._setFillStyle("#a0a6ab");
 		this._fillRect(0, 0, this.canvas.width, this.canvas.height);
