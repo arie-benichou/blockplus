@@ -56,6 +56,7 @@ Blockplus.Application = function() {
 	/*-----------------------8<-----------------------*/
 
 	this.audioManager = new Blockplus.AudioManager("test");
+	this.audioManager.play("../audio/none.ogg");
 
 	this.boardRenderer = new Blockplus.BoardRenderer(document.getElementById('board'), this.cellDimension, this.colors);
 	this.positionFactory = new Blockplus.PositionFactory();
