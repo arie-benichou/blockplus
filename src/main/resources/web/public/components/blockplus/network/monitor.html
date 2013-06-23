@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		
+        <meta charset="utf-8" />
+		
+        <link href="../images/favicon.png" rel="shortcut icon" />
+        
+        <link href="../styles/bootstrap.min.css" rel="stylesheet">
+        
+        <link href="index.css" rel="stylesheet"/>
+                
+        <script src="../scripts/library/jquery.min.js"></script>
+        <script src="../scripts/library/bootstrap.min.js"></script>
+           
+        <script src="../scripts/modules/Protocol.js"></script>
+        <script src="../scripts/modules/Client.js"></script>
+        <script src="../scripts/modules/Game.js"></script>
+        <script src="../scripts/modules/GameState.js"></script>
+        <script src="../scripts/modules/Board.js"></script>
+        <script src="../scripts/modules/elements/RemainingPieces.js"></script>
+        <script src="../scripts/modules/elements/AvailablePieces.js"></script>
+        
+        <script src="../scripts/modules/Colors.js"></script>
+        <script src="../scripts/modules/Position.js"></script>
+        <script src="../scripts/modules/CellRendering.js"></script>
+        <script src="../scripts/modules/BoardRendering.js"></script>        
+        
+        <script src="../scripts/modules/OffsetToPositionBuilder.js"></script>
+        <script src="../scripts/modules/SelectedPositions.js"></script>
+        <script src="../scripts/modules/PieceImageManager.js"></script>
+        <script src="../scripts/modules/Options.js"></script>
+        <script src="../scripts/modules/AudioManager.js"></script>
+        
+        <script src="index.js"></script>
+        
+        
+	</head>
+	<body>
+    
+        <!-- notifications -->
+        <div style="height:36px; padding: 12px;">
+            <div id="alert" class="alert alert-info fade in" style="display: none; margin:0 auto;">
+                <!-- 
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                 -->
+                <p id="notification">loading...</p>
+            </div>
+        </div>
+        
+        <!-- connection -->
+        <div id="connection" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="label" aria-hidden="true">
+            <div class="modal-header">
+                <!-- 
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                 -->
+                <h3 id="label">Welcome !</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="user" maxlength="26" placeholder="Enter your name…" style="margin: 0;">
+            </div>
+            <div class="modal-footer">
+                <button id="connect" class="btn btn-primary" data-dismiss="modal">Connect</button>
+            </div>
+        </div>
+        
+        <!-- games -->
+        <div id="games" style="display: none;"></div>
+        
+        <!-- game -->
+        <div id="game" style="display: none;">
+            <!--
+            <div id="messages">
+                <div id="last-message">Loading...</div> 
+                <div><button class="btn btn-large btn-primary" id="play-again" type="submit">Play again ?</button></div>
+            </div>
+            -->
+            <div id="content">
+                <div id="truc">
+                    <div id="left">
+                        <div id="available-pieces"></div>
+                    </div>
+                    <div id="middle">
+                        <canvas id="board" width="679px" height="679px"></canvas>
+                    </div>
+                    <div id="right">
+                        <div id="container1">
+                            <div id="submitPiece">
+                                <canvas class="clickable out" id="pieceToPlay" width="0px" height="0px"></canvas>                        
+                            </div>
+                        </div>
+                        <div style="clear: both;"></div>
+                        <div id="chat"></div>
+                        <div id="remaining-pieces"></div>
+                    </div>      
+                      <div style="clear: both;"></div>
+                </div>
+                <div id="initialization">
+                    <canvas id="piece" width="91px" height="91px"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- feedback -->
+        <div id="feedback-dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="label" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="label">Feedback</h3>
+            </div>
+            <div class="modal-body">
+                <p>Feature ideas, problem reports or general comments are welcome !</p>
+                <textarea id="feedback-content" rows="5" cols="20"></textarea>
+                </div>
+            <div class="modal-footer">
+                <button id="send-feedback" class="btn btn-primary" data-dismiss="modal">Send</button>
+            </div>
+        </div>        
+        <div id="feedback" data-toggle="modal" data-target="#feedback-dialog" style="display: none;">Send feedback</div>
+        
+        <!-- requirements -->
+        <div id="browser" style="display: none;">
+            <img src="http://www.google.fr/images/icons/product/chrome-48.png">
+            <a href="https://www.google.com/intl/en/chrome/browser/">Install Google Chrome</a>
+        </div>
+        
+        <script type="text/javascript">
+      		$(document).ready(main);
+                $('#connection').on('shown', function() {
+                    $('#user').focus();
+                });
+               $('#connection').modal('show');
+        </script>
+	</body>
+</html>
