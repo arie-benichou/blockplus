@@ -1,20 +1,21 @@
 var Blockplus = Blockplus || {};
 
 // TODO ? proposer une pièce lorsque le matching retourne une seule piece
-// TODO ! ne pas effectuer le zoom-in si le zoom est un zoom mort (avertir avec un none sound)
+// TODO ! ne pas effectuer le zoom-in si le zoom est un zoom mort (avertir avec
+// un none sound)
 // TODO !? rendre optional le zoom
 
-Blockplus.Application = function() {
+Blockplus.Application = function(parameters) {
 
 	this.viewPort = new Blockplus.ViewPort({
-
-		// maxWidth : $(window).width(),
-		// maxHeight : $(window).height(),
-
-		maxWidth : $("#content").css("width").substr(0, 3),
-		maxHeight : $("#content").css("height").substr(0, 3)
-
+		maxWidth : parameters.maxWidth,
+		maxHeight : parameters.maxHeight,
 	});
+
+	$("#content").width(this.viewPort.maxWidth);
+	$("#content").height(this.viewPort.maxHeight);
+
+	console.debug(this.viewPort);
 
 	this.board = new Blockplus.Board({
 		dimension : {
@@ -56,7 +57,6 @@ Blockplus.Application = function() {
 	/*-----------------------8<-----------------------*/
 
 	this.audioManager = new Blockplus.AudioManager("test");
-	this.audioManager.play("../audio/none.ogg");
 
 	this.boardRenderer = new Blockplus.BoardRenderer(document.getElementById('board'), this.cellDimension, this.colors);
 	this.positionFactory = new Blockplus.PositionFactory();
@@ -89,8 +89,8 @@ Blockplus.Application = function() {
 
 		var referential = that.boardManager.zoomInTopLeftCornerPosition(position, that.neighbourhood);
 		var translation = {
-			x : -referential.minX * that.cellDimension.width * that.scale.x,
-			y : -referential.minY * that.cellDimension.height * that.scale.y
+			x : -(referential.minX * that.cellDimension.width - 0) * that.scale.x,
+			y : -(referential.minY * that.cellDimension.height - 0) * that.scale.y
 		}
 
 		var context = that.boardManager.renderer.context;
@@ -239,7 +239,7 @@ Blockplus.Application = function() {
 					var gameState = new Blockplus.GameState(data);
 					if (gameState.getColor() == that.color) {
 						if (!gameState.isTerminal()) {
-							that.audioManager.play("../audio/you.ogg");	
+							that.audioManager.play("../audio/you.ogg");
 						}
 						that.boardManager.unregister('click.1');
 						that.boardManager.register('click.1', that.clickEventHandler1);
@@ -250,22 +250,22 @@ Blockplus.Application = function() {
 					for (color in that.colors) {
 						that.pieceManager.update(color, gameState.getPieces(color));
 					}
-					
-					var leader;					
-					var bestScore = 0; 
+
+					var leader;
+					var bestScore = 0;
 					for (color in that.colors) {
 						var score = that.boardManager.board.getCells(color).length;
-						if(score > bestScore) {
+						if (score > bestScore) {
 							bestScore = score;
 							leader = color;
 						}
 						$("#players div." + color).html(score);
 					}
-					
+
 					console.debug(leader);
 
 					if (gameState.isTerminal()) {
-						that.audioManager.play("../audio/none.ogg");						
+						that.audioManager.play("../audio/none.ogg");
 						$("#board").css("opacity", 0.45);
 						$("#players div").css("opacity", 0.35);
 						$("#players div." + leader).css("opacity", 1);
@@ -301,6 +301,7 @@ Blockplus.Application = function() {
 	}
 
 	this.start = function() {
+		that.audioManager.play("../audio/none.ogg");
 		var url = computeLocation("/network/io");
 		that.client = new Blockplus.Client("Android", url);
 		that.client.start(that.client.join);

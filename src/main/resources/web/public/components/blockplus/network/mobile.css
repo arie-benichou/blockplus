@@ -2,6 +2,7 @@ body {
 	margin: 0 auto;
 	padding: 0;
 	background-color: #a0a6ab;
+	overflow: hidden;
 }
 
 canvas {
@@ -10,17 +11,12 @@ canvas {
 
 img {
 	vertical-align: bottom;
-	margin: 1px;
-	border-radius: 19px;
 }
 
 #content {
 	margin: 0 auto;
 	background-color: #373B3F;
 	overflow: hidden;
-	width: 320px;
-	height: 455px;
-	transition: all 1s ease-in-out;
 }
 
 #splash {
@@ -29,9 +25,9 @@ img {
 	font-size: 325%;
 	text-align: center;
 	color: white;
-	margin-top: 63%;
 	line-height: 1px;
 	height: 100%;
+	margin-top: 63%;
 }
 
 #splash img {
@@ -43,21 +39,20 @@ img {
 }
 
 #players {
-	margin-top: 1px;
 	transition: all 1s ease-in-out;
 }
 
 #players div {
-	width: 25%;
 	float: left;
+	width: 25%;
+	padding-top: 4px;
+	padding-bottom: 2px;
+	font-size: 140%;
 	font-family: sans-serif;
-	font-size: 125%;
 	text-align: center;
 	color: white;
-	height: 33px;
-	line-height: 33px;
-	border-top-right-radius: 16px;
-	border-top-left-radius: 39px;
+	border-top-right-radius: 17px;
+	border-top-left-radius: 17px;
 	opacity: 0.75;
 	cursor: pointer;
 }
@@ -78,37 +73,47 @@ img {
 	background-color: rgba(4, 164, 75, 1);
 }
 
-#board {
-	border-top: 1px solid #a0a6ab;
-	border-bottom: 1px solid #a0a6ab;
-	transition: all 1s ease-in-out;
+#board-container {
+	border-top: 1px solid #D0D6DB;
+	border-bottom: 1px solid #D0D6DB;
 }
 
-#pieces {
-	
+#board {
+	transition: all 1s ease-in-out;
 }
 
 #control-panel {
 	
 }
 
+#pieces {
+	width: 100%;
+	height: 100%;
+}
+
+#pieces div {
+	margin: 0 auto;
+}
+
 #pieces div img {
+	margin: 1px;
+	border-radius: 13px;
 	border: 2px solid #242A30;
 }
 
-#pieces div.Blue {
+.Blue {
 	background-color: rgba(57, 113, 196, 0.45);
 }
 
-#pieces div.Yellow {
+.Yellow {
 	background-color: rgba(247, 177, 42, 0.45);
 }
 
-#pieces div.Red {
+.Red {
 	background-color: rgba(204, 43, 43, 0.45);
 }
 
-#pieces div.Green {
+.Green {
 	background-color: rgba(4, 164, 75, 0.45);
 }
 
@@ -118,10 +123,6 @@ img {
 
 .not-available {
 	opacity: 0.25;
-}
-
-.not-visible {
-	opacity: 0.0;
 }
 
 .clear {

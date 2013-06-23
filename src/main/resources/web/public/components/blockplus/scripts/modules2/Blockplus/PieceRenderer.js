@@ -9,16 +9,16 @@ Blockplus.PieceRenderer = function(viewPort, colors) {
 	this.width = this.viewPort.min
 	this.height = this.viewPort.max - this.viewPort.min;
 
-	console.log(this.width, this.height);
-
 	var min = Math.min(this.width, this.height);
 
+	var playersDivHeight = $("#players div").height() + 6;
+
 	this.cellDimension = {
-		width : (this.width - 7 * (2 + 2 * 2)) / ((1 + 5 + 1) * 7),
-		height : (this.height - (33 + 2) - 3 * (2 + 2 * 2)) / ((1 + 3 + 1) * 3)
+		width : ((this.width - 7 * (2 * 1 + 2 * 2)) / ((1 + 5 + 1) * 7)),
+		height : (((this.height - (playersDivHeight + 2) - 3 * (2 * 1 + 2 * 2)) / ((1 + 3 + 1) * 3)))
 	};
 
-	console.log(this.cellDimension);
+	$("#pieces div").css("width", 7 * (Math.floor(7 * this.cellDimension.width) + 2 * 1 + 2 * 2));
 
 };
 
@@ -26,7 +26,6 @@ Blockplus.PieceRenderer.prototype = {
 
 	constructor : Blockplus.PieceRenderer,
 
-	// TODO passer un objet piece
 	render : function(piece) {
 
 		// TODO à revoir
@@ -52,7 +51,7 @@ Blockplus.PieceRenderer.prototype = {
 
 		canvas.width = that.cellDimension.width * width;
 		canvas.height = that.cellDimension.height * height;
-		
+
 		for ( var position in selectedPositions.get()) {
 			var p1 = JSON.parse(position);
 			var p2 = {
@@ -71,9 +70,6 @@ Blockplus.PieceRenderer.prototype = {
 
 		context2.fillStyle = "#2a2d30";
 		context2.fillRect(0, 0, canvas2.width, canvas2.height);
-
-		// context2.globalAlpha = 0.10;
-		// context2.fillStyle = this.colors[piece.getColor()];
 
 		var x = (canvas2.width - canvas.width) / 2;
 		var y = (canvas2.height - canvas.height) / 2;

@@ -50,40 +50,46 @@
 		<script src="../scripts/modules2/Blockplus/AudioManager.js"></script>
 	</head>
 	<body>
-		<div id="content" class="not-visible">
-			<div id="splash" onclick="new Blockplus.Application().start();">
-				<span>B</span>
-				<span style="color: #3971c4">l</span>
-				<span style="color: #eea435">o</span>
-				<span style="color: #cc2b2b">c</span>
-				<span style="color: #04a44b">k</span>
-				<span>+</span>
+		<div id="content">
+			<div id="splash" onclick="window.application.start();">
+				<span>B</span> <span style="color: #3971c4">l</span> <span
+					style="color: #eea435">o</span> <span style="color: #cc2b2b">c</span>
+				<span style="color: #04a44b">k</span> <span>+</span>
 			</div>
-			<audio id="test"></audio>			
-			<div id="game" class="not-visible">
+			<audio id="test"></audio>
+			<div id="game" class="not-available">
 				<div id="players">
-					<div class="Blue"></div>
-					<div class="Yellow"></div>
-					<div class="Red"></div>
-					<div class="Green"></div>
+					<div class="Blue">.</div>
+					<div class="Yellow">.</div>
+					<div class="Red">.</div>
+					<div class="Green">.</div>
 				</div>
 				<div class="clear"></div>
-				<canvas id="board"></canvas>
+				<div id="board-container">
+					<canvas id="board"></canvas>
+				</div>
 				<div class="clear"></div>
 				<canvas id="control-panel"></canvas>
+				<div class="clear"></div>
 				<div id="pieces">
-					<div class="Blue"></div>
-					<div class="Yellow"></div>
-					<div class="Red"></div>
-					<div class="Green"></div>
+					<div id="Blue"></div>
+					<div id="Yellow"></div>
+					<div id="Red"></div>
+					<div id="Green"></div>
 				</div>
 				<div class="clear"></div>
 			</div>
 			<script>
 				$(document).ready(function() {
-					$("#content").removeClass()					
+					window.application = new Blockplus.Application({
+						container : $('#content'),
+						//maxWidth : $(window).width(),
+						//maxHeight :$(window).height()
+						maxWidth : 320,
+						maxHeight : 480
+					});
 				});
-			</script>			
+			</script>
 		</div>
 	</body>
 </html>

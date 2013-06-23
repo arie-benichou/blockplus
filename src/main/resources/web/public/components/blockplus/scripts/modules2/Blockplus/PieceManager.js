@@ -38,7 +38,7 @@ Blockplus.PieceManager.prototype = {
 	constructor : Blockplus.PieceManager,
 
 	container : function(color) {
-		return $("#" + this.element + " div." + color);
+		return $("#" + color);
 	},
 
 	piece : function(color, id) {
@@ -60,6 +60,8 @@ Blockplus.PieceManager.prototype = {
 		var container = this.container(color);
 		$("#" + this.element + " div").hide();
 		container.show();
+		$("#" + this.element).removeClass();
+		$("#" + this.element).addClass(color);
 	},
 
 };
