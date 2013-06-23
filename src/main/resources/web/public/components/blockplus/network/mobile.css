@@ -27,7 +27,8 @@ img {
 	color: white;
 	line-height: 1px;
 	height: 100%;
-	margin-top: 63%;
+	padding-top: 63%;
+	cursor: pointer;
 }
 
 #splash img {
