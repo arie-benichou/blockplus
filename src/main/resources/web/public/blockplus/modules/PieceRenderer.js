@@ -11,11 +11,11 @@ Blockplus.PieceRenderer = function(viewPort, colors) {
 
 	var min = Math.min(this.width, this.height);
 
-	var playersDivHeight = $("#players div").height() + 6;
+	var playersDivHeight = $("#players div.Blue").outerHeight();
 
 	this.cellDimension = {
 		width : ((this.width - 7 * (2 * 1 + 2 * 2) - 2 * 2) / ((1 + 5 + 1) * 7)),
-		height : (((this.height - (1 + playersDivHeight + 2 * 2) - 3 * (2 * 1 + 2 * 2)) / ((1 + 3 + 1) * 3)))
+		height : (((this.height - (2 + playersDivHeight + 2 * 3) - 3 * (2 * 1 + 2 * 2)) / ((1 + 3 + 1) * 3)))
 	};
 
 	$("#pieces div").css("width", 7 * (Math.floor(7 * this.cellDimension.width) + 2 * 1 + 2 * 2));
