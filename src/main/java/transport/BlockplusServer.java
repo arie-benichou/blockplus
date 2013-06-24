@@ -260,6 +260,8 @@ public class BlockplusServer extends WebSocketServlet {
         final VirtualClient virtualClient = new VirtualClient("virtual-client", client, host, port, "network/io");
         virtualClient.start();
 
+        Thread.sleep(1500);
+
         // connection
         final MessageInterface message1 = messages.newClient(virtualClient.getName());
         virtualClient.send(message1);

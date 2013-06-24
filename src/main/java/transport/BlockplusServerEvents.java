@@ -91,18 +91,8 @@ public class BlockplusServerEvents {
                 newGame.update();
             }
             else {
-                if (game.isEmpty()) { // TODO à revoir
-                    try {
-                        Thread.sleep(500);
-                    }
-                    catch (final InterruptedException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
-                }
                 // TODO replace quick & dirty patch by a virtual client factory
                 try {
-                    Thread.sleep(250);
                     BlockplusServer.main(new String[] { newGame.getOrdinal().toString() });
                 }
                 catch (final Exception e) {
