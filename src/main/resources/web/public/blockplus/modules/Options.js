@@ -1,5 +1,7 @@
 var Blockplus = Blockplus || {};
 
+// TODO itérer une seule fois et retourner les matches
+
 Blockplus.Options = function(data) {
 	this.data = [];
 	this.potentialPositions = {};

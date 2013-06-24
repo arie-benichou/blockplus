@@ -68,11 +68,27 @@ public class BlockplusServerEvents {
             this.getServer().updateGame(newGame.getOrdinal(), clients);
             this.getServer().updateGames(newGame.getOrdinal(), newGame);
 
+            final JsonObject gameInfo = new JsonObject();
+            gameInfo.addProperty("id", newGame.getOrdinal());
+            gameInfo.addProperty("players", clients.size());
+
             // TODO revoir emit
-            newClient.getIO().emit("enterGame", "\"" + newGame.getOrdinal() + "\"");
+            newClient.getIO().emit("game", gameInfo.toString());
+
+            final JsonObject playerInfo = new JsonObject();
+            playerInfo.addProperty("name", newClient.getName());
 
             for (final ClientInterface client : clients) {
                 client.getIO().emit("info", "\"" + newClient.getName() + " has joined game " + newGame.getOrdinal() + "\""); // TODO revoir emit
+                client.getIO().emit("player", playerInfo.toString());
+            }
+
+            try {
+                Thread.sleep(750);
+            }
+            catch (final InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
             }
 
             if (newGame.isFull()) {
@@ -86,14 +102,14 @@ public class BlockplusServerEvents {
                     jsonObject.add("color", new JsonPrimitive(++k));
                     jsonObject.add("client", new JsonPrimitive(client.hashCode()));
                     //TODO ajouter le timeStamp de connexion et l'ip du client
-                    client.getIO().emit("link", jsonObject.toString());
+                    //client.getIO().emit("link", jsonObject.toString());
                 }
                 newGame.update();
             }
             else {
                 // TODO replace quick & dirty patch by a virtual client factory
                 try {
-                    BlockplusServer.main(new String[] { newGame.getOrdinal().toString() });
+                    //BlockplusServer.main(new String[] { newGame.getOrdinal().toString() });
                 }
                 catch (final Exception e) {
                     e.printStackTrace();

@@ -1,7 +1,7 @@
 var Blockplus = Blockplus || {};
 
 Blockplus.ControlPanelManager = function(canvas, viewPort, audioManager, colors) {
-	
+
 	this.colors = colors;
 	this.audioManager = audioManager;
 
@@ -11,9 +11,9 @@ Blockplus.ControlPanelManager = function(canvas, viewPort, audioManager, colors)
 	this.context = canvas.getContext("2d");
 
 	// TODO déterminer si Portrait ou Landscape
-	
+
 	var playersDivHeight = $("#players div").height() + 6;
-	
+
 	this.context.canvas.width = this.viewPort.min
 	this.context.canvas.height = this.viewPort.max - this.viewPort.min - playersDivHeight;
 
@@ -47,9 +47,10 @@ Blockplus.ControlPanelManager.prototype = {
 	},
 
 	handle : function(options, selectedPositions, boardManager, color) {
+		
+		console.debug(options, selectedPositions, boardManager, color);
 
 		var potentialPositions = options.matchPotentialPositions(selectedPositions);
-		// console.log(potentialPositions);
 
 		for ( var position in options.getPotentialPositions()) {
 			if (!(position in selectedPositions.get())) {
@@ -64,11 +65,13 @@ Blockplus.ControlPanelManager.prototype = {
 		}
 
 		var isPlayable = options.perfectMatch(selectedPositions);
-
+		
+		console.debug(isPlayable);
+		
 		if (!isPlayable) {
 			this.hide();
 		} else {
-			//this.audioManager.play('../audio/subtle.ogg');
+			// this.audioManager.play('../audio/subtle.ogg');
 			this.show();
 
 			var topLeft = selectedPositions.getTopLeftPosition();
@@ -88,8 +91,8 @@ Blockplus.ControlPanelManager.prototype = {
 				newCanvas.width = that.cellDimension.width * width;
 				newCanvas.height = that.cellDimension.height * height;
 
-				//ctx.fillStyle = "#373B3F";
-				//ctx.fillRect(0, 0, that.canvas.width, that.canvas.height);
+				// ctx.fillStyle = "#373B3F";
+				// ctx.fillRect(0, 0, that.canvas.width, that.canvas.height);
 
 				// tmpBoardRendering.clear("#2a2d30");
 				for ( var position in selectedPositions.get()) {
@@ -99,15 +102,15 @@ Blockplus.ControlPanelManager.prototype = {
 						column : p1.column - topLeft.column
 					}
 					tmpBoardRendering.renderCell(p2, "#FFF");
-					tmpBoardRendering.renderCell2(p2, that.colors[color], 0.42);					
+					tmpBoardRendering.renderCell2(p2, that.colors[color], 0.42);
 				}
 
 				// console.log(newCanvas.toDataURL());
 
-				//that.context.fillStyle = "#373B3F";
+				// that.context.fillStyle = "#373B3F";
 				that.context.fillStyle = "#373B3F";
 				that.context.fillRect(0, 0, that.canvas.width, that.canvas.height);
-				
+
 				that.context.globalAlpha = 0.55;
 				that.context.fillStyle = that.colors[color];
 				that.context.fillRect(0, 0, that.canvas.width, that.canvas.height);

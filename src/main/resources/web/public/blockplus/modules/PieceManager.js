@@ -45,7 +45,8 @@ Blockplus.PieceManager.prototype = {
 		return this.pieces[color][id];
 	},
 
-	update : function(color, pieces) {
+	// TODO utiliser la classe used...
+	init : function(color, pieces) {
 		var container = this.container(color);
 		container.html("");
 		for ( var i = 1, n = pieces.length; i <= n; ++i) {
@@ -58,13 +59,24 @@ Blockplus.PieceManager.prototype = {
 		}
 	},
 
+	update : function(color, pieces) {
+		var container = this.container(color);
+		for ( var i = 1, n = pieces.length; i <= n; ++i) {
+			if (pieces[n - i] == 0) {
+				var image = $($("#" + container.attr("id") + " img")[i - 1]);
+				if (image.attr("class") != "used") {
+					image.attr("class", "used");
+				}
+			}
+		}
+	},
+
 	show : function(color) {
 		var container = this.container(color);
 		$("#" + this.element + " div").hide();
 		container.show();
 		$("#" + this.element).removeClass();
 		$("#" + this.element).addClass(color);
-
 		$("#players").removeClass();
 		$("#players" + this.element).addClass(color);
 	},

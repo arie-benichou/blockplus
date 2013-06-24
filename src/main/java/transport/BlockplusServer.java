@@ -85,6 +85,7 @@ public class BlockplusServer extends WebSocketServlet {
     public void updateGames(final Integer ordinal, final GameInterface<Context> newGame) {
         this.gameByOrdinal.put(ordinal, newGame);
 
+        /*
         // TODO asynch
         // TODO notifier uniquement les clients dans le patio
         // TODO prévoir une pagination
@@ -96,6 +97,7 @@ public class BlockplusServer extends WebSocketServlet {
                 io.emit("game", jsonObject.toString());
             }
         }
+        */
 
     }
 
@@ -260,7 +262,7 @@ public class BlockplusServer extends WebSocketServlet {
         final VirtualClient virtualClient = new VirtualClient("virtual-client", client, host, port, "network/io");
         virtualClient.start();
 
-        Thread.sleep(1500);
+        Thread.sleep(750);
 
         // connection
         final MessageInterface message1 = messages.newClient(virtualClient.getName());

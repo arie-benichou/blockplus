@@ -11,7 +11,7 @@ Blockplus.GameState = function(data) {
 Blockplus.GameState.prototype = {
 
 	constructor : Blockplus.GameState,
-
+	
 	_decodePieces : function(pieces) {
 		var data = {};
 		for ( var color in pieces) {

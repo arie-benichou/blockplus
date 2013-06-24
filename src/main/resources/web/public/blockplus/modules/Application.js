@@ -1,7 +1,8 @@
 var Blockplus = Blockplus || {};
 
-// TODO ? proposer une pièce lorsque le matching retourne une seule piece
-// TODO ! ne pas effectuer le zoom-in si le zoom est un zoom mort (avertir avec
+// TODO afficher la couleur des joueurs au fur et à mesure qu'ils rejoignent le
+// jeu
+// TODO ? ne pas effectuer le zoom-in si le zoom est un zoom mort (avertir avec
 // un none sound)
 // TODO !? rendre optional le zoom
 
@@ -90,7 +91,7 @@ Blockplus.Application = function(parameters) {
 		var referential = that.boardManager.zoomInTopLeftCornerPosition(position, that.neighbourhood);
 		var translation = {
 			x : -(referential.minX * that.cellDimension.width - 0) * that.scale.x + 0,
-			y : -(referential.minY * that.cellDimension.height - 0) * that.scale.y +0
+			y : -(referential.minY * that.cellDimension.height - 0) * that.scale.y + 0
 		}
 
 		var context = that.boardManager.renderer.context;
@@ -222,11 +223,45 @@ Blockplus.Application = function(parameters) {
 			}
 
 		});
-		Blockplus.Client.protocol.register("enterGame", function(data) {
+		Blockplus.Client.protocol.register("game", function(data) {
 
+			$("#splash").hide();
+			$("#control-panel").hide();
+			that.boardManager.render(that.board);
+
+			var players = [];
+			for (color in that.colors) {
+				players.push(color);
+			}
+			
+			var pieces = Blockplus.GameState.prototype._decodePieces({
+				0 : 8388607
+			});			
+
+			for ( var i = 0; i < data.players - 1; ++i) {
+				that.pieceManager.init(players[i], pieces[0]);
+				$($("#players div")[i]).addClass(players[i]);
+			}
+
+			var i = data.players - 1;			
+			Blockplus.Client.protocol.register("player", function(data) {
+				that.audioManager.play("../audio/subtle.ogg");
+				that.pieceManager.init(players[i], pieces[0]);
+				$($("#players div")[i]).addClass(players[i]);
+				++i;
+			});
+
+			that.pieceManager.show(players[data.players - 1]);
+
+			// TODO à déplacer
 			that.controlPanelManager.register('click', that.init);
 
 			Blockplus.Client.protocol.register("color", function(data) {
+
+				$("#control-panel").show();
+				$("#board-container").show();
+				$("#pieces").show();
+
 				that.color = data;
 				that.boardManager.updateColor(that.color);
 				Blockplus.Client.protocol.register("update", function(data) {
@@ -300,11 +335,11 @@ Blockplus.Application = function(parameters) {
 	}
 
 	this.start = function() {
-		that.audioManager.play("../audio/none.ogg");
+		that.audioManager.play("../audio/dummy.ogg");
 		var url = computeLocation("/network/io");
 		that.client = new Blockplus.Client("Android", url);
 		that.client.start(that.client.join);
-		setTimeout(animation, 50);
+		// setTimeout(animation, 50);
 	}
 
 	/*-------------------------------8<-------------------------------*/
