@@ -1,0 +1,145 @@
+body {
+	margin: 0 auto;
+	padding: 0;
+	background-color: #a0a6ab;
+	overflow: hidden;
+}
+
+canvas {
+	vertical-align: bottom;
+}
+
+img {
+	vertical-align: bottom;
+}
+
+#content {
+	margin: 0 auto;
+	background-color: #373B3F;
+	overflow: hidden;
+	margin-top: 2.5%;
+	box-shadow: 0px 0px 16px #4E4E4E;
+	border-radius: 3px;	
+}
+
+#splash {
+	padding: 5%;
+	font-family: sans-serif;
+	font-size: 325%;
+	text-align: center;
+	color: white;
+	line-height: 1px;
+	height: 100%;
+	padding-top: 63%;
+	cursor: pointer;
+}
+
+#splash img {
+	border-radius: 20px;
+}
+
+#game {
+	transition: all 1s ease-in-out;
+}
+
+#players {
+	transition: all 1s ease-in-out;
+	margin-top: 1px;
+}
+
+#players div {
+	float: left;
+	width: 25%;
+	padding-top: 4px;
+	padding-bottom: 2px;
+	font-size: 140%;
+	font-family: sans-serif;
+	text-align: center;
+	color: white;
+	border-top-right-radius: 17px;
+	border-top-left-radius: 17px;
+	opacity: 0.75;
+	cursor: pointer;
+}
+
+#players div.Blue {
+	background-color: rgba(57, 113, 196, 1);
+}
+
+#players div.Yellow {
+	background-color: rgba(247, 177, 42, 1);
+}
+
+#players div.Red {
+	background-color: rgba(204, 43, 43, 1);
+}
+
+#players div.Green {
+	background-color: rgba(4, 164, 75, 1);
+}
+
+#board-container {
+	overflow: hidden;
+	border-top: 1px solid #a0a6ab;
+	border-right: 1px solid #a0a6ab;
+}
+
+#board {
+	border-left: 1px solid #a0a6ab;
+	transition: all 1s ease-in-out;
+}
+
+#control-panel {
+	
+}
+
+#pieces {
+	width: 100%;
+	height: 100%;
+}
+
+#pieces div {
+	margin: 0 auto;
+	padding: 2px;
+}
+
+#pieces div img {
+	margin: 1px;
+	border-radius: 13px;
+	border: 2px solid #242A30;
+	box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.3);
+}
+
+#pieces div img.used {
+	opacity: 0.2;
+	border: 2px solid #242A30;
+	box-shadow: 0 0 0 #000;
+}
+
+.Blue {
+	background-color: rgba(57, 113, 196, 0.45);
+}
+
+.Yellow {
+	background-color: rgba(247, 177, 42, 0.45);
+}
+
+.Red {
+	background-color: rgba(204, 43, 43, 0.45);
+}
+
+.Green {
+	background-color: rgba(4, 164, 75, 0.45);
+}
+
+.available {
+	opacity: 1;
+}
+
+.not-available {
+	opacity: 0.25;
+}
+
+.clear {
+	clear: both;
+}

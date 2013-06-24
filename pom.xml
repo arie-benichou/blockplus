@@ -49,7 +49,7 @@
 		<encoding>UTF-8</encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<webXml>${basedir}/src/main/resources/web/web.xml</webXml>
-		<sourceDirectory>${basedir}/src/main/resources/web/public/components/blockplus</sourceDirectory>
+		<sourceDirectory>${basedir}/src/main/resources/web/public/blockplus</sourceDirectory>
 	</properties>
 
 	<prerequisites>
