@@ -59,7 +59,7 @@ Blockplus.PieceRenderer.prototype = {
 				column : p1.column - topLeft.column
 			}
 			tmpBoardRendering.renderCell(p2, "#FFF");
-			tmpBoardRendering.renderCell(p2, this.colors[piece.getColor()], 0.42);
+			tmpBoardRendering.renderCell2(p2, this.colors[piece.getColor()], 0.42);
 		}
 
 		// ///////////////////////////////////////////////

@@ -122,19 +122,19 @@ img {
 }
 
 .Blue {
-	background-color: rgba(57, 113, 196, 0.45);
+	background-color: rgba(57, 113, 196, 0.55);
 }
 
 .Yellow {
-	background-color: rgba(247, 177, 42, 0.45);
+	background-color: rgba(247, 177, 42, 0.55);
 }
 
 .Red {
-	background-color: rgba(204, 43, 43, 0.45);
+	background-color: rgba(204, 43, 43, 0.55);
 }
 
 .Green {
-	background-color: rgba(4, 164, 75, 0.45);
+	background-color: rgba(4, 164, 75, 0.55);
 }
 
 .available {

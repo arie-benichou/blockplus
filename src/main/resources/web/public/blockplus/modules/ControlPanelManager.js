@@ -88,8 +88,8 @@ Blockplus.ControlPanelManager.prototype = {
 				newCanvas.width = that.cellDimension.width * width;
 				newCanvas.height = that.cellDimension.height * height;
 
-				ctx.fillStyle = "#373B3F";
-				ctx.fillRect(0, 0, that.canvas.width, that.canvas.height);
+				//ctx.fillStyle = "#373B3F";
+				//ctx.fillRect(0, 0, that.canvas.width, that.canvas.height);
 
 				// tmpBoardRendering.clear("#2a2d30");
 				for ( var position in selectedPositions.get()) {
@@ -98,13 +98,20 @@ Blockplus.ControlPanelManager.prototype = {
 						row : p1.row - topLeft.row,
 						column : p1.column - topLeft.column
 					}
-					tmpBoardRendering.renderCell(p2, that.colors[color]);
+					tmpBoardRendering.renderCell(p2, "#FFF");
+					tmpBoardRendering.renderCell2(p2, that.colors[color], 0.42);					
 				}
 
 				// console.log(newCanvas.toDataURL());
 
+				//that.context.fillStyle = "#373B3F";
 				that.context.fillStyle = "#373B3F";
 				that.context.fillRect(0, 0, that.canvas.width, that.canvas.height);
+				
+				that.context.globalAlpha = 0.55;
+				that.context.fillStyle = that.colors[color];
+				that.context.fillRect(0, 0, that.canvas.width, that.canvas.height);
+				that.context.globalAlpha = 1;
 
 				var x = (that.context.canvas.width - newCanvas.width) / 2;
 				var y = (that.context.canvas.height - newCanvas.height) / 2;
