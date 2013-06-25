@@ -109,7 +109,7 @@ public class BlockplusServerEvents {
             else {
                 // TODO replace quick & dirty patch by a virtual client factory
                 try {
-                    //BlockplusServer.main(new String[] { newGame.getOrdinal().toString() });
+                    BlockplusServer.main(new String[] { newGame.getOrdinal().toString() });
                 }
                 catch (final Exception e) {
                     e.printStackTrace();
