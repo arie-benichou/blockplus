@@ -1,7 +1,5 @@
 var Blockplus = Blockplus || {};
 
-// TODO afficher la couleur des joueurs au fur et à mesure qu'ils rejoignent le
-// jeu
 // TODO ? ne pas effectuer le zoom-in si le zoom est un zoom mort (avertir avec
 // un none sound)
 // TODO !? rendre optional le zoom
@@ -258,19 +256,12 @@ Blockplus.Application = function(parameters) {
 
 			Blockplus.Client.protocol.register("color", function(data) {
 
-				$("#control-panel").show();
 				$("#board-container").show();
 				$("#pieces").show();
 
 				that.color = data;
 				that.boardManager.updateColor(that.color);
 				Blockplus.Client.protocol.register("update", function(data) {
-
-					window.clearInterval(that.id);
-					$("#splash").hide();
-
-					window.clearInterval();
-					that.controlPanelManager.hide();
 					var gameState = new Blockplus.GameState(data);
 					if (gameState.getColor() == that.color) {
 						if (!gameState.isTerminal()) {
@@ -297,8 +288,6 @@ Blockplus.Application = function(parameters) {
 						$("#players div." + color).html(score);
 					}
 
-					console.debug(leader);
-
 					if (gameState.isTerminal()) {
 						that.audioManager.play("../audio/none.ogg");
 						$("#board-container").css("opacity", 0.45);
@@ -307,6 +296,7 @@ Blockplus.Application = function(parameters) {
 						$("#players div." + leader).css("font-weight", "bold");
 						that.pieceManager.show(leader);
 					} else {
+						// TODO on Game Ready
 						$("#game").removeClass();
 					}
 
@@ -316,30 +306,11 @@ Blockplus.Application = function(parameters) {
 		that.client.say(gameConnection(room));
 	});
 
-	var animation = function() {
-		$("#splash").html('');
-		var images = [];
-		images.push(that.pieceManager.piece('Blue', 1));
-		images.push(that.pieceManager.piece('Blue', 8));
-		images.push(that.pieceManager.piece('Blue', 21));
-
-		var img = document.createElement('img');
-		$("#splash").append(img);
-
-		// TODO request animation frame
-		var n = -1;
-		that.id = window.setInterval(function() {
-			console.debug('...');
-			img.src = images[++n % 3];
-		}, 125);
-	}
-
 	this.start = function() {
 		that.audioManager.play("../audio/dummy.ogg");
 		var url = computeLocation("/network/io");
 		that.client = new Blockplus.Client("Android", url);
 		that.client.start(that.client.join);
-		// setTimeout(animation, 50);
 	}
 
 	/*-------------------------------8<-------------------------------*/
