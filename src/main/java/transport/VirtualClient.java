@@ -133,7 +133,7 @@ public class VirtualClient implements WebSocket.OnTextMessage
                     System.out.println(color);
                     System.out.println(moveSubmit);
                     try {
-                        Thread.sleep(400);
+                        Thread.sleep(1000);
                         this.send(moveSubmit);
                     }
                     catch (final Exception e) {
