@@ -217,7 +217,7 @@ Blockplus.Application = function(parameters) {
 				that.client.say(gameConnection(room));
 			} else {
 				console.error("server is full !");
-				that.audioManager.play("../audio/none.ogg");
+				that.audioManager.play("../audio/none.mp3");
 			}
 
 		});
@@ -243,7 +243,7 @@ Blockplus.Application = function(parameters) {
 
 			var i = data.players - 1;			
 			Blockplus.Client.protocol.register("player", function(data) {
-				that.audioManager.play("../audio/subtle.ogg");
+				that.audioManager.play("../audio/in.mp3");
 				that.pieceManager.init(players[i], pieces[0]);
 				$($("#players div")[i]).addClass(players[i]);
 				++i;
@@ -261,18 +261,23 @@ Blockplus.Application = function(parameters) {
 
 				that.color = data;
 				that.boardManager.updateColor(that.color);
+				
 				Blockplus.Client.protocol.register("update", function(data) {
+					
 					var gameState = new Blockplus.GameState(data);
+					
 					if (gameState.getColor() == that.color) {
 						if (!gameState.isTerminal()) {
-							that.audioManager.play("../audio/you.ogg");
+							that.audioManager.play("../audio/some.mp3");
 						}
 						that.boardManager.unregister('click.1');
 						that.boardManager.register('click.1', that.clickEventHandler1);
 						that.pieceManager.show(that.color);
 					}
+					
 					that.game = new Blockplus.Game(that.client, that.color, gameState, that.boardManager);
 					that.game.update();
+					
 					for (color in that.colors) {
 						that.pieceManager.update(color, gameState.getPieces(color));
 					}
@@ -289,7 +294,7 @@ Blockplus.Application = function(parameters) {
 					}
 
 					if (gameState.isTerminal()) {
-						that.audioManager.play("../audio/none.ogg");
+						that.audioManager.play("../audio/none.mp3");
 						$("#board-container").css("opacity", 0.45);
 						$("#players div").css("opacity", 0.33);
 						$("#players div." + leader).css("opacity", 1);
@@ -307,7 +312,7 @@ Blockplus.Application = function(parameters) {
 	});
 
 	this.start = function() {
-		that.audioManager.play("../audio/dummy.ogg");
+		that.audioManager.play("../audio/dummy.mp3");
 		var url = computeLocation("/network/io");
 		that.client = new Blockplus.Client("Android", url);
 		that.client.start(that.client.join);

@@ -1,60 +1,50 @@
 <!DOCTYPE html>
-<html itemscope itemtype="http://schema.org/Product">
+<html>
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport"
-			content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		
 		<title>Block+</title>
-		
-		<meta itemprop="name" content="Block+">
-		<meta itemprop="description"
-			content="une version du jeu Blokus pour le petit écran !">
-		<meta itemprop="image"
-			content="http://artefact.hd.free.fr/images/mobile.png">
-		
-		<meta property="og:title" content="Block+" />
-		<meta property="og:description"
-			content="une version du jeu Blokus pour le petit écran !" />
-		<meta property="og:image"
-			content="http://artefact.hd.free.fr/images/mobile.png" />
-		
+				
 		<link href="../images/favicon.png" rel="shortcut icon" />
 		<link href="index.css" rel="stylesheet" />
-		<link href="android.css" rel="stylesheet" />
+		<link href="android.css" rel="stylesheet" />		
 		
 		<script src="../library/jquery.min.js"></script>
-		
-		<script src="../modules/Application.js"></script>
-		<script src="../modules/ViewPort.js"></script>
-		<script src="../modules/PositionFactory.js"></script>
-		
-		
-		<script src="../modules/Board.js"></script>
-		<script src="../modules/BoardRenderer.js"></script>
-		<script src="../modules/BoardManager.js"></script>
-		
-		<script src="../modules/SelectedPositions.js"></script>
-		<script src="../modules/ControlPanelManager.js"></script>
-		<script src="../modules/Game.js"></script>
-		<script src="../modules/GameState.js"></script>
-		<script src="../modules/Options.js"></script>
-		
-		<script src="../modules/Piece.js"></script>
-		<script src="../modules/PieceRenderer.js"></script>
-		<script src="../modules/PieceManager.js"></script>
 		
 		<script src="../modules/Protocol.js"></script>
 		<script src="../modules/Client.js"></script>
 		
+		<script src="../modules/ViewPort.js"></script>
+		<script src="../modules/Application.js"></script>
+		
 		<script src="../modules/AudioManager.js"></script>
+		
+		<script src="../modules/Piece.js"></script>
+		<script src="../modules/PieceManager.js"></script>		
+		<script src="../modules/PieceRenderer.js"></script>
+
+		<script src="../modules/PositionFactory.js"></script>
+						
+		<script src="../modules/Board.js"></script>
+		<script src="../modules/BoardRenderer.js"></script>
+		<script src="../modules/BoardManager.js"></script>
+		
+		<script src="../modules/Game.js"></script>
+		<script src="../modules/GameState.js"></script>
+		<script src="../modules/ControlPanelManager.js"></script>
+		<script src="../modules/Options.js"></script>
+		<script src="../modules/SelectedPositions.js"></script>
 	</head>
 	<body>
 		<div id="content">
 			<div id="splash" onclick="window.application.start();">
-				<span>B</span> <span style="color: #3971c4">l</span> <span
-					style="color: #eea435">o</span> <span style="color: #cc2b2b">c</span>
-				<span style="color: #04a44b">k</span> <span>+</span>
+				<span>B</span>
+				<span style="color: #3971c4">l</span>
+				<span style="color: #eea435">o</span>
+				<span style="color: #cc2b2b">c</span>
+				<span style="color: #04a44b">k</span>
+				<span>+</span>
 			</div>
 			<audio id="test"></audio>
 			<div id="game" class="not-available">
@@ -65,7 +55,6 @@
 					<div>&nbsp;</div>
 				</div>
 				<div class="clear"></div>
-				<div id="messages"></div>
 				<div id="board-container">
 					<canvas id="board"></canvas>
 				</div>
@@ -104,7 +93,6 @@
 					a.src = g;
 					m.parentNode.insertBefore(a, m)
 				})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
 				ga('create', 'UA-41953552-1', 'free.fr');
 				ga('send', 'pageview');
 			</script>
