@@ -30,16 +30,6 @@
 		<url>http://artefact.hd.free.fr</url>
 	</organization>
 
-	<developers>
-		<developer>
-			<id>bmad</id>
-			<name>BMAD TEAM</name>
-			<url>https://code.google.com/p/blockplus/people/list</url>
-		</developer>
-	</developers>
-
-	<contributors />
-
 	<scm>
 		<url>https://code.google.com/p/blockplus/</url>
 		<connection>scm:git:https://code.google.com/p/blockplus/</connection>

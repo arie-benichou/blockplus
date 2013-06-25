@@ -15,11 +15,8 @@ Open a new terminal:
 ---------------------------8<---------------------------
 The prerequisites are:
 
-	 * JAVA >= 6
+	 * JAVA >= 7
  	   http://java.com/en/download/
  	
  	 * MAVEN >= 3.0.4
  	   http://maven.apache.org/download.html
- 	   
-	 * Google Chrome :p
- 	   http://google.com/intl/en/chrome/
