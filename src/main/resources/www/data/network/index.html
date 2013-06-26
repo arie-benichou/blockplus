@@ -8,37 +8,36 @@
 				
 		<link href="../images/favicon.png" rel="shortcut icon" />
 		<link href="index.css" rel="stylesheet" />
-		<link href="android.css" rel="stylesheet" />		
 		
 		<script src="../library/jquery.min.js"></script>
 		
-		<script src="../modules/Protocol.js"></script>
-		<script src="../modules/Client.js"></script>
-		
+		<script src="../modules/Application.js"></script>		
 		<script src="../modules/ViewPort.js"></script>
-		<script src="../modules/Application.js"></script>
-		
 		<script src="../modules/AudioManager.js"></script>
 		
-		<script src="../modules/Piece.js"></script>
-		<script src="../modules/PieceManager.js"></script>		
-		<script src="../modules/PieceRenderer.js"></script>
-
-		<script src="../modules/PositionFactory.js"></script>
-						
-		<script src="../modules/Board.js"></script>
-		<script src="../modules/BoardRenderer.js"></script>
-		<script src="../modules/BoardManager.js"></script>
+		<script src="../modules/transport/Protocol.js"></script>
+		<script src="../modules/transport/Client.js"></script>
 		
-		<script src="../modules/Game.js"></script>
-		<script src="../modules/GameState.js"></script>
-		<script src="../modules/ControlPanelManager.js"></script>
-		<script src="../modules/Options.js"></script>
-		<script src="../modules/SelectedPositions.js"></script>
+		<script src="../modules/blockplus/Messages.js"></script>
+				
+		<script src="../modules/blockplus/Piece.js"></script>
+		<script src="../modules/blockplus/PieceManager.js"></script>		
+		<script src="../modules/blockplus/PieceRenderer.js"></script>
+		
+		<script src="../modules/blockplus/Positions.js"></script>				
+		<script src="../modules/blockplus/Board.js"></script>
+		<script src="../modules/blockplus/BoardRenderer.js"></script>
+		<script src="../modules/blockplus/BoardManager.js"></script>
+		
+		<script src="../modules/blockplus/Game.js"></script>
+		<script src="../modules/blockplus/GameState.js"></script>
+		<script src="../modules/blockplus/ControlPanelManager.js"></script>
+		<script src="../modules/blockplus/Options.js"></script>
+		<script src="../modules/blockplus/SelectedPositions.js"></script>
 	</head>
 	<body>
 		<div id="content">
-			<div id="splash" onclick="window.application.start();">
+			<div id="splash">
 				<span>B</span>
 				<span style="color: #3971c4">l</span>
 				<span style="color: #eea435">o</span>
@@ -46,7 +45,7 @@
 				<span style="color: #04a44b">k</span>
 				<span>+</span>
 			</div>
-			<audio id="test"></audio>
+			<audio id="sound"></audio>
 			<div id="game" class="not-available">
 				<div id="players">
 					<div>&nbsp;</div>
@@ -73,12 +72,13 @@
 			</div>
 			<script>
 				$(document).ready(function() {
-					window.application = new Blockplus.Application({
+					window.application = new Application({
 						container : $('#content'),
+						audio: "sound",
 						//maxWidth : $(window).width(),
 						//maxHeight :$(window).height()						
-						maxWidth : 320,
-						maxHeight : 455,
+						maxWidth : 360,
+						maxHeight : 532,
 					});
 				});
 			</script>

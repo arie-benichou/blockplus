@@ -84,21 +84,6 @@ public class BlockplusServer extends WebSocketServlet {
 
     public void updateGames(final Integer ordinal, final GameInterface<Context> newGame) {
         this.gameByOrdinal.put(ordinal, newGame);
-
-        /*
-        // TODO asynch
-        // TODO notifier uniquement les clients dans le patio
-        // TODO prévoir une pagination
-        if (newGame.isFull()) {
-            final JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("game", ordinal);
-            jsonObject.addProperty("board", newGame.toJson());
-            for (final IOinterface io : this.clientByIO.keySet()) {
-                io.emit("game", jsonObject.toString());
-            }
-        }
-        */
-
     }
 
     private final Map<Integer, List<ClientInterface>> clientsByGame = Maps.newConcurrentMap(); // TODO à virer
@@ -178,8 +163,6 @@ public class BlockplusServer extends WebSocketServlet {
     // TODO à revoir
     public void onNewClient(final ClientInterface newClient) {
         this.connect(newClient);
-        newClient.getIO().emit("info", "\"" + "Welcome " + newClient.getName() + " !" + "\"");
-        newClient.getIO().emit("welcome", "\"" + newClient.getName() + "\"");
         final String game = new Gson().toJson(this.getGames());
         newClient.getIO().emit("games", "\"" + game + "\"");
     }

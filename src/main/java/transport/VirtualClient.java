@@ -26,7 +26,6 @@ import java.util.Set;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketClient;
 
-import serialization.JSONSerializer;
 import transport.messages.MoveSubmit;
 import blockplus.piece.PieceType;
 
@@ -36,8 +35,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import components.position.Position;
-import components.position.PositionInterface;
 
 public class VirtualClient implements WebSocket.OnTextMessage
 {
@@ -118,22 +115,9 @@ public class VirtualClient implements WebSocket.OnTextMessage
                     final JsonArray instances = entry.getValue().getAsJsonArray();
                     final int n = new Random().nextInt(instances.size());
                     final JsonArray positions = instances.get(n).getAsJsonArray();
-
-                    // TODO !! à revoir
-                    final JsonArray positions2 = new JsonArray();
-                    for (final JsonElement position : positions) {
-                        final int index = position.getAsInt();
-                        final PositionInterface p = Position.from((int) Math.floor(index / 20), index % 20);
-                        positions2.add(JSONSerializer.getInstance().toJsonTree(p));
-                    }
-
                     final PieceType pieceObject = PieceType.valueOf("PIECE" + piece);// TODO
-                    final MoveSubmit moveSubmit = new MoveSubmit(pieceObject.ordinal(), positions2);
-                    System.out.println();
-                    System.out.println(color);
-                    System.out.println(moveSubmit);
+                    final MoveSubmit moveSubmit = new MoveSubmit(pieceObject.ordinal(), positions);
                     try {
-                        Thread.sleep(1000);
                         this.send(moveSubmit);
                     }
                     catch (final Exception e) {

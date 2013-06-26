@@ -38,8 +38,8 @@
 	<properties>
 		<encoding>UTF-8</encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<webXml>${basedir}/src/main/resources/web/web.xml</webXml>
-		<sourceDirectory>${basedir}/src/main/resources/web/public/blockplus</sourceDirectory>
+		<webXml>${basedir}/src/main/resources/www/servlet.xml</webXml>
+		<sourceDirectory>${basedir}/src/main/resources/www/data/</sourceDirectory>
 	</properties>
 
 	<prerequisites>

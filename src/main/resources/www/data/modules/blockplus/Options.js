@@ -18,16 +18,9 @@ Blockplus.Options = function(data) {
 			var size = pieceInstance.length;
 			var pieceInstanceObject = {};
 			for ( var j = 0; j < size; ++j) {
-				// TODO !! utiliser la factory
-				// TODO !! ajouter un champ index/id dans Position
 				var index = pieceInstance[j];
-				var p = {
-					row : Math.floor(index / 20),
-					column : index % 20
-				};
-				var json = JSON.stringify(p);
-				this.potentialPositions[json] = true;
-				pieceInstanceObject[json] = true;
+				this.potentialPositions[index] = true;
+				pieceInstanceObject[index] = true;
 			}
 			pieceInstancesObject["instances"].push(pieceInstanceObject);
 		}

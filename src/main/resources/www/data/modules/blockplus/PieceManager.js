@@ -23,7 +23,7 @@ Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory) 
 						var y = parseInt(node.snapshotItem(0).textContent);
 						var node = xmlDocument.evaluate(".//x/text()", position, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 						var x = parseInt(node.snapshotItem(0).textContent);
-						data.push(that.positionFactory.getPosition(y, x));
+						data.push(that.positionFactory.position(y, x));
 					}
 					var canvas = that.pieceRenderer.render(new Blockplus.Piece(data, color));
 					that.pieces[color][piece.getAttribute("id")] = canvas.toDataURL("image/png");

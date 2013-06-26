@@ -165,6 +165,13 @@ public class BlockplusGame implements GameInterface<Context> {
     }
 
     public GameInterface<Context> play(final MoveSubmitInterface moveSubmit) {
+        try {
+            Thread.sleep(750);
+        }
+        catch (final InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         // TODO check that move is from current player        
         // TODO check that game is not over
@@ -176,10 +183,8 @@ public class BlockplusGame implements GameInterface<Context> {
         final JsonArray array = moveSubmit.getPositions();
         final Set<PositionInterface> positions = Sets.newLinkedHashSet();
         for (final JsonElement jsonElement : array) {
-            final JsonArray asJsonArray = jsonElement.getAsJsonArray();
-            final int row = asJsonArray.get(0).getAsInt();
-            final int column = asJsonArray.get(1).getAsInt();
-            positions.add(Position.from(row, column));
+            final int index = jsonElement.getAsInt();
+            positions.add(Position.from((int) Math.floor(index / 20), index % 20));
         }
 
         final Color color = context.getSide();

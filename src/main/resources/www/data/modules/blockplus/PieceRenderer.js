@@ -1,7 +1,8 @@
 var Blockplus = Blockplus || {};
 
-Blockplus.PieceRenderer = function(viewPort, colors) {
+Blockplus.PieceRenderer = function(viewPort, colors, positionFactory) {
 
+	this.positionFactory = positionFactory;
 	this.viewPort = viewPort;
 	this.colors = colors;
 
@@ -28,36 +29,24 @@ Blockplus.PieceRenderer.prototype = {
 
 	render : function(piece) {
 
-		// TODO à revoir
-		var selectedPositions = new Blockplus.SelectedPositions();
 		var positions = piece.getPositions();
-		for (position in positions) {
-			selectedPositions.add(positions[position]);
-		}
-
-		// TODO à mettre dans Piece
-		var topLeft = selectedPositions.getTopLeftPosition();
-		var bottomRight = selectedPositions.getBottomRightPosition();
-
-		var that = this;
+		var topLeft = this.positionFactory.getTopLeftPosition(positions);
+		var bottomRight = this.positionFactory.getBottomRightPosition(positions);
 
 		// TODO initialiser une fois
 		var canvas = document.createElement('canvas');
 		var context = canvas.getContext("2d");
-		var tmpBoardRendering = new Blockplus.BoardRenderer(canvas, that.cellDimension, that.colors);
+		var tmpBoardRendering = new Blockplus.BoardRenderer(canvas, this.cellDimension, this.colors);
 
 		var width = 1 + bottomRight.column - topLeft.column;
 		var height = 1 + bottomRight.row - topLeft.row;
 
-		canvas.width = that.cellDimension.width * width;
-		canvas.height = that.cellDimension.height * height;
+		canvas.width = this.cellDimension.width * width;
+		canvas.height = this.cellDimension.height * height;
 
-		for ( var position in selectedPositions.get()) {
-			var p1 = JSON.parse(position);
-			var p2 = {
-				row : p1.row - topLeft.row,
-				column : p1.column - topLeft.column
-			}
+		for ( var i in positions) {
+			var p1 = positions[i];
+			var p2 = this.positionFactory.position(p1.row - topLeft.row, p1.column - topLeft.column);
 			tmpBoardRendering.renderCell(p2, "#FFF");
 			tmpBoardRendering.renderCell2(p2, this.colors[piece.getColor()], 0.42);
 		}
@@ -65,8 +54,8 @@ Blockplus.PieceRenderer.prototype = {
 		// ///////////////////////////////////////////////
 		var canvas2 = document.createElement('canvas');
 		var context2 = canvas2.getContext("2d");
-		canvas2.width = (1 + 5 + 1) * that.cellDimension.width + 0;
-		canvas2.height = (1 + 3 + 1) * that.cellDimension.height + 0;
+		canvas2.width = (1 + 5 + 1) * this.cellDimension.width + 0;
+		canvas2.height = (1 + 3 + 1) * this.cellDimension.height + 0;
 
 		context2.fillStyle = "#2a2d30";
 		context2.fillRect(0, 0, canvas2.width, canvas2.height);

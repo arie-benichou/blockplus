@@ -8,3 +8,6 @@
  + générer le fichier XML des pièces automatiquement
  + créer une démo didactique
  ----------------------------------------------------------8<-----------------------------------------------------------
+  
+// TODO ? ne pas effectuer le zoom-in si le zoom est un zoom mort (avertir avec un none sound)
+// TODO !? rendre optional le zoom

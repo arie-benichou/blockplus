@@ -50,7 +50,7 @@ public class BlockplusServerEvents {
     public void onGameConnection(final GameConnectionInterface gameConnection) {
         final GameInterface<Context> game = this.getServer().getGame(gameConnection.getOrdinal());
         if (game.isFull()) {
-            gameConnection.getIO().emit("info", "\"" + "Game " + game.getOrdinal() + " is full" + "\""); // TODO revoir emit
+            //gameConnection.getIO().emit("info", "\"" + "Game " + game.getOrdinal() + " is full" + "\""); // TODO revoir emit
             gameConnection.getIO().emit("fullGame", "\"" + game.getOrdinal() + "\"");
         }
         else {
@@ -79,7 +79,6 @@ public class BlockplusServerEvents {
             playerInfo.addProperty("name", newClient.getName());
 
             for (final ClientInterface client : clients) {
-                client.getIO().emit("info", "\"" + newClient.getName() + " has joined game " + newGame.getOrdinal() + "\""); // TODO revoir emit
                 client.getIO().emit("player", playerInfo.toString());
             }
 
@@ -121,15 +120,14 @@ public class BlockplusServerEvents {
     @Subscribe
     @AllowConcurrentEvents
     public void onMoveSubmit(final MoveSubmitInterface moveSubmit) {
-        /*
-            try {
-                Thread.sleep(3000);
-            }
-            catch (final InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            */
+        System.out.println(moveSubmit);
+        try {
+            Thread.sleep(725);
+        }
+        catch (final InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         final ClientInterface client = this.getServer().getClient(moveSubmit.getIO());
         final Integer game = client.getGame();
         final BlockplusGame blockplusGame = (BlockplusGame) this.getServer().getGame(game);
