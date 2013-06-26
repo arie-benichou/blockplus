@@ -7,12 +7,12 @@ Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory) 
 	this.pieces = {};
 	this.positionFactory = positionFactory;
 
-	var that = this;
 	jQuery.ajax(url, {
-		success : function(xmlDocument) {
+		async : false,
+		success : $.proxy(function(xmlDocument) {
 			var pieces = xmlDocument.evaluate("//piece", xmlDocument, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-			for ( var color in that.pieceRenderer.colors) {
-				that.pieces[color] = {};
+			for ( var color in this.pieceRenderer.colors) {
+				this.pieces[color] = {};
 				for ( var i = 0; i < pieces.snapshotLength; ++i) {
 					var data = [];
 					var piece = pieces.snapshotItem(i);
@@ -23,13 +23,13 @@ Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory) 
 						var y = parseInt(node.snapshotItem(0).textContent);
 						var node = xmlDocument.evaluate(".//x/text()", position, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 						var x = parseInt(node.snapshotItem(0).textContent);
-						data.push(that.positionFactory.position(y, x));
+						data.push(this.positionFactory.position(y, x));
 					}
-					var canvas = that.pieceRenderer.render(new Blockplus.Piece(data, color));
-					that.pieces[color][piece.getAttribute("id")] = canvas.toDataURL("image/png");
+					var canvas = this.pieceRenderer.render(new Blockplus.Piece(data, color));
+					this.pieces[color][piece.getAttribute("id")] = canvas.toDataURL("image/png");
 				}
 			}
-		}
+		}, this)
 	});
 };
 
@@ -42,6 +42,7 @@ Blockplus.PieceManager.prototype = {
 	},
 
 	piece : function(color, id) {
+		console.debug(this.pieces);
 		return this.pieces[color][id];
 	},
 

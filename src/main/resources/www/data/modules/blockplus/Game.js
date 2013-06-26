@@ -172,10 +172,10 @@ Blockplus.Game.prototype = {
 		this.boardManager.updateBoard(gameState.getBoard());
 
 		this.options = new Blockplus.Options(gameState.getOptions(this.color));
-		console.debug(this.options);
+		// console.debug(this.options);
 
 		var potentialPositions = this.options.getPotentialPositions();
-		console.debug(potentialPositions);
+		// console.debug(potentialPositions);
 
 		this.boardManager.updatePotentialPositions(potentialPositions);
 		this.boardManager.render();
@@ -207,7 +207,7 @@ Blockplus.Game.prototype = {
 
 //		var options = gameState.getOptions(this.color);
 //		for ( var i = 21; i > 0; --i) {
-//			if (i in opt) {
+//			if (i in options) {
 //				this.play(i, options[i][0]);
 //				break;
 //			}
