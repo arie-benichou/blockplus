@@ -205,13 +205,13 @@ Blockplus.Game.prototype = {
 			$("#game").removeClass();
 		}
 
-		var opt = gameState.getOptions(this.color);
-		for ( var i = 21; i > 0; --i) {
-			if (i in opt) {
-				this.play(i, opt[i][0]);
-				break;
-			}
-		}
+//		var options = gameState.getOptions(this.color);
+//		for ( var i = 21; i > 0; --i) {
+//			if (i in opt) {
+//				this.play(i, options[i][0]);
+//				break;
+//			}
+//		}
 
 	},
 

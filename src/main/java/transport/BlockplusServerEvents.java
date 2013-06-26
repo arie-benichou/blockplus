@@ -121,7 +121,7 @@ public class BlockplusServerEvents {
     @AllowConcurrentEvents
     public void onMoveSubmit(final MoveSubmitInterface moveSubmit) {
         try {
-            Thread.sleep(725);
+            Thread.sleep(350);
         }
         catch (final InterruptedException e) {
             // TODO Auto-generated catch block
