@@ -120,7 +120,6 @@ public class BlockplusServerEvents {
     @Subscribe
     @AllowConcurrentEvents
     public void onMoveSubmit(final MoveSubmitInterface moveSubmit) {
-        System.out.println(moveSubmit);
         try {
             Thread.sleep(725);
         }

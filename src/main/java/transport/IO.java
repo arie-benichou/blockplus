@@ -106,6 +106,7 @@ public class IO implements IOinterface {
             if (object != null) {
                 try {
                     this.getServer().getEventBus().post(object);
+                    System.out.println(object);
                 }
                 catch (final Exception e) { // TODO EventDispatchingException
                     this.say("Event could not be dispatched from " + object + " : " + Throwables.getRootCause(e));
