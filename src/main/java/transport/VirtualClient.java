@@ -118,7 +118,7 @@ public class VirtualClient implements WebSocket.OnTextMessage
                     final PieceType pieceObject = PieceType.valueOf("PIECE" + piece);// TODO
                     final MoveSubmit moveSubmit = new MoveSubmit(pieceObject.ordinal(), positions);
                     try {
-                        Thread.sleep(1000);
+                        //Thread.sleep(1000);
                         this.send(moveSubmit);
                     }
                     catch (final Exception e) {

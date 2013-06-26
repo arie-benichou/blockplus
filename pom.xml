@@ -100,6 +100,7 @@
 					<version>2.3</version>
 					<configuration>
 						<webXml>${webXml}</webXml>
+						<!-- inutile ? -->
 						<warSourceDirectory>${sourceDirectory}</warSourceDirectory>
 					</configuration>
 				</plugin>
@@ -272,6 +273,11 @@
 			<artifactId>specs2_2.10</artifactId>
 			<version>1.14</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlets</artifactId>
+			<version>8.1.8.v20121106</version>
 		</dependency>
 	</dependencies>
 

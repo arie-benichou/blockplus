@@ -1,20 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-    id="WebApp_ID" version="2.5">
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
 
-    <display-name>Blockplus</display-name>
+	<display-name>Blockplus</display-name>
 
-    <servlet>
-        <servlet-name>WebSocket</servlet-name>
-        <servlet-class>transport.BlockplusServer</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
+	<servlet>
+		<servlet-name>WebSocket</servlet-name>
+		<servlet-class>transport.BlockplusServer</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>WebSocket</servlet-name>
+		<url-pattern>/io/*</url-pattern>
+	</servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>WebSocket</servlet-name>
-        <url-pattern>/network/io/*</url-pattern>
-    </servlet-mapping>
+	<filter>
+		<filter-name>GzipFilter</filter-name>
+		<filter-class>org.eclipse.jetty.servlets.GzipFilter</filter-class>
+		<init-param>
+			<param-name>mimeTypes</param-name>
+			<param-value>text/html,text/plain,text/xml,application/xhtml+xml,text/css,application/javascript,application/x-javascript,image/svg+xml</param-value>
+		</init-param>
+	</filter>
+
+	<!-- 
+	<filter-mapping>
+		<filter-name>GzipFilter</filter-name>
+		<url-pattern>/audio/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>GzipFilter</filter-name>
+		<url-pattern>/images/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>GzipFilter</filter-name>
+		<url-pattern>/library/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>GzipFilter</filter-name>
+		<url-pattern>/modules/*</url-pattern>
+	</filter-mapping>
+	 -->
+	 
+ 	<filter-mapping>
+		<filter-name>GzipFilter</filter-name>
+		<url-pattern>*</url-pattern>
+	</filter-mapping>
 
 </web-app>

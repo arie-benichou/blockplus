@@ -7,7 +7,7 @@ Application = function(parameters) {
 	this.audioManager = new Blockplus.AudioManager(parameters.audio);
 	this.container.width(this.viewPort.maxWidth);
 	this.container.height(this.viewPort.maxHeight);
-	var url = document.location.origin.toString().replace('http://', 'ws://') + "/network/io";
+	var url = document.location.origin.toString().replace('http://', 'ws://') + "/io";
 	this.client = new Transport.Client(url, new Transport.Protocol());
 	this.container.one('click', $.proxy(this.run, this));
 	this.container.bind('mousedown', function(event) {
