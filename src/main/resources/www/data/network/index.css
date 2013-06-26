@@ -33,10 +33,6 @@ img {
 	cursor: pointer;
 }
 
-#splash img {
-	border-radius: 20px;
-}
-
 #game {
 	transition: all 1s ease-in-out;
 }
@@ -147,10 +143,6 @@ img {
 
 .Green {
 	background-color: rgba(4, 164, 75, 0.55);
-}
-
-.available {
-	opacity: 1;
 }
 
 .not-available {
