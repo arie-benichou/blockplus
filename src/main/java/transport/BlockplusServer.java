@@ -118,7 +118,7 @@ public class BlockplusServer extends WebSocketServlet {
         final BlockplusServerEvents blockplusServerEvents = new BlockplusServerEvents(this); // TODO à injecter
         this.getEventBus().register(blockplusServerEvents);
 
-        for (int i = 1; i <= 48; ++i) {
+        for (int i = 1; i <= 26; ++i) {
             final ImmutableList<ClientInterface> empty = ImmutableList.of();
             this.clientsByGame.put(i, empty);
             this.gameByOrdinal.put(i, new BlockplusGame(i, "", empty, null, 0));
@@ -239,7 +239,8 @@ public class BlockplusServer extends WebSocketServlet {
         final Messages messages = new Messages();
 
         final WebSocketClient client = factory.newWebSocketClient();
-        client.setMaxIdleTime(60000 * 5);
+        //client.setMaxIdleTime(60000 * 5);
+        client.setMaxIdleTime(4 * (60 + 1) * 1000);
         client.setMaxTextMessageSize(1024 * 64);
 
         final VirtualClient virtualClient = new VirtualClient("virtual-client", client, host, port, "io");

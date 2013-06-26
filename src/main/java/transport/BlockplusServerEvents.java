@@ -52,7 +52,26 @@ public class BlockplusServerEvents {
         if (game.isFull()) {
             //gameConnection.getIO().emit("info", "\"" + "Game " + game.getOrdinal() + " is full" + "\""); // TODO revoir emit
             gameConnection.getIO().emit("fullGame", "\"" + game.getOrdinal() + "\"");
+            final ImmutableList<ClientInterface> clients = game.getClients();
+            System.out.println();
+            System.out.println(game.getOrdinal());
+            boolean isAlive = false;
+            for (final ClientInterface client : clients) {
+                final boolean isOpen = client.getIO().getConnection().isOpen();
+                System.out.println(isOpen);
+                isAlive = isAlive || isOpen;
+            }
+            System.out.println(isAlive);
+            System.out.println();
+            if (!isAlive) {
+                System.out.println("recollecting garbaged games...");
+                final ImmutableList<ClientInterface> empty = ImmutableList.of();
+                this.getServer().updateGame(game.getOrdinal(), empty);
+                this.getServer().updateGames(game.getOrdinal(), new BlockplusGame(game.getOrdinal(), "", empty, null, 0));
+            }
         }
+        //game = this.getServer().getGame(gameConnection.getOrdinal());
+        //if (!game.isFull()) {
         else {
             final ClientInterface oldClient = this.getServer().getClient(gameConnection.getIO());
             final ClientInterface newClient = new Client(gameConnection.getIO(), oldClient.getName(), game.getOrdinal());
@@ -126,6 +145,11 @@ public class BlockplusServerEvents {
         final BlockplusGame newGame = (BlockplusGame) blockplusGame.play(moveSubmit);
         this.getServer().updateGames(newGame.getOrdinal(), newGame);
         newGame.update();
+        if (newGame.getContext().isTerminal()) {
+            final ImmutableList<ClientInterface> empty = ImmutableList.of();
+            this.getServer().updateGame(newGame.getOrdinal(), empty);
+            this.getServer().updateGames(newGame.getOrdinal(), new BlockplusGame(newGame.getOrdinal(), "", empty, null, 0));
+        }
     }
 
     @Subscribe

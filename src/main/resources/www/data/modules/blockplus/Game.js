@@ -51,6 +51,10 @@ Blockplus.Game = function(viewPort, audioManager, client, messages) {
 		this.pieceManager.show(color);
 	}, this));
 	/*-----------------------8<-----------------------*/
+	this.client.register("close", $.proxy(function(data) {
+		$("#content").css("opacity", 0.25);
+	}, this));
+	/*-----------------------8<-----------------------*/
 	this.client.register("game", $.proxy(function(data) {
 		$("#splash").hide();
 		$("#control-panel").hide();
@@ -208,7 +212,7 @@ Blockplus.Game.prototype = {
 		var options = gameState.getOptions(this.color);
 		for ( var i = 21; i > 0; --i) {
 			if (i in options) {
-				//this.play(i, options[i][0]);
+				// this.play(i, options[i][0]);
 				break;
 			}
 		}

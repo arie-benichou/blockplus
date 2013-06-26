@@ -1,13 +1,17 @@
 -----------------------------------------------------------8<-----------------------------------------------------------
- * Utiliser cometd ?
  * Utiliser akka micro-kernel ? 
  * Tester vagrant
 -----------------------------------------------------------8<-----------------------------------------------------------
- + revoir le package transport: event(source, message)
- + check messages origin
- + générer le fichier XML des pièces automatiquement
- + créer une démo didactique
- ----------------------------------------------------------8<-----------------------------------------------------------
-  
-// TODO ? ne pas effectuer le zoom-in si le zoom est un zoom mort (avertir avec un none sound)
-// TODO !? rendre optional le zoom
+afficher les jeux disponibles
+améliorer le score
+gérer le mode landscape
+rendre optional le zoom
+ne pas effectuer le zoom-in si le zoom est un zoom mort
+gérer les pertes de connexions
+améliorer IA
+créer une démo didactique
+générer le fichier XML des pièces automatiquement
+check messages origin
+-----------------------------------------------------------8<-----------------------------------------------------------
+libérer les jeux terminés : ok
+libérer les jeux morts	  : ok
