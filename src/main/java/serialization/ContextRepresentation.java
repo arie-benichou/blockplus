@@ -31,20 +31,21 @@ import blockplus.context.Context;
 import blockplus.move.Move;
 import blockplus.piece.PieceInterface;
 import blockplus.piece.PieceType;
-import blockplus.piece.Pieces;
 import blockplus.player.Player;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import components.position.PositionInterface;
 
-// TODO extract interface
 public final class ContextRepresentation {
+
+    private final static Gson GSON = new Gson();
 
     private final Context gameContext;
 
@@ -57,7 +58,7 @@ public final class ContextRepresentation {
     }
 
     public String encodeColor(final Color color) {
-        return JSONSerializer.getInstance().toJson(color);
+        return "\"" + color.toString() + "\"";
     }
 
     public JsonElement encodeBoard() {
@@ -81,22 +82,6 @@ public final class ContextRepresentation {
         boardState.add("dimension", meta);
         boardState.add("cells", data);
         return boardState;
-    }
-
-    public JsonElement _encodePieces() {
-        final JsonObject data = new JsonObject();
-        final Context context = this.getGameContext();
-        for (final Player player : context.getPlayers()) {
-            final Color color = player.getColor();
-            final JsonObject jsonObject = new JsonObject();
-            final Pieces pieces = player.getPieces();
-            for (final Entry<PieceType, Integer> entry : pieces) {
-                final int ordinal = entry.getKey().ordinal();
-                if (ordinal != 0) jsonObject.addProperty("" + ordinal, entry.getValue());
-            }
-            data.add(color.toString(), jsonObject);
-        }
-        return data;
     }
 
     public JsonElement encodePieces() {
@@ -135,7 +120,7 @@ public final class ContextRepresentation {
                 playablePositions.add(positions);
             }
         }
-        return JSONSerializer.getInstance().toJsonTree(legalPositionsByPiece);
+        return GSON.toJsonTree(legalPositionsByPiece);
     }
 
     @Override
