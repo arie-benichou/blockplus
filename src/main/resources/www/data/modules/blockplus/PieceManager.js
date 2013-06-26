@@ -42,7 +42,6 @@ Blockplus.PieceManager.prototype = {
 	},
 
 	piece : function(color, id) {
-		console.debug(this.pieces);
 		return this.pieces[color][id];
 	},
 
