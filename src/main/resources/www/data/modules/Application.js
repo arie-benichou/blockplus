@@ -7,7 +7,7 @@ Application = function(parameters) {
 	this.container = parameters.container;
 	this.container.width(this.viewPort.maxWidth);
 	this.container.height(this.viewPort.maxHeight);
-	this.container.bind('mousedown', function(event) {
+	this.container.bind("mousedown", function(event) {
 		event.preventDefault();
 	});
 
@@ -28,7 +28,7 @@ Application = function(parameters) {
 	this.pieceManager = new Blockplus.PieceManager("pieces", pieceRenderer, "/meta/pieces.json", this.positionFactory);
 
 	this.messages = new Blockplus.Messages();
-	var url = document.location.origin.toString().replace('http://', 'ws://') + "/io";
+	var url = document.location.origin.toString().replace("http://", "ws://") + "/io";
 	this.client = new Transport.Client(url, new Transport.Protocol());
 	this.user = "somebody";
 	this.patio = {
@@ -40,7 +40,8 @@ Application = function(parameters) {
 		this.client.register("games", $.proxy(function(data) {
 			var games = JSON.parse(data);
 			this.patio = new Blockplus.Patio(this.viewPort, this.audioManager, this.client, this.messages, games, this.colors, this.positionFactory, this.pieceManager);
-			this.container.one('click', $.proxy(this.join, this));
+			$("#splash").css("cursor", "pointer");
+			this.container.one("click", $.proxy(this.join, this));
 		}, this));
 		this.client.say(this.messages.connection(this.user));
 	}, this));

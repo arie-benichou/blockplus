@@ -30,7 +30,9 @@ img {
 	color: white;
 	height: 100%;
 	padding-top: 63%;
+	/*
 	cursor: pointer;
+	*/
 }
 
 #game {
