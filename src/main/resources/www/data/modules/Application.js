@@ -1,4 +1,5 @@
 Application = function(parameters) {
+
 	this.viewPort = new ViewPort({
 		maxWidth : parameters.maxWidth,
 		maxHeight : parameters.maxHeight,
@@ -9,7 +10,23 @@ Application = function(parameters) {
 	this.container.bind('mousedown', function(event) {
 		event.preventDefault();
 	});
+
 	this.audioManager = new Blockplus.AudioManager(parameters.audio);
+
+	// TODO
+	this.colors = {
+		Blue : "#3971c4",
+		Yellow : "#eea435",
+		Red : "#cc2b2b",
+		Green : "#04a44b"
+	};
+
+	// TODO
+	this.positionFactory = new Blockplus.Positions(20, 20);
+	var pieceRenderer = new Blockplus.PieceRenderer(this.viewPort, this.colors, this.positionFactory);
+	// TODO
+	this.pieceManager = new Blockplus.PieceManager("pieces", pieceRenderer, "/meta/pieces.json", this.positionFactory);
+
 	this.messages = new Blockplus.Messages();
 	var url = document.location.origin.toString().replace('http://', 'ws://') + "/io";
 	this.client = new Transport.Client(url, new Transport.Protocol());
@@ -21,7 +38,8 @@ Application = function(parameters) {
 	}
 	this.client.register("open", $.proxy(function() {
 		this.client.register("games", $.proxy(function(data) {
-			this.patio = new Blockplus.Patio(this.viewPort, this.audioManager, this.client, this.messages, JSON.parse(data));
+			var games = JSON.parse(data);
+			this.patio = new Blockplus.Patio(this.viewPort, this.audioManager, this.client, this.messages, games, this.colors, this.positionFactory, this.pieceManager);
 			this.container.one('click', $.proxy(this.join, this));
 		}, this));
 		this.client.say(this.messages.connection(this.user));
@@ -38,7 +56,7 @@ Application = function(parameters) {
 Application.prototype = {
 	constructor : Application,
 	join : function() {
-		console.debug(this.patio);
+		this.audioManager.play("../audio/in.mp3");
 		this.patio.join();
 	},
 };

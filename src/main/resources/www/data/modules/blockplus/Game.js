@@ -1,16 +1,13 @@
 var Blockplus = Blockplus || {};
-Blockplus.Game = function(viewPort, audioManager, client, messages) {
+Blockplus.Game = function(viewPort, audioManager, client, messages, colors, positionFactory, pieceManager) {
 	this.viewPort = viewPort;
 	this.audioManager = audioManager;
 	this.client = client;
 	this.messages = messages;
 	/*-----------------------8<-----------------------*/
-	this.colors = {
-		Blue : "#3971c4",
-		Yellow : "#eea435",
-		Red : "#cc2b2b",
-		Green : "#04a44b"
-	};
+	this.colors = colors;
+	this.positionFactory = positionFactory;
+	this.pieceManager = pieceManager;
 	/*-----------------------8<-----------------------*/
 	this.board = new Blockplus.Board({
 		dimension : {
@@ -38,13 +35,10 @@ Blockplus.Game = function(viewPort, audioManager, client, messages) {
 	};
 	/*-----------------------8<-----------------------*/
 	this.boardRenderer = new Blockplus.BoardRenderer(document.getElementById('board'), this.cellDimension, this.colors);
-	this.positionFactory = new Blockplus.Positions(this.board.rows, this.board.columns);
 	this.selectedPositions = new Blockplus.SelectedPositions();
 	this.boardManager = new Blockplus.BoardManager(this.board, this.boardRenderer, this.positionFactory, this.selectedPositions, this.viewPort);
 	this.controlPanelManager = new Blockplus.ControlPanelManager(document.getElementById('control-panel'), this.viewPort, this.audioManager, this.colors,
 			this.positionFactory);
-	var pieceRenderer = new Blockplus.PieceRenderer(this.viewPort, this.colors, this.positionFactory);
-	this.pieceManager = new Blockplus.PieceManager("pieces", pieceRenderer, "/meta/pieces.json", this.positionFactory);
 	/*-----------------------8<-----------------------*/
 	$("#players div").bind('click', $.proxy(function(event) { // TODO
 		var color = $(event.currentTarget).attr('class');
