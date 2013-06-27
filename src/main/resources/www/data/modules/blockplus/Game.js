@@ -44,7 +44,7 @@ Blockplus.Game = function(viewPort, audioManager, client, messages) {
 	this.controlPanelManager = new Blockplus.ControlPanelManager(document.getElementById('control-panel'), this.viewPort, this.audioManager, this.colors,
 			this.positionFactory);
 	var pieceRenderer = new Blockplus.PieceRenderer(this.viewPort, this.colors, this.positionFactory);
-	this.pieceManager = new Blockplus.PieceManager("pieces", pieceRenderer, "./pieces/index.xml", this.positionFactory);
+	this.pieceManager = new Blockplus.PieceManager("pieces", pieceRenderer, "/meta/pieces.json", this.positionFactory);
 	/*-----------------------8<-----------------------*/
 	$("#players div").bind('click', $.proxy(function(event) { // TODO
 		var color = $(event.currentTarget).attr('class');

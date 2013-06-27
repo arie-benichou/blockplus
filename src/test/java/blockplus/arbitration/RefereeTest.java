@@ -87,7 +87,7 @@ public class RefereeTest {
 
         {
             final List<PieceInterface> pieceInstances = Lists.newArrayList(PIECE3);
-            final PieceInterface piece = pieceInstances.get(1).translateTo(Position(0, 1));
+            final PieceInterface piece = pieceInstances.get(0).translateTo(Position(0, 1));
             final Move move = Moves.getMove(Blue, piece);
             context = context.apply(move);
         }
@@ -126,7 +126,7 @@ public class RefereeTest {
 
         {
             final List<PieceInterface> pieceInstances = Lists.newArrayList(PIECE16);
-            final PieceInterface piece = pieceInstances.get(3).translateTo(Position(5, 2));
+            final PieceInterface piece = pieceInstances.get(2).translateTo(Position(5, 2));
             final Move move = Moves.getMove(Green, piece);
             context = context.apply(move);
         }

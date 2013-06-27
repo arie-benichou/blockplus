@@ -21,14 +21,11 @@ import static blockplus.piece.PieceTypeData.PieceData;
 
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import blockplus.piece.matrix.Matrix;
 
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Ordering;
-import components.position.Position;
 import components.position.PositionInterface;
 
 public enum PieceType implements Iterable<PieceInterface> {
@@ -115,6 +112,7 @@ public enum PieceType implements Iterable<PieceInterface> {
         return this.getInstances().iterator();
     }
 
+    /*
     public static void main(final String[] args) {
         final Stopwatch stopwatch = new Stopwatch().start();
         for (int n = 0; n <= 21; ++n) {
@@ -134,4 +132,5 @@ public enum PieceType implements Iterable<PieceInterface> {
         System.out.println(PieceComposite.FACTORY);
         System.out.println(PieceComponent.FACTORY);
     }
+    */
 }

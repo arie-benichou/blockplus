@@ -9,6 +9,7 @@ Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory) 
 
 	jQuery.ajax(url, {
 		async : false,
+		/*
 		success : $.proxy(function(xmlDocument) {
 			var pieces = xmlDocument.evaluate("//piece", xmlDocument, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 			for ( var color in this.pieceRenderer.colors) {
@@ -30,6 +31,22 @@ Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory) 
 				}
 			}
 		}, this)
+		*/
+		success : $.proxy(function(data) {
+			var pieces = JSON.parse(data);
+			for ( var color in this.pieceRenderer.colors) {
+				this.pieces[color] = {};
+				for ( var id in pieces) {
+					var positions = [];
+					var data = pieces[id];
+					for ( var i = 0, n=data.length; i < n; ++i) {
+						positions.push(this.positionFactory.position(data[i].y, data[i].x));
+					}
+					var canvas = this.pieceRenderer.render(new Blockplus.Piece(positions, color));
+					this.pieces[color][id] = canvas.toDataURL("image/png");
+				}
+			}
+		}, this)		
 	});
 };
 

@@ -86,19 +86,19 @@ public class PieceTypeDataTest {
         assertEquals(NullPosition.getInstance(), PieceData(0).referential());
         assertEquals(Position(0, 0), PieceData(1).referential());
         assertEquals(Position(0, 0), PieceData(2).referential());
-        assertEquals(Position(1, 0), PieceData(3).referential());
+        assertEquals(Position(0, 1), PieceData(3).referential());
         assertEquals(Position(0, 0), PieceData(4).referential());
-        assertEquals(Position(1, 0), PieceData(5).referential());
-        assertEquals(Position(1, 0), PieceData(6).referential());
-        assertEquals(Position(1, 0), PieceData(7).referential());
+        assertEquals(Position(0, 1), PieceData(5).referential());
+        assertEquals(Position(0, 1), PieceData(6).referential());
+        assertEquals(Position(0, 1), PieceData(7).referential());
         assertEquals(Position(0, 0), PieceData(8).referential());
         assertEquals(Position(1, 1), PieceData(9).referential());
-        assertEquals(Position(1, 0), PieceData(10).referential());
-        assertEquals(Position(2, 0), PieceData(11).referential());
+        assertEquals(Position(0, 1), PieceData(10).referential());
+        assertEquals(Position(0, 2), PieceData(11).referential());
         assertEquals(Position(1, 1), PieceData(12).referential());
         assertEquals(Position(1, 1), PieceData(13).referential());
         assertEquals(Position(1, 1), PieceData(14).referential());
-        assertEquals(Position(1, 0), PieceData(15).referential());
+        assertEquals(Position(1, 1), PieceData(15).referential());
         assertEquals(Position(1, 1), PieceData(16).referential());
         assertEquals(Position(0, 0), PieceData(17).referential());
         assertEquals(Position(1, 1), PieceData(18).referential());
@@ -117,11 +117,11 @@ public class PieceTypeDataTest {
                 PieceData(1).positions());
 
         assertEquals(
-                Sets.newHashSet(Position(0, 0), Position(1, 0)),
+                Sets.newHashSet(Position(0, 0), Position(0, 1)),
                 PieceData(2).positions());
 
         assertEquals(
-                Sets.newHashSet(Position(0, 0), Position(1, 0), Position(2, 0)),
+                Sets.newHashSet(Position(0, 0), Position(0, 1), Position(0, 2)),
                 PieceData(3).positions());
 
         assertEquals(
@@ -129,15 +129,15 @@ public class PieceTypeDataTest {
                 PieceData(4).positions());
 
         assertEquals(
-                Sets.newHashSet(Position(0, 0), Position(1, 0), Position(2, 0), Position(3, 0)),
+                Sets.newHashSet(Position(0, 0), Position(0, 1), Position(0, 2), Position(0, 3)),
                 PieceData(5).positions());
 
         assertEquals(
-                Sets.newHashSet(Position(0, 0), Position(0, 1), Position(1, 0), Position(2, 0)),
+                Sets.newHashSet(Position(0, 0), Position(0, 1), Position(0, 2), Position(1, 0)),
                 PieceData(6).positions());
 
         assertEquals(
-                Sets.newHashSet(Position(0, 0), Position(1, 0), Position(1, 1), Position(2, 0)),
+                Sets.newHashSet(Position(0, 0), Position(0, 1), Position(0, 2), Position(1, 1)),
                 PieceData(7).positions());
 
         assertEquals(
@@ -148,11 +148,11 @@ public class PieceTypeDataTest {
                 Sets.newHashSet(Position(0, 0), Position(0, 1), Position(1, 1), Position(1, 2)),
                 PieceData(9).positions());
 
-        assertEquals(Sets.newHashSet(Position(0, 0), Position(0, 1), Position(1, 0), Position(2, 0), Position(3, 0)),
+        assertEquals(Sets.newHashSet(Position(0, 0), Position(0, 1), Position(0, 2), Position(0, 3), Position(1, 0)),
                 PieceData(10).positions());
 
         assertEquals(
-                Sets.newHashSet(Position(0, 0), Position(1, 0), Position(2, 0), Position(3, 0), Position(4, 0)),
+                Sets.newHashSet(Position(0, 0), Position(0, 1), Position(0, 2), Position(0, 3), Position(0, 4)),
                 PieceData(11).positions());
 
         assertEquals(Sets.newHashSet(
@@ -168,7 +168,7 @@ public class PieceTypeDataTest {
                 PieceData(14).positions());
 
         assertEquals(
-                Sets.newHashSet(Position(0, 0), Position(1, 0), Position(1, 1), Position(2, 0), Position(3, 0)),
+                Sets.newHashSet(Position(0, 1), Position(1, 0), Position(1, 1), Position(1, 2), Position(1, 3)),
                 PieceData(15).positions());
 
         assertEquals(

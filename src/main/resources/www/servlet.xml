@@ -11,10 +11,22 @@
 		<servlet-class>transport.BlockplusServer</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	
 	<servlet-mapping>
 		<servlet-name>WebSocket</servlet-name>
 		<url-pattern>/io/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>http</servlet-name>
+		<servlet-class>transport.HttpServer</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>http</servlet-name>
+		<url-pattern>/meta/*</url-pattern>
+	</servlet-mapping>	
 
 	<filter>
 		<filter-name>GzipFilter</filter-name>
