@@ -145,11 +145,13 @@ public class BlockplusServerEvents {
         final BlockplusGame newGame = (BlockplusGame) blockplusGame.play(moveSubmit);
         this.getServer().updateGames(newGame.getOrdinal(), newGame);
         newGame.update();
+        /*
         if (newGame.getContext().isTerminal()) {
             final ImmutableList<ClientInterface> empty = ImmutableList.of();
             this.getServer().updateGame(newGame.getOrdinal(), empty);
             this.getServer().updateGames(newGame.getOrdinal(), new BlockplusGame(newGame.getOrdinal(), "", empty, null, 0));
         }
+        */
     }
 
     @Subscribe
