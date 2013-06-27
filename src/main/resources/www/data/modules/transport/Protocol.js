@@ -1,3 +1,4 @@
+// TODO ? pouvoir assigner plusieurs handlers
 var Transport = Transport || {};
 Transport.Protocol = function() {
 	this.callbacks = {};
