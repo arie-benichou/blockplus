@@ -239,8 +239,8 @@ public class BlockplusServer extends WebSocketServlet {
         final Messages messages = new Messages();
 
         final WebSocketClient client = factory.newWebSocketClient();
-        //client.setMaxIdleTime(60000 * 5);
-        client.setMaxIdleTime(4 * (60 + 1) * 1000);
+        client.setMaxIdleTime(60 * 1000 * 5);
+        //client.setMaxIdleTime(4 * (60 + 1) * 1000);
         client.setMaxTextMessageSize(1024 * 64);
 
         final VirtualClient virtualClient = new VirtualClient("virtual-client", client, host, port, "io");
