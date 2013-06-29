@@ -17,12 +17,10 @@
 
 package transport;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +37,7 @@ import org.eclipse.jetty.websocket.WebSocketServlet;
 import transport.events.interfaces.ClientInterface;
 import transport.events.interfaces.EventInterface;
 import transport.events.interfaces.FeedbackInterface;
+import transport.events.interfaces.InPatioInterface;
 import transport.events.interfaces.ShowGameInterface;
 import transport.messages.Messages;
 import transport.protocol.MessageDecoder;
@@ -48,13 +47,11 @@ import transport.protocol.MessageInterface;
 import blockplus.context.Context;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 // TODO : non réellement serializable (les champs d'instance ne le sont pas).
@@ -67,6 +64,8 @@ public class BlockplusServer extends WebSocketServlet {
 
     private final Map<IOinterface, ClientInterface> clientByIO = Maps.newConcurrentMap();
 
+    public final ConcurrentLinkedDeque<IOinterface> clientsInPatio = new ConcurrentLinkedDeque<IOinterface>();
+
     public void updateClients(final IOinterface io, final ClientInterface user) {
         this.clientByIO.put(io, user);
     }
@@ -76,7 +75,7 @@ public class BlockplusServer extends WebSocketServlet {
     }
 
     // TODO utiliser un Futur<GameInterface<BlockplusGameContext>>
-    private final Map<Integer, GameInterface<Context>> gameByOrdinal = Maps.newConcurrentMap();
+    public final Map<Integer, GameInterface<Context>> gameByOrdinal = Maps.newConcurrentMap();
 
     public GameInterface<Context> getGame(final Integer ordinal) {
         return this.gameByOrdinal.get(ordinal);
@@ -118,7 +117,7 @@ public class BlockplusServer extends WebSocketServlet {
         final BlockplusServerEvents blockplusServerEvents = new BlockplusServerEvents(this); // TODO à injecter
         this.getEventBus().register(blockplusServerEvents);
 
-        for (int i = 1; i <= 26; ++i) {
+        for (int i = 1; i <= 25; ++i) {
             final ImmutableList<ClientInterface> empty = ImmutableList.of();
             this.clientsByGame.put(i, empty);
             this.gameByOrdinal.put(i, new BlockplusGame(i, "", empty, null, 0));
@@ -151,20 +150,57 @@ public class BlockplusServer extends WebSocketServlet {
         return this.clientByIO.get(io);
     }
 
+    /*
     private List<Integer> getGames() {
         final Set<Integer> keySet = this.gameByOrdinal.keySet();
         final ArrayList<Integer> games = Lists.newArrayList(keySet);
         Collections.sort(games);
         return games;
     }
+    */
 
     @Subscribe
     @AllowConcurrentEvents
     // TODO à revoir
     public void onNewClient(final ClientInterface newClient) {
         this.connect(newClient);
+        /*
         final String game = new Gson().toJson(this.getGames());
         newClient.getIO().emit("games", "\"" + game + "\"");
+        */
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void onInPatio(final InPatioInterface inPatio) { // TODO trier les tables
+        final IOinterface io = inPatio.getIO();
+        this.clientsInPatio.add(io);
+        final JsonObject tables = this.tables();
+        io.emit("tables", tables.toString());
+    }
+
+    public JsonObject tables() {
+        final JsonObject tables = new JsonObject();
+        for (final GameInterface<Context> game : this.gameByOrdinal.values()) {
+            if (game.isFull()) {
+                final ImmutableList<ClientInterface> clients = game.getClients();
+                boolean isAlive = false;
+                for (final ClientInterface client : clients) {
+                    final boolean isOpen = client.getIO().getConnection().isOpen();
+                    isAlive = isAlive || isOpen;
+                }
+                if (!isAlive) {
+                    final ImmutableList<ClientInterface> empty = ImmutableList.of();
+                    this.updateGame(game.getOrdinal(), empty);
+                    this.updateGames(game.getOrdinal(), new BlockplusGame(game.getOrdinal(), "", empty, null, 0));
+                    tables.addProperty("" + game.getOrdinal(), 0);
+                }
+            }
+            else {
+                tables.addProperty("" + game.getOrdinal(), game.getClients().size());
+            }
+        }
+        return tables;
     }
 
     @Subscribe
@@ -246,7 +282,7 @@ public class BlockplusServer extends WebSocketServlet {
         final VirtualClient virtualClient = new VirtualClient("virtual-client", client, host, port, "io");
         virtualClient.start();
 
-        Thread.sleep(1000);
+        //Thread.sleep(1000);
 
         // connection
         final MessageInterface message1 = messages.newClient(virtualClient.getName());

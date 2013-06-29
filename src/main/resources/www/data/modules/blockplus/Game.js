@@ -1,5 +1,6 @@
 var Blockplus = Blockplus || {};
-Blockplus.Game = function(viewPort, audioManager, client, messages, colors, positionFactory, pieceManager) {
+Blockplus.Game = function(viewPort, audioManager, client, messages, colors, positionFactory, pieceManager, gameData) {
+	this.gameData = gameData;
 	this.viewPort = viewPort;
 	this.audioManager = audioManager;
 	this.client = client;
@@ -40,46 +41,72 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 	this.controlPanelManager = new Blockplus.ControlPanelManager(document.getElementById('control-panel'), this.viewPort, this.audioManager, this.colors,
 			this.positionFactory);
 	/*-----------------------8<-----------------------*/
-	$("#players div").bind('click', $.proxy(function(event) { // TODO
-		var color = $(event.currentTarget).attr('class');
-		this.pieceManager.show(color);
-	}, this));
+	/*
+	 * $("#players div").bind('click', $.proxy(function(event) { // TODO var
+	 * color = $(event.currentTarget).attr('class');
+	 * this.pieceManager.show(color); }, this));
+	 */
 	/*-----------------------8<-----------------------*/
-	this.client.register("game", $.proxy(function(data) {
-		$("#splash").hide();
-		$("#control-panel").hide();
-		this.boardManager.render(this.board);
-		var players = [];
-		for (color in this.colors) {
-			players.push(color);
-		}
-		var pieces = Blockplus.GameState.prototype._decodePieces({
-			0 : 8388607
-		});
-		for ( var i = 0; i < data.players - 1; ++i) {
-			this.pieceManager.init(players[i], pieces[0]);
-			$($("#players div")[i]).addClass(players[i]);
-		}
-		var i = data.players - 1;
-		this.client.register("player", $.proxy(function(data) {
-			this.audioManager.play("../audio/in.mp3");
-			this.pieceManager.init(players[i], pieces[0]);
-			$($("#players div")[i]).addClass(players[i]);
-			++i;
+	// this.client.register("game", $.proxy(function(data) {
+	$("#splash").hide();
+	$("#control-panel").hide();
+	this.boardManager.render(this.board);
+	var players = [];
+	for (color in this.colors) {
+		players.push(color);
+	}
+	var pieces = Blockplus.GameState.prototype._decodePieces({
+		0 : 8388607
+	});
+	for ( var i = 0; i < this.gameData.players - 1; ++i) {
+		this.pieceManager.init(players[i], pieces[0]);
+		$($("#players div")[i]).addClass(players[i]);
+		$($("#players div")[i]).removeClass("not-available");
+		$($("#players div")[i]).css("cursor", "pointer");
+		$($("#players div")[i]).bind('click', $.proxy(function(event) {
+			var color = $(event.currentTarget).attr('class');
+			this.pieceManager.show(color);
 		}, this));
-		this.pieceManager.show(players[data.players - 1]);
-		// TODO à déplacer
-		this.controlPanelManager.register('click', this.init);
-		this.client.register("color", $.proxy(function(data) {
-			$("#board-container").show();
-			$("#pieces").show();
-			this.color = data;
-			this.boardManager.updateColor(this.color);
-			this.client.register("update", $.proxy(function(data) {
-				this.update(new Blockplus.GameState(data));
+		// $($("#players div")[i]).html("&nbsp;")
+
+	}
+	var i = this.gameData.players - 1;
+	this.client.register("player", $.proxy(function(data) {
+		this.audioManager.play("../audio/in.mp3");
+		this.pieceManager.init(players[i], pieces[0]);
+		$($("#players div")[i]).html("&nbsp;");		
+		$($("#players div")[i]).addClass(players[i]);
+		$($("#players div")[i]).css("cursor", "pointer");
+		$($("#players div")[i]).bind('click', $.proxy(function(event) {
+			var color = $(event.currentTarget).attr('class');
+			this.pieceManager.show(color);
+		}, this));
+		// $($("#players div")[i]).removeClass("not-available");
+		if (i < 3) {
+			$($("#players div")[i + 1]).css("cursor", "pointer");
+			$($("#players div")[i + 1]).css("color", "white");
+			$($("#players div")[i + 1]).html("AI ?")
+			$($("#players div")[i + 1]).one('click', $.proxy(function(event) {
+				var message = this.messages.virtualPlayer(this.gameData.id);
+				this.client.say(message);
+				$(event.currentTarget).html("&nbsp;");
 			}, this));
+		}
+		++i;
+	}, this));
+	this.pieceManager.show(players[this.gameData.players - 1]);
+	// TODO à déplacer
+	this.controlPanelManager.register('click', this.init);
+	this.client.register("color", $.proxy(function(data) {
+		$("#board-container").show();
+		$("#pieces").show();
+		this.color = data;
+		this.boardManager.updateColor(this.color);
+		this.client.register("update", $.proxy(function(data) {
+			this.update(new Blockplus.GameState(data));
 		}, this));
 	}, this));
+	// }, this));
 	/*-----------------------8<-----------------------*/
 	this.clickEventHandler1 = $.proxy(function(event) {
 		var targetOffset = $(event.target).offset();
@@ -120,7 +147,6 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 	}, this);
 	/*-------------------------------8<-------------------------------*/
 	this.init = $.proxy(function() {
-
 		this.boardManager.unregister('click.2');
 		this.controlPanelManager.unregister('click');
 		this.controlPanelManager.hide();
@@ -147,6 +173,8 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 		}
 		this.boardManager.clearSelection();
 	}, this);
+
+	this.init();
 };
 Blockplus.Game.prototype = {
 	constructor : Blockplus.Game,
@@ -196,7 +224,7 @@ Blockplus.Game.prototype = {
 				this.audioManager.play("../audio/some.mp3");
 			}
 			// TODO on Game Ready
-			$("#game").removeClass();
+			$("#board-container").removeClass();
 		}
 
 		var options = gameState.getOptions(this.color);

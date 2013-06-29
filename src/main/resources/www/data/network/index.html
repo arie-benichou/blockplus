@@ -14,6 +14,7 @@
 	</head>
 	<body>
 		<div id="content">
+			<audio id="sound"></audio>		
 			<div id="splash">
 				<span>B</span>
 				<span style="color: #3971c4">l</span>
@@ -21,17 +22,25 @@
 				<span style="color: #cc2b2b">c</span>
 				<span style="color: #04a44b">k</span>
 				<span>+</span>
-			</div>
-			<audio id="sound"></audio>
-			<div id="game" class="not-available">
+			</div>				
+			<div id="patio"><div id="tables"></div></div>
+			<div id="game">
+				<!-- 
+				<div id="players">
+					<div class="Blue not-available">?</div>
+					<div class="Yellow not-available">?</div>
+					<div class="Red not-available">?</div>
+					<div class="Green not-available">?</div>
+				</div>
+				 -->
 				<div id="players">
 					<div>&nbsp;</div>
 					<div>&nbsp;</div>
 					<div>&nbsp;</div>
 					<div>&nbsp;</div>
-				</div>
+				</div>				 
 				<div class="clear"></div>
-				<div id="board-container">
+				<div id="board-container" class="not-available">
 					<canvas id="board"></canvas>
 				</div>
 				<div class="clear"></div>

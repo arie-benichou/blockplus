@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-		<link href="../images/favicon.png" rel="shortcut icon" />
-		<link href="index.css" rel="stylesheet" />
-		<link href="android.css" rel="stylesheet" />		
-		<script src="../library/jquery.min.js"></script>
-		<script src="/modules.js"></script>
-		<title>Block+</title>		
-	</head>
-	<body>
-		<div id="content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, user-scalable=no">
+<link href="../images/favicon.png" rel="shortcut icon" />
+<link href="index.css" rel="stylesheet" />
+<link href="android.css" rel="stylesheet" />
+<script src="../library/jquery.min.js"></script>
+<script src="/modules.js"></script>
+<title>Block+</title>
+</head>
+<body>
+	<div id="content">
+		<audio id="sound"></audio>		
 			<div id="splash">
 				<span>B</span>
 				<span style="color: #3971c4">l</span>
@@ -19,17 +21,25 @@
 				<span style="color: #cc2b2b">c</span>
 				<span style="color: #04a44b">k</span>
 				<span>+</span>
-			</div>
-			<audio id="sound"></audio>
-			<div id="game" class="not-available">
+			</div>				
+			<div id="patio"><div id="tables"></div></div>
+			<div id="game">
+				<!-- 
+				<div id="players">
+					<div class="Blue not-available">?</div>
+					<div class="Yellow not-available">?</div>
+					<div class="Red not-available">?</div>
+					<div class="Green not-available">?</div>
+				</div>
+				 -->
 				<div id="players">
 					<div>&nbsp;</div>
 					<div>&nbsp;</div>
 					<div>&nbsp;</div>
 					<div>&nbsp;</div>
-				</div>
+				</div>				 
 				<div class="clear"></div>
-				<div id="board-container">
+				<div id="board-container" class="not-available">
 					<canvas id="board"></canvas>
 				</div>
 				<div class="clear"></div>
@@ -45,32 +55,32 @@
 				</div>
 				<div class="clear"></div>
 			</div>
-			<script>
-				$(document).ready(function() {
-					window.application = new Application({
-						container : $('#content'),
-						audio: "sound",
-						//maxWidth : $(window).width(),
-						//maxHeight :$(window).height()						
-						maxWidth : 320,
-						maxHeight : 455,
-					});
+		<script>
+			$(document).ready(function() {
+				window.application = new Application({
+					container : $('#content'),
+					audio : "sound",
+					//maxWidth : $(window).width(),
+					//maxHeight :$(window).height()						
+					maxWidth : 320,
+					maxHeight : 480-25,
 				});
-			</script>
-			<script>
-				(function(i, s, o, g, r, a, m) {
-					i['GoogleAnalyticsObject'] = r;
-					i[r] = i[r] || function() {
-						(i[r].q = i[r].q || []).push(arguments)
-					}, i[r].l = 1 * new Date();
-					a = s.createElement(o), m = s.getElementsByTagName(o)[0];
-					a.async = 1;
-					a.src = g;
-					m.parentNode.insertBefore(a, m)
-				})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-				ga('create', 'UA-41953552-1', 'free.fr');
-				ga('send', 'pageview');
-			</script>
-		</div>
-	</body>
+			});
+		</script>
+		<script>
+			(function(i, s, o, g, r, a, m) {
+				i['GoogleAnalyticsObject'] = r;
+				i[r] = i[r] || function() {
+					(i[r].q = i[r].q || []).push(arguments)
+				}, i[r].l = 1 * new Date();
+				a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+				a.async = 1;
+				a.src = g;
+				m.parentNode.insertBefore(a, m)
+			})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+			ga('create', 'UA-41953552-1', 'free.fr');
+			ga('send', 'pageview');
+		</script>
+	</div>
+</body>
 </html>

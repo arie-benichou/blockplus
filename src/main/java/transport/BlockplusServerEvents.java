@@ -18,12 +18,14 @@
 package transport;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import transport.events.Client;
 import transport.events.interfaces.ClientInterface;
 import transport.events.interfaces.GameConnectionInterface;
 import transport.events.interfaces.GameReconnectionInterface;
 import transport.events.interfaces.MoveSubmitInterface;
+import transport.events.interfaces.VirtualPlayerConnectionInterface;
 import blockplus.context.Context;
 
 import com.google.common.collect.ImmutableList;
@@ -31,7 +33,6 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 public class BlockplusServerEvents {
 
@@ -51,6 +52,7 @@ public class BlockplusServerEvents {
         final GameInterface<Context> game = this.getServer().getGame(gameConnection.getOrdinal());
         if (game.isFull()) {
             //gameConnection.getIO().emit("info", "\"" + "Game " + game.getOrdinal() + " is full" + "\""); // TODO revoir emit
+            /*
             gameConnection.getIO().emit("fullGame", "\"" + game.getOrdinal() + "\"");
             final ImmutableList<ClientInterface> clients = game.getClients();
             System.out.println();
@@ -69,6 +71,7 @@ public class BlockplusServerEvents {
                 this.getServer().updateGame(game.getOrdinal(), empty);
                 this.getServer().updateGames(game.getOrdinal(), new BlockplusGame(game.getOrdinal(), "", empty, null, 0));
             }
+            */
         }
         //game = this.getServer().getGame(gameConnection.getOrdinal());
         //if (!game.isFull()) {
@@ -101,15 +104,22 @@ public class BlockplusServerEvents {
                 client.getIO().emit("player", playerInfo.toString());
             }
 
-            try {
-                Thread.sleep(750);
+            /*
+            final JsonObject tables = new JsonObject();
+            for (final GameInterface<Context> game1 : this.getServer().gameByOrdinal.values()) {
+                if (!game1.isFull()) {
+                    tables.addProperty("" + game1.getOrdinal(), game1.getClients().size());
+                }
             }
-            catch (final InterruptedException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+            */
+            this.getServer().clientsInPatio.remove(newClient.getIO());
+            final ConcurrentLinkedDeque<IOinterface> patio = this.getServer().clientsInPatio;
+            for (final IOinterface io : patio) {
+                io.emit("tables", this.getServer().tables().toString());
             }
 
             if (newGame.isFull()) {
+                /*
                 int k = 0;
                 for (final ClientInterface client : newGame.getClients()) {
                     final JsonObject jsonObject = new JsonObject();
@@ -122,17 +132,32 @@ public class BlockplusServerEvents {
                     //TODO ajouter le timeStamp de connexion et l'ip du client
                     //client.getIO().emit("link", jsonObject.toString());
                 }
+                */
                 newGame.update();
             }
+            /*
             else {
                 // TODO replace quick & dirty patch by a virtual client factory
                 try {
+                    Thread.sleep(750);                    
                     BlockplusServer.main(new String[] { newGame.getOrdinal().toString() });
                 }
                 catch (final Exception e) {
                     e.printStackTrace();
                 }
             }
+            */
+        }
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void onVirtualPlayerConnection(final VirtualPlayerConnectionInterface virtualPlayerConnection) {
+        try {
+            BlockplusServer.main(new String[] { virtualPlayerConnection.getOrdinal().toString() }); // TODO
+        }
+        catch (final Exception e) {
+            e.printStackTrace();
         }
     }
 

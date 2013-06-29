@@ -164,7 +164,7 @@ public class PieceTypeDataTest {
                 PieceData(13).positions());
 
         assertEquals(Sets.newHashSet(
-                Position(0, 0), Position(0, 1), Position(1, 1), Position(2, 0), Position(2, 1)),
+                Position(0, 0), Position(0, 2), Position(1, 0), Position(1, 1), Position(1, 2)),
                 PieceData(14).positions());
 
         assertEquals(

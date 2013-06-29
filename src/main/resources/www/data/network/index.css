@@ -1,3 +1,16 @@
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: #373B3F;
+}
+
+::-webkit-scrollbar-thumb {
+	border-radius: 4px;
+	background-color: gray;
+}
+
 body {
 	margin: 0 auto;
 	padding: 0;
@@ -14,32 +27,92 @@ img {
 }
 
 #content {
+	/*
+	display: none;
+	*/
 	margin: 0 auto;
 	background-color: #373B3F;
 	overflow: hidden;
 	margin-top: 2.5%;
-	box-shadow: 0px 0px 16px #4E4E4E;
+	border: 2px solid #2E4050;
 	border-radius: 3px;
+	box-shadow: 0px 0px 16px #4E4E4E;
 }
 
 #splash {
+	display: none;
 	padding: 5%;
 	font-family: sans-serif;
 	font-size: 325%;
 	text-align: center;
 	color: white;
-	height: 100%;
 	padding-top: 63%;
+	height: 100%;
+}
+
+#patio {
+	background-color: #888;
+	display: none;
+	overflow: auto;
+}
+
+#tables {
+	overflow: inherit;
+}
+
+#tables :first-child {
+	margin-top: 0px;
+}
+
+.table {
+	background-color: #373B3F;
+	font-family: sans-serif;
+	margin-top: 2px;
+	padding: 2.5%;
+	color: white;
+}
+
+.table-id-container {
+	float: right;
+	margin-right: 2%;
+}
+
+.table-id {
+	font-size: 100%;
+	line-height: 100%;
+	padding-top: 15%;
+}
+
+.color {
+	float: left;
+	width: 17%;
+	font-size: 280%;
+	text-align: center;
+	margin-left: 1%;
+	margin-right: 1%;
+	border-radius: 13px;
 	/*
-	cursor: pointer;
+	border: 2px solid #394C5F;
+	box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.3);
+	*/
+	border: 2px solid #9BA2AA;
+
+	/*
+	transition: all 0.75s ease-in-out;
 	*/
 }
 
 #game {
+	/*
+	display: none;
+	*/
 	transition: all 1s ease-in-out;
 }
 
 #players {
+	/*
+	display: none;
+	*/
 	transition: all 1s ease-in-out;
 	margin-top: 2px;
 }
@@ -52,31 +125,40 @@ img {
 	font-size: 140%;
 	font-family: sans-serif;
 	text-align: center;
-	color: white;
+	color: #373B3F;
 	border-top-right-radius: 17px;
 	border-top-left-radius: 17px;
 	opacity: 0.75;
+	/*
 	cursor: pointer;
+	*/
+	/*
+	background-color: white;
+	*/
 	box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.90);
 	margin-left: 0.25%;
 	margin-right: 0.25%;
-	transition: all 1s ease-in-out;
+	transition: all 0.5s ease-in-out;
 }
 
 #players div.Blue {
 	background-color: rgba(57, 113, 196, 1);
+		color: white;
 }
 
 #players div.Yellow {
 	background-color: rgba(247, 177, 42, 1);
+		color: white;
 }
 
 #players div.Red {
 	background-color: rgba(204, 43, 43, 1);
+		color: white;
 }
 
 #players div.Green {
 	background-color: rgba(4, 164, 75, 1);
+		color: white;
 }
 
 #board-container {
@@ -117,6 +199,27 @@ img {
 	box-shadow: 0 0 0 #000;
 }
 
+/*
+#ai{
+	margin: 0 auto;
+	background-color: #373B3F;
+	font-family: sans-serif;
+	margin-top: 2px;
+	padding: 2.5%;
+	color: white;	
+}
+
+#ai div.color {
+	width: 25%;
+	font-size: 280%;
+	text-align: center;
+	margin-left: 1%;
+	margin-right: 1%;
+	border-radius: 13px;
+	border: 4px solid #9BA2AA;
+}
+*/
+
 .Blue {
 	background-color: rgba(57, 113, 196, 0.55);
 }
@@ -131,6 +234,22 @@ img {
 
 .Green {
 	background-color: rgba(4, 164, 75, 0.55);
+}
+
+.blue {
+	background-color: rgb(57, 113, 196);
+}
+
+.yellow {
+	background-color: rgb(247, 177, 42);
+}
+
+.red {
+	background-color: rgb(204, 43, 43);
+}
+
+.green {
+	background-color: rgb(4, 164, 75);
 }
 
 .not-available {

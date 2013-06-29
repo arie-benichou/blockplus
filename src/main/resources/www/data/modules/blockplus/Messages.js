@@ -19,6 +19,14 @@ Blockplus.Messages.prototype = {
 			}
 		};
 	},
+	virtualPlayer : function(n) {
+		return {
+			type : 'VirtualPlayerConnection',
+			data : {
+				ordinal : n
+			}
+		};
+	},
 	moveSubmit : function(id, positions) {
 		return {
 			type : 'MoveSubmit',
