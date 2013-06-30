@@ -5,6 +5,6 @@ WHICH_MAVEN=$(which mvn);
 if $WHICH_MAVEN >/dev/null ; then
 	echo "Maven not found.";
 else
-	./scripts/update-javacript-modules.sh;	
+	./scripts/update-js.sh;
 	mvn jetty:run;
 fi
