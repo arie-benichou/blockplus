@@ -177,6 +177,19 @@ public class BlockplusServer extends WebSocketServlet {
         this.clientsInPatio.add(io);
         final JsonObject tables = this.tables();
         io.emit("tables", tables.toString());
+        final Runtime runtime = Runtime.getRuntime();
+        try {
+            runtime.exec("beep -f 200 -l 180");
+            Thread.sleep(190);
+            runtime.exec("beep -f 400 -l 200");
+            Thread.sleep(210);
+            runtime.exec("beep -f 600 -l 250");
+            Thread.sleep(260);
+            runtime.exec("beep -f 800 -l 300");
+        }
+        catch (final Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public JsonObject tables() {
