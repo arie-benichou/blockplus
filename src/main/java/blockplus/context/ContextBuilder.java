@@ -77,7 +77,7 @@ public final class ContextBuilder {
             .addLayer(Green, new LayerMutationBuilder().setLightPositions(Position(ROWS - 1, 0)).build())
             .build();
 
-    private final static MoveHistory MOVE_HISTORY = new MoveHistory();
+    //private final static MoveHistory MOVE_HISTORY = new MoveHistory();
 
     private Color side = SIDE;
 
@@ -123,6 +123,7 @@ public final class ContextBuilder {
         return this.board == null ? BOARD : this.board;
     }
 
+    /*
     private MoveHistory moveHistory = null;
 
     public ContextBuilder setMoveHistory(final MoveHistory moveHistory) {
@@ -133,6 +134,7 @@ public final class ContextBuilder {
     private MoveHistory getMoveHistory() {
         return this.moveHistory == null ? MOVE_HISTORY : this.moveHistory;
     }
+    */
 
     /* TODO add some check
     private final Set<Pieces> legalPieces;
@@ -151,7 +153,7 @@ public final class ContextBuilder {
     public Context build() {
         return new Context(
                 this.getSide(),
-                this.getMoveHistory(),
+                //this.getMoveHistory(),
                 this.getBoard(),
                 this.getPlayers(),
                 this.getAdversity());

@@ -35,6 +35,7 @@ import org.eclipse.jetty.websocket.WebSocketClientFactory;
 import org.eclipse.jetty.websocket.WebSocketServlet;
 
 import transport.events.interfaces.ClientInterface;
+import transport.events.interfaces.DisconnectInterface;
 import transport.events.interfaces.EventInterface;
 import transport.events.interfaces.FeedbackInterface;
 import transport.events.interfaces.InPatioInterface;
@@ -136,6 +137,7 @@ public class BlockplusServer extends WebSocketServlet {
 
     public void disconnect(final IOinterface io) {
         this.clientByIO.remove(io);
+        this.clientsInPatio.remove(io);
     }
 
     public MessageInterface decode(final String data) {
@@ -172,11 +174,32 @@ public class BlockplusServer extends WebSocketServlet {
 
     @Subscribe
     @AllowConcurrentEvents
+    public void onDisconnect(final DisconnectInterface client) {
+        System.out.println("disconnecting " + client);
+        this.disconnect(client.getIO());
+        /*
+        final JsonObject tables = this.tables();
+        System.out.println(this.clientsInPatio.size() + " clients dans le patio");
+        System.out.println(this.clientsInPatio.iterator().hasNext());
+        System.out.println(this.tables().toString());
+        for (final IOinterface other : this.clientsInPatio) {
+            System.out.println(other.getGame());
+            other.emit("tables", tables.toString());
+        }
+        */
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
     public void onInPatio(final InPatioInterface inPatio) { // TODO trier les tables
         final IOinterface io = inPatio.getIO();
-        this.clientsInPatio.add(io);
         final JsonObject tables = this.tables();
         io.emit("tables", tables.toString());
+        for (final IOinterface other : this.clientsInPatio) {
+            other.emit("tables", tables.toString());
+        }
+        this.clientsInPatio.add(io);
+        System.out.println(this.clientsInPatio);
         final Runtime runtime = Runtime.getRuntime();
         try {
             runtime.exec("beep -f 200 -l 180");
@@ -203,11 +226,11 @@ public class BlockplusServer extends WebSocketServlet {
     public JsonObject tables() {
         final JsonObject tables = new JsonObject();
         for (final GameInterface<Context> game : this.gameByOrdinal.values()) {
-            final ImmutableList<ClientInterface> clients = game.getClients();
             if (game.isFull()) {
                 boolean isAlive = false;
-                for (final ClientInterface client : clients) {
+                for (final ClientInterface client : game.getClients()) {
                     final boolean isOpen = client.getIO().getConnection().isOpen();
+                    if (!isOpen) this.disconnect(client.getIO());
                     isAlive = isAlive || isOpen;
                 }
                 if (!isAlive) {
@@ -217,8 +240,9 @@ public class BlockplusServer extends WebSocketServlet {
             else {
                 boolean isFullyAlive = true;
                 boolean isFullyDead = true;
-                for (final ClientInterface client : clients) {
+                for (final ClientInterface client : game.getClients()) {
                     final boolean isOpen = client.getIO().getConnection().isOpen();
+                    //if (!isOpen) this.disconnect(client.getIO());
                     isFullyAlive = isFullyAlive && isOpen;
                     isFullyDead = isFullyDead && !isOpen;
                 }

@@ -27,7 +27,6 @@ import java.util.List;
 import blockplus.Color;
 import blockplus.arbitration.Referee;
 import blockplus.board.Board;
-import blockplus.move.Move;
 import blockplus.move.Moves;
 import blockplus.player.Player;
 import blockplus.player.Players;
@@ -55,11 +54,13 @@ public final class Context implements ContextInterface<Color> {
         return REFEREE;
     }
 
+    /*
     private final MoveHistory moveHistory;
 
     public MoveHistory getMoveHistory() {
         return this.moveHistory;
     }
+    */
 
     private final Color side;
 
@@ -92,12 +93,12 @@ public final class Context implements ContextInterface<Color> {
     private volatile List<MoveInterface> options;
 
     Context(final Color side,
-            final MoveHistory moveHistory,
+            //final MoveHistory moveHistory,
             final Board board,
             final Players players,
             final AdversityInterface<Color> adversity) {
         this.side = side;
-        this.moveHistory = moveHistory;
+        //this.moveHistory = moveHistory;
         this.board = board;
         this.players = players;
         this.adversity = adversity;
@@ -111,7 +112,7 @@ public final class Context implements ContextInterface<Color> {
     private Context(final Context context) {
         this(
                 context.getNextSide(),
-                context.getMoveHistory(),
+                //context.getMoveHistory(),
                 context.getBoard(),
                 context.getPlayers(),
                 context.getAdversity());
@@ -120,7 +121,7 @@ public final class Context implements ContextInterface<Color> {
     private Context(final Context context, final MoveInterface move) {
         this(
                 context.getSide(),
-                context.getMoveHistory().play((Move) move),
+                //context.getMoveHistory().play((Move) move),
                 context.getBoard().apply(move),
                 context.getPlayers().apply(context.getPlayer().apply(move)),
                 context.getAdversity());
@@ -181,8 +182,8 @@ public final class Context implements ContextInterface<Color> {
     // TODO check collisions
     @Override
     public boolean equals(final Object object) {
-    	if(object==null) return false;
-    	Preconditions.checkArgument(object instanceof Context);
+        if (object == null) return false;
+        Preconditions.checkArgument(object instanceof Context);
         final Context that = (Context) object;
         return this.hashCode() == that.hashCode();
     }

@@ -36,6 +36,9 @@ Application = function(parameters) {
 	this.client = new Transport.Client(url, new Transport.Protocol());
 	this.user = "somebody";
 	this.client.register("open", $.proxy(function() {
+		$(window).bind("beforeunload", $.proxy(function() {
+			this.client.say(this.messages.disconnect());
+		}, this));
 		var games = null; // JSON.parse(data);
 		$("#splash").css("cursor", "pointer");
 		$("#splash").show();

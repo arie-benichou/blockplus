@@ -14,6 +14,12 @@ Blockplus.Messages.prototype = {
 			}
 		};
 	},
+	disconnect : function() {
+		return {
+			type : 'Disconnect',
+			data : {}
+		};
+	},	
 	gameConnection : function(n) {
 		return {
 			type : 'GameConnection',
