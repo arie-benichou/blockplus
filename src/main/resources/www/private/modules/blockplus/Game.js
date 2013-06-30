@@ -177,7 +177,7 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 		this.boardManager.clearSelection();
 	}, this);
 
-	this.init();
+	this.controlPanelManager.register('click', this.init);
 };
 Blockplus.Game.prototype = {
 	constructor : Blockplus.Game,
