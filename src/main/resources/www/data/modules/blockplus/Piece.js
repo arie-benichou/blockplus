@@ -1,4 +1,7 @@
 var Blockplus = Blockplus || {};
+/**
+ * @constructor
+ */
 Blockplus.Piece = function(positions, color) {
 	this.positions = positions;
 	this.color = color;
@@ -10,5 +13,5 @@ Blockplus.Piece.prototype = {
 	},
 	getColor : function() {
 		return this.color;
-	},
+	}
 };

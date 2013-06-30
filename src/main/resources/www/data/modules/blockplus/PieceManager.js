@@ -1,5 +1,7 @@
 var Blockplus = Blockplus || {};
-
+/**
+ * @constructor
+ */
 Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory) {
 
 	this.element = element;
@@ -95,6 +97,6 @@ Blockplus.PieceManager.prototype = {
 			$("#" + this.element).removeClass();
 			$("#" + this.element).addClass(color);
 		}
-	},
+	}
 
 };

@@ -1,4 +1,7 @@
 var Blockplus = Blockplus || {};
+/**
+ * @constructor
+ */
 Blockplus.Patio = function(container, viewPort, audioManager, client, messages, games, colors, positionFactory, pieceManager) {
 
 	this.viewPort = viewPort;
@@ -74,7 +77,7 @@ Blockplus.Patio = function(container, viewPort, audioManager, client, messages, 
 
 };
 Blockplus.Patio.prototype = {
-	constructor : Blockplus.Patio,
+	constructor : Blockplus.Patio
 // join : function() {
 // var max = this.games.length;
 // var game = 1;

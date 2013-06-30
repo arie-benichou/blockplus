@@ -1,5 +1,7 @@
 var Blockplus = Blockplus || {};
-
+/**
+ * @constructor
+ */
 Blockplus.Board = function(data) {
 	this.dimension = data.dimension;
 	this.rows = this.dimension.rows;

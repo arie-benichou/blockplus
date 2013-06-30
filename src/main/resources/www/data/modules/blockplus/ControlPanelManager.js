@@ -1,6 +1,7 @@
 var Blockplus = Blockplus || {};
-
-// TODO à revoir...
+/**
+ * @constructor
+ */
 Blockplus.ControlPanelManager = function(canvas, viewPort, audioManager, colors, positionFactory) {
 
 	this.positionFactory = positionFactory;
@@ -98,5 +99,5 @@ Blockplus.ControlPanelManager.prototype = {
 			this.context.drawImage(newCanvas, x, y);
 			this.show();
 		}
-	},
+	}
 };

@@ -1,4 +1,7 @@
 var Blockplus = Blockplus || {};
+/**
+ * @constructor
+ */
 Blockplus.Messages = function() {
 };
 Blockplus.Messages.prototype = {

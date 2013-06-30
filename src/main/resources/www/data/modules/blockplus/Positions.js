@@ -1,4 +1,7 @@
 var Blockplus = Blockplus || {};
+/**
+ * @constructor
+ */
 Blockplus.Positions = function(rows, columns) {
 	this.rows = rows;
 	this.columns = columns;

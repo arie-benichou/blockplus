@@ -1,5 +1,8 @@
 // TODO ? pouvoir assigner plusieurs handlers
 var Transport = Transport || {};
+/**
+ * @constructor
+ */
 Transport.Protocol = function() {
 	this.callbacks = {};
 };

@@ -1,12 +1,14 @@
-var Blockplus = Blockplus || {};
-Blockplus.AudioManager = function(element) {
+/**
+ * @constructor
+ */
+AudioManager = function(element) {
 	this.audio = document.getElementById(element);
 };
-Blockplus.AudioManager.prototype = {
-	constructor : Blockplus.AudioManager,
+AudioManager.prototype = {
+	constructor : AudioManager,
 	play : function(uri) {
 		this.audio.pause();
 		this.audio.src = uri
 		this.audio.play();
-	},
+	}
 };

@@ -1,5 +1,7 @@
 var Blockplus = Blockplus || {};
-
+/**
+ * @constructor
+ */
 Blockplus.BoardManager = function(board, renderer, positionFactory, selectedPositions, viewPort) {
 	this.renderer = renderer;
 	this.positionFactory = positionFactory;
@@ -95,5 +97,5 @@ Blockplus.BoardManager.prototype = {
 	},
 	updatePotentialPositions : function(potentialPositions) {
 		this.potentialPositions = potentialPositions;
-	},
+	}
 };

@@ -1,4 +1,7 @@
 var Blockplus = Blockplus || {};
+/**
+ * @constructor
+ */
 Blockplus.SelectedPositions = function() {
 	this.data = {};
 	this.size = 0;
@@ -28,5 +31,5 @@ Blockplus.SelectedPositions.prototype = {
 	clear : function(position) {
 		this.data = {};
 		this.size = 0;
-	},
+	}
 };

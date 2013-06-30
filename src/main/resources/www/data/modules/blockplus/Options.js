@@ -1,7 +1,7 @@
 var Blockplus = Blockplus || {};
-
-// TODO itérer une seule fois et retourner les matches
-
+/**
+ * @constructor
+ */
 Blockplus.Options = function(data) {
 	this.data = [];
 	this.potentialPositions = {};
@@ -28,6 +28,7 @@ Blockplus.Options = function(data) {
 	}
 };
 
+//TODO itérer une seule fois et retourner les matches
 Blockplus.Options.prototype = {
 
 	constructor : Blockplus.Options,

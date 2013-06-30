@@ -1,5 +1,7 @@
 var Blockplus = Blockplus || {};
-
+/**
+ * @constructor
+ */
 Blockplus.PieceRenderer = function(viewPort, colors, positionFactory) {
 
 	this.positionFactory = positionFactory;
@@ -64,6 +66,6 @@ Blockplus.PieceRenderer.prototype = {
 		var y = (canvas2.height - canvas.height) / 2;
 		context2.drawImage(canvas, x, y);
 		return canvas2;
-	},
+	}
 
 };

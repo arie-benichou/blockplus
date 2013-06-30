@@ -1,4 +1,7 @@
 var Transport = Transport || {};
+/**
+ * @constructor
+ */
 Transport.Client = function(location, protocol) {
 	this.location = location;
 	this.protocol = protocol;
@@ -39,5 +42,5 @@ Transport.Client.prototype = {
 	},
 	register : function(type, callback) {
 		this.protocol.register(type, callback);
-	},
+	}
 };

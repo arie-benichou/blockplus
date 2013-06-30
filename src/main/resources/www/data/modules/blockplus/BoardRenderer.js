@@ -1,5 +1,7 @@
 var Blockplus = Blockplus || {};
-
+/**
+ * @constructor
+ */
 Blockplus.BoardRenderer = function(canvas, cellDimension, colors) {
 	this.canvas = canvas;
 	this.context = canvas.getContext("2d");
@@ -107,6 +109,6 @@ Blockplus.BoardRenderer.prototype = {
 		this.context.stroke();
 		*/
 		this.context.restore();
-	},	
+	}
 
 };

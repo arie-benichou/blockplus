@@ -1,4 +1,7 @@
 var Blockplus = Blockplus || {};
+/**
+ * @constructor
+ */
 Blockplus.Game = function(viewPort, audioManager, client, messages, colors, positionFactory, pieceManager, gameData) {
 	this.gameData = gameData;
 	this.viewPort = viewPort;
@@ -243,6 +246,6 @@ Blockplus.Game.prototype = {
 
 	isPotentialPosition : function(position) {
 		return position in this.options.getPotentialPositions();
-	},
+	}
 
 };

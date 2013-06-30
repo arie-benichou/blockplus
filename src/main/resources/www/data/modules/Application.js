@@ -1,8 +1,11 @@
+/**
+ * @constructor
+ */
 Application = function(parameters) {
 
 	this.viewPort = new ViewPort({
 		maxWidth : parameters.maxWidth,
-		maxHeight : parameters.maxHeight,
+		maxHeight : parameters.maxHeight
 	});
 
 	this.container = parameters.container;
@@ -12,7 +15,7 @@ Application = function(parameters) {
 		event.preventDefault();
 	});
 
-	this.audioManager = new Blockplus.AudioManager(parameters.audio);
+	this.audioManager = new AudioManager(parameters.audio);
 
 	// TODO ///////////////////////////////////////////////////////
 	this.colors = {
@@ -57,7 +60,7 @@ Application = function(parameters) {
 	this.client.start();
 };
 Application.prototype = {
-	constructor : Application,
+	constructor : Application
 // join : function() {
 // this.audioManager.play("../audio/in.mp3");
 // this.patio.join();

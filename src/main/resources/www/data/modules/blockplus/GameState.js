@@ -1,4 +1,7 @@
 var Blockplus = Blockplus || {};
+/**
+ * @constructor
+ */
 Blockplus.GameState = function(data) {
 	this._color = data.color;
 	this._pieces = this._decodePieces(data.pieces);
@@ -11,12 +14,12 @@ Blockplus.GameState.prototype = {
 	_decodePieces : function(pieces) {
 		var data = {};
 		for ( var color in pieces) {
-			var int = pieces[color];
-			var digits = Math.floor(1 + Math.log(int) / Math.log(2));
+			var code = pieces[color];
+			var digits = Math.floor(1 + Math.log(code) / Math.log(2));
 			var n = digits - 2;
 			var array = [];
-			for ( var i = 0; i < n; ++i, int = int >> 1)
-				array.push(int & 1);
+			for ( var i = 0; i < n; ++i, code = code >> 1)
+				array.push(code & 1);
 			data[color] = array;
 		}
 		return data;
@@ -35,5 +38,5 @@ Blockplus.GameState.prototype = {
 	},
 	isTerminal : function() {
 		return this._isTerminal;
-	},
+	}
 };
