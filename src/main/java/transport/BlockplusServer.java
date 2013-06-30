@@ -192,25 +192,42 @@ public class BlockplusServer extends WebSocketServlet {
         }
     }
 
+    private BlockplusGame reset(final GameInterface<Context> game) {
+        final ImmutableList<ClientInterface> empty = ImmutableList.of();
+        this.updateGame(game.getOrdinal(), empty);
+        final BlockplusGame newGame = new BlockplusGame(game.getOrdinal(), "", empty, null, 0);
+        this.updateGames(game.getOrdinal(), newGame);
+        return newGame;
+    }
+
     public JsonObject tables() {
         final JsonObject tables = new JsonObject();
         for (final GameInterface<Context> game : this.gameByOrdinal.values()) {
+            final ImmutableList<ClientInterface> clients = game.getClients();
             if (game.isFull()) {
-                final ImmutableList<ClientInterface> clients = game.getClients();
                 boolean isAlive = false;
                 for (final ClientInterface client : clients) {
                     final boolean isOpen = client.getIO().getConnection().isOpen();
                     isAlive = isAlive || isOpen;
                 }
                 if (!isAlive) {
-                    final ImmutableList<ClientInterface> empty = ImmutableList.of();
-                    this.updateGame(game.getOrdinal(), empty);
-                    this.updateGames(game.getOrdinal(), new BlockplusGame(game.getOrdinal(), "", empty, null, 0));
-                    tables.addProperty("" + game.getOrdinal(), 0);
+                    tables.addProperty("" + this.reset(game).getOrdinal(), this.reset(game).getClients().size());
                 }
             }
             else {
-                tables.addProperty("" + game.getOrdinal(), game.getClients().size());
+                boolean isFullyAlive = true;
+                boolean isFullyDead = true;
+                for (final ClientInterface client : clients) {
+                    final boolean isOpen = client.getIO().getConnection().isOpen();
+                    isFullyAlive = isFullyAlive && isOpen;
+                    isFullyDead = isFullyDead && !isOpen;
+                }
+                if (isFullyAlive) {
+                    tables.addProperty("" + game.getOrdinal(), game.getClients().size());
+                }
+                else if (isFullyDead) {
+                    tables.addProperty("" + this.reset(game).getOrdinal(), this.reset(game).getClients().size());
+                }
             }
         }
         return tables;
