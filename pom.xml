@@ -39,7 +39,7 @@
 		<encoding>UTF-8</encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<webXml>${basedir}/src/main/resources/www/servlet.xml</webXml>
-		<sourceDirectory>${basedir}/src/main/resources/www/data/</sourceDirectory>
+		<sourceDirectory>${basedir}/src/main/resources/www/public/</sourceDirectory>
 	</properties>
 
 	<prerequisites>
