@@ -203,7 +203,6 @@ public class BlockplusServer extends WebSocketServlet {
         }
         this.clientsInPatio.add(io);
         System.out.println(this.clientsInPatio);
-        /*
         final Runtime runtime = Runtime.getRuntime();
         try {
             runtime.exec("beep -f 200 -l 180");
@@ -214,10 +213,7 @@ public class BlockplusServer extends WebSocketServlet {
             Thread.sleep(260);
             runtime.exec("beep -f 800 -l 300");
         }
-        catch (final Exception e) {
-            e.printStackTrace();
-        }
-        */
+        catch (final Exception e) {}
     }
 
     private BlockplusGame reset(final GameInterface<Context> game) {
