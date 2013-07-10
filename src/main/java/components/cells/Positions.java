@@ -20,9 +20,9 @@ package components.cells;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -35,13 +35,13 @@ public final class Positions {
 
         private final Integer id;
 
-        @JsonValue
+        //@JsonValue
         @Override
         public Integer id() {
             return this.id;
         }
 
-        @JsonIgnore
+        //@JsonIgnore
         private final int row;
 
         @Override
@@ -49,7 +49,7 @@ public final class Positions {
             return this.row;
         }
 
-        @JsonIgnore
+        //@JsonIgnore
         private final int column;
 
         @Override
@@ -57,7 +57,7 @@ public final class Positions {
             return this.column;
         }
 
-        //@JsonCreator
+        @JsonCreator
         private Position(
                 @JsonProperty("id") final Integer id,
                 @JsonProperty("row") final int row,
