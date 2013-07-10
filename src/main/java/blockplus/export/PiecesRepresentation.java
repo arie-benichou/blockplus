@@ -2,8 +2,8 @@
 package blockplus.export;
 
 
+import blockplus.model.entity.Entity;
 import blockplus.model.entity.Polyomino;
-import blockplus.model.entity.entity.Entity;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

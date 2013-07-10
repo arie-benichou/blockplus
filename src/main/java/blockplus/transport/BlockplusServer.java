@@ -37,7 +37,7 @@ import org.eclipse.jetty.websocket.WebSocketClientFactory;
 import org.eclipse.jetty.websocket.WebSocketServlet;
 
 
-import blockplus.model.context.Context;
+import blockplus.model.Context;
 import blockplus.transport.events.interfaces.ClientInterface;
 import blockplus.transport.events.interfaces.DisconnectInterface;
 import blockplus.transport.events.interfaces.EventInterface;

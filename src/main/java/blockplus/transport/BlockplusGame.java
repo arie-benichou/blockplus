@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Set;
 
 import blockplus.export.ContextRepresentation;
-import blockplus.model.context.Color;
-import blockplus.model.context.Context;
-import blockplus.model.context.ContextBuilder;
-import blockplus.model.entity.entity.IEntity;
-import blockplus.model.move.Move;
-import blockplus.model.player.Player;
+import blockplus.model.Colors;
+import blockplus.model.Context;
+import blockplus.model.Context.Builder;
+import blockplus.model.Move;
+import blockplus.model.Side;
+import blockplus.model.entity.IEntity;
 import blockplus.transport.events.interfaces.ClientInterface;
 import blockplus.transport.events.interfaces.MoveSubmitInterface;
 
@@ -34,12 +34,10 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 
-// TODO RoomContext et RoomContextBuilder
 public class BlockplusGame implements GameInterface<Context> {
 
     private static String computeCode(final ImmutableList<ClientInterface> clients) {
@@ -59,8 +57,8 @@ public class BlockplusGame implements GameInterface<Context> {
     private final Context gameContext;
     private final long timeStamp;
 
-    private ImmutableMap<Player, ClientInterface> clientByPlayer;
-    private ImmutableMap<ClientInterface, Player> playerByClient;
+    private ImmutableMap<Side, ClientInterface> clientByPlayer;
+    private ImmutableMap<ClientInterface, Side> playerByClient;
 
     public BlockplusGame(final int ordinal, final String code, final ImmutableList<ClientInterface> clients, final Context gameContext,
             final long timeStamp) {
@@ -76,12 +74,12 @@ public class BlockplusGame implements GameInterface<Context> {
             this.clientByPlayer = null;
         }
         else {
-            final Builder<Player, ClientInterface> builder1 = new ImmutableMap.Builder<Player, ClientInterface>();
-            final Builder<ClientInterface, Player> builder2 = new ImmutableMap.Builder<ClientInterface, Player>();
+            final ImmutableMap.Builder<Side, ClientInterface> builder1 = new ImmutableMap.Builder<Side, ClientInterface>();
+            final ImmutableMap.Builder<ClientInterface, Side> builder2 = new ImmutableMap.Builder<ClientInterface, Side>();
             int n = 0;
             for (final ClientInterface client : clients) {
-                final Color color = Color.valueOf(this.SEQUENCE.get(n));
-                final Player player = gameContext.getPlayers().getDeadOrAlivePlayer(color);
+                final Colors color = Colors.valueOf(this.SEQUENCE.get(n));
+                final Side player = gameContext.getPlayers().getDeadOrAlivePlayer(color);
                 builder1.put(player, client);
                 builder2.put(client, player);
                 ++n;
@@ -135,12 +133,12 @@ public class BlockplusGame implements GameInterface<Context> {
     }
 
     public ClientInterface getUserToPlay() {
-        final Color colorToPlay = this.getContext().getSide();
-        final Player player = this.getContext().getPlayers().getAlivePlayer(colorToPlay);
+        final Colors colorToPlay = this.getContext().getSide();
+        final Side player = this.getContext().getPlayers().getAlivePlayer(colorToPlay);
         return this.clientByPlayer.get(player);
     }
 
-    public Player getPlayer(final ClientInterface client) {
+    public Side getPlayer(final ClientInterface client) {
         return this.playerByClient.get(client);
     }
 
@@ -149,7 +147,7 @@ public class BlockplusGame implements GameInterface<Context> {
         final ImmutableList<ClientInterface> clients = new ImmutableList.Builder<ClientInterface>().addAll(this.getClients()).add(newClient).build();
         BlockplusGame newRoom = null;
         if (clients.size() == this.getCapacity()) {
-            newRoom = new BlockplusGame(this.ordinal, computeCode(clients), clients, new ContextBuilder().build(), System.currentTimeMillis());
+            newRoom = new BlockplusGame(this.ordinal, computeCode(clients), clients, new Builder().build(), System.currentTimeMillis());
         }
         else {
             newRoom = new BlockplusGame(this.ordinal, this.code, clients, this.gameContext, this.timeStamp);
@@ -183,7 +181,6 @@ public class BlockplusGame implements GameInterface<Context> {
     public void update(final ClientInterface client) {
         final Context context = this.getContext();
         final ContextRepresentation gameRepresentation = new ContextRepresentation(context);
-        //client.getIO().emit("color", gameRepresentation.encodeColor(this.getPlayer(client)));
         client.getIO().emit("update", gameRepresentation.toString());
     }
 
@@ -191,7 +188,6 @@ public class BlockplusGame implements GameInterface<Context> {
         final Context context = this.getContext();
         final ContextRepresentation gameRepresentation = new ContextRepresentation(context);
         for (final ClientInterface client : this.getClients()) {
-            //client.getIO().emit("color", gameRepresentation.encodeColor(this.getPlayer(client)));
             client.getIO().emit("update", gameRepresentation.toString());
         }
     }

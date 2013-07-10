@@ -1,15 +1,17 @@
 
 package blockplus.model.entity;
 
-
 import java.util.Set;
-
-import blockplus.model.entity.entity.Entity;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Ordering;
 
+// TODO implements Supplier<PolyominoInstance>
+// TODO PolyominoInstance -> PolyominoProjection
+// TODO écrire tests pour chaque instance de chaque polyiomino
+// TODO chaque instance de polyiomino doit être normalisé en fonction du coin
+// haut gauche de sa bounding box, et ce coin est toujours la position(0,0)
 public enum Polyomino implements Supplier<Entity> {
 
     _1(new String[] {

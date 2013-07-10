@@ -28,7 +28,7 @@ import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketClient;
 
 
-import blockplus.model.context.Color;
+import blockplus.model.Colors;
 import blockplus.transport.messages.MoveSubmit;
 
 import com.google.common.base.Objects;
@@ -101,7 +101,7 @@ public class VirtualClient implements WebSocket.OnTextMessage
         if (type.equals("game")) {
             final JsonObject data = jsonObject.get("data").getAsJsonObject();
             final int k = data.get("players").getAsInt();
-            this.color = Color.values()[k - 1].toString();
+            this.color = Colors.values()[k - 1].toString();
         }
         if (type.equals("update")) {
             final JsonObject data = jsonObject.get("data").getAsJsonObject();

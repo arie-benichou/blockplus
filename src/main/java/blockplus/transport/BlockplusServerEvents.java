@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
-import blockplus.model.context.Context;
+import blockplus.model.Context;
 import blockplus.transport.events.Client;
 import blockplus.transport.events.interfaces.ClientInterface;
 import blockplus.transport.events.interfaces.GameConnectionInterface;
@@ -52,32 +52,7 @@ public class BlockplusServerEvents {
     @AllowConcurrentEvents
     public void onGameConnection(final GameConnectionInterface gameConnection) {
         final GameInterface<Context> game = this.getServer().getGame(gameConnection.getOrdinal());
-        if (game.isFull()) {
-            //gameConnection.getIO().emit("info", "\"" + "Game " + game.getOrdinal() + " is full" + "\""); // TODO revoir emit
-            /*
-            gameConnection.getIO().emit("fullGame", "\"" + game.getOrdinal() + "\"");
-            final ImmutableList<ClientInterface> clients = game.getClients();
-            System.out.println();
-            System.out.println(game.getOrdinal());
-            boolean isAlive = false;
-            for (final ClientInterface client : clients) {
-                final boolean isOpen = client.getIO().getConnection().isOpen();
-                System.out.println(isOpen);
-                isAlive = isAlive || isOpen;
-            }
-            System.out.println(isAlive);
-            System.out.println();
-            if (!isAlive) {
-                System.out.println("recollecting garbaged games...");
-                final ImmutableList<ClientInterface> empty = ImmutableList.of();
-                this.getServer().updateGame(game.getOrdinal(), empty);
-                this.getServer().updateGames(game.getOrdinal(), new BlockplusGame(game.getOrdinal(), "", empty, null, 0));
-            }
-            */
-        }
-        //game = this.getServer().getGame(gameConnection.getOrdinal());
-        //if (!game.isFull()) {
-        else {
+        if (!game.isFull()) {
             final ClientInterface oldClient = this.getServer().getClient(gameConnection.getIO());
             final ClientInterface newClient = new Client(gameConnection.getIO(), oldClient.getName(), game.getOrdinal());
             System.out.println();
@@ -105,50 +80,14 @@ public class BlockplusServerEvents {
             for (final ClientInterface client : clients) {
                 client.getIO().emit("player", playerInfo.toString());
             }
-
-            /*
-            final JsonObject tables = new JsonObject();
-            for (final GameInterface<Context> game1 : this.getServer().gameByOrdinal.values()) {
-                if (!game1.isFull()) {
-                    tables.addProperty("" + game1.getOrdinal(), game1.getClients().size());
-                }
-            }
-            */
             this.getServer().clientsInPatio.remove(newClient.getIO());
             final ConcurrentLinkedDeque<IOinterface> patio = this.getServer().clientsInPatio;
             for (final IOinterface io : patio) {
                 io.emit("tables", this.getServer().tables().toString());
             }
-
             if (newGame.isFull()) {
-                /*
-                int k = 0;
-                for (final ClientInterface client : newGame.getClients()) {
-                    final JsonObject jsonObject = new JsonObject();
-                    jsonObject.add("game", new JsonPrimitive(newGame.getOrdinal()));
-                    jsonObject.add("code", new JsonPrimitive(newGame.getCode()));
-                    jsonObject.add("time", new JsonPrimitive(newGame.getTimeStamp()));
-                    jsonObject.add("name", new JsonPrimitive(client.getName()));
-                    jsonObject.add("color", new JsonPrimitive(++k));
-                    jsonObject.add("client", new JsonPrimitive(client.hashCode()));
-                    //TODO ajouter le timeStamp de connexion et l'ip du client
-                    //client.getIO().emit("link", jsonObject.toString());
-                }
-                */
                 newGame.update();
             }
-            /*
-            else {
-                // TODO replace quick & dirty patch by a virtual client factory
-                try {
-                    Thread.sleep(750);                    
-                    BlockplusServer.main(new String[] { newGame.getOrdinal().toString() });
-                }
-                catch (final Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            */
         }
     }
 
@@ -169,19 +108,9 @@ public class BlockplusServerEvents {
         final ClientInterface client = this.getServer().getClient(moveSubmit.getIO());
         final Integer game = client.getGame();
         final BlockplusGame blockplusGame = (BlockplusGame) this.getServer().getGame(game);
-
-        //System.out.println(moveSubmit);
-
         final BlockplusGame newGame = (BlockplusGame) blockplusGame.play(moveSubmit);
         this.getServer().updateGames(newGame.getOrdinal(), newGame);
         newGame.update();
-        /*
-        if (newGame.getContext().isTerminal()) {
-            final ImmutableList<ClientInterface> empty = ImmutableList.of();
-            this.getServer().updateGame(newGame.getOrdinal(), empty);
-            this.getServer().updateGames(newGame.getOrdinal(), new BlockplusGame(newGame.getOrdinal(), "", empty, null, 0));
-        }
-        */
     }
 
     @Subscribe

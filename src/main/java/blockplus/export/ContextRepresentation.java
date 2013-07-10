@@ -17,18 +17,17 @@
 
 package blockplus.export;
 
-
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import blockplus.model.board.Board;
-import blockplus.model.board.Layer;
-import blockplus.model.context.Color;
-import blockplus.model.context.Context;
+import blockplus.model.Board;
+import blockplus.model.Board.Layer;
+import blockplus.model.Colors;
+import blockplus.model.Context;
+import blockplus.model.Side;
 import blockplus.model.entity.Polyomino;
-import blockplus.model.player.Player;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -55,7 +54,7 @@ public final class ContextRepresentation {
         this.gameContext = game;
     }
 
-    public String encodeColor(final Color color) {
+    public String encodeColor(final Colors color) {
         return "\"" + color.toString() + "\"";
     }
 
@@ -68,8 +67,8 @@ public final class ContextRepresentation {
         final int columns = board.columns();
         meta.addProperty("rows", rows);
         meta.addProperty("columns", columns);
-        final Set<Color> colors = board.getColors();
-        for (final Color color : colors) {
+        final Set<Colors> colors = board.getColors();
+        for (final Colors color : colors) {
             final JsonArray jsonArray = new JsonArray();
             final Layer layer = board.get(color);
             final Set<Position> positions = layer.getSelves().keySet();
@@ -85,8 +84,8 @@ public final class ContextRepresentation {
     public JsonElement encodePieces() {
         final JsonObject data = new JsonObject();
         final Context context = this.getGameContext();
-        for (final Color color : context.sides()) {
-            final Player player = context.getPlayer(color);
+        for (final Colors color : context.sides()) {
+            final Side player = context.getPlayer(color);
             int bits = 0b1;
             for (final Entry<Polyomino, Integer> entry : player.remainingPieces()) {
                 bits = bits << 1 | entry.getValue();
@@ -122,33 +121,6 @@ public final class ContextRepresentation {
         }
         return GSON.toJsonTree(legalPositionsByPiece);
     }
-
-    /*
-    public JsonElement encodeComputedOptions(final List<IOption> options) {
-        //final List<MoveInterface> options = this.getGameContext().options();
-        final Map<Integer, List<Set<Integer>>> legalPositionsByPiece = Maps.newTreeMap();
-        for (final IOption moveInterface : options) {
-            if (!moveInterface.isNull()) { // TODO à revoir
-                final Option move = (Option) moveInterface;
-                final PieceInstance piece = move.getPiece();
-                final int key = piece.entity.type(); // TODO à revoir
-                List<Set<Integer>> playablePositions = legalPositionsByPiece.get(key);
-                if (playablePositions == null) {
-                    playablePositions = Lists.newArrayList();
-                    legalPositionsByPiece.put(key, playablePositions);
-                }
-                final Set<Integer> positions = Sets.newHashSet();
-                for (final Position position : piece.positions()) {
-                    // TODO position factory: id d'une position
-                    final int id = 20 * position.row() + position.column() % 20;
-                    positions.add(id);
-                }
-                playablePositions.add(positions);
-            }
-        }
-        return GSON.toJsonTree(legalPositionsByPiece);
-    }
-    */
 
     @Override
     public String toString() {
