@@ -50,13 +50,14 @@
 
 		<pluginManagement>
 			<plugins>
+			
+				<!-- https://repository.sonatype.org/content/repositories/forge-sites/m2e-extras/0.15.0/N/0.15.0.201206251206/ 
 				<plugin>
-					<!-- https://repository.sonatype.org/content/repositories/forge-sites/m2e-extras/0.15.0/N/0.15.0.201206251206/ -->
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>1.7</version>
 				</plugin>
-				
+				-->
 				<!-- http://alchim31.free.fr/m2e-scala/update-site/
 				<plugin>
 					<groupId>net.alchim31.maven</groupId>
@@ -86,6 +87,8 @@
 						<compilerArgument>-Xlint:deprecation</compilerArgument>
 					</configuration>
 				</plugin>
+				
+				<!--
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
@@ -97,6 +100,8 @@
 						</includes>
 					</configuration>
 				</plugin>
+				-->
+				
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
@@ -123,6 +128,7 @@
 						</connectors>
 					</configuration>
 				</plugin>
+				<!--
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
@@ -140,6 +146,7 @@
 						</reportPlugins>
 					</configuration>
 				</plugin>
+				-->
 			</plugins>
 		</pluginManagement>
 
@@ -197,6 +204,7 @@
 				</executions>
 			</plugin>
 			 -->
+			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -209,9 +217,8 @@
 					</execution>
 				</executions>
 			</plugin>
-
+			-->
 		</plugins>
-
 	</build>
 
 	<!-- 
@@ -294,8 +301,25 @@
 			<version>v20130603</version>
 		</dependency>
 		-->
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>2.11.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.jongo</groupId>
+		    <artifactId>jongo</artifactId>
+		    <version>0.4</version>
+		</dependency>
+		<!--
+		<dependency>
+		  <groupId>com.fasterxml.jackson.datatype</groupId>
+		  <artifactId>jackson-datatype-guava</artifactId>
+		  <version>2.1.1</version>
+		</dependency>
+		-->
+		
 	</dependencies>
-
 	<!--
 	<repositories>
 		<repository>
