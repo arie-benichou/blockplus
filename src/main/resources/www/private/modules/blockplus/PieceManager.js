@@ -11,41 +11,19 @@ Blockplus.PieceManager = function(element, pieceRenderer, url, positionFactory) 
 
 	jQuery.ajax(url, {
 		async : false,
-		/*
-		success : $.proxy(function(xmlDocument) {
-			var pieces = xmlDocument.evaluate("//piece", xmlDocument, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-			for ( var color in this.pieceRenderer.colors) {
-				this.pieces[color] = {};
-				for ( var i = 0; i < pieces.snapshotLength; ++i) {
-					var data = [];
-					var piece = pieces.snapshotItem(i);
-					var positions = xmlDocument.evaluate(".//position", piece, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-					for ( var j = 0; j < positions.snapshotLength; ++j) {
-						var position = positions.snapshotItem(j);
-						var node = xmlDocument.evaluate(".//y/text()", position, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-						var y = parseInt(node.snapshotItem(0).textContent);
-						var node = xmlDocument.evaluate(".//x/text()", position, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-						var x = parseInt(node.snapshotItem(0).textContent);
-						data.push(this.positionFactory.position(y, x));
-					}
-					var canvas = this.pieceRenderer.render(new Blockplus.Piece(data, color));
-					this.pieces[color][piece.getAttribute("id")] = canvas.toDataURL("image/png");
-				}
-			}
-		}, this)
-		*/
 		success : $.proxy(function(data) {
 			var pieces = JSON.parse(data);
+			var n = pieces.length;
 			for ( var color in this.pieceRenderer.colors) {
 				this.pieces[color] = {};
-				for ( var id in pieces) {
+				for ( var i = 0; i < n; ++i) {
 					var positions = [];
-					var data = pieces[id];
-					for ( var i = 0, n=data.length; i < n; ++i) {
-						positions.push(this.positionFactory.position(data[i].y, data[i].x));
+					var data = pieces[i];
+					for ( var j = 0; j < data.length; ++j) {
+						positions.push(this.positionFactory.position(data[j].y, data[j].x));
 					}
 					var canvas = this.pieceRenderer.render(new Blockplus.Piece(positions, color));
-					this.pieces[color][id] = canvas.toDataURL("image/png");
+					this.pieces[color][i] = canvas.toDataURL("image/png");
 				}
 			}
 		}, this)		
@@ -65,12 +43,13 @@ Blockplus.PieceManager.prototype = {
 	},
 
 	init : function(color, pieces) {
+		console.debug(pieces.length);
 		var container = this.container(color);
 		container.html("");
-		for ( var i = 1, n = pieces.length; i <= n; ++i) {
+		for ( var i = 0, n = pieces.length; i < n; ++i) {
 			var image = new Image();
 			image.src = this.piece(color, i);
-			if (pieces[n - i] == 0) {
+			if (pieces[i] == 0) {
 				image.setAttribute("class", "used");
 			}
 			container.append(image);
@@ -78,10 +57,11 @@ Blockplus.PieceManager.prototype = {
 	},
 
 	update : function(color, pieces) {
+		console.debug(pieces);
 		var container = this.container(color);
-		for ( var i = 1, n = pieces.length; i <= n; ++i) {
-			if (pieces[n - i] == 0) {
-				var image = $($("#" + container.attr("id") + " img")[i - 1]);
+		for ( var i = 0, n = pieces.length; i < n; ++i) {
+			if (pieces[i] == 0) {
+				var image = $($("#" + container.attr("id") + " img")[i]);
 				if (image.attr("class") != "used") {
 					image.attr("class", "used");
 				}

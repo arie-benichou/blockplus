@@ -17,18 +17,16 @@
 
 package components.graph.features.degree;
 
-
 import java.util.Map;
 import java.util.Map.Entry;
-
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
-
 import components.graph.Graph;
 import components.graph.GraphBuilder;
+import components.graph.GraphInterface;
 import components.integer.Integers;
 
 // TODO caching
@@ -36,23 +34,23 @@ import components.integer.Integers;
 // TODO outcoming degree
 final class Degree<T> implements DegreeInterface<T> {
 
-    private final Graph<T> graph;
+    private final GraphInterface<T> graph;
 
-    public Graph<T> getGraph() {
+    public GraphInterface<T> getGraph() {
         return this.graph;
     }
 
-    public static <T> Degree<T> from(final Graph<T> graph) {
+    public static <T> Degree<T> from(final GraphInterface<T> graph) {
         return new Degree<T>(graph);
     }
 
-    private Degree(final Graph<T> graph) {
+    private Degree(final GraphInterface<T> graph) {
         this.graph = graph;
     }
 
     private volatile Map<T, Integer> data = null;
 
-    private static <T> Map<T, Integer> computeData(final Graph<T> graph) {
+    private static <T> Map<T, Integer> computeData(final GraphInterface<T> graph) {
         final Builder<T, Integer> builder = new ImmutableMap.Builder<T, Integer>();
         for (final T node : graph)
             builder.put(node, graph.getConnectedEndPoints(node).size());

@@ -17,10 +17,13 @@
 
 package transport;
 
+import game.blockplus.context.Context;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -45,8 +48,8 @@ import transport.protocol.MessageDecoder;
 import transport.protocol.MessageHandler;
 import transport.protocol.MessageHandlerInterface;
 import transport.protocol.MessageInterface;
-import blockplus.context.Context;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.AllowConcurrentEvents;
@@ -200,6 +203,7 @@ public class BlockplusServer extends WebSocketServlet {
         }
         this.clientsInPatio.add(io);
         System.out.println(this.clientsInPatio);
+        /*
         final Runtime runtime = Runtime.getRuntime();
         try {
             runtime.exec("beep -f 200 -l 180");
@@ -213,6 +217,7 @@ public class BlockplusServer extends WebSocketServlet {
         catch (final Exception e) {
             e.printStackTrace();
         }
+        */
     }
 
     private BlockplusGame reset(final GameInterface<Context> game) {
@@ -304,7 +309,7 @@ public class BlockplusServer extends WebSocketServlet {
     }
 
     // TODO use other virtual clients for testing
-    public static void main(final String[] args) throws Exception {
+    public static void runVC(final String[] args) throws Exception {
 
         /*
         final Runtime runtime = Runtime.getRuntime();
@@ -317,7 +322,7 @@ public class BlockplusServer extends WebSocketServlet {
         runtime.exec("beep -f 800 -l 300");
         */
 
-        final int game = args.length > 0 ? Integer.parseInt(args[0]) : 6;
+        final int game = args.length > 0 ? Integer.parseInt(args[0]) : 1;
 
         final String host = "localhost";
         final int port = 8282;
@@ -348,6 +353,20 @@ public class BlockplusServer extends WebSocketServlet {
 
         //virtualClient.stop();
         //factory.stop();
+
+    }
+
+    public static void main(final String[] args) throws Exception {
+        final Stopwatch stopwatch = new Stopwatch();
+        stopwatch.start();
+        for (int i = 1; i <= 20; ++i) {
+            for (int n = 0; n < 4; ++n) {
+                runVC(new String[] { "" + i });
+            }
+        }
+        stopwatch.stop();
+        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS));
+
     }
 
 }

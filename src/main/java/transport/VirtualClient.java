@@ -17,6 +17,8 @@
 
 package transport;
 
+import game.blockplus.context.Color;
+
 import java.net.URI;
 import java.util.List;
 import java.util.Map.Entry;
@@ -27,7 +29,6 @@ import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketClient;
 
 import transport.messages.MoveSubmit;
-import blockplus.piece.PieceType;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -96,10 +97,12 @@ public class VirtualClient implements WebSocket.OnTextMessage
         final JsonParser jsonParser = new JsonParser();
         final JsonObject jsonObject = jsonParser.parse(message).getAsJsonObject();
         final String type = jsonObject.get("type").getAsString();
-        if (type.equals("color")) {
-            this.color = jsonObject.get("data").getAsString();
+        if (type.equals("game")) {
+            final JsonObject data = jsonObject.get("data").getAsJsonObject();
+            final int k = data.get("players").getAsInt();
+            this.color = Color.values()[k - 1].toString();
         }
-        else if (type.equals("update")) {
+        if (type.equals("update")) {
             final JsonObject data = jsonObject.get("data").getAsJsonObject();
             final String color = data.get("color").getAsString();
             if (color.equals(this.color)) {
@@ -111,19 +114,14 @@ public class VirtualClient implements WebSocket.OnTextMessage
                 else {
                     final List<Entry<String, JsonElement>> list = Lists.newArrayList(entrySet);
                     final Entry<String, JsonElement> entry = list.get(entrySet.size() - 1);
-                    final String piece = entry.getKey();
                     final JsonArray instances = entry.getValue().getAsJsonArray();
                     final int n = new Random().nextInt(instances.size());
                     final JsonArray positions = instances.get(n).getAsJsonArray();
-                    final PieceType pieceObject = PieceType.valueOf("PIECE" + piece);// TODO
-                    final MoveSubmit moveSubmit = new MoveSubmit(pieceObject.ordinal(), positions);
+                    final MoveSubmit moveSubmit = new MoveSubmit(positions);
                     try {
-                        //Thread.sleep(1000);
                         this.send(moveSubmit);
                     }
-                    catch (final Exception e) {
-                        e.printStackTrace();
-                    }
+                    catch (final Exception e) {}
                 }
             }
         }

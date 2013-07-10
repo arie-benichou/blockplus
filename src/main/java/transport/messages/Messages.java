@@ -31,8 +31,8 @@ public class Messages {
         return new GameConnection(ordinal);
     }
 
-    public MessageInterface newMoveSubmit(final int id, final JsonArray positions) {
-        return new MoveSubmit(id, positions);
+    public MessageInterface newMoveSubmit(final JsonArray positions) {
+        return new MoveSubmit(positions);
     }
 
 }

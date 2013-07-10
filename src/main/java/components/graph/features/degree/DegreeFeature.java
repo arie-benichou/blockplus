@@ -17,17 +17,16 @@
 
 package components.graph.features.degree;
 
-import components.graph.Graph;
+import components.graph.GraphInterface;
 import components.graph.features.FeatureInterface;
-
 
 public final class DegreeFeature implements FeatureInterface {
 
-    private final Graph<?> graph;
+    private final GraphInterface<?> graph;
 
     private DegreeInterface<?> instance = null;
 
-    public DegreeFeature(final Graph<?> graph) {
+    public DegreeFeature(final GraphInterface<?> graph) {
         this.graph = graph;
     }
 

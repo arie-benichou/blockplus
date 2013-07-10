@@ -58,8 +58,9 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 	for (color in this.colors) {
 		players.push(color);
 	}
+	// TODO !!! le serveur doit envoyer les pieces du joueurs
 	var pieces = Blockplus.GameState.prototype._decodePieces({
-		0 : 8388607
+		0 : 4194303
 	});
 	for ( var i = 0; i < this.gameData.players - 1; ++i) {
 		this.pieceManager.init(players[i], pieces[0]);
@@ -73,7 +74,11 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 		// $($("#players div")[i]).html("&nbsp;")
 
 	}
+	
+	// TODO !!!
 	var i = this.gameData.players - 1;
+	this.color = players[i];
+	
 	this.client.register("player", $.proxy(function(data) {
 		this.audioManager.play("../audio/in.mp3");
 		this.pieceManager.init(players[i], pieces[0]);
@@ -100,14 +105,15 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 	this.pieceManager.show(players[this.gameData.players - 1]);
 	// TODO à déplacer
 	this.controlPanelManager.register('click', this.init);
-	this.client.register("color", $.proxy(function(data) {
+	this.client.register("update", $.proxy(function(data) {
 		$("#board-container").show();
 		$("#pieces").show();
-		this.color = data;
-		this.boardManager.updateColor(this.color);
-		this.client.register("update", $.proxy(function(data) {
-			this.update(new Blockplus.GameState(data));
-		}, this));
+		var newGameState = new Blockplus.GameState(data);		
+		//this.color = newGameState.getColor(); // TODO à faire dans le update
+		this.boardManager.updateColor(this.color); // TODO à revoir
+		//this.client.register("update", $.proxy(function(data) {
+		this.update(newGameState);
+		//}, this));
 	}, this));
 	// }, this));
 	/*-----------------------8<-----------------------*/
@@ -230,13 +236,15 @@ Blockplus.Game.prototype = {
 			$("#board-container").removeClass();
 		}
 
+		/*
 		var options = gameState.getOptions(this.color);
 		for ( var i = 21; i > 0; --i) {
 			if (i in options) {
-				// this.play(i, options[i][0]);
+				this.play(i, options[i][0]);
 				break;
 			}
 		}
+		*/
 
 	},
 

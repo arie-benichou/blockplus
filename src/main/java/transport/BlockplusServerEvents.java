@@ -17,6 +17,8 @@
 
 package transport;
 
+import game.blockplus.context.Context;
+
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -26,7 +28,6 @@ import transport.events.interfaces.GameConnectionInterface;
 import transport.events.interfaces.GameReconnectionInterface;
 import transport.events.interfaces.MoveSubmitInterface;
 import transport.events.interfaces.VirtualPlayerConnectionInterface;
-import blockplus.context.Context;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -154,7 +155,7 @@ public class BlockplusServerEvents {
     @AllowConcurrentEvents
     public void onVirtualPlayerConnection(final VirtualPlayerConnectionInterface virtualPlayerConnection) {
         try {
-            BlockplusServer.main(new String[] { virtualPlayerConnection.getOrdinal().toString() }); // TODO
+            BlockplusServer.runVC(new String[] { virtualPlayerConnection.getOrdinal().toString() }); // TODO
         }
         catch (final Exception e) {
             e.printStackTrace();
@@ -167,6 +168,9 @@ public class BlockplusServerEvents {
         final ClientInterface client = this.getServer().getClient(moveSubmit.getIO());
         final Integer game = client.getGame();
         final BlockplusGame blockplusGame = (BlockplusGame) this.getServer().getGame(game);
+
+        //System.out.println(moveSubmit);
+
         final BlockplusGame newGame = (BlockplusGame) blockplusGame.play(moveSubmit);
         this.getServer().updateGames(newGame.getOrdinal(), newGame);
         newGame.update();
