@@ -32,15 +32,6 @@ public class ArcsTest {
     }
 
     @Test
-    public void testGetDuplicate() {
-        final ArcDuplicate<String> arc1Duplicate = this.arcs.getDuplicate(this.arcs.get("A", "B"));
-        final ArcDuplicate<String> arc2Duplicate = this.arcs.getDuplicate(this.arcs.get("B", "A"));
-        final ArcDuplicate<String> arc3Duplicate = this.arcs.getDuplicate(this.arcs.get("A", "B"));
-        assertNotSame(arc1Duplicate, arc2Duplicate);
-        assertSame(arc1Duplicate, arc3Duplicate);
-    }
-
-    @Test
     public void testGetWeightedArc() {
         final WeightedArcInterface<String> arc1 = this.arcs.get("A", "B", 2.0);
         final WeightedArcInterface<String> arc2 = this.arcs.get("B", "A", 2.0);

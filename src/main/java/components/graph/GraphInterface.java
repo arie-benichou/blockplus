@@ -17,12 +17,10 @@
 
 package components.graph;
 
-
 import java.util.List;
 import java.util.Set;
 
 import components.graph.arc.ArcInterface;
-
 
 public interface GraphInterface<T> extends Iterable<T> {
 
@@ -50,15 +48,5 @@ public interface GraphInterface<T> extends Iterable<T> {
     Set<ArcInterface<T>> getSetOfArcs();
 
     ArcInterface<T> getArc(final T endPoint1, final T endPoint2);
-
-    /* TODO ?
-    boolean hasEdge(final T endPoint1, final T endPoint2);
-
-    Set<EdgeInterface<T>> getEdgesFrom(final T endPoint);
-
-    Set<EdgeInterface<T>> getSetOfEdges();
-
-    EdgeInterface<T> getEdge(final T endPoint1, final T endPoint2);
-    */
 
 }

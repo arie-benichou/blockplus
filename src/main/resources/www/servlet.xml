@@ -8,7 +8,7 @@
 
 	<servlet>
 		<servlet-name>WebSocket</servlet-name>
-		<servlet-class>transport.BlockplusServer</servlet-class>
+		<servlet-class>blockplus.transport.BlockplusServer</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
@@ -19,7 +19,7 @@
 	
 	<servlet>
 		<servlet-name>http</servlet-name>
-		<servlet-class>transport.HttpServer</servlet-class>
+		<servlet-class>blockplus.transport.HttpServer</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
@@ -36,39 +36,10 @@
 			<param-value>text/html,text/plain,text/xml,application/xhtml+xml,application/xml,text/css,application/javascript,application/x-javascript,image/svg+xml</param-value>
 		</init-param>
 	</filter>
-
-	<!-- 
-	<filter-mapping>
-		<filter-name>GzipFilter</filter-name>
-		<url-pattern>/audio/*</url-pattern>
-	</filter-mapping>
-
-	<filter-mapping>
-		<filter-name>GzipFilter</filter-name>
-		<url-pattern>/images/*</url-pattern>
-	</filter-mapping>
-
-	<filter-mapping>
-		<filter-name>GzipFilter</filter-name>
-		<url-pattern>/library/*</url-pattern>
-	</filter-mapping>
-
-	<filter-mapping>
-		<filter-name>GzipFilter</filter-name>
-		<url-pattern>/modules/*</url-pattern>
-	</filter-mapping>
-	 -->
 	 
  	<filter-mapping>
 		<filter-name>GzipFilter</filter-name>
 		<url-pattern>*</url-pattern>
 	</filter-mapping>
 	
-	<!-- 
- 	<filter-mapping>
-		<filter-name>GzipFilter</filter-name>
-		<url-pattern>/network/*</url-pattern>
-	</filter-mapping>
-	 -->
-
 </web-app>

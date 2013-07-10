@@ -22,14 +22,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import components.graph.Graph;
-import components.graph.GraphBuilder;
 import components.graph.arc.ArcInterface;
 import components.graph.arc.Arcs;
-
 
 public class GraphBuilderTest {
 
@@ -52,8 +48,7 @@ public class GraphBuilderTest {
         assertEquals(builder, builder.addEdge("A", "C", 1.0));
     }
 
-    @Ignore
-    @Test
+    // TODO
     public void testContains() {
         final Arcs<String> arcFactory = new Arcs<String>();
         final GraphBuilder<String> builder = new GraphBuilder<String>(2, arcFactory);

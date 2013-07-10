@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
-import components.graph.arc.ArcDuplicate;
 import components.graph.arc.ArcInterface;
 import components.graph.arc.Arcs;
 
@@ -110,17 +109,6 @@ public final class GraphBuilder<T> {
         this.getConnectedEndPointsByEndPoint().get(endPoint1).add(endPoint2);
         this.getArcByHashCodeBuilder().put(this.hashCode(arc, false), arc);
         return this;
-    }
-
-    // TODO ! vérifier que l'arc n'est pas déjà dupliqué
-    public ArcDuplicate<T> addDuplicate(final ArcInterface<T> arc) {
-        Preconditions.checkArgument(arc != null);
-        Preconditions.checkState(this.contains(arc), "Arc " + arc + " is not defined.");
-        final ArcDuplicate<T> arcDuplicate = ArcDuplicate.from(arc); // TODO
-        this.getArcs().add(arcDuplicate);
-        this.getConnectedEndPointsByEndPoint().get(arcDuplicate.getEndPoint1()).add(arcDuplicate.getEndPoint2());
-        this.getArcByHashCodeBuilder().put(this.hashCode(arcDuplicate, true), arcDuplicate);
-        return arcDuplicate;
     }
 
     public GraphBuilder<T> addArc(final T endPoint1, final T endPoint2, final double weight) {

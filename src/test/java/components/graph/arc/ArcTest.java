@@ -11,9 +11,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import components.graph.arc.Arc;
-
-// TODO tester la factory
 public class ArcTest {
 
     private Arc<String> arc;

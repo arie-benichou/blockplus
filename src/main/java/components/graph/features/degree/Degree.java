@@ -27,7 +27,6 @@ import com.google.common.collect.Maps;
 import components.graph.Graph;
 import components.graph.GraphBuilder;
 import components.graph.GraphInterface;
-import components.integer.Integers;
 
 // TODO caching
 // TODO incoming degree

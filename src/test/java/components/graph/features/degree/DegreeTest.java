@@ -7,14 +7,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
-
 import components.graph.Graph;
 import components.graph.GraphBuilder;
-import components.graph.features.degree.Degree;
 
 // TODO ! tester sur un graphe orienté
 // TODO ! tester sur un graphe mixte
@@ -87,9 +84,7 @@ public class DegreeTest {
         assertTrue(Degree.from(graphBuilder.addEdge("C", "A").build()).isEulerian());
     }
 
-    @Ignore
     // TODO
-    @Test
     public void testIsEulerian2() {
         final Graph<String> graph = new GraphBuilder<String>(2).addEdge("A", "B").build();
         final Degree<String> degree = Degree.from(graph);

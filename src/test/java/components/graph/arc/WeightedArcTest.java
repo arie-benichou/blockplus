@@ -10,10 +10,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import components.graph.arc.Arc;
-import components.graph.arc.WeightedArc;
-
-// TODO tester la factory
 public class WeightedArcTest {
 
     private Arc<String> arc;
