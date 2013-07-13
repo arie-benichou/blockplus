@@ -42,7 +42,7 @@ public interface IContext<T> {
      * 
      * @return the current side to play
      */
-    T getSide();
+    T side();
 
     /**
      * Returns the defined (but not necessary effective) successor of the
@@ -51,21 +51,21 @@ public interface IContext<T> {
      * @return the defined (but not necessary effective) successor of the
      *         current side to play.
      */
-    T getNextSide();
+    T nextSide();
 
     /**
      * Returns the adversity defined in this context.
      * 
      * @return the adversity defined in this context
      */
-    Adversity getAdversity();
+    Adversity adversity();
 
     /**
      * Returns players in this context.
      * 
      * @return players in this context
      */
-    IPlayers<T> getPlayers();
+    IPlayers<T> players();
 
     // TODO ? delegate to Referee interface
     /**
@@ -92,7 +92,7 @@ public interface IContext<T> {
      */
     IContext<T> apply(IMove moveInterface);
 
-    IOptionsSupplier getOptionsSupplier();
+    IOptionsSupplier optionsSupplier();
 
     Iterable<T> sides();
 

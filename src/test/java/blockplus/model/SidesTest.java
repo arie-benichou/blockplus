@@ -13,10 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import blockplus.model.ColoredPolyominoSet;
-import blockplus.model.Side;
-import blockplus.model.Sides;
-import blockplus.model.entity.Polyomino;
+import blockplus.model.polyomino.Polyomino;
 
 // FIXME add tests for hashCode, equals
 public class SidesTest {
@@ -83,7 +80,7 @@ public class SidesTest {
         }
         {
             assertNotNull(PLAYERS.getAlivePlayer(Blue));
-            final Sides newPlayers = PLAYERS.apply(Blue, null);
+            final Sides newPlayers = PLAYERS.apply(Blue, Polyomino._0);
             assertNull(newPlayers.getAlivePlayer(Blue));
         }
     }

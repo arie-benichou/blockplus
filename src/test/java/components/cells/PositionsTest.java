@@ -24,11 +24,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
-import components.cells.Positions.Position;
 
 public class PositionsTest {
 
-    private Position referential;
+    private IPosition referential;
     private Positions positions;
 
     @Before
@@ -47,21 +46,21 @@ public class PositionsTest {
     public void testGetNeighboursPositions() {
         {
             final int radius = -1;
-            final Iterable<Position> expected = Lists.newArrayList();
-            final Iterable<Position> neighboursPositions = this.positions.neighbours(this.referential, radius);
+            final Iterable<IPosition> expected = Lists.newArrayList();
+            final Iterable<IPosition> neighboursPositions = this.positions.neighbours(this.referential, radius);
             assertEquals(expected, neighboursPositions);
         }
 
         {
             final int radius = 0;
-            final Iterable<Position> expected = Lists.newArrayList(this.referential); // TODO à revoir
-            final Iterable<Position> neighboursPositions = this.positions.neighbours(this.referential, radius);
+            final Iterable<IPosition> expected = Lists.newArrayList(this.referential); // TODO à revoir
+            final Iterable<IPosition> neighboursPositions = this.positions.neighbours(this.referential, radius);
             assertEquals(expected, neighboursPositions);
         }
 
         {
             final int radius = 1;
-            final Iterable<Position> expected = Lists.newArrayList(
+            final Iterable<IPosition> expected = Lists.newArrayList(
                     this.positions.get(2, 2),
                     this.positions.get(2, 3),
                     this.positions.get(2, 4),
@@ -72,13 +71,13 @@ public class PositionsTest {
                     this.positions.get(4, 4)
 
                     );
-            final Iterable<Position> neighboursPositions = this.positions.neighbours(this.referential, radius);
+            final Iterable<IPosition> neighboursPositions = this.positions.neighbours(this.referential, radius);
             assertEquals(expected, neighboursPositions);
         }
 
         {
             final int radius = 2;
-            final Iterable<Position> expected = Lists.newArrayList(
+            final Iterable<IPosition> expected = Lists.newArrayList(
                     this.positions.get(1, 1),
                     this.positions.get(1, 2),
                     this.positions.get(1, 3),
@@ -96,13 +95,13 @@ public class PositionsTest {
                     this.positions.get(5, 4),
                     this.positions.get(5, 5)
                     );
-            final Iterable<Position> neighboursPositions = this.positions.neighbours(this.referential, radius);
+            final Iterable<IPosition> neighboursPositions = this.positions.neighbours(this.referential, radius);
             assertEquals(expected, neighboursPositions);
         }
 
         {
             final int radius = 3;
-            final Iterable<Position> expected = Lists.newArrayList(
+            final Iterable<IPosition> expected = Lists.newArrayList(
                     this.positions.get(0, 0),
                     this.positions.get(0, 1),
                     this.positions.get(0, 2),
@@ -128,7 +127,7 @@ public class PositionsTest {
                     this.positions.get(6, 5),
                     this.positions.get(6, 6)
                     );
-            final Iterable<Position> neighboursPositions = this.positions.neighbours(this.referential, radius);
+            final Iterable<IPosition> neighboursPositions = this.positions.neighbours(this.referential, radius);
             assertEquals(expected, neighboursPositions);
         }
     }

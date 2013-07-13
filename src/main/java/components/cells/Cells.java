@@ -30,7 +30,6 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
-import components.cells.Positions.Position;
 
 public final class Cells<T> implements ICells<T> {
 
@@ -38,8 +37,8 @@ public final class Cells<T> implements ICells<T> {
             final Positions cellPositions,
             final T initialSymbol,
             final T undefinedSymbol,
-            final Map<Position, T> cells,
-            final Map<Position, T> cellsMutations) {
+            final Map<IPosition, T> cells,
+            final Map<IPosition, T> cellsMutations) {
         return new Cells<T>(cellPositions, initialSymbol, undefinedSymbol, cells, cellsMutations);
     }
 
@@ -47,42 +46,42 @@ public final class Cells<T> implements ICells<T> {
             final Positions cellPositions,
             final T initialSymbol,
             final T undefinedSymbol,
-            final Map<Position, T> cells) {
-        return from(cellPositions, initialSymbol, undefinedSymbol, cells, new HashMap<Position, T>());
+            final Map<IPosition, T> cells) {
+        return from(cellPositions, initialSymbol, undefinedSymbol, cells, new HashMap<IPosition, T>());
     }
 
     public static <T> ICells<T> from(
             final Positions cellPositions,
             final T initialSymbol,
             final T undefinedSymbol) {
-        return from(cellPositions, initialSymbol, undefinedSymbol, new HashMap<Position, T>());
+        return from(cellPositions, initialSymbol, undefinedSymbol, new HashMap<IPosition, T>());
     }
 
-    private static <T> ICells<T> from(final Cells<T> cells, final Map<Position, T> cellsMutations) {
+    private static <T> ICells<T> from(final Cells<T> cells, final Map<IPosition, T> cellsMutations) {
         return from(cells.cellPositions, cells.initialSymbol(), cells.undefinedSymbol(), cells.get(), cellsMutations);
     }
 
     public static <T> ICells<T> from(final Cells<T> cells) {
-        return from(cells, new HashMap<Position, T>());
+        return from(cells, new HashMap<IPosition, T>());
     }
 
     private final Positions cellPositions;
-    private final Map<Position, T> cells;
+    private final Map<IPosition, T> cells;
     private final T initialSymbol;
     private final T undefinedSymbol;
 
     private volatile Integer hashCode = null;
 
-    private static <T> Map<Position, T> merge(final T initialSymbol, final Map<Position, T> left, final Map<Position, T> right) {
-        final Builder<Position, T> builder = new ImmutableSortedMap.Builder<Position, T>(Ordering.natural());
-        final MapDifference<Position, T> difference = Maps.difference(left, right);
-        for (final Entry<Position, T> mutation : difference.entriesInCommon().entrySet())
+    private static <T> Map<IPosition, T> merge(final T initialSymbol, final Map<IPosition, T> left, final Map<IPosition, T> right) {
+        final Builder<IPosition, T> builder = new ImmutableSortedMap.Builder<IPosition, T>(Ordering.natural());
+        final MapDifference<IPosition, T> difference = Maps.difference(left, right);
+        for (final Entry<IPosition, T> mutation : difference.entriesInCommon().entrySet())
             if (!mutation.getValue().equals(initialSymbol)) builder.put(mutation);
-        for (final Entry<Position, T> mutation : difference.entriesOnlyOnLeft().entrySet())
+        for (final Entry<IPosition, T> mutation : difference.entriesOnlyOnLeft().entrySet())
             if (!mutation.getValue().equals(initialSymbol)) builder.put(mutation);
-        for (final Entry<Position, T> mutation : difference.entriesOnlyOnRight().entrySet())
+        for (final Entry<IPosition, T> mutation : difference.entriesOnlyOnRight().entrySet())
             if (!mutation.getValue().equals(initialSymbol)) builder.put(mutation);
-        for (final Entry<Position, ValueDifference<T>> mutation : difference.entriesDiffering().entrySet()) {
+        for (final Entry<IPosition, ValueDifference<T>> mutation : difference.entriesDiffering().entrySet()) {
             final T rightValue = mutation.getValue().rightValue();
             if (!rightValue.equals(initialSymbol)) builder.put(mutation.getKey(), rightValue);
         }
@@ -92,7 +91,7 @@ public final class Cells<T> implements ICells<T> {
     private Cells(
             final Positions cellPositions,
             final T initialSymbol, final T undefinedSymbol,
-            final Map<Position, T> left, final Map<Position, T> right)
+            final Map<IPosition, T> left, final Map<IPosition, T> right)
     {
         this.cellPositions = cellPositions;
         this.initialSymbol = initialSymbol;
@@ -105,14 +104,16 @@ public final class Cells<T> implements ICells<T> {
     }
 
     @Override
-    public Position position(final int row, final int column) {
+    public IPosition position(final int row, final int column) {
         return this.positions().get(row, column);
     }
 
+    /*
     @Override
     public Position position(final int id) {
         return this.positions().get(id);
     }
+    */
 
     @Override
     public int rows() {
@@ -135,35 +136,43 @@ public final class Cells<T> implements ICells<T> {
     }
 
     @Override
-    public Map<Position, T> get() {
+    public Map<IPosition, T> get() {
         return this.cells;
     }
 
-    private T getCellSymbol(final Position position) {
+    // TODO initialSymbol could be removed, just use initial symbol
+    private T getCellSymbol(final IPosition position) {
         final T symbol = this.cells.get(position);
         if (symbol != null) return symbol;
         return this.initialSymbol();
     }
 
+    private boolean isDefined(final int row, final int column) {
+        return row > -1 && column > -1 && row < this.rows() && column < this.columns();
+    }
+
     @Override
-    public T get(final Position position) {
-        if (position.isNull()) return this.undefinedSymbol();
-        return this.getCellSymbol(position);
+    public T get(final IPosition position) {
+        //if (position.isNull()) return this.undefinedSymbol();
+        if (this.isDefined(position.row(), position.column())) return this.getCellSymbol(position);
+        return this.undefinedSymbol();
     }
 
     @Override
     public T get(final int row, final int column) {
-        final Position position = this.positions().get(row, column);
+        final IPosition position = this.positions().get(row, column);
         return this.get(position);
     }
 
+    /*
     @Override
     public T get(final int id) {
         return this.get(this.positions().get(id));
     }
+    */
 
     @Override
-    public ICells<T> apply(final Map<Position, T> updatedPositions) {
+    public ICells<T> apply(final Map<IPosition, T> updatedPositions) {
         return Cells.from(this, updatedPositions);
     }
 
@@ -173,7 +182,7 @@ public final class Cells<T> implements ICells<T> {
     }
 
     @Override
-    public Map<Position, T> filter(final Predicate<Entry<Position, T>> predicate) {
+    public Map<IPosition, T> filter(final Predicate<Entry<IPosition, T>> predicate) {
         Preconditions.checkArgument(predicate != null);
         return Maps.filterEntries(this.get(), predicate); // TODO ? allow predicate on initial symbol
     }

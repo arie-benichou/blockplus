@@ -17,7 +17,6 @@
 
 package blockplus.transport.events;
 
-
 import blockplus.transport.IOinterface;
 import blockplus.transport.events.interfaces.MoveSubmitInterface;
 

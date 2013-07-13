@@ -1,13 +1,11 @@
 
 package blockplus.export;
 
-
-import blockplus.model.entity.Entity;
-import blockplus.model.entity.Polyomino;
+import blockplus.model.polyomino.Polyomino;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import components.cells.Positions.Position;
+import components.cells.IPosition;
 
 public final class PiecesRepresentation {
 
@@ -16,15 +14,17 @@ public final class PiecesRepresentation {
     private static String _toJson() {
         final JsonArray pieces = new JsonArray();
         for (final Polyomino polyomino : Polyomino.set()) {
-            final JsonArray positions = new JsonArray();
-            final Entity piece = polyomino.get();
-            for (final Position position : piece.positions()) {
-                final JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("y", position.row());
-                jsonObject.addProperty("x", position.column());
-                positions.add(jsonObject);
+            final Iterable<IPosition> positions = polyomino.positions();
+            if (positions.iterator().hasNext()) {
+                final JsonArray data = new JsonArray();
+                for (final IPosition position : positions) {
+                    final JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("y", position.row());
+                    jsonObject.addProperty("x", position.column());
+                    data.add(jsonObject);
+                }
+                pieces.add(data);
             }
-            pieces.add(positions);
         }
         return pieces.toString();
     }

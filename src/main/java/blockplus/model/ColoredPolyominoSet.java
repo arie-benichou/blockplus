@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import blockplus.model.entity.Polyomino;
+import blockplus.model.polyomino.Polyomino;
 
 import com.google.common.base.Equivalences;
 import com.google.common.base.Objects;

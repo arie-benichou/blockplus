@@ -18,7 +18,7 @@
 package blockplus.transport;
 
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
 
 import blockplus.export.ContextRepresentation;
 import blockplus.model.Colors;
@@ -26,7 +26,8 @@ import blockplus.model.Context;
 import blockplus.model.Context.Builder;
 import blockplus.model.Move;
 import blockplus.model.Side;
-import blockplus.model.entity.IEntity;
+import blockplus.model.polyomino.PolyominoProperties;
+import blockplus.model.polyomino.PolyominoProperties.Location;
 import blockplus.transport.events.interfaces.ClientInterface;
 import blockplus.transport.events.interfaces.MoveSubmitInterface;
 
@@ -37,6 +38,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
+import components.cells.IPosition;
 
 public class BlockplusGame implements GameInterface<Context> {
 
@@ -79,7 +81,7 @@ public class BlockplusGame implements GameInterface<Context> {
             int n = 0;
             for (final ClientInterface client : clients) {
                 final Colors color = Colors.valueOf(this.SEQUENCE.get(n));
-                final Side player = gameContext.getPlayers().getDeadOrAlivePlayer(color);
+                final Side player = gameContext.players().getDeadOrAlivePlayer(color);
                 builder1.put(player, client);
                 builder2.put(client, player);
                 ++n;
@@ -133,8 +135,8 @@ public class BlockplusGame implements GameInterface<Context> {
     }
 
     public ClientInterface getUserToPlay() {
-        final Colors colorToPlay = this.getContext().getSide();
-        final Side player = this.getContext().getPlayers().getAlivePlayer(colorToPlay);
+        final Colors colorToPlay = this.getContext().side();
+        final Side player = this.getContext().players().getAlivePlayer(colorToPlay);
         return this.clientByPlayer.get(player);
     }
 
@@ -157,11 +159,13 @@ public class BlockplusGame implements GameInterface<Context> {
 
     public GameInterface<Context> play(final MoveSubmitInterface moveSubmitInterface) {
         final Context context = this.getContext();
-        final Set<Integer> positions = Sets.newTreeSet();
-        for (final JsonElement element : moveSubmitInterface.getPositions())
-            positions.add(element.getAsInt());
-        final IEntity iEntity = Context.ENTITIES.get(positions); // TODO !!! à revoir
-        final Move move = new Move(context.getSide(), iEntity);
+        final SortedSet<IPosition> positions = Sets.newTreeSet();
+        for (final JsonElement element : moveSubmitInterface.getPositions()) {
+            final int id = element.getAsInt();
+            final Location position = new PolyominoProperties.Location(id / 20, id % 20); // TODO !!!
+            positions.add(position);
+        }
+        final Move move = new Move(context.side(), positions);
         Context nextContext = context.apply(move);
         nextContext = nextContext.forward();
         return new BlockplusGame(this.getOrdinal(), this.getCode(), this.getClients(), nextContext, this.getTimeStamp());

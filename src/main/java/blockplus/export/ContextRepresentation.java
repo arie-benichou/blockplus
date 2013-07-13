@@ -24,10 +24,11 @@ import java.util.Set;
 
 import blockplus.model.Board;
 import blockplus.model.Board.Layer;
+import blockplus.model.ColoredPolyominoSet;
 import blockplus.model.Colors;
 import blockplus.model.Context;
 import blockplus.model.Side;
-import blockplus.model.entity.Polyomino;
+import blockplus.model.polyomino.Polyomino;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -38,7 +39,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import components.cells.Positions.Position;
+import components.cells.IPosition;
 
 public final class ContextRepresentation {
 
@@ -62,7 +63,7 @@ public final class ContextRepresentation {
         final JsonObject boardState = new JsonObject();
         final JsonObject meta = new JsonObject();
         final JsonObject data = new JsonObject();
-        final Board board = this.getGameContext().getBoard();
+        final Board board = this.getGameContext().board();
         final int rows = board.rows();
         final int columns = board.columns();
         meta.addProperty("rows", rows);
@@ -71,8 +72,8 @@ public final class ContextRepresentation {
         for (final Colors color : colors) {
             final JsonArray jsonArray = new JsonArray();
             final Layer layer = board.get(color);
-            final Set<Position> positions = layer.getSelves().keySet();
-            for (final Position position : positions)
+            final Set<IPosition> positions = layer.getSelves().keySet();
+            for (final IPosition position : positions)
                 jsonArray.add(new JsonPrimitive(columns * position.row() + position.column() % rows)); // TODO extract method
             data.add(color.toString(), jsonArray);
         }
@@ -87,7 +88,9 @@ public final class ContextRepresentation {
         for (final Colors color : context.sides()) {
             final Side player = context.getPlayer(color);
             int bits = 0b1;
-            for (final Entry<Polyomino, Integer> entry : player.remainingPieces()) {
+            final ColoredPolyominoSet remainingPieces = player.remainingPieces();
+            for (final Entry<Polyomino, Integer> entry : remainingPieces) {
+                if (entry.getKey().ordinal() == 0) continue;
                 bits = bits << 1 | entry.getValue();
             }
             data.add(color.toString(), new JsonPrimitive(bits));
@@ -101,18 +104,23 @@ public final class ContextRepresentation {
     System.out.println(json);
     */
     public JsonElement encodeOptions() {
-        final Table<Position, Polyomino, List<Set<Position>>> options = (Table<Position, Polyomino, List<Set<Position>>>) this.getGameContext().options();
+
+        final Board board = this.getGameContext().board();
+        final int rows = board.rows();
+        final int columns = board.columns();
+
+        final Table<IPosition, Polyomino, List<Set<IPosition>>> options = (Table<IPosition, Polyomino, List<Set<IPosition>>>) this.getGameContext().options();
         final Map<Integer, List<Set<Integer>>> legalPositionsByPiece = Maps.newTreeMap(); // TODO à revoir
-        for (final Entry<Polyomino, Map<Position, List<Set<Position>>>> entry : options.columnMap().entrySet()) {
+        for (final Entry<Polyomino, Map<IPosition, List<Set<IPosition>>>> entry : options.columnMap().entrySet()) {
             final Polyomino polyomino = entry.getKey();
-            final Map<Position, List<Set<Position>>> map = entry.getValue();
+            final Map<IPosition, List<Set<IPosition>>> map = entry.getValue();
             final List<Set<Integer>> playablePositions = Lists.newArrayList();
-            for (final Entry<Position, List<Set<Position>>> instancesByLight : map.entrySet()) {
-                final List<Set<Position>> instances = instancesByLight.getValue();
-                for (final Set<Position> set : instances) {
+            for (final Entry<IPosition, List<Set<IPosition>>> instancesByLight : map.entrySet()) {
+                final List<Set<IPosition>> instances = instancesByLight.getValue();
+                for (final Set<IPosition> set : instances) {
                     final Set<Integer> positions = Sets.newHashSet();
-                    for (final Position position : set) {
-                        positions.add(position.id());
+                    for (final IPosition position : set) {
+                        positions.add(columns * position.row() + position.column() % rows); // TODO !!!
                     }
                     playablePositions.add(positions);
                 }
@@ -125,7 +133,7 @@ public final class ContextRepresentation {
     @Override
     public String toString() {
         final JsonObject data = new JsonObject();
-        data.addProperty("color", this.getGameContext().getSide().toString());
+        data.addProperty("color", this.getGameContext().side().toString());
         data.addProperty("isTerminal", this.getGameContext().isTerminal());
         data.add("board", this.encodeBoard());
         data.add("pieces", this.encodePieces());

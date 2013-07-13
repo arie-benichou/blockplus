@@ -174,8 +174,8 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 				data.push(position);
 				this.boardManager.renderPotentialCell(this.positionFactory.positionFromIndex(position), this.color);
 			}
-			var pieceId = this.options.perfectMatch(this.boardManager.selectedPositions);
-			this.play(pieceId, data);
+			//var pieceId = this.options.perfectMatch(this.boardManager.selectedPositions);
+			this.play(data);
 			// ////////////////////////////////////////////////
 		} else {
 			this.boardManager.register('click.1', this.clickEventHandler1);
@@ -240,7 +240,7 @@ Blockplus.Game.prototype = {
 		var options = gameState.getOptions(this.color);
 		for ( var i = 21; i > 0; --i) {
 			if (i in options) {
-				this.play(i, options[i][0]);
+				this.play(options[i][0]);
 				break;
 			}
 		}
@@ -248,8 +248,8 @@ Blockplus.Game.prototype = {
 
 	},
 
-	play : function(id, positions) {
-		this.client.say(this.messages.moveSubmit(id, positions));
+	play : function(positions) {
+		this.client.say(this.messages.moveSubmit(positions));
 	},
 
 	isPotentialPosition : function(position) {

@@ -36,12 +36,11 @@ Blockplus.Messages.prototype = {
 			}
 		};
 	},
-	moveSubmit : function(id, positions) {
+	moveSubmit : function(positions) {
 		return {
 			type : 'MoveSubmit',
 			data : {
-				id : id,
-				positions : positions
+				positions: positions
 			}
 		};
 	}

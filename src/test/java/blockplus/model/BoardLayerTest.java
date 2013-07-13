@@ -34,15 +34,14 @@ import org.junit.Test;
 import blockplus.model.Board.Layer;
 import blockplus.model.Board.LayerMutationBuilder;
 import blockplus.model.Board.State;
-import blockplus.model.entity.Entity;
-import blockplus.model.entity.Polyomino;
+import blockplus.model.polyomino.Polyomino;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import components.cells.Cells;
 import components.cells.ICells;
+import components.cells.IPosition;
 import components.cells.Positions;
-import components.cells.Positions.Position;
 
 public class BoardLayerTest {
 
@@ -129,7 +128,7 @@ public class BoardLayerTest {
 
     public void testApplyMapOfCellPositionState() {
         {
-            final HashMap<Position, State> mutations = Maps.newHashMap();
+            final HashMap<IPosition, State> mutations = Maps.newHashMap();
             mutations.put(LAYER.position(0, 0), Upekkha);
             mutations.put(LAYER.position(0, 1), Karuna);
             mutations.put(LAYER.position(1, 0), Karuna);
@@ -161,20 +160,20 @@ public class BoardLayerTest {
     @Test
     public void testGetSelves() {
         {
-            final Map<Position, State> expected = Maps.newHashMap();
-            final Map<Position, State> actual = LAYER.getSelves();
+            final Map<IPosition, State> expected = Maps.newHashMap();
+            final Map<IPosition, State> actual = LAYER.getSelves();
             assertEquals(expected, actual);
         }
         {
-            final Map<Position, State> expected = Maps.newHashMap();
+            final Map<IPosition, State> expected = Maps.newHashMap();
             expected.put(LAYER.position(0, 0), Upekkha);
-            final Entity entity = Polyomino._1.get();
-            final Map<Position, State> mutation = new LayerMutationBuilder()
-                    .setSelfPositions(entity.positions())
-                    .setShadowPositions(entity.shadows())
+            final Polyomino polyomino = Polyomino._1;
+            final Map<IPosition, State> mutation = new LayerMutationBuilder()
+                    .setSelfPositions(polyomino.positions())
+                    .setShadowPositions(polyomino.shadows())
                     .build();
             final Layer newBoardLayer = LAYER.apply(mutation);
-            final Map<Position, State> actual = newBoardLayer.getSelves();
+            final Map<IPosition, State> actual = newBoardLayer.getSelves();
             assertEquals(expected, actual);
         }
     }
@@ -182,24 +181,24 @@ public class BoardLayerTest {
     //FIXME TODO !!!!
     public void testGetLights() {
         {
-            final Map<Position, State> expected = Maps.newHashMap();
-            final Map<Position, State> actual = LAYER.getLights();
+            final Map<IPosition, State> expected = Maps.newHashMap();
+            final Map<IPosition, State> actual = LAYER.getLights();
             assertEquals(expected, actual);
         }
         {
-            final Map<Position, State> expected = Maps.newHashMap();
+            final Map<IPosition, State> expected = Maps.newHashMap();
             expected.put(LAYER.position(0, 0), Metta);
             expected.put(LAYER.position(0, 2), Metta);
             expected.put(LAYER.position(2, 0), Metta);
             expected.put(LAYER.position(2, 2), Metta);
-            final Entity entity = Polyomino._1.get();
-            final Map<Position, State> mutation = new LayerMutationBuilder()
-                    .setSelfPositions(entity.positions())
-                    .setShadowPositions(entity.shadows())
-                    .setLightPositions(entity.lights())
+            final Polyomino polyomino = Polyomino._1;
+            final Map<IPosition, State> mutation = new LayerMutationBuilder()
+                    .setSelfPositions(polyomino.positions())
+                    .setShadowPositions(polyomino.shadows())
+                    .setLightPositions(polyomino.lights())
                     .build();
             final Layer newBoardLayer = LAYER.apply(mutation);
-            final Map<Position, State> actual = newBoardLayer.getLights();
+            final Map<IPosition, State> actual = newBoardLayer.getLights();
             assertEquals(expected, actual);
         }
     }
@@ -209,7 +208,7 @@ public class BoardLayerTest {
         for (int row = 0; row < LAYER.rows(); ++row)
             for (int column = 0; column < LAYER.columns(); ++column)
                 assertFalse(LAYER.isLight(LAYER.position(row, column)));
-        final Position position = LAYER.position(0, 0);
+        final IPosition position = LAYER.position(0, 0);
         final Layer newBoardLayer = LAYER.apply(position, Metta);
         assertTrue(newBoardLayer.isLight(position));
     }

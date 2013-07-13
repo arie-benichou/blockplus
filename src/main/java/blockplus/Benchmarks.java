@@ -5,62 +5,50 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
 
 import blockplus.model.Context;
 import blockplus.model.Move;
-import blockplus.model.OptionsSupplier;
-import blockplus.model.Context.Builder;
-import blockplus.model.entity.IEntity;
-import blockplus.model.entity.PieceInstances;
-import blockplus.model.entity.Plane;
-import blockplus.model.entity.Polyomino;
-import blockplus.model.interfaces.IOptionsSupplier;
+import blockplus.model.polyomino.Polyomino;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterators;
-import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
-import components.cells.Positions.Position;
+import components.cells.IPosition;
 
 public class Benchmarks {
 
     private static int iteration = 0;
 
     public static void main(final String[] args) {
-        run(new OptionsSupplier(new PieceInstances(Plane.from(20, 20))));
-    }
-
-    private static void run(final IOptionsSupplier optionsSupplier) {
-        Context context = new Builder().setOptionsSupplier(optionsSupplier).build();
+        Context context = new Context.Builder().build();
         final Context initialContext = context;
         final Random random = new Random();
         final Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
-        for (int i = 0; i < 42; ++i) {
+        for (int i = 0; i < 100; ++i) {
             while (!context.isTerminal()) {
-                final Table<Position, Polyomino, List<Set<Position>>> options = (Table<Position, Polyomino, List<Set<Position>>>) context.options();
-                final Set<Cell<Position, Polyomino, List<Set<Position>>>> cellSet = options.cellSet();
-                final Cell<Position, Polyomino, List<Set<Position>>> last = Iterators.getLast(cellSet.iterator());
+                final Table<IPosition, Polyomino, List<Set<IPosition>>> options = (Table<IPosition, Polyomino, List<Set<IPosition>>>) context.options();
+                final Set<Cell<IPosition, Polyomino, List<Set<IPosition>>>> cellSet = options.cellSet();
+                final Cell<IPosition, Polyomino, List<Set<IPosition>>> last = Iterators.getLast(cellSet.iterator());
                 ////////////////////////////////////////////////////////////////////////////
                 //                int n = 0;
-                //                for (final Cell<Position, Polyomino, List<Set<Position>>> object : options.cellSet()) {
-                //                    final List<Set<Position>> value = object.getValue();
-                //                    for (final Iterable<Position> positions : value) {
+                //                for (final Cell<IPosition, Polyomino, List<Set<IPosition>>> object : options.cellSet()) {
+                //                    final List<Set<IPosition>> value = object.getValue();
+                //                    for (final Iterable<IPosition> positions : value) {
                 //                        ++n;
                 //                    }
                 //                }
                 //System.out.println(n + " options");
                 ////////////////////////////////////////////////////////////////////////////                
-                final List<Set<Position>> list = last.getValue();
+                final List<Set<IPosition>> list = last.getValue();
+                final SortedSet<IPosition> positions = (SortedSet<IPosition>) list.get(0);
                 //                final int size = list.size();
                 //                final int k = random.nextInt(size);
-                final Set<Integer> positions = Sets.newTreeSet();
-                for (final Position position : list.get(0))
-                    positions.add(position.id());
-                final IEntity iEntity = context.ENTITIES.get(positions);
-                final Move move = new Move(context.getSide(), iEntity);
+                //System.out.println(positions);
+                final Move move = new Move(context.side(), positions);
                 context = context.apply(move).forward();
                 ++iteration;
             }

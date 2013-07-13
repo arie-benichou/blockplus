@@ -19,7 +19,6 @@ package blockplus.transport;
 
 import java.io.IOException;
 
-
 import blockplus.transport.protocol.MessageInterface;
 
 import com.google.common.base.Objects;
@@ -92,7 +91,7 @@ public class IO implements IOinterface {
         MessageInterface message = null;
         try {
             message = this.getServer().decode(data);
-            System.out.println(message);
+            //System.out.println(message);
         }
         catch (final Exception e) { // TODO MessageConstructionException
             this.say("Message could not be created from " + data + " : " + Throwables.getRootCause(e));

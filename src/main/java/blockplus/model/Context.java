@@ -23,23 +23,24 @@ import static blockplus.model.Colors.Red;
 import static blockplus.model.Colors.Yellow;
 
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import blockplus.model.Board.LayerMutationBuilder;
-import blockplus.model.entity.Entities;
-import blockplus.model.entity.IEntity;
-import blockplus.model.entity.NullEntity;
-import blockplus.model.entity.PieceInstances;
-import blockplus.model.entity.Plane;
-import blockplus.model.entity.Polyomino;
-import blockplus.model.entity.Polyominos;
 import blockplus.model.interfaces.IContext;
 import blockplus.model.interfaces.IMove;
 import blockplus.model.interfaces.IOptionsSupplier;
+import blockplus.model.polyomino.Polyomino;
+import blockplus.model.polyomino.PolyominoInstances.PolyominoTranslatedInstance;
+import blockplus.model.polyomino.PolyominoRenderer;
+import blockplus.model.polyomino.Polyominos;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
+import components.cells.IPosition;
 import components.cells.Positions;
 
 public final class Context implements IContext<Colors> {
@@ -85,7 +86,7 @@ public final class Context implements IContext<Colors> {
                 .addLayer(Green, new LayerMutationBuilder().setLightPositions(CELL_POSITIONS.get(ROWS - 1, 0)).build())
                 .build();
 
-        private final static IOptionsSupplier OPTIONS_SUPPLIER = new OptionsSupplier(new PieceInstances(Plane.from(ROWS, COLUMNS)));
+        private final static IOptionsSupplier OPTIONS_SUPPLIER = new OptionsSupplier();
 
         private Colors side = SIDE;
 
@@ -153,15 +154,12 @@ public final class Context implements IContext<Colors> {
 
     }
 
-    // TODO !!! inject
-    public final static Entities ENTITIES = new Entities(new Positions(20, 20));
-
     // TODO inject
     private final static Predicate<Context> TERMINATION_PREDICATE = new Predicate<Context>() {
 
         @Override
         public boolean apply(final Context context) {
-            return !context.getPlayers().hasAlivePlayer();
+            return !context.players().hasAlivePlayer();
         }
 
     };
@@ -169,34 +167,34 @@ public final class Context implements IContext<Colors> {
     private final Colors side;
 
     @Override
-    public Colors getSide() {
+    public Colors side() {
         return this.side;
     }
 
     private final Adversity adversity;
 
     @Override
-    public Adversity getAdversity() {
+    public Adversity adversity() {
         return this.adversity;
     }
 
     private final Sides players;
 
     @Override
-    public Sides getPlayers() {
+    public Sides players() {
         return this.players;
     }
 
     private final Board board;
 
-    public Board getBoard() {
+    public Board board() {
         return this.board;
     }
 
     private final IOptionsSupplier optionsSupplier;
 
     @Override
-    public IOptionsSupplier getOptionsSupplier() {
+    public IOptionsSupplier optionsSupplier() {
         return this.optionsSupplier;
     }
 
@@ -216,30 +214,44 @@ public final class Context implements IContext<Colors> {
 
     private Context(final Context context) {
         this(
-                context.getNextSide(),
-                context.getBoard(),
-                context.getPlayers(),
-                context.getAdversity(),
-                context.getOptionsSupplier());
+                context.nextSide(),
+                context.board(),
+                context.players(),
+                context.adversity(),
+                context.optionsSupplier());
     }
 
     @Override
     public Context apply(final IMove iMove) {
 
         final Move move = (Move) iMove;
+        final Colors color = move.color();
+        final SortedSet<IPosition> positions = move.positions();
 
-        final Colors color = this.getSide();
+        // TODO helper methods
+        final Polyominos polyominos = Polyominos.getInstance();
+        final String rendering = PolyominoRenderer.render(positions);
+        final PolyominoTranslatedInstance translatedInstance = polyominos.computeTranslatedInstance(positions, polyominos.getInstance(rendering));
+        final Polyomino polyomino = polyominos.getType(rendering);
 
-        IEntity entity = move.entity();
-        if (entity == null) entity = new NullEntity();
-        final Polyomino polyomino = Polyominos.getInstance().getByTypeId(entity.type());
+        if (color == Blue) System.out.println("-------8<-------");
+        System.out.println();
+        System.out.println(color);
+        System.out.println(rendering);
+        System.out.println();
+
+        //System.out.println(polyomino);
+        //System.out.println();
+
+        Preconditions.checkState(this.side().equals(color));
 
         return new Context(
+                //this.getNextSide(color),
                 color,
-                this.getBoard().apply(color, entity),
-                this.getPlayers().apply(color, polyomino),
-                this.getAdversity(),
-                this.getOptionsSupplier());
+                this.board().apply(color, translatedInstance),
+                this.players().apply(color, polyomino),
+                this.adversity(),
+                this.optionsSupplier());
     }
 
     @Override
@@ -251,42 +263,47 @@ public final class Context implements IContext<Colors> {
     public Table<?, ?, ?> options() {
         Table<?, ?, ?> value = this.options;
         if (value == null) synchronized (this) {
-            if ((value = this.options) == null) this.options = value = this.getOptionsSupplier().options(this);
+            if ((value = this.options) == null) this.options = value = this.optionsSupplier().options(this);
         }
         return value;
     }
 
     public Colors getNextSide(final Colors color) {
-        final Colors nextColor = this.getAdversity().getOpponent(color);
-        final Side player = this.getPlayers().getAlivePlayer(nextColor);
+        final Colors nextColor = this.adversity().getOpponent(color);
+        final Side player = this.players().getAlivePlayer(nextColor);
         return player == null ? this.getNextSide(nextColor) : nextColor;
     }
 
     @Override
-    public Colors getNextSide() {
-        return this.getNextSide(this.getSide());
+    public Colors nextSide() {
+        return this.getNextSide(this.side());
     }
 
     @Override
     public Context forward() {
         if (this.isTerminal()) return this;
         Context nextContext = new Context(this);
-        if (nextContext.options().isEmpty()) nextContext = nextContext.apply(new Move(this.getSide(), null)).forward();
+        if (nextContext.options().isEmpty()) {
+            // TODO extract constant
+            final TreeSet<IPosition> emptySet = Sets.newTreeSet();
+            nextContext = nextContext.apply(new Move(nextContext.side(), emptySet));
+            nextContext = nextContext.forward();
+        }
         return nextContext;
     }
 
     public Side getPlayer(final Colors color) {
-        return this.getPlayers().getDeadOrAlivePlayer(color);
+        return this.players().getDeadOrAlivePlayer(color);
     }
 
     public Side getPlayer() {
-        return this.getPlayer(this.getSide());
+        return this.getPlayer(this.side());
     }
 
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .addValue(this.getBoard())
+                .addValue(this.board())
                 .toString();
     }
 
@@ -305,7 +322,7 @@ public final class Context implements IContext<Colors> {
 
     @Override
     public Iterable<Colors> sides() {
-        return this.getAdversity().sides();
+        return this.adversity().sides();
     }
 
 }

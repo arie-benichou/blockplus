@@ -22,28 +22,27 @@ import java.util.Map.Entry;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
-import components.cells.Positions.Position;
 
-public interface ICells<T> extends Supplier<Map<Position, T>> {
+public interface ICells<T> extends Supplier<Map<IPosition, T>> {
 
     int rows();
 
     int columns();
 
-    Position position(int row, int column);
+    IPosition position(int row, int column);
 
-    Position position(int id);
+    //IPosition position(int id);
 
     @Override
-    Map<Position, T> get();
+    Map<IPosition, T> get();
 
-    T get(int id);
+    //T get(int id);
 
     T get(int row, int column);
 
-    T get(Position position);
+    T get(IPosition position);
 
-    ICells<T> apply(Map<Position, T> mutations);
+    ICells<T> apply(Map<IPosition, T> mutations);
 
     ICells<T> copy();
 
@@ -51,6 +50,6 @@ public interface ICells<T> extends Supplier<Map<Position, T>> {
 
     T initialSymbol();
 
-    Map<Position, T> filter(Predicate<Entry<Position, T>> predicate);
+    Map<IPosition, T> filter(Predicate<Entry<IPosition, T>> predicate);
 
 }

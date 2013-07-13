@@ -28,10 +28,9 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import blockplus.model.entity.IEntity;
+import blockplus.model.polyomino.PolyominoInstances.PolyominoTranslatedInstance;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
@@ -41,13 +40,10 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import components.cells.Cells;
 import components.cells.ICells;
+import components.cells.IPosition;
 import components.cells.Positions;
-import components.cells.Positions.Position;
 
 public final class Board {
 
@@ -87,7 +83,7 @@ public final class Board {
 
     public final static class Layer implements Supplier<ICells<State>> {
 
-        private final static class IsMutablePredicate implements Predicate<Position> {
+        private final static class IsMutablePredicate implements Predicate<IPosition> {
 
             private final ICells<State> stateBoard;
 
@@ -95,27 +91,34 @@ public final class Board {
                 this.stateBoard = stateBoard;
             }
 
+            /*
+            private boolean isDefined(final int row, final int column) {
+                return row > -1 && column > -1 && row < this.stateBoard.rows() && column < this.stateBoard.columns();
+            }
+            */
+
             @Override
-            public boolean apply(@Nullable final Position position) {
+            public boolean apply(@Nullable final IPosition position) {
                 final State state = this.stateBoard.get(position);
-                return state.equals(State.Nirvana) || state.equals(Metta);
+                return //this.isDefined(position.row(), position.column()) && 
+                state.equals(State.Nirvana) || state.equals(Metta);
             }
 
         };
 
-        private final static Predicate<Entry<Position, State>> SELF_PREDICATE = new Predicate<Map.Entry<Position, State>>() {
+        private final static Predicate<Entry<IPosition, State>> SELF_PREDICATE = new Predicate<Map.Entry<IPosition, State>>() {
 
             @Override
-            public boolean apply(final Entry<Position, State> entry) {
+            public boolean apply(final Entry<IPosition, State> entry) {
                 return entry.getValue().equals(Upekkha);
             }
 
         };
 
-        private final static Predicate<Entry<Position, State>> LIGHT_PREDICATE = new Predicate<Map.Entry<Position, State>>() {
+        private final static Predicate<Entry<IPosition, State>> LIGHT_PREDICATE = new Predicate<Map.Entry<IPosition, State>>() {
 
             @Override
-            public boolean apply(final Entry<Position, State> entry) {
+            public boolean apply(final Entry<IPosition, State> entry) {
                 return entry.getValue().equals(Metta);
             }
 
@@ -124,8 +127,8 @@ public final class Board {
         private final ICells<State> stateBoard;
         private final IsMutablePredicate isMutablePredicate;
 
-        private volatile Map<Position, State> selves;
-        private volatile Map<Position, State> lights;
+        private volatile Map<IPosition, State> selves;
+        private volatile Map<IPosition, State> lights;
 
         private Layer(final ICells<State> stateBoard) {
             this.stateBoard = stateBoard;
@@ -136,11 +139,11 @@ public final class Board {
             this(Cells.from(cellPositions, Nirvana, Mudita));
         }
 
-        public Position position(final int i, final int j) {
+        public IPosition position(final int i, final int j) {
             return this.get().position(i, i);
         }
 
-        public boolean isMutable(final Position position) {
+        public boolean isMutable(final IPosition position) {
             return this.isMutablePredicate.apply(position);
         }
 
@@ -148,9 +151,9 @@ public final class Board {
             return this.isMutable(this.get().position(i, j));
         }
 
-        public boolean isLegal(final Iterable<Position> positions) {
+        public boolean isLegal(final Iterable<IPosition> positions) {
             boolean containsLight = false;
-            for (final Position position : positions) {
+            for (final IPosition position : positions) {
                 if (!this.isMutable(position)) return false;
                 if (this.isLight(position)) containsLight = true;
             }
@@ -170,38 +173,38 @@ public final class Board {
             return this.get().columns();
         }
 
-        public boolean isLight(final Position position) {
+        public boolean isLight(final IPosition position) {
             return this.getLights().containsKey(position);
         }
 
-        public Board apply(final Set<Position> positions, final Set<Position> shadows, final Set<Position> lights) {
+        public Board apply(final Set<IPosition> positions, final Set<IPosition> shadows, final Set<IPosition> lights) {
             return null;
         }
 
-        public Layer apply(final Map<Position, State> layerMutation) {
-            final Map<Position, State> consistentMutations = Maps.newHashMap();
-            for (final Entry<Position, State> mutation : layerMutation.entrySet())
+        public Layer apply(final Map<IPosition, State> layerMutation) {
+            final Map<IPosition, State> consistentMutations = Maps.newHashMap();
+            for (final Entry<IPosition, State> mutation : layerMutation.entrySet())
                 if (this.isMutable(mutation.getKey())) consistentMutations.put(mutation.getKey(), mutation.getValue());
             return new Layer(this.get().apply(consistentMutations));
         }
 
-        public Layer apply(final Position position, final State state) {
+        public Layer apply(final IPosition position, final State state) {
             if (!this.isMutable(position)) return this;
-            final Map<Position, State> consistentMutation = Maps.newHashMap();
+            final Map<IPosition, State> consistentMutation = Maps.newHashMap();
             consistentMutation.put(position, state);
             return new Layer(this.get().apply(consistentMutation));
         }
 
-        public Map<Position, State> getLights() {
-            Map<Position, State> value = this.lights;
+        public Map<IPosition, State> getLights() {
+            Map<IPosition, State> value = this.lights;
             if (value == null) synchronized (this) {
                 if ((value = this.lights) == null) this.lights = value = this.get().filter(LIGHT_PREDICATE);
             }
             return value;
         }
 
-        public Map<Position, State> getSelves() {
-            Map<Position, State> value = this.selves;
+        public Map<IPosition, State> getSelves() {
+            Map<IPosition, State> value = this.selves;
             if (value == null) synchronized (this) {
                 if ((value = this.selves) == null) this.selves = value = this.get().filter(SELF_PREDICATE);
             }
@@ -235,44 +238,44 @@ public final class Board {
 
     public final static class LayerMutationBuilder {
 
-        private Iterable<Position> potentialPositions = Sets.newHashSet();
-        private Iterable<Position> selfPositions = Sets.newHashSet();
-        private Iterable<Position> otherPositions = Sets.newHashSet();
-        private Iterable<Position> shadowPositions = Sets.newHashSet();
+        private Iterable<IPosition> potentialPositions = Sets.newHashSet();
+        private Iterable<IPosition> selfPositions = Sets.newHashSet();
+        private Iterable<IPosition> otherPositions = Sets.newHashSet();
+        private Iterable<IPosition> shadowPositions = Sets.newHashSet();
 
-        public LayerMutationBuilder setLightPositions(final Iterable<Position> positions) {
+        public LayerMutationBuilder setLightPositions(final Iterable<IPosition> positions) {
             this.potentialPositions = positions;
             return this;
         }
 
-        public LayerMutationBuilder setLightPositions(final Position... positions) {
+        public LayerMutationBuilder setLightPositions(final IPosition... positions) {
             return this.setLightPositions(Sets.newHashSet(positions));
         }
 
-        public LayerMutationBuilder setSelfPositions(final Iterable<Position> positions) {
+        public LayerMutationBuilder setSelfPositions(final Iterable<IPosition> positions) {
             this.selfPositions = positions;
             return this;
         }
 
-        public LayerMutationBuilder setShadowPositions(final Iterable<Position> positions) {
+        public LayerMutationBuilder setShadowPositions(final Iterable<IPosition> positions) {
             this.shadowPositions = positions;
             return this;
         }
 
-        public LayerMutationBuilder setOtherPositions(final Iterable<Position> positions) {
+        public LayerMutationBuilder setOtherPositions(final Iterable<IPosition> positions) {
             this.otherPositions = positions;
             return this;
         }
 
-        public Map<Position, State> build() {
-            final ImmutableMap.Builder<Position, State> builder = new ImmutableMap.Builder<Position, State>();
-            for (final Position position : this.selfPositions)
+        public Map<IPosition, State> build() {
+            final ImmutableMap.Builder<IPosition, State> builder = new ImmutableMap.Builder<IPosition, State>();
+            for (final IPosition position : this.selfPositions)
                 builder.put(position, State.Upekkha);
-            for (final Position position : this.shadowPositions)
+            for (final IPosition position : this.shadowPositions)
                 builder.put(position, State.Karuna);
-            for (final Position position : this.potentialPositions)
+            for (final IPosition position : this.potentialPositions)
                 builder.put(position, State.Metta);
-            for (final Position position : this.otherPositions)
+            for (final IPosition position : this.otherPositions)
                 builder.put(position, State.Mudita);
             return builder.build();
         }
@@ -322,7 +325,7 @@ public final class Board {
             return this;
         }
 
-        public Builder addLayer(final Colors color, final Map<Position, State> layerMutation) {
+        public Builder addLayer(final Colors color, final Map<IPosition, State> layerMutation) {
             return this.addLayer(color, new Layer(this.positions()).apply(layerMutation));
         }
 
@@ -371,17 +374,17 @@ public final class Board {
         return this.layers.get(color);
     }
 
-    public Iterable<Position> neighbours(final Position position, final int radius) {
+    public Iterable<IPosition> neighbours(final IPosition position, final int radius) {
         return this.positions.neighbours(position, radius);
     }
 
-    public Board apply(final Colors color, final Iterable<Position> positions, final Iterable<Position> shadows, final Iterable<Position> lights) {
-        final Map<Position, State> selvesMutation = new LayerMutationBuilder()
+    public Board apply(final Colors color, final Iterable<IPosition> positions, final Iterable<IPosition> shadows, final Iterable<IPosition> lights) {
+        final Map<IPosition, State> selvesMutation = new LayerMutationBuilder()
                 .setSelfPositions(positions)
                 .setShadowPositions(shadows)
                 .setLightPositions(lights)
                 .build();
-        final Map<Position, State> othersMutation = new LayerMutationBuilder()
+        final Map<IPosition, State> othersMutation = new LayerMutationBuilder()
                 .setOtherPositions(positions)
                 .build();
         final Map<Colors, Layer> layers = Maps.newTreeMap();
@@ -390,8 +393,8 @@ public final class Board {
         return new Board(this.positions, layers);
     }
 
-    public Board apply(final Colors color, final IEntity entity) {
-        return entity.isNull() ? this : this.apply(color, entity.positions(), entity.shadows(), entity.lights());
+    public Board apply(final Colors color, final PolyominoTranslatedInstance instance) {
+        return instance == null ? this : this.apply(color, instance.positions(), instance.shadows(), instance.lights());
     }
 
     @Override
@@ -409,18 +412,21 @@ public final class Board {
 
     @Override
     public String toString() {
+        return null; //TODO
+        /*
         final ToStringHelper toStringHelper = Objects.toStringHelper(this).add("rows", this.rows()).add("columns", this.columns());
         final JsonObject data = new JsonObject();
         for (final Colors color : this.getColors()) {
             final JsonArray jsonArray = new JsonArray();
             final Layer layer = this.get(color);
-            final Set<Position> positions = layer.getSelves().keySet();
-            for (final Position position : positions)
+            final Set<IPosition> positions = layer.getSelves().keySet();
+            for (final IPosition position : positions)
                 jsonArray.add(new JsonPrimitive(position.id()));
             data.add(color.toString(), jsonArray);
         }
         toStringHelper.add("data", data);
         return toStringHelper.toString();
+        */
     }
 
 }

@@ -20,6 +20,8 @@ package components.cells;
 import java.util.Map;
 import java.util.Set;
 
+import blockplus.model.polyomino.PolyominoProperties.Location;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,6 +31,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import components.cells.Directions.Direction;
 
+// TODO extract interface ? RelativePositions/AbsolutePositions
 public final class Positions {
 
     public final static class Position implements IPosition {
@@ -36,7 +39,6 @@ public final class Positions {
         private final Integer id;
 
         //@JsonValue
-        @Override
         public Integer id() {
             return this.id;
         }
@@ -151,7 +153,9 @@ public final class Positions {
         return row > -1 && column > -1 && row < this.rows() && column < this.columns();
     }
 
-    public Position get(final int row, final int column) {
+    public IPosition get(final int row, final int column) {
+        return new Location(row, column);
+        /*
         if (!this.isLegal(row, column)) return this.NULL;
         final Integer id = row * this.columns + column;
         Position instance = this.positions.get(id);
@@ -159,12 +163,16 @@ public final class Positions {
             this.positions.put(id, instance = new Position(id, row, column));
         }
         return instance;
+        */
     }
 
-    private Position get(final int id, final int row, final int column) {
-        return this.isLegal(row, column) ? new Position(id, row, column) : this.NULL;
+    /*
+    private IPosition get(final int id, final int row, final int column) {
+        return this.isLegal(row, column) ? new Location(row, column) : this.NULL; // TODO !!!
     }
+    */
 
+    /*
     public Position get(final int id) {
         Position instance = this.positions.get(id);
         if (instance == null) {
@@ -172,6 +180,7 @@ public final class Positions {
         }
         return instance;
     }
+    */
 
     private Neighbourhood neighbourhood() {
         Neighbourhood value = this.neighbourhood;
@@ -181,23 +190,24 @@ public final class Positions {
         return value;
     }
 
-    public Iterable<Position> neighbours(final Position position, final int radius) {
+    public Iterable<IPosition> neighbours(final IPosition position, final int radius) {
         return this.neighbourhood().getNeighboursPositions(position, radius);
     }
 
-    public Iterable<Position> neighbours(final Position position) {
+    public Iterable<IPosition> neighbours(final IPosition position) {
         return this.neighbours(position, 1);
     }
 
-    public Position neighbours(final Position position, final Direction direction) {
+    public IPosition neighbours(final IPosition position, final Direction direction) {
         return Positions.this.get(position.row() + direction.rowDelta(), position.column() + direction.columnDelta());
     }
 
-    public Iterable<Position> neighbours(final Position position, final Iterable<Direction> directions) {
-        final Set<Position> positions = Sets.newLinkedHashSet();
+    public Iterable<IPosition> neighbours(final IPosition position, final Iterable<Direction> directions) {
+        final Set<IPosition> positions = Sets.newLinkedHashSet();
         for (final Direction direction : directions) {
-            final Position neighbour = this.neighbours(position, direction);
-            if (!neighbour.isNull()) positions.add(neighbour);
+            final IPosition neighbour = this.neighbours(position, direction);
+            //if (!neighbour.isNull())
+            positions.add(neighbour);
         }
         return positions;
     }

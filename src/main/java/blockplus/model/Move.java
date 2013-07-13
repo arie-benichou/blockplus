@@ -1,37 +1,34 @@
 
 package blockplus.model;
 
-import blockplus.model.entity.IEntity;
+import java.util.SortedSet;
+
 import blockplus.model.interfaces.IMove;
+
+import components.cells.IPosition;
 
 public class Move implements IMove {
 
     private final Colors color;
 
-    private final IEntity entity;
+    private final SortedSet<IPosition> positions;
 
-    public Move(final Colors color, final IEntity iEntity) {
+    public Move(final Colors color, final SortedSet<IPosition> positions) {
         this.color = color;
-        this.entity = iEntity;
+        this.positions = positions;
     }
 
     public Colors color() {
         return this.color;
     }
 
-    public IEntity entity() {
-        return this.entity;
+    public SortedSet<IPosition> positions() {
+        return this.positions;
     }
 
     @Override
     public boolean isNull() {
-        return this.entity == null || this.entity().isNull();
-    }
-
-    @Override
-    public String toString() {
-        if (this.entity == null) return "null move"; // TODO
-        return this.entity.toString();
+        return this.positions.isEmpty();
     }
 
 }

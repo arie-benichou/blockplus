@@ -17,14 +17,13 @@
 
 package blockplus.model.interfaces;
 
-
 import java.util.List;
 import java.util.Set;
 
-import blockplus.model.entity.Polyomino;
+import blockplus.model.polyomino.Polyomino;
 
 import com.google.common.collect.Table;
-import components.cells.Positions.Position;
+import components.cells.IPosition;
 
 /**
  * Referee interface for a game.
@@ -32,6 +31,6 @@ import components.cells.Positions.Position;
 public interface IOptionsSupplier {
 
     // TODO Options class
-    Table<Position, Polyomino, List<Set<Position>>> options(IContext<?> contextInterface);
+    Table<IPosition, Polyomino, List<Set<IPosition>>> options(IContext<?> contextInterface);
 
 }

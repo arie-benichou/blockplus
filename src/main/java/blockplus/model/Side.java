@@ -18,7 +18,7 @@
 package blockplus.model;
 
 
-import blockplus.model.entity.Polyomino;
+import blockplus.model.polyomino.Polyomino;
 
 import com.google.common.base.Objects;
 

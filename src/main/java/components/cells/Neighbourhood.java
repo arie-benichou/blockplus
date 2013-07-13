@@ -22,11 +22,10 @@ import java.util.Map;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Maps;
-import components.cells.Positions.Position;
 
 public class Neighbourhood {
 
-    private final Map<Position, Map<Integer, Iterable<Position>>> NEIGHBOURS_BY_RADIUS_BY_POSITION = Maps.newTreeMap();
+    private final Map<IPosition, Map<Integer, Iterable<IPosition>>> NEIGHBOURS_BY_RADIUS_BY_POSITION = Maps.newTreeMap();
 
     private final Positions positions;
 
@@ -34,17 +33,17 @@ public class Neighbourhood {
         this.positions = positions;
     }
 
-    private Position getNeighbour(final Position position, final int rowDelta, final int columnDelta) {
+    private IPosition getNeighbour(final IPosition position, final int rowDelta, final int columnDelta) {
         return this.positions.get(position.row() + rowDelta, position.column() + columnDelta);
     }
 
-    private Iterable<Position> computeNeighbours(final Position position, final int radius) {
-        final Builder<Position> builder = ImmutableList.builder();
+    private Iterable<IPosition> computeNeighbours(final IPosition position, final int radius) {
+        final Builder<IPosition> builder = ImmutableList.builder();
         for (int i = -radius; i <= radius; ++i) {
             final int absi = Math.abs(i);
             for (int j = -radius; j <= radius; ++j) {
                 if (absi == radius || Math.abs(j) == radius) {
-                    final Position neighbour = this.getNeighbour(position, i, j);
+                    final IPosition neighbour = this.getNeighbour(position, i, j);
                     if (!neighbour.isNull()) builder.add(neighbour);
                 }
             }
@@ -52,10 +51,10 @@ public class Neighbourhood {
         return builder.build();
     }
 
-    public Iterable<Position> getNeighboursPositions(final Position position, final int radius) {
-        Map<Integer, Iterable<Position>> neighboursByRadius = this.NEIGHBOURS_BY_RADIUS_BY_POSITION.get(position);
+    public Iterable<IPosition> getNeighboursPositions(final IPosition position, final int radius) {
+        Map<Integer, Iterable<IPosition>> neighboursByRadius = this.NEIGHBOURS_BY_RADIUS_BY_POSITION.get(position);
         if (neighboursByRadius == null) this.NEIGHBOURS_BY_RADIUS_BY_POSITION.put(position, neighboursByRadius = Maps.newTreeMap());
-        Iterable<Position> neighbours = neighboursByRadius.get(radius);
+        Iterable<IPosition> neighbours = neighboursByRadius.get(radius);
         if (neighbours == null) neighboursByRadius.put(radius, neighbours = this.computeNeighbours(position, radius));
         return neighbours;
     }

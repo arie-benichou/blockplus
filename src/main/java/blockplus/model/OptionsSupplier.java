@@ -17,19 +17,17 @@
 
 package blockplus.model;
 
-
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedSet;
 
-import blockplus.model.entity.PieceInstances;
-import blockplus.model.entity.PieceInstancesFactory;
-import blockplus.model.entity.Polyomino;
-import blockplus.model.entity.Polyominos;
-import blockplus.model.entity.PieceInstances.PieceInstance;
 import blockplus.model.interfaces.IContext;
 import blockplus.model.interfaces.IOptionsSupplier;
+import blockplus.model.polyomino.Polyomino;
+import blockplus.model.polyomino.PolyominoInstances.PolyominoInstance;
+import blockplus.model.polyomino.PolyominosByRadius;
 
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
@@ -38,68 +36,62 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
-import components.cells.Positions.Position;
+import components.cells.IPosition;
 
 public final class OptionsSupplier implements IOptionsSupplier {
 
-    private final static ImmutableSortedMap<Integer, ImmutableSortedSet<Polyomino>> POLYOMINOS_BY_RADIUS = Polyominos.getInstance().getAllByRadius();
-
-    private final PieceInstancesFactory pieceInstancesFactory;
+    private final static ImmutableSortedMap<Integer, ImmutableSortedSet<Polyomino>> POLYOMINOS_BY_RADIUS = PolyominosByRadius.getInstance().getAllByRadius();
 
     private final Integer minRadius;
 
     private final Integer maxRadius;
 
-    public PieceInstancesFactory getPieceInstancesFactory() {
-        return this.pieceInstancesFactory;
-    }
-
-    public OptionsSupplier(final PieceInstances pieceInstances) {
-        this.pieceInstancesFactory = new PieceInstancesFactory(pieceInstances);
-        this.minRadius = POLYOMINOS_BY_RADIUS.firstKey();
+    public OptionsSupplier() {
+        this.minRadius = Math.max(0, POLYOMINOS_BY_RADIUS.firstKey());
         this.maxRadius = POLYOMINOS_BY_RADIUS.lastKey();
     }
 
-    private Map<Position, Set<Position>> getPotentialPositionsByLight(final Board board, final Colors color, final Iterable<Position> lights, final int radius) {
-        final Map<Position, Set<Position>> map = Maps.newLinkedHashMap();
-        for (final Position light : lights) {
-            final Set<Position> potentialReferentialPositions = Sets.newTreeSet();
+    private Map<IPosition, Set<IPosition>> getPotentialPositionsByLight(final Board board, final Colors color, final Iterable<IPosition> lights,
+            final int radius) {
+        final Map<IPosition, Set<IPosition>> map = Maps.newLinkedHashMap();
+        for (final IPosition light : lights) {
+            final Set<IPosition> potentialReferentialPositions = Sets.newTreeSet();
             for (int k = 0; k <= radius; ++k)
-                for (final Position neighbour : board.neighbours(light, k))
+                for (final IPosition neighbour : board.neighbours(light, k))
                     if (board.get(color).isMutable(neighbour)) potentialReferentialPositions.add(neighbour);
             map.put(light, potentialReferentialPositions);
         }
         return map;
     }
 
-    private List<Set<Position>> getLegalPositions(final Colors side, final Board board, final Position potentialPosition,
-            final Iterable<PieceInstance> instances) {
-        final List<Set<Position>> options = Lists.newArrayList();
-        for (final PieceInstance pieceInstance : instances) {
-            final PieceInstance translatedPieceInstance = pieceInstance.on(potentialPosition);
-            if (board.get(side).isLegal(translatedPieceInstance)) options.add((Set<Position>) translatedPieceInstance.positions());
+    private List<Set<IPosition>> getLegalPositions(final Colors side, final Board board, final IPosition potentialPosition,
+            final Iterable<PolyominoInstance> instances) {
+        final List<Set<IPosition>> options = Lists.newArrayList();
+        for (final PolyominoInstance instance : instances) {
+            final SortedSet<IPosition> positions = instance.apply(potentialPosition);
+            if (board.get(side).isLegal(positions)) options.add(positions);
         }
         return options;
     }
 
     @Override
-    public Table<Position, Polyomino, List<Set<Position>>> options(final IContext<?> contextInterface) {
+    public Table<IPosition, Polyomino, List<Set<IPosition>>> options(final IContext<?> contextInterface) {
         final Context context = (Context) contextInterface;
-        final Colors side = context.getSide();
-        final Board board = context.getBoard();
-        final Iterable<Position> lights = board.get(side).getLights().keySet();
+        final Colors side = context.side();
+        final Board board = context.board();
+        final Iterable<IPosition> lights = board.get(side).getLights().keySet();
         final ColoredPolyominoSet remainingPieces = context.getPlayer().remainingPieces();
-        final Table<Position, Polyomino, List<Set<Position>>> table = TreeBasedTable.create();
+        final Table<IPosition, Polyomino, List<Set<IPosition>>> table = TreeBasedTable.create();
         for (int radius = this.minRadius; radius <= this.maxRadius; ++radius) {
-            final Map<Position, Set<Position>> potentialPositions = this.getPotentialPositionsByLight(board, side, lights, radius);
+            final Map<IPosition, Set<IPosition>> potentialPositions = this.getPotentialPositionsByLight(board, side, lights, radius);
             final ImmutableSortedSet<Polyomino> polyominos = POLYOMINOS_BY_RADIUS.get(radius);
             for (final Polyomino polyomino : polyominos) {
                 if (remainingPieces.contains(polyomino)) {
-                    final Iterable<PieceInstance> instances = this.getPieceInstancesFactory().get(polyomino);
-                    for (final Entry<Position, Set<Position>> entry : potentialPositions.entrySet()) {
-                        final Position position = entry.getKey();
-                        final List<Set<Position>> options = Lists.newArrayList();
-                        for (final Position potentialPosition : entry.getValue())
+                    final Iterable<PolyominoInstance> instances = polyomino.get();
+                    for (final Entry<IPosition, Set<IPosition>> entry : potentialPositions.entrySet()) {
+                        final IPosition position = entry.getKey();
+                        final List<Set<IPosition>> options = Lists.newArrayList();
+                        for (final IPosition potentialPosition : entry.getValue())
                             options.addAll(this.getLegalPositions(side, board, potentialPosition, instances));
                         if (!options.isEmpty()) table.put(position, polyomino, options);
                     }

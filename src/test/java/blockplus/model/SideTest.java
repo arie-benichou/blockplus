@@ -1,8 +1,8 @@
 
 package blockplus.model;
 
-import static blockplus.model.entity.Polyomino._1;
-import static blockplus.model.entity.Polyomino._2;
+import static blockplus.model.polyomino.Polyomino._1;
+import static blockplus.model.polyomino.Polyomino._2;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Assert;
