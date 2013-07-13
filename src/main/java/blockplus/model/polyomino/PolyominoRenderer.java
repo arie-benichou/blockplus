@@ -1,13 +1,29 @@
+/*
+ * Copyright 2012-2013 Arie Benichou
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package blockplus.model.polyomino;
 
 import java.util.SortedSet;
 
 import blockplus.model.polyomino.PolyominoInstances.PolyominoInstance;
-import blockplus.model.polyomino.PolyominoProperties.Location;
 
 import com.google.common.collect.Sets;
 import components.cells.IPosition;
+import components.cells.Positions.Position;
 
 public final class PolyominoRenderer {
 
@@ -29,7 +45,7 @@ public final class PolyominoRenderer {
     private static IPosition topLeftCorner(final SortedSet<IPosition> positions) {
         final int minRow = positions.isEmpty() ? 0 : positions.first().row();
         final int minColumn = positions.isEmpty() ? 0 : minColumn(positions);
-        return new Location(minRow, minColumn);
+        return new Position(minRow, minColumn);
     }
 
     private static char[][] computeRendering(final Polyomino polyomino) {
@@ -61,7 +77,7 @@ public final class PolyominoRenderer {
         for (final IPosition position : positions) {
             final int row = position.row() - topLeftCornerPosition.row();
             final int column = position.column() - topLeftCornerPosition.column();
-            normalizedPositions.add(new Location(row, column));
+            normalizedPositions.add(new Position(row, column));
         }
         return normalizedPositions;
     }

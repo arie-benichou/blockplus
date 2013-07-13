@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012-2013 Arie Benichou
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package blockplus.model.polyomino;
 
@@ -10,7 +26,6 @@ import java.util.SortedSet;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -21,67 +36,12 @@ import components.cells.Directions.Direction;
 import components.cells.ICells;
 import components.cells.IPosition;
 import components.cells.Positions;
+import components.cells.Positions.Position;
 
 public final class PolyominoProperties {
 
-    public final static class Location implements IPosition {
-
-        private final int column;
-        private final int row;
-
-        public Location(final int row, final int column) {
-            this.row = row;
-            this.column = column;
-        }
-
-        public Location(final IPosition position) {
-            this(position.row(), position.column());
-        }
-
-        @Override
-        public int row() {
-            return this.row;
-        }
-
-        @Override
-        public int column() {
-            return this.column;
-        }
-
-        public Location apply(final Direction direction) {
-            return new Location(this.row() + direction.rowDelta(), this.column() + direction.columnDelta());
-        }
-
-        @Override
-        public int compareTo(final IPosition that) {
-            if (this.row() < that.row()) return -1;
-            if (this.row() > that.row()) return 1;
-            if (this.column() < that.column()) return -1;
-            if (this.column() > that.column()) return 1;
-            return 0;
-        }
-
-        @Override
-        public boolean isNull() { // TODO à revoir dans Cells
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return this.toString().hashCode();
-        }
-
-        @Override
-        public boolean equals(final Object that) {
-            Preconditions.checkArgument(that instanceof IPosition);
-            return this.hashCode() == that.hashCode();
-        }
-
-        @Override
-        public String toString() {
-            return Lists.newArrayList(this.row(), this.column()).toString();
-        }
-
+    public static PolyominoProperties from(final String[] data) {
+        return new PolyominoProperties(data);
     }
 
     public static ICells<Integer> computeCells(final String[] data) {
@@ -103,7 +63,7 @@ public final class PolyominoProperties {
     private static IPosition computeReferential(final ICells<Integer> cells) {
         IPosition referential;
         final Set<IPosition> positions = cells.get().keySet();
-        if (positions.isEmpty()) referential = new Location(0, 0);
+        if (positions.isEmpty()) referential = new Position(0, 0);
         else {
             int sumY = 0, sumX = 0;
             for (final IPosition position : positions) {
@@ -120,7 +80,7 @@ public final class PolyominoProperties {
                 row = refY + direction.rowDelta();
                 column = refX + direction.columnDelta();
             }
-            referential = new Location(row, column);
+            referential = new Position(row, column);
         }
         return referential;
     }
@@ -129,7 +89,7 @@ public final class PolyominoProperties {
         return Lists.transform(Lists.newArrayList(position), new Function<IPosition, IPosition>() {
             @Override
             public IPosition apply(@Nullable final IPosition position) {
-                return new Location(position);
+                return new Position(position);
             }
         });
     }
@@ -149,7 +109,7 @@ public final class PolyominoProperties {
         final Set<IPosition> sides = Sets.newHashSet();
         for (final IPosition position : positions)
             for (final Direction direction : Directions.SIDES)
-                sides.add(new Location(position.row(), position.column()).apply(direction));
+                sides.add(new Position(position.row(), position.column()).apply(direction));
         return sides;
     }
 
@@ -161,7 +121,7 @@ public final class PolyominoProperties {
         final Set<IPosition> sides = Sets.newHashSet();
         for (final IPosition position : positions)
             for (final Direction direction : Directions.CORNERS)
-                sides.add(new Location(position.row(), position.column()).apply(direction));
+                sides.add(new Position(position.row(), position.column()).apply(direction));
         return sides;
     }
 
@@ -177,7 +137,7 @@ public final class PolyominoProperties {
     private final SortedSet<IPosition> shadows;
     private final SortedSet<IPosition> lights;
 
-    public PolyominoProperties(final String[] data) {
+    private PolyominoProperties(final String[] data) {
         this.cells = computeCells(data);
         this.positions = ImmutableSortedSet.copyOf(computePositions(this.cells.get().keySet()));
         this.weight = this.cells.get().size();

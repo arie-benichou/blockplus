@@ -20,78 +20,53 @@ package components.cells;
 import java.util.Map;
 import java.util.Set;
 
-import blockplus.model.polyomino.PolyominoProperties.Location;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import components.cells.Directions.Direction;
 
-// TODO extract interface ? RelativePositions/AbsolutePositions
+// TODO caching factory
 public final class Positions {
 
     public final static class Position implements IPosition {
 
-        private final Integer id;
+        private final int column;
+        private final int row;
 
-        //@JsonValue
-        public Integer id() {
-            return this.id;
+        public Position(final int row, final int column) {
+            this.row = row;
+            this.column = column;
         }
 
-        //@JsonIgnore
-        private final int row;
+        public Position(final IPosition position) {
+            this(position.row(), position.column());
+        }
 
         @Override
         public int row() {
             return this.row;
         }
 
-        //@JsonIgnore
-        private final int column;
-
         @Override
         public int column() {
             return this.column;
         }
 
-        @JsonCreator
-        private Position(
-                @JsonProperty("id") final Integer id,
-                @JsonProperty("row") final int row,
-                @JsonProperty("column") final int column) {
-            this.id = id;
-            this.row = row;
-            this.column = column;
+        @Override
+        public Position apply(final int rowDelta, final int columnDelta) {
+            return new Position(this.row() + rowDelta, this.column() + columnDelta);
         }
 
         @Override
-        @JsonIgnore
-        public boolean isNull() {
-            return this.id == -1;
-        }
-
-        @Override
-        public int hashCode() {
-            return this.id();
-        }
-
-        @Override
-        public boolean equals(final Object object) {
-            if (object == this) return true;
-            if (object == null) return false;
-            if (!(object instanceof Position)) return false;
-            final Position that = (Position) object;
-            return that.id().equals(this.id()) && that.row() == this.row() && that.column() == this.column();
+        public Position apply(final Direction direction) {
+            return this.apply(direction.rowDelta(), direction.columnDelta());
         }
 
         @Override
         public int compareTo(final IPosition that) {
-            Preconditions.checkArgument(that != null);
             if (this.row() < that.row()) return -1;
             if (this.row() > that.row()) return 1;
             if (this.column() < that.column()) return -1;
@@ -100,45 +75,67 @@ public final class Positions {
         }
 
         @Override
+        public int hashCode() {
+            return this.toString().hashCode();
+        }
+
+        @Override
+        public boolean equals(final Object that) {
+            Preconditions.checkArgument(that instanceof IPosition);
+            return this.hashCode() == that.hashCode();
+        }
+
+        @Override
         public String toString() {
-            return Objects.toStringHelper(this).add("id", this.id()).add("row", this.row()).add("column", this.column()).toString();
+            return Lists.newArrayList(this.row(), this.column()).toString();
         }
 
-        /*
-        public Position apply(final Direction direction) {
-            return Positions.this.get(this.row() + direction.rowDelta(), this.column() + direction.columnDelta());
-        }
+    }
 
-        public Iterable<Position> apply(final Iterable<Direction> directions) {
-            final Set<Position> positions = Sets.newLinkedHashSet();
-            for (final Direction direction : directions) {
-                final Position position = this.apply(direction);
-                if (!position.isNull()) positions.add(position);
+    private final static class Neighbourhood {
+
+        private final static Map<IPosition, Map<Integer, Iterable<IPosition>>> NEIGHBOURS_BY_RADIUS_BY_POSITION = Maps.newTreeMap();
+
+        private static Iterable<IPosition> computeNeighbours(final IPosition position, final int radius) {
+            final Builder<IPosition> builder = ImmutableList.builder();
+            for (int i = -radius; i <= radius; ++i) {
+                final int absi = Math.abs(i);
+                for (int j = -radius; j <= radius; ++j)
+                    if (absi == radius || Math.abs(j) == radius) builder.add(position.apply(i, j));
             }
-            return positions;
+            return builder.build();
         }
-        */
+
+        public static Iterable<IPosition> getNeighboursPositions(final IPosition position, final int radius) {
+            Map<Integer, Iterable<IPosition>> neighboursByRadius = NEIGHBOURS_BY_RADIUS_BY_POSITION.get(position);
+            if (neighboursByRadius == null) NEIGHBOURS_BY_RADIUS_BY_POSITION.put(position, neighboursByRadius = Maps.newTreeMap());
+            Iterable<IPosition> neighbours = neighboursByRadius.get(radius);
+            if (neighbours == null) neighboursByRadius.put(radius, neighbours = computeNeighbours(position, radius));
+            return neighbours;
+        }
+
+        private Neighbourhood() {}
 
     }
 
-    private final Position NULL = new Position(-1, -1, -1);
-
-    private static int check(final int naturalInteger) {
-        Preconditions.checkArgument(naturalInteger > 0);
-        return naturalInteger;
+    /*
+    public Iterable<Position> apply(final Iterable<Direction> directions) {
+        final Set<Position> positions = Sets.newLinkedHashSet();
+        for (final Direction direction : directions) {
+            final Position position = this.apply(direction);
+            if (!position.isNull()) positions.add(position);
+        }
+        return positions;
     }
+    */
 
     private final int rows;
 
     private final int columns;
 
-    private final Map<Integer, Position> positions = Maps.newTreeMap();
-
-    private volatile Neighbourhood neighbourhood;
-
     public Positions(final int rows, final int columns) {
-        this.rows = check(rows);
-        this.columns = check(columns);
+        this.rows = rows;
+        this.columns = columns;
     }
 
     public int rows() {
@@ -149,12 +146,8 @@ public final class Positions {
         return this.columns;
     }
 
-    private boolean isLegal(final int row, final int column) {
-        return row > -1 && column > -1 && row < this.rows() && column < this.columns();
-    }
-
     public IPosition get(final int row, final int column) {
-        return new Location(row, column);
+        return new Position(row, column);
         /*
         if (!this.isLegal(row, column)) return this.NULL;
         final Integer id = row * this.columns + column;
@@ -166,32 +159,8 @@ public final class Positions {
         */
     }
 
-    /*
-    private IPosition get(final int id, final int row, final int column) {
-        return this.isLegal(row, column) ? new Location(row, column) : this.NULL; // TODO !!!
-    }
-    */
-
-    /*
-    public Position get(final int id) {
-        Position instance = this.positions.get(id);
-        if (instance == null) {
-            this.positions.put(id, instance = this.get(id, id / this.columns, id % this.columns));
-        }
-        return instance;
-    }
-    */
-
-    private Neighbourhood neighbourhood() {
-        Neighbourhood value = this.neighbourhood;
-        if (value == null) synchronized (this) {
-            if ((value = this.neighbourhood) == null) this.neighbourhood = value = new Neighbourhood(this);
-        }
-        return value;
-    }
-
     public Iterable<IPosition> neighbours(final IPosition position, final int radius) {
-        return this.neighbourhood().getNeighboursPositions(position, radius);
+        return Neighbourhood.getNeighboursPositions(position, radius);
     }
 
     public Iterable<IPosition> neighbours(final IPosition position) {
@@ -204,11 +173,8 @@ public final class Positions {
 
     public Iterable<IPosition> neighbours(final IPosition position, final Iterable<Direction> directions) {
         final Set<IPosition> positions = Sets.newLinkedHashSet();
-        for (final Direction direction : directions) {
-            final IPosition neighbour = this.neighbours(position, direction);
-            //if (!neighbour.isNull())
-            positions.add(neighbour);
-        }
+        for (final Direction direction : directions)
+            positions.add(this.neighbours(position, direction));
         return positions;
     }
 

@@ -9,12 +9,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import blockplus.model.Side;
-import blockplus.model.ColoredPolyominoSet;
+import blockplus.model.PolyominoSet;
 
 public class SideTest {
 
-    private final static ColoredPolyominoSet PLAYER1_REMAINING_PIECES = new ColoredPolyominoSet.Builder().add(_1).build();
-    private final static ColoredPolyominoSet PLAYER2_REMAINING_PIECES = new ColoredPolyominoSet.Builder().add(_2).build();
+    private final static PolyominoSet PLAYER1_REMAINING_PIECES = new PolyominoSet.Builder().add(_1).build();
+    private final static PolyominoSet PLAYER2_REMAINING_PIECES = new PolyominoSet.Builder().add(_2).build();
 
     private final static Side PLAYER1 = Side.from(PLAYER1_REMAINING_PIECES);
     private final static Side PLAYER2 = Side.from(PLAYER2_REMAINING_PIECES);

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012-2013 Arie Benichou
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package blockplus.model.polyomino;
 
@@ -5,20 +21,24 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import blockplus.model.polyomino.PolyominoInstances.PolyominoInstance;
-import blockplus.model.polyomino.PolyominoProperties.Location;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Sets;
 import components.cells.Directions.Direction;
 import components.cells.IPosition;
+import components.cells.Positions.Position;
 
 public final class PolyominoInstances implements Supplier<Iterable<PolyominoInstance>> {
+
+    public static PolyominoInstances from(final PolyominoProperties properties) {
+        return new PolyominoInstances(properties);
+    }
 
     private static IPosition flipPosition(final IPosition position, final IPosition referential) {
         final int row = position.row();
         final int column = 2 * referential.column() - position.column();
-        return new Location(row, column);
+        return new Position(row, column);
     }
 
     private static Iterable<IPosition> flipPositions(final Iterable<IPosition> positions, final IPosition referential) {
@@ -40,7 +60,7 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
         final int tmpRow = position.row();
         final int row = -position.column() + referential.column() + referential.row();
         final int column = tmpRow + referential.column() - referential.row();
-        return new Location(row, column);
+        return new Position(row, column);
     }
 
     private static Iterable<IPosition> rotatePositions(final Iterable<IPosition> positions, final IPosition referential) {
@@ -82,7 +102,7 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
     private static Iterable<IPosition> translatePositions(final Iterable<IPosition> positions, final Direction direction) {
         final Set<IPosition> newPositions = Sets.newTreeSet();
         for (final IPosition position : positions)
-            newPositions.add(((Location) position).apply(direction));
+            newPositions.add(((Position) position).apply(direction));
         return newPositions;
     }
 
@@ -124,7 +144,7 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
             final int deltaColumn = referential.column() - this.referential().column();
             final SortedSet<IPosition> positions = Sets.newTreeSet();
             for (final IPosition position : this.positions())
-                positions.add(new Location(position.row() + deltaRow, position.column() + deltaColumn));
+                positions.add(new Position(position.row() + deltaRow, position.column() + deltaColumn));
             return positions;
         }
 

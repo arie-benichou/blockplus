@@ -51,7 +51,7 @@ public final class Context implements IContext<Colors> {
 
         private final static Set<Polyomino> LEGAL_PIECES = Polyomino.set();
 
-        private final static ColoredPolyominoSet REMAINING_PIECES = new ColoredPolyominoSet.Builder().addAll(LEGAL_PIECES).build();
+        private final static PolyominoSet REMAINING_PIECES = new PolyominoSet.Builder().addAll(LEGAL_PIECES).build();
 
         private final static blockplus.model.Sides.Builder PLAYERS_BUILDER = new Sides.Builder();
         static {
@@ -234,14 +234,11 @@ public final class Context implements IContext<Colors> {
         final PolyominoTranslatedInstance translatedInstance = polyominos.computeTranslatedInstance(positions, polyominos.getInstance(rendering));
         final Polyomino polyomino = polyominos.getType(rendering);
 
-        if (color == Blue) System.out.println("-------8<-------");
-        System.out.println();
-        System.out.println(color);
-        System.out.println(rendering);
-        System.out.println();
-
-        //System.out.println(polyomino);
-        //System.out.println();
+        //        if (color == Blue) System.out.println("-------8<-------");
+        //        System.out.println();
+        //        System.out.println(color);
+        //        System.out.println(rendering);
+        //        System.out.println();
 
         Preconditions.checkState(this.side().equals(color));
 

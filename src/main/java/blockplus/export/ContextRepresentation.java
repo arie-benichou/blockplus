@@ -24,7 +24,7 @@ import java.util.Set;
 
 import blockplus.model.Board;
 import blockplus.model.Board.Layer;
-import blockplus.model.ColoredPolyominoSet;
+import blockplus.model.PolyominoSet;
 import blockplus.model.Colors;
 import blockplus.model.Context;
 import blockplus.model.Side;
@@ -88,7 +88,7 @@ public final class ContextRepresentation {
         for (final Colors color : context.sides()) {
             final Side player = context.getPlayer(color);
             int bits = 0b1;
-            final ColoredPolyominoSet remainingPieces = player.remainingPieces();
+            final PolyominoSet remainingPieces = player.remainingPieces();
             for (final Entry<Polyomino, Integer> entry : remainingPieces) {
                 if (entry.getKey().ordinal() == 0) continue;
                 bits = bits << 1 | entry.getValue();

@@ -17,7 +17,6 @@
 
 package blockplus.model;
 
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,9 +28,10 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
-public final class ColoredPolyominoSet implements Iterable<Entry<Polyomino, Integer>> {
+// TODO utiliser un sorted set
+public final class PolyominoSet implements Iterable<Entry<Polyomino, Integer>> {
 
-    public final static ColoredPolyominoSet EMPTY = new Builder().build();
+    public final static PolyominoSet EMPTY = new Builder().build();
 
     public final static class Builder {
 
@@ -71,15 +71,15 @@ public final class ColoredPolyominoSet implements Iterable<Entry<Polyomino, Inte
             return this;
         }
 
-        public ColoredPolyominoSet build() {
-            return new ColoredPolyominoSet(this.pieces);
+        public PolyominoSet build() {
+            return new PolyominoSet(this.pieces);
         }
 
     }
 
     private final Map<Polyomino, Integer> pieces;
 
-    private ColoredPolyominoSet(final Map<Polyomino, Integer> pieces) {
+    private PolyominoSet(final Map<Polyomino, Integer> pieces) {
         this.pieces = pieces;
     }
 
@@ -88,7 +88,7 @@ public final class ColoredPolyominoSet implements Iterable<Entry<Polyomino, Inte
         return integer != null && integer > 0;
     }
 
-    public ColoredPolyominoSet remove(final Polyomino piece) {
+    public PolyominoSet remove(final Polyomino piece) {
         Preconditions.checkState(this.contains(piece));
         return new Builder(this.pieces).remove(piece).build();
     }
@@ -111,8 +111,8 @@ public final class ColoredPolyominoSet implements Iterable<Entry<Polyomino, Inte
     @Override
     public boolean equals(final Object object) {
         if (object == null) return false;
-        Preconditions.checkArgument(object instanceof ColoredPolyominoSet);
-        final ColoredPolyominoSet that = (ColoredPolyominoSet) object;
+        Preconditions.checkArgument(object instanceof PolyominoSet);
+        final PolyominoSet that = (PolyominoSet) object;
         return Equivalences.equals().equivalent(this.pieces, that.pieces);
     }
 }

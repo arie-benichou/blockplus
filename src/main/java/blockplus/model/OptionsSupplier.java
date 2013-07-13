@@ -21,16 +21,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.SortedSet;
 
 import blockplus.model.interfaces.IContext;
 import blockplus.model.interfaces.IOptionsSupplier;
 import blockplus.model.polyomino.Polyomino;
 import blockplus.model.polyomino.PolyominoInstances.PolyominoInstance;
-import blockplus.model.polyomino.PolyominosByRadius;
+import blockplus.model.polyomino.Polyominos;
 
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -40,7 +39,7 @@ import components.cells.IPosition;
 
 public final class OptionsSupplier implements IOptionsSupplier {
 
-    private final static ImmutableSortedMap<Integer, ImmutableSortedSet<Polyomino>> POLYOMINOS_BY_RADIUS = PolyominosByRadius.getInstance().getAllByRadius();
+    private final static SortedMap<Integer, Set<Polyomino>> POLYOMINOS_BY_RADIUS = Polyominos.getInstance().byRadius();
 
     private final Integer minRadius;
 
@@ -80,11 +79,11 @@ public final class OptionsSupplier implements IOptionsSupplier {
         final Colors side = context.side();
         final Board board = context.board();
         final Iterable<IPosition> lights = board.get(side).getLights().keySet();
-        final ColoredPolyominoSet remainingPieces = context.getPlayer().remainingPieces();
+        final PolyominoSet remainingPieces = context.getPlayer().remainingPieces();
         final Table<IPosition, Polyomino, List<Set<IPosition>>> table = TreeBasedTable.create();
         for (int radius = this.minRadius; radius <= this.maxRadius; ++radius) {
             final Map<IPosition, Set<IPosition>> potentialPositions = this.getPotentialPositionsByLight(board, side, lights, radius);
-            final ImmutableSortedSet<Polyomino> polyominos = POLYOMINOS_BY_RADIUS.get(radius);
+            final Set<Polyomino> polyominos = POLYOMINOS_BY_RADIUS.get(radius);
             for (final Polyomino polyomino : polyominos) {
                 if (remainingPieces.contains(polyomino)) {
                     final Iterable<PolyominoInstance> instances = polyomino.get();

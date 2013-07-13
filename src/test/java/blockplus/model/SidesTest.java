@@ -18,7 +18,7 @@ import blockplus.model.polyomino.Polyomino;
 // FIXME add tests for hashCode, equals
 public class SidesTest {
 
-    private static final ColoredPolyominoSet REMAINING_PIECES = new ColoredPolyominoSet.Builder().add(Polyomino._1).build();
+    private static final PolyominoSet REMAINING_PIECES = new PolyominoSet.Builder().add(Polyomino._1).build();
     private final static Side PLAYER1 = Side.from(REMAINING_PIECES);
     private final static Side PLAYER2 = Side.from(REMAINING_PIECES);
     private final static Side PLAYER3 = Side.from(REMAINING_PIECES);

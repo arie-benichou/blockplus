@@ -24,17 +24,17 @@ import com.google.common.base.Objects;
 
 public final class Side {
 
-    public static Side from(final ColoredPolyominoSet remainingPieces) {
+    public static Side from(final PolyominoSet remainingPieces) {
         return new Side(remainingPieces);
     }
 
-    private final ColoredPolyominoSet remainingPieces;
+    private final PolyominoSet remainingPieces;
 
-    public ColoredPolyominoSet remainingPieces() {
+    public PolyominoSet remainingPieces() {
         return this.remainingPieces;
     }
 
-    private Side(final ColoredPolyominoSet remainingPieces) {
+    private Side(final PolyominoSet remainingPieces) {
         this.remainingPieces = remainingPieces;
     }
 
