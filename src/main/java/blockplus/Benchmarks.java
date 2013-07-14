@@ -44,9 +44,9 @@ public class Benchmarks {
                 //System.out.println(n + " options");
                 ////////////////////////////////////////////////////////////////////////////                
                 final List<Set<IPosition>> list = last.getValue();
+                //final int size = list.size();
+                //final int k = random.nextInt(size);
                 final SortedSet<IPosition> positions = (SortedSet<IPosition>) list.get(0);
-                //                final int size = list.size();
-                //                final int k = random.nextInt(size);
                 //System.out.println(positions);
                 final Move move = new Move(context.side(), positions);
                 context = context.apply(move).forward();

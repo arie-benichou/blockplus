@@ -17,22 +17,16 @@
 
 package components.cells;
 
-import java.util.Map;
-
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
 
 public final class Directions {
 
-    public final static class Direction implements Comparable<Direction> {
+    public final static class Direction {
 
-        private final int id;
         private final int rowDelta;
         private final int columnDelta;
 
-        private Direction(final int id, final int rowDelta, final int columnDelta) {
-            this.id = id;
+        private Direction(final int rowDelta, final int columnDelta) {
             this.rowDelta = rowDelta;
             this.columnDelta = columnDelta;
         }
@@ -45,43 +39,10 @@ public final class Directions {
             return this.columnDelta;
         }
 
-        @Override
-        public int hashCode() {
-            return this.id;
-        }
-
-        @Override
-        public boolean equals(final Object object) {
-            if (object == this) return true;
-            if (object == null) return false;
-            if (!(object instanceof Direction)) return false;
-            final Direction that = (Direction) object;
-            return this.id == that.id;
-        }
-
-        @Override
-        public int compareTo(final Direction that) {
-            if (this.rowDelta() < that.rowDelta()) return -1;
-            if (this.rowDelta() > that.rowDelta()) return 1;
-            if (this.columnDelta() < that.columnDelta()) return -1;
-            if (this.columnDelta() > that.columnDelta()) return 1;
-            return 0;
-        }
-
-        @Override
-        public String toString() {
-            return Objects.toStringHelper(this).add("rowDelta", this.rowDelta()).add("columnDelta", this.columnDelta()).toString();
-        }
-
     }
 
-    private final static Map<Integer, Direction> DIRECTIONS = Maps.newTreeMap();
-
-    public static Direction get(final int rowDelta, final int columnDelta) {
-        final int id = (rowDelta + "|" + columnDelta).hashCode();
-        Direction instance = DIRECTIONS.get(id);
-        if (instance == null) DIRECTIONS.put(id, instance = new Direction(id, rowDelta, columnDelta));
-        return instance;
+    public static Direction Direction(final int rowDelta, final int columnDelta) {
+        return new Direction(rowDelta, columnDelta);
     }
 
     /*
@@ -93,7 +54,7 @@ public final class Directions {
     |   |   |   |
     -------------
     */
-    public final static Direction TOP_LEFT = Directions.get(-1, -1);
+    public final static Direction TOP_LEFT = Direction(-1, -1);
 
     /*
     -------------
@@ -104,7 +65,7 @@ public final class Directions {
     |   |   |   |
     -------------
      */
-    public final static Direction TOP = Directions.get(-1, 0);
+    public final static Direction TOP = Direction(-1, 0);
 
     /*
     -------------
@@ -115,7 +76,7 @@ public final class Directions {
     |   |   |   |
     -------------
     */
-    public final static Direction TOP_RIGHT = Directions.get(-1, 1);
+    public final static Direction TOP_RIGHT = Direction(-1, 1);
 
     /*
     -------------
@@ -126,7 +87,7 @@ public final class Directions {
     |   |   |   |
     -------------
     */
-    public final static Direction LEFT = Directions.get(0, -1);
+    public final static Direction LEFT = Direction(0, -1);
 
     /*
     -------------
@@ -137,7 +98,7 @@ public final class Directions {
     |   |   |   |
     -------------
     */
-    public final static Direction NULL = Directions.get(0, 0);
+    public final static Direction NULL = Direction(0, 0);
 
     /*
     -------------
@@ -148,7 +109,7 @@ public final class Directions {
     |   |   |   |
     -------------
     */
-    public final static Direction RIGHT = Directions.get(0, 1);
+    public final static Direction RIGHT = Direction(0, 1);
 
     /*
     -------------
@@ -159,7 +120,7 @@ public final class Directions {
     | x |   |   |
     -------------
     */
-    public final static Direction BOTTOM_LEFT = Directions.get(1, -1);
+    public final static Direction BOTTOM_LEFT = Direction(1, -1);
 
     /*
     -------------
@@ -170,7 +131,7 @@ public final class Directions {
     |   | x |   |
     -------------
     */
-    public final static Direction BOTTOM = Directions.get(1, 0);
+    public final static Direction BOTTOM = Direction(1, 0);
 
     /*
     -------------
@@ -181,7 +142,7 @@ public final class Directions {
     |   |   | x |
     -------------
     */
-    public final static Direction BOTTOM_RIGHT = Directions.get(1, 1);
+    public final static Direction BOTTOM_RIGHT = Direction(1, 1);
 
     public final static Iterable<Direction> SIDES = ImmutableList.of(TOP, LEFT, RIGHT, BOTTOM);
 

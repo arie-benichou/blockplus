@@ -33,7 +33,6 @@ import blockplus.model.interfaces.IMove;
 import blockplus.model.interfaces.IOptionsSupplier;
 import blockplus.model.polyomino.Polyomino;
 import blockplus.model.polyomino.PolyominoInstances.PolyominoTranslatedInstance;
-import blockplus.model.polyomino.PolyominoRenderer;
 import blockplus.model.polyomino.Polyominos;
 
 import com.google.common.base.Objects;
@@ -225,26 +224,21 @@ public final class Context implements IContext<Colors> {
         final Move move = (Move) iMove;
         final Colors color = move.color();
         final SortedSet<IPosition> positions = move.positions();
-
-        // TODO helper methods
         final Polyominos polyominos = Polyominos.getInstance();
-        final String rendering = PolyominoRenderer.render(positions);
-        final PolyominoTranslatedInstance translatedInstance = polyominos.computeTranslatedInstance(positions, polyominos.getInstance(rendering));
-        final Polyomino polyomino = polyominos.getType(rendering);
+        final PolyominoTranslatedInstance translatedInstance = polyominos.get(positions);
 
-        //        if (color == Blue) System.out.println("-------8<-------");
-        //        System.out.println();
-        //        System.out.println(color);
-        //        System.out.println(rendering);
-        //        System.out.println();
+        if (color == Blue) System.out.println("-------8<-------");
+        System.out.println();
+        System.out.println(color);
+        System.out.println(translatedInstance); // TODO render(PolyominoTranslatedInstance)
+        System.out.println();
 
         Preconditions.checkState(this.side().equals(color));
 
         return new Context(
-                //this.getNextSide(color),
                 color,
                 this.board().apply(color, translatedInstance),
-                this.players().apply(color, polyomino),
+                this.players().apply(color, translatedInstance.type()),
                 this.adversity(),
                 this.optionsSupplier());
     }
@@ -279,8 +273,7 @@ public final class Context implements IContext<Colors> {
         if (this.isTerminal()) return this;
         Context nextContext = new Context(this);
         if (nextContext.options().isEmpty()) {
-            // TODO extract constant
-            final TreeSet<IPosition> emptySet = Sets.newTreeSet();
+            final TreeSet<IPosition> emptySet = Sets.newTreeSet(); // TODO extract constant
             nextContext = nextContext.apply(new Move(nextContext.side(), emptySet));
             nextContext = nextContext.forward();
         }

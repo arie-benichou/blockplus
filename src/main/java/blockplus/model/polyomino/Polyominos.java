@@ -17,6 +17,7 @@
 
 package blockplus.model.polyomino;
 
+import static components.cells.Directions.Direction;
 import static components.cells.Positions.Position;
 
 import java.util.Map;
@@ -34,7 +35,6 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
-import components.cells.Directions;
 import components.cells.IPosition;
 
 // TODO persist translated entities
@@ -91,13 +91,19 @@ public final class Polyominos {
         return this.radiusIndexes;
     }
 
-    public PolyominoTranslatedInstance computeTranslatedInstance(final SortedSet<IPosition> positions, final PolyominoInstance instanceFromPositions) {
-        if (positions.isEmpty()) return null; // TODO
+    private PolyominoTranslatedInstance computeTranslatedInstance(final SortedSet<IPosition> positions, final PolyominoInstance instanceFromPositions,
+            final Polyomino type) {
+        if (positions.isEmpty()) return PolyominoInstances.translate(instanceFromPositions, Direction(0, 0), type); // TODO à revoir...
         final IPosition position1 = positions.first();
         final IPosition position2 = ((SortedSet<IPosition>) instanceFromPositions.positions()).first();
         final int rowDelta = position1.row() - position2.row();
         final int columnDelta = position1.column() - position2.column();
-        return PolyominoInstances.translate(instanceFromPositions, Directions.get(rowDelta, columnDelta));
+        return PolyominoInstances.translate(instanceFromPositions, Direction(rowDelta, columnDelta), type);
+    }
+
+    public PolyominoTranslatedInstance get(final SortedSet<IPosition> positions) {
+        final String rendering = PolyominoRenderer.render(positions);
+        return this.computeTranslatedInstance(positions, this.getInstance(rendering), this.getType(rendering));
     }
 
     public static void main(final String[] args) {
@@ -110,7 +116,8 @@ public final class Polyominos {
         final SortedSet<IPosition> positions = instance.apply(Position(5, 5));
         final String rendering = PolyominoRenderer.render(positions);
         final PolyominoInstance instanceFromPositions = polyominos.getInstance(rendering);
-        final PolyominoTranslatedInstance translatedInstance = polyominos.computeTranslatedInstance(positions, instanceFromPositions);
+        final Polyomino type = polyominos.getType(rendering);
+        final PolyominoTranslatedInstance translatedInstance = polyominos.computeTranslatedInstance(positions, instanceFromPositions, type);
         System.out.println(translatedInstance.positions());
         System.out.println(translatedInstance.shadows());
         System.out.println(translatedInstance.lights());

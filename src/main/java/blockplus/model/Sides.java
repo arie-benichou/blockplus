@@ -72,7 +72,7 @@ public final class Sides implements IPlayers<Colors> {
     public Sides apply(final Colors color, final Polyomino polyomino) {
         final Side player = this.alivePlayers.get(color);
         final Map<Colors, Side> alivePlayers = Maps.newHashMap(this.alivePlayers);
-        if (polyomino.ordinal() == 0) { // TODO à revoir
+        if (polyomino.ordinal() == 0) { // TODO à revoir...
             final Map<Colors, Side> deadPlayers = Maps.newHashMap(this.deadPlayers);
             alivePlayers.remove(color);
             deadPlayers.put(color, player);

@@ -42,8 +42,8 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
         return Position(row, column);
     }
 
-    private static Iterable<IPosition> flipPositions(final Iterable<IPosition> positions, final IPosition referential) {
-        final Set<IPosition> newPositions = Sets.newTreeSet();
+    private static SortedSet<IPosition> flipPositions(final Iterable<IPosition> positions, final IPosition referential) {
+        final SortedSet<IPosition> newPositions = Sets.newTreeSet();
         for (final IPosition position : positions)
             newPositions.add(flipPosition(position, referential));
         return newPositions;
@@ -64,8 +64,8 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
         return Position(row, column);
     }
 
-    private static Iterable<IPosition> rotatePositions(final Iterable<IPosition> positions, final IPosition referential) {
-        final Set<IPosition> newPositions = Sets.newTreeSet();
+    private static SortedSet<IPosition> rotatePositions(final Iterable<IPosition> positions, final IPosition referential) {
+        final SortedSet<IPosition> newPositions = Sets.newTreeSet();
         for (final IPosition position : positions)
             newPositions.add(rotatePosition(position, referential));
         return newPositions;
@@ -100,18 +100,23 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
         return instances;
     }
 
-    private static Iterable<IPosition> translatePositions(final Iterable<IPosition> positions, final Direction direction) {
-        final Set<IPosition> newPositions = Sets.newTreeSet();
+    private static SortedSet<IPosition> translatePositions(final Iterable<IPosition> positions, final Direction direction) {
+        final SortedSet<IPosition> newPositions = Sets.newTreeSet();
         for (final IPosition position : positions)
             newPositions.add(position.apply(direction));
         return newPositions;
     }
 
     public static PolyominoTranslatedInstance translate(final PolyominoInstance instance, final Direction direction) {
-        final Iterable<IPosition> positions = translatePositions(instance.positions(), direction);
-        final Iterable<IPosition> shadows = translatePositions(instance.shadows(), direction);
-        final Iterable<IPosition> lights = translatePositions(instance.lights(), direction);
-        return new PolyominoTranslatedInstance(positions, shadows, lights);
+        return translate(instance, direction, null);
+    }
+
+    // TODO à réfléchir avec OptionsSupplier...
+    public static PolyominoTranslatedInstance translate(final PolyominoInstance instance, final Direction direction, final Polyomino type) {
+        final SortedSet<IPosition> positions = translatePositions(instance.positions(), direction);
+        final SortedSet<IPosition> shadows = translatePositions(instance.shadows(), direction);
+        final SortedSet<IPosition> lights = translatePositions(instance.lights(), direction);
+        return new PolyominoTranslatedInstance(type, positions, shadows, lights);
     }
 
     public final static class PolyominoInstance {
@@ -189,28 +194,45 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
 
     public final static class PolyominoTranslatedInstance {
 
-        private final Iterable<IPosition> positions;
-        private final Iterable<IPosition> shadows;
-        private final Iterable<IPosition> lights;
+        private final Polyomino type;
 
-        public PolyominoTranslatedInstance(final Iterable<IPosition> positions, final Iterable<IPosition> shadows, final Iterable<IPosition> lights) {
+        private final SortedSet<IPosition> positions;
+
+        private final SortedSet<IPosition> shadows;
+
+        private final SortedSet<IPosition> lights;
+
+        public PolyominoTranslatedInstance(
+                final Polyomino type,
+                final SortedSet<IPosition> positions,
+                final SortedSet<IPosition> shadows,
+                final SortedSet<IPosition> lights) {
+            this.type = type;
             this.positions = positions;
             this.shadows = shadows;
             this.lights = lights;
         }
 
-        public Iterable<IPosition> positions() {
+        public Polyomino type() {
+            return this.type;
+        }
+
+        public SortedSet<IPosition> positions() {
             return this.positions;
         }
 
-        public Iterable<IPosition> shadows() {
+        public SortedSet<IPosition> shadows() {
             return this.shadows;
         }
 
-        public Iterable<IPosition> lights() {
+        public SortedSet<IPosition> lights() {
             return this.lights;
         }
 
+        @Override
+        public String toString() {
+            return PolyominoRenderer.render(this.positions());
+        }
     }
 
     private final PolyominoProperties properties;
