@@ -29,8 +29,6 @@ public interface ICells<T> extends Supplier<Map<IPosition, T>> {
 
     int columns();
 
-    IPosition position(int row, int column);
-
     @Override
     Map<IPosition, T> get();
 

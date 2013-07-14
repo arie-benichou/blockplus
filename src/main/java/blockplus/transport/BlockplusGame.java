@@ -17,6 +17,8 @@
 
 package blockplus.transport;
 
+import static components.cells.Positions.Position;
+
 import java.util.List;
 import java.util.SortedSet;
 
@@ -37,7 +39,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import components.cells.IPosition;
-import components.cells.Positions.Position;
 
 public class BlockplusGame implements GameInterface<Context> {
 
@@ -161,7 +162,7 @@ public class BlockplusGame implements GameInterface<Context> {
         final SortedSet<IPosition> positions = Sets.newTreeSet();
         for (final JsonElement element : moveSubmitInterface.getPositions()) {
             final int id = element.getAsInt();
-            final IPosition position = new Position(id / 20, id % 20); // TODO !!!
+            final IPosition position = Position(id / 20, id % 20); // TODO !!!
             positions.add(position);
         }
         final Move move = new Move(context.side(), positions);

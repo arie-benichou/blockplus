@@ -17,6 +17,7 @@
 
 package components.cells;
 
+import static components.cells.Positions.Position;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
@@ -28,17 +29,14 @@ import com.google.common.collect.Lists;
 public class PositionsTest {
 
     private IPosition referential;
-    private Positions positions;
 
     @Before
     public void setUp() throws Exception {
-        this.positions = new Positions(7, 7);
-        this.referential = this.positions.get(3, 3);
+        this.referential = Position(3, 3);
     }
 
     @After
     public void tearDown() throws Exception {
-        this.positions = null;
         this.referential = null;
     }
 
@@ -47,87 +45,87 @@ public class PositionsTest {
         {
             final int radius = -1;
             final Iterable<IPosition> expected = Lists.newArrayList();
-            final Iterable<IPosition> neighboursPositions = this.positions.neighbours(this.referential, radius);
+            final Iterable<IPosition> neighboursPositions = Positions.neighbours(this.referential, radius);
             assertEquals(expected, neighboursPositions);
         }
 
         {
             final int radius = 0;
             final Iterable<IPosition> expected = Lists.newArrayList(this.referential); // TODO à revoir
-            final Iterable<IPosition> neighboursPositions = this.positions.neighbours(this.referential, radius);
+            final Iterable<IPosition> neighboursPositions = Positions.neighbours(this.referential, radius);
             assertEquals(expected, neighboursPositions);
         }
 
         {
             final int radius = 1;
             final Iterable<IPosition> expected = Lists.newArrayList(
-                    this.positions.get(2, 2),
-                    this.positions.get(2, 3),
-                    this.positions.get(2, 4),
-                    this.positions.get(3, 2),
-                    this.positions.get(3, 4),
-                    this.positions.get(4, 2),
-                    this.positions.get(4, 3),
-                    this.positions.get(4, 4)
+                    Position(2, 2),
+                    Position(2, 3),
+                    Position(2, 4),
+                    Position(3, 2),
+                    Position(3, 4),
+                    Position(4, 2),
+                    Position(4, 3),
+                    Position(4, 4)
 
                     );
-            final Iterable<IPosition> neighboursPositions = this.positions.neighbours(this.referential, radius);
+            final Iterable<IPosition> neighboursPositions = Positions.neighbours(this.referential, radius);
             assertEquals(expected, neighboursPositions);
         }
 
         {
             final int radius = 2;
             final Iterable<IPosition> expected = Lists.newArrayList(
-                    this.positions.get(1, 1),
-                    this.positions.get(1, 2),
-                    this.positions.get(1, 3),
-                    this.positions.get(1, 4),
-                    this.positions.get(1, 5),
-                    this.positions.get(2, 1),
-                    this.positions.get(2, 5),
-                    this.positions.get(3, 1),
-                    this.positions.get(3, 5),
-                    this.positions.get(4, 1),
-                    this.positions.get(4, 5),
-                    this.positions.get(5, 1),
-                    this.positions.get(5, 2),
-                    this.positions.get(5, 3),
-                    this.positions.get(5, 4),
-                    this.positions.get(5, 5)
+                    Position(1, 1),
+                    Position(1, 2),
+                    Position(1, 3),
+                    Position(1, 4),
+                    Position(1, 5),
+                    Position(2, 1),
+                    Position(2, 5),
+                    Position(3, 1),
+                    Position(3, 5),
+                    Position(4, 1),
+                    Position(4, 5),
+                    Position(5, 1),
+                    Position(5, 2),
+                    Position(5, 3),
+                    Position(5, 4),
+                    Position(5, 5)
                     );
-            final Iterable<IPosition> neighboursPositions = this.positions.neighbours(this.referential, radius);
+            final Iterable<IPosition> neighboursPositions = Positions.neighbours(this.referential, radius);
             assertEquals(expected, neighboursPositions);
         }
 
         {
             final int radius = 3;
             final Iterable<IPosition> expected = Lists.newArrayList(
-                    this.positions.get(0, 0),
-                    this.positions.get(0, 1),
-                    this.positions.get(0, 2),
-                    this.positions.get(0, 3),
-                    this.positions.get(0, 4),
-                    this.positions.get(0, 5),
-                    this.positions.get(0, 6),
-                    this.positions.get(1, 0),
-                    this.positions.get(1, 6),
-                    this.positions.get(2, 0),
-                    this.positions.get(2, 6),
-                    this.positions.get(3, 0),
-                    this.positions.get(3, 6),
-                    this.positions.get(4, 0),
-                    this.positions.get(4, 6),
-                    this.positions.get(5, 0),
-                    this.positions.get(5, 6),
-                    this.positions.get(6, 0),
-                    this.positions.get(6, 1),
-                    this.positions.get(6, 2),
-                    this.positions.get(6, 3),
-                    this.positions.get(6, 4),
-                    this.positions.get(6, 5),
-                    this.positions.get(6, 6)
+                    Position(0, 0),
+                    Position(0, 1),
+                    Position(0, 2),
+                    Position(0, 3),
+                    Position(0, 4),
+                    Position(0, 5),
+                    Position(0, 6),
+                    Position(1, 0),
+                    Position(1, 6),
+                    Position(2, 0),
+                    Position(2, 6),
+                    Position(3, 0),
+                    Position(3, 6),
+                    Position(4, 0),
+                    Position(4, 6),
+                    Position(5, 0),
+                    Position(5, 6),
+                    Position(6, 0),
+                    Position(6, 1),
+                    Position(6, 2),
+                    Position(6, 3),
+                    Position(6, 4),
+                    Position(6, 5),
+                    Position(6, 6)
                     );
-            final Iterable<IPosition> neighboursPositions = this.positions.neighbours(this.referential, radius);
+            final Iterable<IPosition> neighboursPositions = Positions.neighbours(this.referential, radius);
             assertEquals(expected, neighboursPositions);
         }
     }

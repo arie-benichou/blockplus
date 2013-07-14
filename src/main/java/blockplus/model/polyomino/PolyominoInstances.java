@@ -17,6 +17,8 @@
 
 package blockplus.model.polyomino;
 
+import static components.cells.Positions.Position;
+
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -27,7 +29,6 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Sets;
 import components.cells.Directions.Direction;
 import components.cells.IPosition;
-import components.cells.Positions.Position;
 
 public final class PolyominoInstances implements Supplier<Iterable<PolyominoInstance>> {
 
@@ -38,7 +39,7 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
     private static IPosition flipPosition(final IPosition position, final IPosition referential) {
         final int row = position.row();
         final int column = 2 * referential.column() - position.column();
-        return new Position(row, column);
+        return Position(row, column);
     }
 
     private static Iterable<IPosition> flipPositions(final Iterable<IPosition> positions, final IPosition referential) {
@@ -60,7 +61,7 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
         final int tmpRow = position.row();
         final int row = -position.column() + referential.column() + referential.row();
         final int column = tmpRow + referential.column() - referential.row();
-        return new Position(row, column);
+        return Position(row, column);
     }
 
     private static Iterable<IPosition> rotatePositions(final Iterable<IPosition> positions, final IPosition referential) {
@@ -102,7 +103,7 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
     private static Iterable<IPosition> translatePositions(final Iterable<IPosition> positions, final Direction direction) {
         final Set<IPosition> newPositions = Sets.newTreeSet();
         for (final IPosition position : positions)
-            newPositions.add(((Position) position).apply(direction));
+            newPositions.add(position.apply(direction));
         return newPositions;
     }
 
@@ -144,7 +145,7 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
             final int deltaColumn = referential.column() - this.referential().column();
             final SortedSet<IPosition> positions = Sets.newTreeSet();
             for (final IPosition position : this.positions())
-                positions.add(new Position(position.row() + deltaRow, position.column() + deltaColumn));
+                positions.add(Position(position.row() + deltaRow, position.column() + deltaColumn));
             return positions;
         }
 

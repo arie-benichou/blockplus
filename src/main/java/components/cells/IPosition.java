@@ -18,7 +18,6 @@
 package components.cells;
 
 import components.cells.Directions.Direction;
-import components.cells.Positions.Position;
 
 public interface IPosition extends Comparable<IPosition> {
 
@@ -29,8 +28,8 @@ public interface IPosition extends Comparable<IPosition> {
     @Override
     int compareTo(IPosition that);
 
-    Position apply(int rowDelta, int columnDelta);
+    IPosition apply(int rowDelta, int columnDelta);
 
-    Position apply(Direction direction);
+    IPosition apply(Direction direction);
 
 }

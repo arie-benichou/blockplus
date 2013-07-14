@@ -17,13 +17,14 @@
 
 package blockplus.model.polyomino;
 
+import static components.cells.Positions.Position;
+
 import java.util.SortedSet;
 
 import blockplus.model.polyomino.PolyominoInstances.PolyominoInstance;
 
 import com.google.common.collect.Sets;
 import components.cells.IPosition;
-import components.cells.Positions.Position;
 
 public final class PolyominoRenderer {
 
@@ -45,7 +46,7 @@ public final class PolyominoRenderer {
     private static IPosition topLeftCorner(final SortedSet<IPosition> positions) {
         final int minRow = positions.isEmpty() ? 0 : positions.first().row();
         final int minColumn = positions.isEmpty() ? 0 : minColumn(positions);
-        return new Position(minRow, minColumn);
+        return Position(minRow, minColumn);
     }
 
     private static char[][] computeRendering(final Polyomino polyomino) {
@@ -77,7 +78,7 @@ public final class PolyominoRenderer {
         for (final IPosition position : positions) {
             final int row = position.row() - topLeftCornerPosition.row();
             final int column = position.column() - topLeftCornerPosition.column();
-            normalizedPositions.add(new Position(row, column));
+            normalizedPositions.add(Position(row, column));
         }
         return normalizedPositions;
     }

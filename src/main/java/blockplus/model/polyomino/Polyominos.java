@@ -17,6 +17,8 @@
 
 package blockplus.model.polyomino;
 
+import static components.cells.Positions.Position;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -34,7 +36,6 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import components.cells.Directions;
 import components.cells.IPosition;
-import components.cells.Positions.Position;
 
 // TODO persist translated entities
 public final class Polyominos {
@@ -106,7 +107,7 @@ public final class Polyominos {
         System.out.println(string);
         final Polyominos polyominos = Polyominos.getInstance();
         final PolyominoInstance instance = polyominos.getInstance(string);
-        final SortedSet<IPosition> positions = instance.apply(new Position(5, 5));
+        final SortedSet<IPosition> positions = instance.apply(Position(5, 5));
         final String rendering = PolyominoRenderer.render(positions);
         final PolyominoInstance instanceFromPositions = polyominos.getInstance(rendering);
         final PolyominoTranslatedInstance translatedInstance = polyominos.computeTranslatedInstance(positions, instanceFromPositions);

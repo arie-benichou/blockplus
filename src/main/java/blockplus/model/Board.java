@@ -21,6 +21,7 @@ import static blockplus.model.Board.State.Metta;
 import static blockplus.model.Board.State.Mudita;
 import static blockplus.model.Board.State.Nirvana;
 import static blockplus.model.Board.State.Upekkha;
+import static components.cells.Positions.Position;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -135,12 +136,8 @@ public final class Board {
             this.isMutablePredicate = new IsMutablePredicate(stateBoard);
         }
 
-        public Layer(final Positions cellPositions) {
-            this(Cells.from(cellPositions, Nirvana, Mudita));
-        }
-
-        public IPosition position(final int i, final int j) {
-            return this.get().position(i, i);
+        public Layer(final int rows, final int columns) {
+            this(Cells.from(rows, columns, Nirvana, Mudita));
         }
 
         public boolean isMutable(final IPosition position) {
@@ -148,7 +145,7 @@ public final class Board {
         }
 
         public boolean isMutable(final int i, final int j) {
-            return this.isMutable(this.get().position(i, j));
+            return this.isMutable(Position(i, j));
         }
 
         public boolean isLegal(final Iterable<IPosition> positions) {
@@ -296,25 +293,24 @@ public final class Board {
             return this.colors;
         }
 
-        private final Positions positions;
-
-        private Positions positions() {
-            return this.positions;
-        }
+        private final int rows;
 
         public int rows() {
-            return this.positions().rows();
+            return this.rows;
         }
 
+        private final int columns;
+
         public int columns() {
-            return this.positions().columns();
+            return this.columns;
         }
 
         private final ImmutableSortedMap.Builder<Colors, Layer> layerByColor = new ImmutableSortedMap.Builder<Colors, Layer>(Ordering.natural());
 
-        public Builder(final Set<Colors> colors, final Positions positions) {
+        public Builder(final int rows, final int columns, final Set<Colors> colors) {
+            this.rows = rows;
+            this.columns = columns;
             this.colors = ImmutableSortedSet.copyOf(check(colors));
-            this.positions = positions;
         }
 
         public Builder addLayer(final Colors color, final Layer layer) {
@@ -326,35 +322,34 @@ public final class Board {
         }
 
         public Builder addLayer(final Colors color, final Map<IPosition, State> layerMutation) {
-            return this.addLayer(color, new Layer(this.positions()).apply(layerMutation));
+            return this.addLayer(color, new Layer(this.rows(), this.columns()).apply(layerMutation));
         }
 
         public Builder addLayer(final Colors color) {
-            return this.addLayer(color, new Layer(this.positions()));
+            return this.addLayer(color, new Layer(this.rows(), this.columns()));
         }
 
         public Board build() {
             ImmutableSortedMap<Colors, Layer> layerByColor = this.layerByColor.build();
             if (layerByColor.isEmpty()) {
                 for (final Colors color : this.colors())
-                    this.layerByColor.put(color, new Layer(this.positions()));
+                    this.layerByColor.put(color, new Layer(this.rows(), this.columns()));
                 layerByColor = this.layerByColor.build();
             }
             else Preconditions.checkState(this.colors().size() == layerByColor.size());
-            return new Board(this.positions(), layerByColor);
+            return new Board(this.rows(), this.columns(), layerByColor);
         }
 
     }
 
-    public static Builder builder(final Set<Colors> colors, final Positions cellPositions) {
-        return new Board.Builder(colors, cellPositions);
-    }
-
     private final Map<Colors, Layer> layers;
-    private final Positions positions;
 
-    private Board(final Positions positions, final Map<Colors, Layer> layerByColor) {
-        this.positions = positions;
+    private final int rows;
+    private final int columns;
+
+    private Board(final int rows, final int columns, final Map<Colors, Layer> layerByColor) {
+        this.rows = rows;
+        this.columns = columns;
         this.layers = layerByColor;
     }
 
@@ -363,11 +358,11 @@ public final class Board {
     }
 
     public int rows() {
-        return this.positions.rows();
+        return this.rows;
     }
 
     public int columns() {
-        return this.positions.columns();
+        return this.columns;
     }
 
     public Layer get(final Colors color) {
@@ -375,7 +370,7 @@ public final class Board {
     }
 
     public Iterable<IPosition> neighbours(final IPosition position, final int radius) {
-        return this.positions.neighbours(position, radius);
+        return Positions.neighbours(position, radius);
     }
 
     public Board apply(final Colors color, final Iterable<IPosition> positions, final Iterable<IPosition> shadows, final Iterable<IPosition> lights) {
@@ -390,7 +385,7 @@ public final class Board {
         final Map<Colors, Layer> layers = Maps.newTreeMap();
         for (final Colors c : this.getColors())
             layers.put(c, this.get(c).apply(c.equals(color) ? selvesMutation : othersMutation));
-        return new Board(this.positions, layers);
+        return new Board(this.rows(), this.columns(), layers);
     }
 
     public Board apply(final Colors color, final PolyominoTranslatedInstance instance) {

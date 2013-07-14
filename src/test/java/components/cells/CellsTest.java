@@ -17,6 +17,7 @@
 
 package components.cells;
 
+import static components.cells.Positions.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -39,7 +40,7 @@ public class CellsTest {
         Initial, Undefined, Other;
     }
 
-    private final static ICells<State> CELLS = Cells.from(new Positions(6, 4), State.Initial, State.Undefined);
+    private final static ICells<State> CELLS = Cells.from(6, 4, State.Initial, State.Undefined);
 
     private final static Predicate<Entry<IPosition, State>> UNDEFINED_PREDICATE = new Predicate<Map.Entry<IPosition, State>>() {
 
@@ -167,7 +168,7 @@ public class CellsTest {
 
     @Test
     public void testApply() {
-        final IPosition position = CELLS.position(0, 0);
+        final IPosition position = Position(0, 0);
         final Map<IPosition, State> mutations = Maps.newHashMap();
         mutations.put(position, State.Other);
         ICells<State> newCells;
@@ -181,19 +182,19 @@ public class CellsTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testExposedMutationsImmutability() {
-        CELLS.get().put(CELLS.position(0, 0), State.Undefined);
+        CELLS.get().put(Position(0, 0), State.Undefined);
     }
 
     @Test
     public void testMutations() {
         final Map<IPosition, State> mutations = Maps.newHashMap();
-        mutations.put(CELLS.position(0, 0), State.Initial);
-        mutations.put(CELLS.position(0, 1), State.Initial);
-        mutations.put(CELLS.position(1, 0), State.Initial);
-        mutations.put(CELLS.position(1, 1), State.Undefined);
+        mutations.put(Position(0, 0), State.Initial);
+        mutations.put(Position(0, 1), State.Initial);
+        mutations.put(Position(1, 0), State.Initial);
+        mutations.put(Position(1, 1), State.Undefined);
         final Map<IPosition, State> actual = CELLS.apply(mutations).get();
         final Map<IPosition, State> expected = Maps.newHashMap();
-        expected.put(CELLS.position(1, 1), State.Undefined);
+        expected.put(Position(1, 1), State.Undefined);
         assertEquals(expected, actual);
     }
 
@@ -210,7 +211,7 @@ public class CellsTest {
         }
         {
             final Map<IPosition, State> mutations = Maps.newHashMap();
-            mutations.put(CELLS.position(0, 0), State.Undefined);
+            mutations.put(Position(0, 0), State.Undefined);
             final Map<IPosition, State> expected = mutations;
             final Map<IPosition, State> actual = CELLS.apply(mutations).filter(UNDEFINED_PREDICATE);
             assertEquals(expected, actual);
@@ -221,29 +222,29 @@ public class CellsTest {
         }
         {
             final Map<IPosition, State> mutations = Maps.newHashMap();
-            mutations.put(CELLS.position(0, 0), State.Other);
+            mutations.put(Position(0, 0), State.Other);
             final Map<IPosition, State> actual = CELLS.apply(mutations).filter(OTHER_PREDICATE);
             final Map<IPosition, State> expected = mutations;
             assertTrue(Equivalences.equals().equivalent(actual, expected));
         }
         {
             final Map<IPosition, State> mutations = Maps.newHashMap();
-            mutations.put(CELLS.position(0, 0), State.Undefined);
-            mutations.put(CELLS.position(1, 0), State.Other);
-            mutations.put(CELLS.position(0, 1), State.Undefined);
-            mutations.put(CELLS.position(1, 1), State.Other);
+            mutations.put(Position(0, 0), State.Undefined);
+            mutations.put(Position(1, 0), State.Other);
+            mutations.put(Position(0, 1), State.Undefined);
+            mutations.put(Position(1, 1), State.Other);
             {
                 final Map<IPosition, State> actual = CELLS.apply(mutations).filter(UNDEFINED_PREDICATE);
                 final Map<IPosition, State> expected = Maps.newHashMap();
-                expected.put(CELLS.position(0, 0), State.Undefined);
-                expected.put(CELLS.position(0, 1), State.Undefined);
+                expected.put(Position(0, 0), State.Undefined);
+                expected.put(Position(0, 1), State.Undefined);
                 assertEquals(expected, actual);
             }
             {
                 final Map<IPosition, State> actual = CELLS.apply(mutations).filter(OTHER_PREDICATE);
                 final Map<IPosition, State> expected = Maps.newHashMap();
-                expected.put(CELLS.position(1, 0), State.Other);
-                expected.put(CELLS.position(1, 1), State.Other);
+                expected.put(Position(1, 0), State.Other);
+                expected.put(Position(1, 1), State.Other);
                 assertEquals(expected, actual);
             }
         }
@@ -253,7 +254,7 @@ public class CellsTest {
     public void testCopy() {
         {
             final ICells<State> copy = CELLS.copy();
-            final IPosition position = CELLS.position(0, 0);
+            final IPosition position = Position(0, 0);
             final Map<IPosition, State> mutations = Maps.newHashMap();
             mutations.put(position, State.Other);
             ICells<State> newCells;
@@ -268,7 +269,7 @@ public class CellsTest {
 
     @Test
     public void testToString() {
-        final IPosition position = CELLS.position(0, 0);
+        final IPosition position = Position(0, 0);
         final Map<IPosition, State> mutations = Maps.newHashMap();
         mutations.put(position, State.Other);
         final ICells<State> newCells = CELLS.apply(mutations);
@@ -302,27 +303,27 @@ public class CellsTest {
     @Test
     public void testEqualsObject() {
         assertTrue(CELLS.equals(CELLS));
-        assertTrue(CELLS.equals(Cells.from(new Positions(6, 4), State.Initial, State.Undefined)));
-        assertTrue(Cells.from(new Positions(6, 4), State.Initial, State.Undefined).equals(CELLS));
-        assertFalse(Cells.from(new Positions(1, 4), State.Initial, State.Undefined).equals(CELLS));
-        assertFalse(Cells.from(new Positions(6, 1), State.Initial, State.Undefined).equals(CELLS));
-        assertFalse(Cells.from(new Positions(6, 4), State.Undefined, State.Undefined).equals(CELLS));
-        assertFalse(Cells.from(new Positions(6, 4), State.Initial, State.Initial).equals(CELLS));
-        assertFalse(Cells.from(new Positions(4, 6), State.Initial, State.Undefined).equals(CELLS));
-        assertFalse(Cells.from(new Positions(6, 4), State.Undefined, State.Initial).equals(CELLS));
+        assertTrue(CELLS.equals(Cells.from(6, 4, State.Initial, State.Undefined)));
+        assertTrue(Cells.from(6, 4, State.Initial, State.Undefined).equals(CELLS));
+        assertFalse(Cells.from(1, 4, State.Initial, State.Undefined).equals(CELLS));
+        assertFalse(Cells.from(6, 1, State.Initial, State.Undefined).equals(CELLS));
+        assertFalse(Cells.from(6, 4, State.Undefined, State.Undefined).equals(CELLS));
+        assertFalse(Cells.from(6, 4, State.Initial, State.Initial).equals(CELLS));
+        assertFalse(Cells.from(4, 6, State.Initial, State.Undefined).equals(CELLS));
+        assertFalse(Cells.from(6, 4, State.Undefined, State.Initial).equals(CELLS));
         {
             final Map<IPosition, State> mutations = Maps.newHashMap();
-            mutations.put(CELLS.position(0, 0), State.Initial);
+            mutations.put(Position(0, 0), State.Initial);
             assertTrue(CELLS.apply(mutations).equals(CELLS));
         }
         {
             final Map<IPosition, State> mutations = Maps.newHashMap();
-            mutations.put(CELLS.position(0, 0), State.Undefined);
+            mutations.put(Position(0, 0), State.Undefined);
             assertFalse(CELLS.apply(mutations).equals(CELLS));
         }
         {
             final Map<IPosition, State> mutations = Maps.newHashMap();
-            mutations.put(CELLS.position(0, 0), State.Other);
+            mutations.put(Position(0, 0), State.Other);
             assertFalse(CELLS.apply(mutations).equals(CELLS));
         }
     }

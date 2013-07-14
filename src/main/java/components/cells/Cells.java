@@ -17,6 +17,8 @@
 
 package components.cells;
 
+import static components.cells.Positions.Position;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,38 +36,39 @@ import com.google.common.collect.Ordering;
 public final class Cells<T> implements ICells<T> {
 
     public static <T> ICells<T> from(
-            final Positions cellPositions,
+            final int rows, final int columns,
             final T initialSymbol,
             final T undefinedSymbol,
             final Map<IPosition, T> cells,
             final Map<IPosition, T> cellsMutations) {
-        return new Cells<T>(cellPositions, initialSymbol, undefinedSymbol, cells, cellsMutations);
+        return new Cells<T>(rows, columns, initialSymbol, undefinedSymbol, cells, cellsMutations);
     }
 
     public static <T> ICells<T> from(
-            final Positions cellPositions,
+            final int rows, final int columns,
             final T initialSymbol,
             final T undefinedSymbol,
             final Map<IPosition, T> cells) {
-        return from(cellPositions, initialSymbol, undefinedSymbol, cells, new HashMap<IPosition, T>());
+        return from(rows, columns, initialSymbol, undefinedSymbol, cells, new HashMap<IPosition, T>());
     }
 
     public static <T> ICells<T> from(
-            final Positions cellPositions,
+            final int rows, final int columns,
             final T initialSymbol,
             final T undefinedSymbol) {
-        return from(cellPositions, initialSymbol, undefinedSymbol, new HashMap<IPosition, T>());
+        return from(rows, columns, initialSymbol, undefinedSymbol, new HashMap<IPosition, T>());
     }
 
     private static <T> ICells<T> from(final Cells<T> cells, final Map<IPosition, T> cellsMutations) {
-        return from(cells.cellPositions, cells.initialSymbol(), cells.undefinedSymbol(), cells.get(), cellsMutations);
+        return from(cells.rows(), cells.columns(), cells.initialSymbol(), cells.undefinedSymbol(), cells.get(), cellsMutations);
     }
 
     public static <T> ICells<T> from(final Cells<T> cells) {
         return from(cells, new HashMap<IPosition, T>());
     }
 
-    private final Positions cellPositions;
+    private final int rows;
+    private final int columns;
     private final Map<IPosition, T> cells;
     private final T initialSymbol;
     private final T undefinedSymbol;
@@ -89,40 +92,25 @@ public final class Cells<T> implements ICells<T> {
     }
 
     private Cells(
-            final Positions cellPositions,
+            final int rows, final int columns,
             final T initialSymbol, final T undefinedSymbol,
             final Map<IPosition, T> left, final Map<IPosition, T> right)
     {
-        this.cellPositions = cellPositions;
+        this.rows = rows;
+        this.columns = columns;
         this.initialSymbol = initialSymbol;
         this.undefinedSymbol = undefinedSymbol;
         this.cells = merge(initialSymbol, left, right);
     }
 
-    private Positions positions() {
-        return this.cellPositions;
-    }
-
-    @Override
-    public IPosition position(final int row, final int column) {
-        return this.positions().get(row, column);
-    }
-
-    /*
-    @Override
-    public Position position(final int id) {
-        return this.positions().get(id);
-    }
-    */
-
     @Override
     public int rows() {
-        return this.positions().rows();
+        return this.rows;
     }
 
     @Override
     public int columns() {
-        return this.positions().columns();
+        return this.columns;
     }
 
     @Override
@@ -160,16 +148,9 @@ public final class Cells<T> implements ICells<T> {
 
     @Override
     public T get(final int row, final int column) {
-        final IPosition position = this.positions().get(row, column);
+        final IPosition position = Position(row, column);
         return this.get(position);
     }
-
-    /*
-    @Override
-    public T get(final int id) {
-        return this.get(this.positions().get(id));
-    }
-    */
 
     @Override
     public ICells<T> apply(final Map<IPosition, T> updatedPositions) {

@@ -17,17 +17,14 @@
 
 package blockplus.model.polyomino;
 
+import static components.cells.Positions.Position;
+
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import javax.annotation.Nullable;
-
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import components.cells.Cells;
@@ -36,7 +33,6 @@ import components.cells.Directions.Direction;
 import components.cells.ICells;
 import components.cells.IPosition;
 import components.cells.Positions;
-import components.cells.Positions.Position;
 
 public final class PolyominoProperties {
 
@@ -47,12 +43,11 @@ public final class PolyominoProperties {
     public static ICells<Integer> computeCells(final String[] data) {
         final int rows = data.length;
         final int columns = rows == 0 ? 0 : data[0].length();
-        final Positions cellPositions = new Positions(rows, columns);
-        final ICells<Integer> cells = Cells.from(cellPositions, 1, 1);
+        final ICells<Integer> cells = Cells.from(rows, columns, 1, 1);
         final Map<IPosition, Integer> mutations = Maps.newHashMap();
         for (int row = 0; row < rows; ++row) {
             for (int column = 0; column < columns; ++column) {
-                final IPosition position = cellPositions.get(row, column);
+                final IPosition position = Position(row, column);
                 final char cell = data[row].charAt(column);
                 if (cell != Polyomino.NONE) mutations.put(position, Integer.parseInt(String.valueOf(cell)));
             }
@@ -63,7 +58,7 @@ public final class PolyominoProperties {
     private static IPosition computeReferential(final ICells<Integer> cells) {
         IPosition referential;
         final Set<IPosition> positions = cells.get().keySet();
-        if (positions.isEmpty()) referential = new Position(0, 0);
+        if (positions.isEmpty()) referential = Position(0, 0);
         else {
             int sumY = 0, sumX = 0;
             for (final IPosition position : positions) {
@@ -80,18 +75,9 @@ public final class PolyominoProperties {
                 row = refY + direction.rowDelta();
                 column = refX + direction.columnDelta();
             }
-            referential = new Position(row, column);
+            referential = Position(row, column);
         }
         return referential;
-    }
-
-    private static List<IPosition> computePositions(final Set<IPosition> position) {
-        return Lists.transform(Lists.newArrayList(position), new Function<IPosition, IPosition>() {
-            @Override
-            public IPosition apply(@Nullable final IPosition position) {
-                return new Position(position);
-            }
-        });
     }
 
     private static int computeRadius(final IPosition referential, final Set<IPosition> positions) {
@@ -108,8 +94,7 @@ public final class PolyominoProperties {
     private static Set<IPosition> computeSides(final Set<IPosition> positions) {
         final Set<IPosition> sides = Sets.newHashSet();
         for (final IPosition position : positions)
-            for (final Direction direction : Directions.SIDES)
-                sides.add(new Position(position.row(), position.column()).apply(direction));
+            sides.addAll(Positions.neighbours(position, Directions.SIDES));
         return sides;
     }
 
@@ -120,8 +105,7 @@ public final class PolyominoProperties {
     private static Set<IPosition> computeCorners(final SortedSet<IPosition> positions) {
         final Set<IPosition> sides = Sets.newHashSet();
         for (final IPosition position : positions)
-            for (final Direction direction : Directions.CORNERS)
-                sides.add(new Position(position.row(), position.column()).apply(direction));
+            sides.addAll(Positions.neighbours(position, Directions.CORNERS));
         return sides;
     }
 
@@ -139,7 +123,7 @@ public final class PolyominoProperties {
 
     private PolyominoProperties(final String[] data) {
         this.cells = computeCells(data);
-        this.positions = ImmutableSortedSet.copyOf(computePositions(this.cells.get().keySet()));
+        this.positions = ImmutableSortedSet.copyOf(this.cells.get().keySet());
         this.weight = this.cells.get().size();
         this.referential = computeReferential(this.cells);
         this.radius = computeRadius(this.referential, this.positions);

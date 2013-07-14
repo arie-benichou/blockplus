@@ -5,6 +5,7 @@ import static blockplus.model.Colors.Blue;
 import static blockplus.model.Colors.Green;
 import static blockplus.model.Colors.Red;
 import static blockplus.model.Colors.Yellow;
+import static components.cells.Positions.Position;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
@@ -28,9 +29,8 @@ public class BoardTest {
 
     private final static int ROWS = 20;
     private final static int COLUMNS = 20;
-    private static final Positions POSITIONS = new Positions(ROWS, COLUMNS);
     private final static Set<Colors> COLORS = ImmutableSet.of(Blue, Yellow, Red, Green);
-    private final static Board BOARD = new Board.Builder(COLORS, POSITIONS)
+    private final static Board BOARD = new Board.Builder(ROWS, COLUMNS, COLORS)
             .addLayer(Blue)
             .addLayer(Yellow)
             .addLayer(Red)
@@ -54,7 +54,7 @@ public class BoardTest {
 
     @Test
     public void testGetLayer() {
-        final Layer expected = new Layer(POSITIONS);
+        final Layer expected = new Layer(ROWS, COLUMNS);
         assertEquals(expected, BOARD.get(Blue));
         assertEquals(expected, BOARD.get(Yellow));
         assertEquals(expected, BOARD.get(Red));
@@ -64,11 +64,11 @@ public class BoardTest {
     @Test
     public void testApply() {
 
-        final IPosition position = POSITIONS.get(0, 0);
+        final IPosition position = Position(0, 0);
 
         final Set<IPosition> positions = Sets.newHashSet(position);
-        final Iterable<IPosition> lights = POSITIONS.neighbours(position, Directions.CORNERS);
-        final Iterable<IPosition> shadows = POSITIONS.neighbours(position, Directions.SIDES);
+        final Iterable<IPosition> lights = Positions.neighbours(position, Directions.CORNERS);
+        final Iterable<IPosition> shadows = Positions.neighbours(position, Directions.SIDES);
 
         final Map<IPosition, State> selfMutation = new LayerMutationBuilder()
                 .setSelfPositions(positions)
@@ -85,7 +85,7 @@ public class BoardTest {
         final Layer newRedLayer = BOARD.get(Red).apply(othersMutation);
         final Layer newGreenLayer = BOARD.get(Green).apply(othersMutation);
 
-        final Board expected = Board.builder(BOARD.getColors(), POSITIONS)
+        final Board expected = new Board.Builder(ROWS, COLUMNS, BOARD.getColors())
                 .addLayer(Blue, newBlueLayer)
                 .addLayer(Yellow, newYellowLayer)
                 .addLayer(Red, newRedLayer)

@@ -21,6 +21,7 @@ import static blockplus.model.Colors.Blue;
 import static blockplus.model.Colors.Green;
 import static blockplus.model.Colors.Red;
 import static blockplus.model.Colors.Yellow;
+import static components.cells.Positions.Position;
 
 import java.util.Set;
 import java.util.SortedSet;
@@ -41,7 +42,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import components.cells.IPosition;
-import components.cells.Positions;
 
 public final class Context implements IContext<Colors> {
 
@@ -77,13 +77,11 @@ public final class Context implements IContext<Colors> {
         private final static int ROWS = 20;
         private final static int COLUMNS = 20;
 
-        private final static Positions CELL_POSITIONS = new Positions(ROWS, COLUMNS);
-
-        private final static Board BOARD = new Board.Builder(COLORS, CELL_POSITIONS)
-                .addLayer(Blue, new LayerMutationBuilder().setLightPositions(CELL_POSITIONS.get(0, 0)).build())
-                .addLayer(Yellow, new LayerMutationBuilder().setLightPositions(CELL_POSITIONS.get(0, COLUMNS - 1)).build())
-                .addLayer(Red, new LayerMutationBuilder().setLightPositions(CELL_POSITIONS.get(ROWS - 1, COLUMNS - 1)).build())
-                .addLayer(Green, new LayerMutationBuilder().setLightPositions(CELL_POSITIONS.get(ROWS - 1, 0)).build())
+        private final static Board BOARD = new Board.Builder(ROWS, COLUMNS, COLORS)
+                .addLayer(Blue, new LayerMutationBuilder().setLightPositions(Position(0, 0)).build())
+                .addLayer(Yellow, new LayerMutationBuilder().setLightPositions(Position(0, COLUMNS - 1)).build())
+                .addLayer(Red, new LayerMutationBuilder().setLightPositions(Position(ROWS - 1, COLUMNS - 1)).build())
+                .addLayer(Green, new LayerMutationBuilder().setLightPositions(Position(ROWS - 1, 0)).build())
                 .build();
 
         private final static IOptionsSupplier OPTIONS_SUPPLIER = new OptionsSupplier();
