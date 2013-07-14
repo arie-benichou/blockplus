@@ -37,7 +37,6 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import components.cells.IPosition;
 
-// TODO persist translated entities
 public final class Polyominos {
 
     private final static Polyominos INSTANCE = new Polyominos();

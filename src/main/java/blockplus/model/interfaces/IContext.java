@@ -34,7 +34,6 @@ public interface IContext<T> {
      * 
      * @return true if this context is a leaf, false otherwise
      */
-    // TODO ? delegate to Referee interface
     boolean isTerminal();
 
     /**
@@ -67,7 +66,6 @@ public interface IContext<T> {
      */
     IPlayers<T> players();
 
-    // TODO ? delegate to Referee interface
     /**
      * Returns the effective successor of this context.
      * 

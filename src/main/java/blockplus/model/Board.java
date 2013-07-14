@@ -405,23 +405,4 @@ public final class Board {
         return this.layers.equals(that.layers);
     }
 
-    @Override
-    public String toString() {
-        return null; //TODO
-        /*
-        final ToStringHelper toStringHelper = Objects.toStringHelper(this).add("rows", this.rows()).add("columns", this.columns());
-        final JsonObject data = new JsonObject();
-        for (final Colors color : this.getColors()) {
-            final JsonArray jsonArray = new JsonArray();
-            final Layer layer = this.get(color);
-            final Set<IPosition> positions = layer.getSelves().keySet();
-            for (final IPosition position : positions)
-                jsonArray.add(new JsonPrimitive(position.id()));
-            data.add(color.toString(), jsonArray);
-        }
-        toStringHelper.add("data", data);
-        return toStringHelper.toString();
-        */
-    }
-
 }

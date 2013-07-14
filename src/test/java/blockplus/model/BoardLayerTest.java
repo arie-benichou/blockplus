@@ -178,7 +178,7 @@ public class BoardLayerTest {
         }
     }
 
-    //FIXME TODO !!!!
+    @Test
     public void testGetLights() {
         {
             final Map<IPosition, State> expected = Maps.newHashMap();
@@ -187,10 +187,7 @@ public class BoardLayerTest {
         }
         {
             final Map<IPosition, State> expected = Maps.newHashMap();
-            expected.put(Position(0, 0), Metta);
-            expected.put(Position(0, 2), Metta);
-            expected.put(Position(2, 0), Metta);
-            expected.put(Position(2, 2), Metta);
+            expected.put(Position(1, 1), Metta);
             final Polyomino polyomino = Polyomino._1;
             final Map<IPosition, State> mutation = new LayerMutationBuilder()
                     .setSelfPositions(polyomino.positions())

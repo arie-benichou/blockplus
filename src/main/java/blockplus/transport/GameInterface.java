@@ -17,12 +17,10 @@
 
 package blockplus.transport;
 
-
 import blockplus.transport.events.interfaces.ClientInterface;
 
 import com.google.common.collect.ImmutableList;
 
-// TODO revoir l'interface
 public interface GameInterface<T> {
 
     Integer getOrdinal();

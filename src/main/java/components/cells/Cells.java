@@ -128,7 +128,6 @@ public final class Cells<T> implements ICells<T> {
         return this.cells;
     }
 
-    // TODO initialSymbol could be removed, just use initial symbol
     private T getCellSymbol(final IPosition position) {
         final T symbol = this.cells.get(position);
         if (symbol != null) return symbol;

@@ -87,7 +87,7 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
     }
 
     private static Iterable<PolyominoInstance> computeDistinctInstances(final PolyominoProperties properties) {
-        final Set<PolyominoInstance> instances = Sets.newLinkedHashSet(); // TODO TreeSet
+        final Set<PolyominoInstance> instances = Sets.newLinkedHashSet();
         final PolyominoInstance head = new PolyominoInstance(
                 properties.referential(),
                 properties.positions(),

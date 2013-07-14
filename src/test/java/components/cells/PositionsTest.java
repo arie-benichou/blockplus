@@ -51,7 +51,7 @@ public class PositionsTest {
 
         {
             final int radius = 0;
-            final Iterable<IPosition> expected = Lists.newArrayList(this.referential); // TODO à revoir
+            final Iterable<IPosition> expected = Lists.newArrayList(this.referential);
             final Iterable<IPosition> neighboursPositions = Positions.neighbours(this.referential, radius);
             assertEquals(expected, neighboursPositions);
         }

@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import blockplus.model.polyomino.Polyomino;
 
-// FIXME add tests for hashCode, equals
 public class SidesTest {
 
     private static final PolyominoSet REMAINING_PIECES = new PolyominoSet.Builder().add(Polyomino._1).build();

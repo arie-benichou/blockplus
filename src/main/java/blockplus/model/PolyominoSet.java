@@ -28,7 +28,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
-// TODO utiliser un sorted set
+// TODO ! utiliser un sorted set
 public final class PolyominoSet implements Iterable<Entry<Polyomino, Integer>> {
 
     public final static PolyominoSet EMPTY = new Builder().build();

@@ -71,14 +71,12 @@ public class IO implements IOinterface {
 
     @Override
     public void emit(final String type, final String data) {
-        //this.say("{" + "\"" + "type" + "\"" + ":" + "\"" + type + "\"" + "," + "\"" + "data" + "\"" + ":" + "\"" + data + "\"" + "}"); // TODO sprintf
-        this.say("{" + "\"" + "type" + "\"" + ":" + "\"" + type + "\"" + "," + "\"" + "data" + "\"" + ":" + data + "}"); // TODO sprintf
+        this.say("{" + "\"" + "type" + "\"" + ":" + "\"" + type + "\"" + "," + "\"" + "data" + "\"" + ":" + data + "}"); // TODO à revoir
     }
 
     @Override
     public void onOpen(final Connection connection) {
         this.setConnection(connection);
-        //this.emit("handshake", "\"" + "Nice to meet you," + "\""); // TODO client side event
     }
 
     @Override

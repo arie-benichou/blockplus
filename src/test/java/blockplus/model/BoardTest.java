@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import blockplus.model.Board.Layer;
@@ -24,7 +23,6 @@ import components.cells.Directions;
 import components.cells.IPosition;
 import components.cells.Positions;
 
-// FIXME add tests for toString, hashCode, equals
 public class BoardTest {
 
     private final static int ROWS = 20;
@@ -95,11 +93,6 @@ public class BoardTest {
         final Board actual = BOARD.apply(Blue, positions, shadows, lights);
 
         assertEquals(expected, actual);
-    }
-
-    @Ignore
-    public void testToString() {
-        assertEquals("Board{rows=20, columns=20, data={\"Blue\":[],\"Yellow\":[],\"Red\":[],\"Green\":[]}}", BOARD.toString());
     }
 
 }
