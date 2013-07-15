@@ -11,6 +11,8 @@ Application = function(parameters) {
 	this.container = parameters.container;
 	this.container.width(this.viewPort.maxWidth);
 	this.container.height(this.viewPort.maxHeight);
+	
+	//TODO à faire sur chaque container concerné
 	this.container.bind("mousedown", function(event) {
 		event.preventDefault();
 	});

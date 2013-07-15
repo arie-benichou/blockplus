@@ -97,6 +97,7 @@ Blockplus.ControlPanelManager.prototype = {
 			var x = (this.context.canvas.width - newCanvas.width) / 2;
 			var y = (this.context.canvas.height - newCanvas.height) / 2;
 			this.context.drawImage(newCanvas, x, y);
+			$("#color-dialogs").hide();
 			this.show();
 		}
 	}

@@ -19,7 +19,7 @@ Blockplus.Messages.prototype = {
 			type : 'Disconnect',
 			data : {}
 		};
-	},	
+	},
 	gameConnection : function(n) {
 		return {
 			type : 'GameConnection',
@@ -40,7 +40,17 @@ Blockplus.Messages.prototype = {
 		return {
 			type : 'MoveSubmit',
 			data : {
-				positions: positions
+				positions : positions
+			}
+		};
+	},
+	notification : function(from, to, message) {
+		return {
+			type : 'Notification',
+			data : {
+				from : from,
+				to : to,
+				message : message
 			}
 		};
 	}

@@ -89,7 +89,7 @@ public class IO implements IOinterface {
         MessageInterface message = null;
         try {
             message = this.getServer().decode(data);
-            //System.out.println(message);
+            System.out.println(message);
         }
         catch (final Exception e) { // TODO MessageConstructionException
             this.say("Message could not be created from " + data + " : " + Throwables.getRootCause(e));

@@ -20,6 +20,7 @@ package blockplus.transport;
 import static components.cells.Positions.Position;
 
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.SortedSet;
 
 import blockplus.export.ContextRepresentation;
@@ -62,6 +63,8 @@ public class BlockplusGame implements GameInterface<Context> {
     private ImmutableMap<Side, ClientInterface> clientByPlayer;
     private ImmutableMap<ClientInterface, Side> playerByClient;
 
+    private ImmutableMap<Colors, ClientInterface> clientByColor;
+
     public BlockplusGame(final int ordinal, final String code, final ImmutableList<ClientInterface> clients, final Context gameContext,
             final long timeStamp) {
 
@@ -78,16 +81,19 @@ public class BlockplusGame implements GameInterface<Context> {
         else {
             final ImmutableMap.Builder<Side, ClientInterface> builder1 = new ImmutableMap.Builder<Side, ClientInterface>();
             final ImmutableMap.Builder<ClientInterface, Side> builder2 = new ImmutableMap.Builder<ClientInterface, Side>();
+            final ImmutableMap.Builder<Colors, ClientInterface> builder3 = new ImmutableMap.Builder<Colors, ClientInterface>();
             int n = 0;
             for (final ClientInterface client : clients) {
                 final Colors color = Colors.valueOf(this.SEQUENCE.get(n));
                 final Side player = gameContext.players().getDeadOrAlivePlayer(color);
                 builder1.put(player, client);
                 builder2.put(client, player);
+                builder3.put(color, client);
                 ++n;
             }
             this.clientByPlayer = builder1.build();
             this.playerByClient = builder2.build();
+            this.clientByColor = builder3.build();
         }
     }
 
@@ -201,6 +207,13 @@ public class BlockplusGame implements GameInterface<Context> {
         final Context context = this.getContext();
         final ContextRepresentation gameRepresentation = new ContextRepresentation(context);
         return gameRepresentation.encodeBoard().toString();
+    }
+
+    public ClientInterface getPlayer(final Colors to) {
+        for (final Entry<Colors, ClientInterface> entry : this.clientByColor.entrySet()) {
+            System.out.println(entry);
+        }
+        return this.clientByColor.get(to); // TODO à vérifier
     }
 
 }

@@ -17,17 +17,17 @@
 
 package blockplus.transport;
 
-
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-
+import blockplus.model.Colors;
 import blockplus.model.Context;
 import blockplus.transport.events.Client;
 import blockplus.transport.events.interfaces.ClientInterface;
 import blockplus.transport.events.interfaces.GameConnectionInterface;
 import blockplus.transport.events.interfaces.GameReconnectionInterface;
 import blockplus.transport.events.interfaces.MoveSubmitInterface;
+import blockplus.transport.events.interfaces.NotificationInterface;
 import blockplus.transport.events.interfaces.VirtualPlayerConnectionInterface;
 
 import com.google.common.collect.ImmutableList;
@@ -111,6 +111,32 @@ public class BlockplusServerEvents {
         final BlockplusGame newGame = (BlockplusGame) blockplusGame.play(moveSubmit);
         this.getServer().updateGames(newGame.getOrdinal(), newGame);
         newGame.update();
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void onNotification(final NotificationInterface notificationInterface) {
+        final ClientInterface client = this.getServer().getClient(notificationInterface.getIO());
+        final Integer game = client.getGame();
+        final BlockplusGame blockplusGame = (BlockplusGame) this.getServer().getGame(game);
+        final Colors from = Colors.valueOf(notificationInterface.getFrom());
+        final Colors to = Colors.valueOf(notificationInterface.getTo());
+        final String message = notificationInterface.getMessage();
+        final JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("message", message);
+        jsonObject.addProperty("from", from.toString());
+        jsonObject.addProperty("to", to.toString());
+        System.out.println("##############################");
+        //System.out.println(from);
+        //System.out.println(to);
+        //System.out.println(message);
+        System.out.println(jsonObject.toString());
+        final ClientInterface toClient = blockplusGame.getPlayer(to);
+        toClient.getIO().emit("notification", jsonObject.toString());
+        System.out.println("##############################");
+        //final BlockplusGame newGame = (BlockplusGame) blockplusGame.play(moveSubmit);
+        //this.getServer().updateGames(newGame.getOrdinal(), newGame);
+        //newGame.update();
     }
 
     @Subscribe

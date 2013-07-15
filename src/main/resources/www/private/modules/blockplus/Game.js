@@ -74,15 +74,15 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 		// $($("#players div")[i]).html("&nbsp;")
 
 	}
-	
+
 	// TODO !!!
 	var i = this.gameData.players - 1;
 	this.color = players[i];
-	
+
 	this.client.register("player", $.proxy(function(data) {
 		this.audioManager.play("../audio/in.mp3");
 		this.pieceManager.init(players[i], pieces[0]);
-		$($("#players div")[i]).html("&nbsp;");		
+		$($("#players div")[i]).html("0");
 		$($("#players div")[i]).addClass(players[i]);
 		$($("#players div")[i]).css("cursor", "pointer");
 		$($("#players div")[i]).bind('click', $.proxy(function(event) {
@@ -97,23 +97,74 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 			$($("#players div")[i + 1]).one('click', $.proxy(function(event) {
 				var message = this.messages.virtualPlayer(this.gameData.id);
 				this.client.say(message);
-				$(event.currentTarget).html("&nbsp;");
+				$(event.currentTarget).html("0");
 			}, this));
 		}
 		++i;
 	}, this));
+
 	this.pieceManager.show(players[this.gameData.players - 1]);
+
+	// /////////////////////////////////////////////////////////////////////
+
+	this.client.register("notification", $.proxy(function(data) {
+		console.debug(this.color);
+		console.debug(data.to);
+		if (data.to == this.color) { // TODO !!! à revoir coté serveur
+			$("#messages").removeClass();
+			$("#messages").addClass("from" + data.from);
+			$('#messages').html(data.message); // TODO xss
+			jQuery('#messages').fadeIn().delay(3000).fadeOut();
+		}
+	}, this));
+
+	$('#players div').dblclick($.proxy(function() {
+		// $(".history").scrollTop($(".history p").height() * $(".history
+		// p").length);
+		var alterColor = $("#pieces").attr("class");
+		$("#input").removeClass();
+		$("#input").addClass("to" + alterColor);
+		$("#input").addClass("from" + this.color);
+		$("#input span").html("&nbsp;");
+		$("#input").show();
+		$("#input [contenteditable]").focus();
+
+		$("#input span").bind("blur", function() {
+			$("#input").hide();
+		});
+
+		$(document).keyup(function(e) {
+			if (e.keyCode == 27) {
+				$("#input [contenteditable]").blur();
+				$("#input").hide();
+			}
+		});
+
+		$("#input [contenteditable]").bind("keypress.key13", $.proxy(function(event) {
+			if (event.which == 13) {
+				$("#input [contenteditable]").unbind("keypress.key13");
+				$("#input [contenteditable]").blur();
+				var message = $("#input [contenteditable]").html();
+				var from = this.color;
+				var to = alterColor;
+				this.client.say(this.messages.notification(from, to, message)); // TODO
+				// xss
+			}
+		}, this))
+	}, this));
+	// /////////////////////////////////////////////////////////////////////
+
 	// TODO à déplacer
 	this.controlPanelManager.register('click', this.init);
 	this.client.register("update", $.proxy(function(data) {
 		$("#board-container").show();
 		$("#pieces").show();
-		var newGameState = new Blockplus.GameState(data);		
-		//this.color = newGameState.getColor(); // TODO à faire dans le update
+		var newGameState = new Blockplus.GameState(data);
+		// this.color = newGameState.getColor(); // TODO à faire dans le update
 		this.boardManager.updateColor(this.color); // TODO à revoir
-		//this.client.register("update", $.proxy(function(data) {
+		// this.client.register("update", $.proxy(function(data) {
 		this.update(newGameState);
-		//}, this));
+		// }, this));
 	}, this));
 	// }, this));
 	/*-----------------------8<-----------------------*/
@@ -174,7 +225,8 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 				data.push(position);
 				this.boardManager.renderPotentialCell(this.positionFactory.positionFromIndex(position), this.color);
 			}
-			//var pieceId = this.options.perfectMatch(this.boardManager.selectedPositions);
+			// var pieceId =
+			// this.options.perfectMatch(this.boardManager.selectedPositions);
 			this.play(data);
 			// ////////////////////////////////////////////////
 		} else {
@@ -237,14 +289,9 @@ Blockplus.Game.prototype = {
 		}
 
 		/*
-		var options = gameState.getOptions(this.color);
-		for ( var i = 21; i > 0; --i) {
-			if (i in options) {
-				this.play(options[i][0]);
-				break;
-			}
-		}
-		*/
+		 * var options = gameState.getOptions(this.color); for ( var i = 21; i >
+		 * 0; --i) { if (i in options) { this.play(options[i][0]); break; } }
+		 */
 
 	},
 

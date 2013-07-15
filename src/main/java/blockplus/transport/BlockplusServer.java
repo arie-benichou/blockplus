@@ -17,7 +17,6 @@
 
 package blockplus.transport;
 
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,6 @@ import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketClient;
 import org.eclipse.jetty.websocket.WebSocketClientFactory;
 import org.eclipse.jetty.websocket.WebSocketServlet;
-
 
 import blockplus.model.Context;
 import blockplus.transport.events.interfaces.ClientInterface;
@@ -204,6 +202,7 @@ public class BlockplusServer extends WebSocketServlet {
         }
         this.clientsInPatio.add(io);
         System.out.println(this.clientsInPatio);
+        /*
         final Runtime runtime = Runtime.getRuntime();
         try {
             runtime.exec("beep -f 200 -l 180");
@@ -215,6 +214,7 @@ public class BlockplusServer extends WebSocketServlet {
             runtime.exec("beep -f 800 -l 300");
         }
         catch (final Exception e) {}
+        */
     }
 
     private BlockplusGame reset(final GameInterface<Context> game) {
@@ -300,7 +300,7 @@ public class BlockplusServer extends WebSocketServlet {
         final Object event = deadEvent.getEvent();
         if (event instanceof EventInterface) {
             final EventInterface eventInterface = (EventInterface) event;
-            eventInterface.getIO().emit("error", "\"" + eventInterface + "\"");
+            eventInterface.getIO().emit("dead event", "\"" + eventInterface + "\"");
         }
         else System.out.println(deadEvent.getEvent());
     }

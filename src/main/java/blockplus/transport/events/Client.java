@@ -17,7 +17,6 @@
 
 package blockplus.transport.events;
 
-
 import blockplus.transport.IOinterface;
 import blockplus.transport.events.interfaces.ClientInterface;
 
@@ -69,6 +68,8 @@ public final class Client implements ClientInterface {
         jsonObject.addProperty("type", this.getClass().getSimpleName());
         final JsonObject data = new JsonObject();
         data.addProperty("name", this.getName());
+        data.addProperty("game", this.getGame().toString());
+        data.addProperty("io", this.getIO().toString());
         jsonObject.add("data", data);
         return jsonObject.toString();
     }
