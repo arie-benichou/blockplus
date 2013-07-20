@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import blockplus.model.Context;
-import blockplus.model.Context.Builder;
-import blockplus.model.OptionsSupplier;
-import blockplus.model.interfaces.IOptionsSupplier;
 import blockplus.model.polyomino.Polyomino;
 
 import com.google.common.collect.Table.Cell;
@@ -18,8 +15,7 @@ public class Main {
 
     public static void main(final String[] args) throws Exception {
 
-        final IOptionsSupplier optionsSupplier = new OptionsSupplier();
-        final Context context = new Builder().setOptionsSupplier(optionsSupplier).build();
+        final Context context = new Context.Builder().build();
         final TreeBasedTable<IPosition, Polyomino, List<Set<IPosition>>> options =
                                                                                    (TreeBasedTable<IPosition, Polyomino, List<Set<IPosition>>>)
                                                                                    context.options();

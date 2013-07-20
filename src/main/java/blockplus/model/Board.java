@@ -17,6 +17,12 @@
 
 package blockplus.model;
 
+import static blockplus.model.Colors.Blue;
+import static blockplus.model.Colors.Green;
+import static blockplus.model.Colors.Red;
+import static blockplus.model.Colors.Yellow;
+import static components.cells.Positions.Position;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -28,12 +34,7 @@ import blockplus.model.polyomino.PolyominoInstances.PolyominoTranslatedInstance;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Ordering;
-import com.google.common.collect.Sets;
 import components.cells.Cells;
 import components.cells.ICells;
 import components.cells.IPosition;
@@ -188,102 +189,42 @@ public final class Board {
 
     }
 
-    final static class LayerMutationBuilder {
-
-        private Iterable<IPosition> lights = Sets.newHashSet();
-        private Iterable<IPosition> selves = Sets.newHashSet();
-        private Iterable<IPosition> others = Sets.newHashSet();
-        private Iterable<IPosition> shadows = Sets.newHashSet();
-
-        public LayerMutationBuilder setLights(final Iterable<IPosition> positions) {
-            this.lights = positions;
-            return this;
-        }
-
-        public LayerMutationBuilder setLights(final IPosition... positions) {
-            return this.setLights(Sets.newHashSet(positions));
-        }
-
-        public LayerMutationBuilder setSelves(final Iterable<IPosition> positions) {
-            this.selves = positions;
-            return this;
-        }
-
-        public LayerMutationBuilder setShadows(final Iterable<IPosition> positions) {
-            this.shadows = positions;
-            return this;
-        }
-
-        public LayerMutationBuilder setOthers(final Iterable<IPosition> positions) {
-            this.others = positions;
-            return this;
-        }
-
-        public Map<IPosition, State> build() {
-            final ImmutableMap.Builder<IPosition, State> builder = new ImmutableMap.Builder<IPosition, State>();
-            for (final IPosition position : this.selves)
-                builder.put(position, State.Upekkha);
-            for (final IPosition position : this.shadows)
-                builder.put(position, State.Karuna);
-            for (final IPosition position : this.lights)
-                builder.put(position, State.Metta);
-            for (final IPosition position : this.others)
-                builder.put(position, State.Mudita);
-            return builder.build();
-        }
-
-    }
-
     public final static class Builder {
 
-        private static Set<Colors> check(final Set<Colors> colors) {
-            Preconditions.checkArgument(colors != null);
-            Preconditions.checkArgument(!colors.isEmpty());
-            return colors;
-        }
-
-        private final Set<Colors> colors;
-
-        private Set<Colors> colors() {
-            return this.colors;
-        }
-
         private final int rows;
+
         private final int columns;
 
-        private final ImmutableSortedMap.Builder<Colors, Layer> layerByColor = new ImmutableSortedMap.Builder<Colors, Layer>(Ordering.natural());
+        private final Map<Colors, Layer> layerByColor = Maps.newHashMap();
 
-        public Builder(final int rows, final int columns, final Set<Colors> colors) {
+        public Builder(final int rows, final int columns) {
             this.rows = rows;
             this.columns = columns;
-            this.colors = ImmutableSortedSet.copyOf(check(colors));
-        }
-
-        public Builder addLayer(final Colors color, final Layer layer) {
-            Preconditions.checkArgument(this.colors().contains(color));
-            Preconditions.checkArgument(this.rows == layer.rows());
-            Preconditions.checkArgument(this.columns == layer.columns());
-            this.layerByColor.put(color, layer);
-            return this;
-        }
-
-        public Builder addLayer(final Colors color, final Map<IPosition, State> layerMutation) {
-            return this.addLayer(color, new Layer(this.rows, this.columns).apply(layerMutation));
-        }
-
-        public Builder addLayer(final Colors color) {
-            return this.addLayer(color, new Layer(this.rows, this.columns));
+            final Layer layer = new Layer(rows, columns);
+            {
+                final Map<IPosition, State> data = Maps.newHashMap();
+                data.put(Position(0, 0), State.Metta);
+                this.layerByColor.put(Blue, layer.apply(data));
+            }
+            {
+                final Map<IPosition, State> data = Maps.newHashMap();
+                data.put(Position(0, columns - 1), State.Metta);
+                this.layerByColor.put(Yellow, layer.apply(data));
+            }
+            {
+                final Map<IPosition, State> data = Maps.newHashMap();
+                data.put(Position(rows - 1, columns - 1), State.Metta);
+                this.layerByColor.put(Red, layer.apply(data));
+            }
+            {
+                final Map<IPosition, State> data = Maps.newHashMap();
+                data.put(Position(rows - 1, 0), State.Metta);
+                this.layerByColor.put(Green, layer.apply(data));
+            }
         }
 
         public Board build() {
-            ImmutableSortedMap<Colors, Layer> layerByColor = this.layerByColor.build();
-            if (layerByColor.isEmpty()) {
-                for (final Colors color : this.colors())
-                    this.layerByColor.put(color, new Layer(this.rows, this.columns));
-                layerByColor = this.layerByColor.build();
-            }
-            else Preconditions.checkState(this.colors().size() == layerByColor.size());
-            return new Board(this.rows, this.columns, layerByColor);
+            return new Board(this.rows, this.columns, this.layerByColor);
         }
 
     }
@@ -320,11 +261,26 @@ public final class Board {
     }
 
     private Board apply(final Colors side, final Iterable<IPosition> positions, final Iterable<IPosition> shadows, final Iterable<IPosition> lights) {
-        final Map<IPosition, State> selvesMutation = new LayerMutationBuilder().setSelves(positions).setShadows(shadows).setLights(lights).build();
-        final Map<IPosition, State> othersMutation = new LayerMutationBuilder().setOthers(positions).build();
-        final Map<Colors, Layer> newLayers = Maps.newTreeMap();
+
+        final Map<IPosition, State> selfMutation = Maps.newHashMap();
+        final Map<IPosition, State> othersMutation = Maps.newHashMap();
+
+        for (final IPosition position : positions) {
+            selfMutation.put(position, State.Upekkha);
+            othersMutation.put(position, State.Mudita);
+        }
+
+        for (final IPosition position : shadows) {
+            selfMutation.put(position, State.Karuna);
+        }
+
+        for (final IPosition position : lights) {
+            selfMutation.put(position, State.Metta);
+        }
+
+        final Map<Colors, Layer> newLayers = Maps.newHashMap();
         for (final Colors color : this.getColors()) {
-            final Layer newLayer = this.get(color).apply(color.equals(side) ? selvesMutation : othersMutation);
+            final Layer newLayer = this.get(color).apply(color.equals(side) ? selfMutation : othersMutation);
             newLayers.put(color, newLayer);
         }
         return new Board(this.rows(), this.columns(), newLayers);

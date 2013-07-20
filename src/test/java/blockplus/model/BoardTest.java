@@ -1,33 +1,19 @@
 
 package blockplus.model;
 
-import static blockplus.model.Colors.Blue;
-import static blockplus.model.Colors.Green;
-import static blockplus.model.Colors.Red;
-import static blockplus.model.Colors.Yellow;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Set;
-
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableSet;
 
 public class BoardTest {
 
     private final static int ROWS = 20;
     private final static int COLUMNS = 20;
-    private final static Set<Colors> COLORS = ImmutableSet.of(Blue, Yellow, Red, Green);
-    private final static Board BOARD = new Board.Builder(ROWS, COLUMNS, COLORS)
-            .addLayer(Blue)
-            .addLayer(Yellow)
-            .addLayer(Red)
-            .addLayer(Green)
-            .build();
+    private final static Board BOARD = new Board.Builder(ROWS, COLUMNS).build();
 
     @Test
     public void testGetColors() {
-        assertEquals(COLORS, BOARD.getColors());
+        assertEquals(Colors.set(), BOARD.getColors());
     }
 
     @Test

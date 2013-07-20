@@ -21,13 +21,11 @@ import static blockplus.model.Colors.Blue;
 import static blockplus.model.Colors.Green;
 import static blockplus.model.Colors.Red;
 import static blockplus.model.Colors.Yellow;
-import static components.cells.Positions.Position;
 
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import blockplus.model.Board.LayerMutationBuilder;
 import blockplus.model.interfaces.IContext;
 import blockplus.model.interfaces.IMove;
 import blockplus.model.interfaces.IOptionsSupplier;
@@ -45,110 +43,24 @@ import components.cells.IPosition;
 public final class Context implements IContext<Colors> {
 
     public final static class Builder {
-
-        private final static Set<Colors> COLORS = Colors.set();
-
         private final static Set<Polyomino> LEGAL_PIECES = Polyomino.set();
-
         private final static PolyominoSet REMAINING_PIECES = new PolyominoSet.Builder().addAll(LEGAL_PIECES).build();
-
-        private final static blockplus.model.Sides.Builder PLAYERS_BUILDER = new Sides.Builder();
-        static {
-            PLAYERS_BUILDER.add(Blue, Side.from(REMAINING_PIECES));
-            PLAYERS_BUILDER.add(Yellow, Side.from(REMAINING_PIECES));
-            PLAYERS_BUILDER.add(Red, Side.from(REMAINING_PIECES));
-            PLAYERS_BUILDER.add(Green, Side.from(REMAINING_PIECES));
-        }
-        private final static Sides PLAYERS = PLAYERS_BUILDER.build();
-
+        private final static Sides SIDES = new Sides.Builder()
+                .add(Blue, Side.from(REMAINING_PIECES))
+                .add(Yellow, Side.from(REMAINING_PIECES))
+                .add(Red, Side.from(REMAINING_PIECES))
+                .add(Green, Side.from(REMAINING_PIECES))
+                .build();
         private final static Colors SIDE = Blue;
-
-        private final static Adversity.Builder ADVERSITY_BUILDER = new Adversity.Builder();
-        static {
-            ADVERSITY_BUILDER.add(Blue);
-            ADVERSITY_BUILDER.add(Yellow);
-            ADVERSITY_BUILDER.add(Red);
-            ADVERSITY_BUILDER.add(Green);
-        }
-
-        private final static Adversity ADVERSITY = ADVERSITY_BUILDER.build();
-
+        private final static Adversity ADVERSITY = new Adversity.Builder().add(Blue).add(Yellow).add(Red).add(Green).build();
         private final static int ROWS = 20;
         private final static int COLUMNS = 20;
-
-        private final static Board BOARD = new Board.Builder(ROWS, COLUMNS, COLORS)
-                .addLayer(Blue, new LayerMutationBuilder().setLights(Position(0, 0)).build())
-                .addLayer(Yellow, new LayerMutationBuilder().setLights(Position(0, COLUMNS - 1)).build())
-                .addLayer(Red, new LayerMutationBuilder().setLights(Position(ROWS - 1, COLUMNS - 1)).build())
-                .addLayer(Green, new LayerMutationBuilder().setLights(Position(ROWS - 1, 0)).build())
-                .build();
-
+        private final static Board BOARD = new Board.Builder(ROWS, COLUMNS).build();
         private final static IOptionsSupplier OPTIONS_SUPPLIER = new OptionsSupplier();
 
-        private Colors side = SIDE;
-
-        public Builder setSide(final Colors side) {
-            this.side = side;
-            return this;
-        }
-
-        private Colors getSide() {
-            return this.side == null ? SIDE : this.side;
-        }
-
-        private Adversity adversity = null;
-
-        public Builder setAdversity(final Adversity adversity) {
-            this.adversity = adversity;
-            return this;
-        }
-
-        public Adversity getAdversity() {
-            return this.adversity == null ? ADVERSITY : this.adversity;
-        }
-
-        private Sides players = null;
-
-        public Builder setPlayers(final Sides players) {
-            this.players = players;
-            return this;
-        }
-
-        private Sides getPlayers() {
-            return this.players == null ? PLAYERS : this.players;
-        }
-
-        private Board board = null;
-
-        public Builder setBoard(final Board board) {
-            this.board = board;
-            return this;
-        }
-
-        private Board getBoard() {
-            return this.board == null ? BOARD : this.board;
-        }
-
-        private IOptionsSupplier optionsSupplier = null;
-
-        private IOptionsSupplier getOptionsSupplier() {
-            return this.optionsSupplier == null ? OPTIONS_SUPPLIER : this.optionsSupplier;
-        }
-
-        public Builder setOptionsSupplier(final IOptionsSupplier optionsSupplier) {
-            this.optionsSupplier = optionsSupplier;
-            return this;
-        }
-
         public Context build() {
-            return new Context(
-                    this.getSide(),
-                    this.getBoard(),
-                    this.getPlayers(),
-                    this.getAdversity(),
-                    this.getOptionsSupplier());
+            return new Context(SIDE, BOARD, SIDES, ADVERSITY, OPTIONS_SUPPLIER);
         }
-
     }
 
     // TODO inject
