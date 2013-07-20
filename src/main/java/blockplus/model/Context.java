@@ -77,10 +77,10 @@ public final class Context implements IContext<Colors> {
         private final static int COLUMNS = 20;
 
         private final static Board BOARD = new Board.Builder(ROWS, COLUMNS, COLORS)
-                .addLayer(Blue, new LayerMutationBuilder().setLightPositions(Position(0, 0)).build())
-                .addLayer(Yellow, new LayerMutationBuilder().setLightPositions(Position(0, COLUMNS - 1)).build())
-                .addLayer(Red, new LayerMutationBuilder().setLightPositions(Position(ROWS - 1, COLUMNS - 1)).build())
-                .addLayer(Green, new LayerMutationBuilder().setLightPositions(Position(ROWS - 1, 0)).build())
+                .addLayer(Blue, new LayerMutationBuilder().setLights(Position(0, 0)).build())
+                .addLayer(Yellow, new LayerMutationBuilder().setLights(Position(0, COLUMNS - 1)).build())
+                .addLayer(Red, new LayerMutationBuilder().setLights(Position(ROWS - 1, COLUMNS - 1)).build())
+                .addLayer(Green, new LayerMutationBuilder().setLights(Position(ROWS - 1, 0)).build())
                 .build();
 
         private final static IOptionsSupplier OPTIONS_SUPPLIER = new OptionsSupplier();
@@ -227,11 +227,11 @@ public final class Context implements IContext<Colors> {
         final Polyominos polyominos = Polyominos.getInstance();
         final PolyominoTranslatedInstance translatedInstance = polyominos.get(positions);
 
-        if (color == Blue) System.out.println("-------8<-------");
-        System.out.println();
-        System.out.println(color);
-        System.out.println(translatedInstance); // TODO render(PolyominoTranslatedInstance)
-        System.out.println();
+        //        if (color == Blue) System.out.println("-------8<-------");
+        //        System.out.println();
+        //        System.out.println(color);
+        //        System.out.println(translatedInstance); // TODO render(PolyominoTranslatedInstance)
+        //        System.out.println();
 
         Preconditions.checkState(this.side().equals(color));
 

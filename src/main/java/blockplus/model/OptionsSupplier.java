@@ -57,18 +57,18 @@ public final class OptionsSupplier implements IOptionsSupplier {
             final Set<IPosition> potentialReferentialPositions = Sets.newTreeSet();
             for (int k = 0; k <= radius; ++k)
                 for (final IPosition neighbour : board.neighbours(light, k))
-                    if (board.get(color).isMutable(neighbour)) potentialReferentialPositions.add(neighbour);
+                    if (board.isMutable(color, neighbour)) potentialReferentialPositions.add(neighbour);
             map.put(light, potentialReferentialPositions);
         }
         return map;
     }
 
-    private List<Set<IPosition>> getLegalPositions(final Colors side, final Board board, final IPosition potentialPosition,
+    private List<Set<IPosition>> getLegalPositions(final Colors color, final Board board, final IPosition potentialPosition,
             final Iterable<PolyominoInstance> instances) {
         final List<Set<IPosition>> options = Lists.newArrayList();
         for (final PolyominoInstance instance : instances) {
             final SortedSet<IPosition> positions = instance.apply(potentialPosition);
-            if (board.get(side).isLegal(positions)) options.add(positions);
+            if (board.isLegal(color, positions)) options.add(positions);
         }
         return options;
     }
@@ -76,13 +76,13 @@ public final class OptionsSupplier implements IOptionsSupplier {
     @Override
     public Table<IPosition, Polyomino, List<Set<IPosition>>> options(final IContext<?> contextInterface) {
         final Context context = (Context) contextInterface;
-        final Colors side = context.side();
+        final Colors color = context.side();
         final Board board = context.board();
-        final Iterable<IPosition> lights = board.get(side).getLights().keySet();
+        final Iterable<IPosition> lights = board.getLights(color);
         final PolyominoSet remainingPieces = context.getPlayer().remainingPieces();
         final Table<IPosition, Polyomino, List<Set<IPosition>>> table = TreeBasedTable.create();
         for (int radius = this.minRadius; radius <= this.maxRadius; ++radius) {
-            final Map<IPosition, Set<IPosition>> potentialPositions = this.getPotentialPositionsByLight(board, side, lights, radius);
+            final Map<IPosition, Set<IPosition>> potentialPositions = this.getPotentialPositionsByLight(board, color, lights, radius);
             final Set<Polyomino> polyominos = POLYOMINOS_BY_RADIUS.get(radius);
             for (final Polyomino polyomino : polyominos) {
                 if (remainingPieces.contains(polyomino)) {
@@ -91,7 +91,7 @@ public final class OptionsSupplier implements IOptionsSupplier {
                         final IPosition position = entry.getKey();
                         final List<Set<IPosition>> options = Lists.newArrayList();
                         for (final IPosition potentialPosition : entry.getValue())
-                            options.addAll(this.getLegalPositions(side, board, potentialPosition, instances));
+                            options.addAll(this.getLegalPositions(color, board, potentialPosition, instances));
                         if (!options.isEmpty()) table.put(position, polyomino, options);
                     }
                 }

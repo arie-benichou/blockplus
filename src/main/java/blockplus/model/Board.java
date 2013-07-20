@@ -17,24 +17,17 @@
 
 package blockplus.model;
 
-import static blockplus.model.Board.State.Metta;
-import static blockplus.model.Board.State.Mudita;
-import static blockplus.model.Board.State.Nirvana;
-import static blockplus.model.Board.State.Upekkha;
-import static components.cells.Positions.Position;
-
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedSet;
 
-import javax.annotation.Nullable;
-
+import blockplus.model.Board.Layer.State;
 import blockplus.model.polyomino.PolyominoInstances.PolyominoTranslatedInstance;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
@@ -48,104 +41,74 @@ import components.cells.Positions;
 
 public final class Board {
 
-    /**
-     * Possible states for a cell in a layer of a board. Since each color is
-     * mapped on its own layer, the board is made of 4 layers : one for Blue,
-     * one for Yellow, one for Red and one for Green.
-     */
-    enum State {
+    final static class Layer {
 
         /**
-         * State for a cell that could contain this layer's color
+         * Possible states for a cell in a layer of a board. Since each color is
+         * mapped on its own layer, the board is made of 4 layers : one for
+         * Blue, one for Yellow, one for Red and one for Green.
          */
-        Metta,
+        enum State {
 
-        /**
-         * State for a cell that can not contain this layer's color
-         */
-        Karuna,
+            /**
+             * State for a cell that could contain this layer's color
+             */
+            Metta,
 
-        /**
-         * State for a cell that contains a different layer's color
-         */
-        Mudita,
+            /**
+             * State for a cell that can not contain this layer's color
+             */
+            Karuna,
 
-        /**
-         * State for a cell that contains this layer's color
-         */
-        Upekkha,
+            /**
+             * State for a cell that contains a different layer's color
+             */
+            Mudita,
 
-        /**
-         * State for a stateless cell
-         */
-        Nirvana;
+            /**
+             * State for a cell that contains this layer's color
+             */
+            Upekkha,
 
-    }
+            /**
+             * State for a stateless cell
+             */
+            Nirvana;
 
-    public final static class Layer implements Supplier<ICells<State>> {
-
-        private final static class IsMutablePredicate implements Predicate<IPosition> {
-
-            private final ICells<State> stateBoard;
-
-            public IsMutablePredicate(final ICells<State> stateBoard) {
-                this.stateBoard = stateBoard;
-            }
-
-            /*
-            private boolean isDefined(final int row, final int column) {
-                return row > -1 && column > -1 && row < this.stateBoard.rows() && column < this.stateBoard.columns();
-            }
-            */
-
-            @Override
-            public boolean apply(@Nullable final IPosition position) {
-                final State state = this.stateBoard.get(position);
-                return //this.isDefined(position.row(), position.column()) && 
-                state.equals(State.Nirvana) || state.equals(Metta);
-            }
-
-        };
+        }
 
         private final static Predicate<Entry<IPosition, State>> SELF_PREDICATE = new Predicate<Map.Entry<IPosition, State>>() {
-
             @Override
             public boolean apply(final Entry<IPosition, State> entry) {
-                return entry.getValue().equals(Upekkha);
+                return entry.getValue().equals(State.Upekkha);
             }
 
         };
 
         private final static Predicate<Entry<IPosition, State>> LIGHT_PREDICATE = new Predicate<Map.Entry<IPosition, State>>() {
-
             @Override
             public boolean apply(final Entry<IPosition, State> entry) {
-                return entry.getValue().equals(Metta);
+                return entry.getValue().equals(State.Metta);
             }
 
         };
 
         private final ICells<State> stateBoard;
-        private final IsMutablePredicate isMutablePredicate;
 
         private volatile Map<IPosition, State> selves;
         private volatile Map<IPosition, State> lights;
 
         private Layer(final ICells<State> stateBoard) {
             this.stateBoard = stateBoard;
-            this.isMutablePredicate = new IsMutablePredicate(stateBoard);
         }
 
         public Layer(final int rows, final int columns) {
-            this(Cells.from(rows, columns, Nirvana, Mudita));
+            this(Cells.from(rows, columns, State.Nirvana, State.Mudita));
         }
 
         public boolean isMutable(final IPosition position) {
-            return this.isMutablePredicate.apply(position);
-        }
-
-        public boolean isMutable(final int i, final int j) {
-            return this.isMutable(Position(i, j));
+            final State state = this.stateBoard.get(position);
+            return state.equals(State.Nirvana) || state.equals(State.Metta);
         }
 
         public boolean isLegal(final Iterable<IPosition> positions) {
@@ -157,16 +120,15 @@ public final class Board {
             return containsLight;
         }
 
-        @Override
-        public ICells<State> get() {
+        private ICells<State> get() {
             return this.stateBoard;
         }
 
-        public int rows() {
+        private int rows() {
             return this.get().rows();
         }
 
-        public int columns() {
+        private int columns() {
             return this.get().columns();
         }
 
@@ -174,22 +136,11 @@ public final class Board {
             return this.getLights().containsKey(position);
         }
 
-        public Board apply(final Set<IPosition> positions, final Set<IPosition> shadows, final Set<IPosition> lights) {
-            return null;
-        }
-
         public Layer apply(final Map<IPosition, State> layerMutation) {
             final Map<IPosition, State> consistentMutations = Maps.newHashMap();
             for (final Entry<IPosition, State> mutation : layerMutation.entrySet())
                 if (this.isMutable(mutation.getKey())) consistentMutations.put(mutation.getKey(), mutation.getValue());
             return new Layer(this.get().apply(consistentMutations));
-        }
-
-        public Layer apply(final IPosition position, final State state) {
-            if (!this.isMutable(position)) return this;
-            final Map<IPosition, State> consistentMutation = Maps.newHashMap();
-            consistentMutation.put(position, state);
-            return new Layer(this.get().apply(consistentMutation));
         }
 
         public Map<IPosition, State> getLights() {
@@ -206,6 +157,10 @@ public final class Board {
                 if ((value = this.selves) == null) this.selves = value = this.get().filter(SELF_PREDICATE);
             }
             return value;
+        }
+
+        public State get(final IPosition position) {
+            return this.get().get(position);
         }
 
         @Override
@@ -233,46 +188,46 @@ public final class Board {
 
     }
 
-    public final static class LayerMutationBuilder {
+    final static class LayerMutationBuilder {
 
-        private Iterable<IPosition> potentialPositions = Sets.newHashSet();
-        private Iterable<IPosition> selfPositions = Sets.newHashSet();
-        private Iterable<IPosition> otherPositions = Sets.newHashSet();
-        private Iterable<IPosition> shadowPositions = Sets.newHashSet();
+        private Iterable<IPosition> lights = Sets.newHashSet();
+        private Iterable<IPosition> selves = Sets.newHashSet();
+        private Iterable<IPosition> others = Sets.newHashSet();
+        private Iterable<IPosition> shadows = Sets.newHashSet();
 
-        public LayerMutationBuilder setLightPositions(final Iterable<IPosition> positions) {
-            this.potentialPositions = positions;
+        public LayerMutationBuilder setLights(final Iterable<IPosition> positions) {
+            this.lights = positions;
             return this;
         }
 
-        public LayerMutationBuilder setLightPositions(final IPosition... positions) {
-            return this.setLightPositions(Sets.newHashSet(positions));
+        public LayerMutationBuilder setLights(final IPosition... positions) {
+            return this.setLights(Sets.newHashSet(positions));
         }
 
-        public LayerMutationBuilder setSelfPositions(final Iterable<IPosition> positions) {
-            this.selfPositions = positions;
+        public LayerMutationBuilder setSelves(final Iterable<IPosition> positions) {
+            this.selves = positions;
             return this;
         }
 
-        public LayerMutationBuilder setShadowPositions(final Iterable<IPosition> positions) {
-            this.shadowPositions = positions;
+        public LayerMutationBuilder setShadows(final Iterable<IPosition> positions) {
+            this.shadows = positions;
             return this;
         }
 
-        public LayerMutationBuilder setOtherPositions(final Iterable<IPosition> positions) {
-            this.otherPositions = positions;
+        public LayerMutationBuilder setOthers(final Iterable<IPosition> positions) {
+            this.others = positions;
             return this;
         }
 
         public Map<IPosition, State> build() {
             final ImmutableMap.Builder<IPosition, State> builder = new ImmutableMap.Builder<IPosition, State>();
-            for (final IPosition position : this.selfPositions)
+            for (final IPosition position : this.selves)
                 builder.put(position, State.Upekkha);
-            for (final IPosition position : this.shadowPositions)
+            for (final IPosition position : this.shadows)
                 builder.put(position, State.Karuna);
-            for (final IPosition position : this.potentialPositions)
+            for (final IPosition position : this.lights)
                 builder.put(position, State.Metta);
-            for (final IPosition position : this.otherPositions)
+            for (final IPosition position : this.others)
                 builder.put(position, State.Mudita);
             return builder.build();
         }
@@ -294,16 +249,7 @@ public final class Board {
         }
 
         private final int rows;
-
-        public int rows() {
-            return this.rows;
-        }
-
         private final int columns;
-
-        public int columns() {
-            return this.columns;
-        }
 
         private final ImmutableSortedMap.Builder<Colors, Layer> layerByColor = new ImmutableSortedMap.Builder<Colors, Layer>(Ordering.natural());
 
@@ -315,29 +261,29 @@ public final class Board {
 
         public Builder addLayer(final Colors color, final Layer layer) {
             Preconditions.checkArgument(this.colors().contains(color));
-            Preconditions.checkArgument(this.rows() == layer.rows());
-            Preconditions.checkArgument(this.columns() == layer.columns());
+            Preconditions.checkArgument(this.rows == layer.rows());
+            Preconditions.checkArgument(this.columns == layer.columns());
             this.layerByColor.put(color, layer);
             return this;
         }
 
         public Builder addLayer(final Colors color, final Map<IPosition, State> layerMutation) {
-            return this.addLayer(color, new Layer(this.rows(), this.columns()).apply(layerMutation));
+            return this.addLayer(color, new Layer(this.rows, this.columns).apply(layerMutation));
         }
 
         public Builder addLayer(final Colors color) {
-            return this.addLayer(color, new Layer(this.rows(), this.columns()));
+            return this.addLayer(color, new Layer(this.rows, this.columns));
         }
 
         public Board build() {
             ImmutableSortedMap<Colors, Layer> layerByColor = this.layerByColor.build();
             if (layerByColor.isEmpty()) {
                 for (final Colors color : this.colors())
-                    this.layerByColor.put(color, new Layer(this.rows(), this.columns()));
+                    this.layerByColor.put(color, new Layer(this.rows, this.columns));
                 layerByColor = this.layerByColor.build();
             }
             else Preconditions.checkState(this.colors().size() == layerByColor.size());
-            return new Board(this.rows(), this.columns(), layerByColor);
+            return new Board(this.rows, this.columns, layerByColor);
         }
 
     }
@@ -365,7 +311,7 @@ public final class Board {
         return this.columns;
     }
 
-    public Layer get(final Colors color) {
+    private Layer get(final Colors color) {
         return this.layers.get(color);
     }
 
@@ -373,36 +319,35 @@ public final class Board {
         return Positions.neighbours(position, radius);
     }
 
-    public Board apply(final Colors color, final Iterable<IPosition> positions, final Iterable<IPosition> shadows, final Iterable<IPosition> lights) {
-        final Map<IPosition, State> selvesMutation = new LayerMutationBuilder()
-                .setSelfPositions(positions)
-                .setShadowPositions(shadows)
-                .setLightPositions(lights)
-                .build();
-        final Map<IPosition, State> othersMutation = new LayerMutationBuilder()
-                .setOtherPositions(positions)
-                .build();
-        final Map<Colors, Layer> layers = Maps.newTreeMap();
-        for (final Colors c : this.getColors())
-            layers.put(c, this.get(c).apply(c.equals(color) ? selvesMutation : othersMutation));
-        return new Board(this.rows(), this.columns(), layers);
+    private Board apply(final Colors side, final Iterable<IPosition> positions, final Iterable<IPosition> shadows, final Iterable<IPosition> lights) {
+        final Map<IPosition, State> selvesMutation = new LayerMutationBuilder().setSelves(positions).setShadows(shadows).setLights(lights).build();
+        final Map<IPosition, State> othersMutation = new LayerMutationBuilder().setOthers(positions).build();
+        final Map<Colors, Layer> newLayers = Maps.newTreeMap();
+        for (final Colors color : this.getColors()) {
+            final Layer newLayer = this.get(color).apply(color.equals(side) ? selvesMutation : othersMutation);
+            newLayers.put(color, newLayer);
+        }
+        return new Board(this.rows(), this.columns(), newLayers);
     }
 
     public Board apply(final Colors color, final PolyominoTranslatedInstance instance) {
         return instance == null ? this : this.apply(color, instance.positions(), instance.shadows(), instance.lights());
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(this.layers);
+    public boolean isMutable(final Colors color, final IPosition position) {
+        return this.get(color).isMutable(position);
     }
 
-    @Override
-    public boolean equals(final Object object) {
-        if (object == null) return false;
-        Preconditions.checkArgument(object instanceof Board);
-        final Board that = (Board) object;
-        return this.layers.equals(that.layers);
+    public boolean isLegal(final Colors color, final SortedSet<IPosition> positions) {
+        return this.get(color).isLegal(positions);
+    }
+
+    public Iterable<IPosition> getLights(final Colors color) {
+        return this.get(color).getLights().keySet();
+    }
+
+    public Iterable<IPosition> getSelves(final Colors color) {
+        return this.get(color).getSelves().keySet();
     }
 
 }

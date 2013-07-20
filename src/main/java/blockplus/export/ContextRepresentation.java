@@ -23,10 +23,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import blockplus.model.Board;
-import blockplus.model.Board.Layer;
-import blockplus.model.PolyominoSet;
 import blockplus.model.Colors;
 import blockplus.model.Context;
+import blockplus.model.PolyominoSet;
 import blockplus.model.Side;
 import blockplus.model.polyomino.Polyomino;
 
@@ -71,9 +70,7 @@ public final class ContextRepresentation {
         final Set<Colors> colors = board.getColors();
         for (final Colors color : colors) {
             final JsonArray jsonArray = new JsonArray();
-            final Layer layer = board.get(color);
-            final Set<IPosition> positions = layer.getSelves().keySet();
-            for (final IPosition position : positions)
+            for (final IPosition position : board.getSelves(color))
                 jsonArray.add(new JsonPrimitive(columns * position.row() + position.column() % rows)); // TODO extract method
             data.add(color.toString(), jsonArray);
         }

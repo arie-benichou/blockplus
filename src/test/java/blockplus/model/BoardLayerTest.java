@@ -17,11 +17,9 @@
 
 package blockplus.model;
 
-import static blockplus.model.Board.State.Karuna;
-import static blockplus.model.Board.State.Metta;
-import static blockplus.model.Board.State.Mudita;
-import static blockplus.model.Board.State.Nirvana;
-import static blockplus.model.Board.State.Upekkha;
+import static blockplus.model.Board.Layer.State.Karuna;
+import static blockplus.model.Board.Layer.State.Metta;
+import static blockplus.model.Board.Layer.State.Upekkha;
 import static components.cells.Positions.Position;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -33,96 +31,43 @@ import java.util.Map;
 import org.junit.Test;
 
 import blockplus.model.Board.Layer;
+import blockplus.model.Board.Layer.State;
 import blockplus.model.Board.LayerMutationBuilder;
-import blockplus.model.Board.State;
 import blockplus.model.polyomino.Polyomino;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import components.cells.Cells;
-import components.cells.ICells;
 import components.cells.IPosition;
 
 public class BoardLayerTest {
 
-    private final static Layer LAYER = new Layer(6, 4);
-
-    @Test
-    public void testRows() {
-        final int expected = 6;
-        final int actual = LAYER.rows();
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testColumns() {
-        final int expected = 4;
-        final int actual = LAYER.columns();
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGet() {
-        final ICells<State> expected = Cells.from(LAYER.rows(), LAYER.columns(), Nirvana, Mudita);
-        final ICells<State> actual = LAYER.get();
-        assertEquals(expected, actual);
-    }
+    private static final int COLUMNS = 4;
+    private static final int ROWS = 6;
+    private final static Layer LAYER = new Layer(ROWS, COLUMNS);
 
     @Test
     public void testIsMutable() {
-        assertFalse(LAYER.isMutable(-1, 0));
-        assertFalse(LAYER.isMutable(0, -1));
-        assertFalse(LAYER.isMutable(LAYER.rows(), 0));
-        assertFalse(LAYER.isMutable(0, LAYER.columns()));
-        for (int row = 0; row < LAYER.rows(); ++row)
-            for (int column = 0; column < LAYER.columns(); ++column)
-                assertTrue(LAYER.isMutable(row, column));
-    }
-
-    @Test
-    public void testApplyCellPositionState() {
-        {
-            final Layer newBoardLayer = LAYER.apply(Position(0, 0), Upekkha);
-            final State expected = Upekkha;
-            final State actual = newBoardLayer.get().get(Position(0, 0));
-            assertEquals(expected, actual);
-        }
-        {
-            final Layer newBoardLayer = LAYER.apply(Position(0, 0), Mudita);
-            final State expected = Mudita;
-            final State actual = newBoardLayer.get().get(Position(0, 0));
-            assertEquals(expected, actual);
-        }
-        {
-            final Layer newBoardLayer = LAYER.apply(Position(0, 0), Karuna);
-            final State expected = Karuna;
-            final State actual = newBoardLayer.get().get(Position(0, 0));
-            assertEquals(expected, actual);
-        }
-        {
-            final Layer newBoardLayer = LAYER.apply(Position(0, 0), Metta);
-            final State expected = Metta;
-            final State actual = newBoardLayer.get().get(Position(0, 0));
-            assertEquals(expected, actual);
-        }
-        {
-            final Layer newBoardLayer = LAYER.apply(Position(0, 0), Nirvana);
-            final State expected = Nirvana;
-            final State actual = newBoardLayer.get().get(Position(0, 0));
-            assertEquals(expected, actual);
-        }
+        assertFalse(LAYER.isMutable(Position(-1, 0)));
+        assertFalse(LAYER.isMutable(Position(0, -1)));
+        assertFalse(LAYER.isMutable(Position(ROWS, 0)));
+        assertFalse(LAYER.isMutable(Position(0, COLUMNS)));
+        for (int row = 0; row < ROWS; ++row)
+            for (int column = 0; column < COLUMNS; ++column)
+                assertTrue(LAYER.isMutable(Position(row, column)));
     }
 
     @Test
     public void testIsLegal() {
         assertFalse(LAYER.isLegal(Sets.newHashSet(Position(-1, 0))));
         assertFalse(LAYER.isLegal(Sets.newHashSet(Position(0, -1))));
-        assertFalse(LAYER.isLegal(Sets.newHashSet(Position(LAYER.rows(), 0))));
-        assertFalse(LAYER.isLegal(Sets.newHashSet(Position(0, LAYER.columns()))));
-        for (int row = 0; row < LAYER.rows(); ++row)
-            for (int column = 0; column < LAYER.columns(); ++column)
+        assertFalse(LAYER.isLegal(Sets.newHashSet(Position(ROWS, 0))));
+        assertFalse(LAYER.isLegal(Sets.newHashSet(Position(0, COLUMNS))));
+        for (int row = 0; row < ROWS; ++row)
+            for (int column = 0; column < COLUMNS; ++column)
                 assertFalse(LAYER.isLegal(Sets.newHashSet(Position(row, column))));
-        final Layer newBoardLayer = LAYER.apply(Position(0, 0), Metta);
+        final Map<IPosition, State> mutations = Maps.newHashMap();
+        mutations.put(Position(0, 0), Metta);
+        final Layer newBoardLayer = LAYER.apply(mutations);
         assertTrue(newBoardLayer.isLegal(Sets.newHashSet(Position(0, 0))));
     }
 
@@ -136,22 +81,22 @@ public class BoardLayerTest {
             final Layer newBoardLayer = LAYER.apply(mutations);
             {
                 final State expected = Upekkha;
-                final State actual = newBoardLayer.get().get(Position(0, 0));
+                final State actual = newBoardLayer.get(Position(0, 0));
                 assertEquals(expected, actual);
             }
             {
                 final State expected = Karuna;
-                final State actual = newBoardLayer.get().get(Position(0, 1));
+                final State actual = newBoardLayer.get(Position(0, 1));
                 assertEquals(expected, actual);
             }
             {
                 final State expected = Karuna;
-                final State actual = newBoardLayer.get().get(Position(1, 0));
+                final State actual = newBoardLayer.get(Position(1, 0));
                 assertEquals(expected, actual);
             }
             {
                 final State expected = Metta;
-                final State actual = newBoardLayer.get().get(Position(1, 1));
+                final State actual = newBoardLayer.get(Position(1, 1));
                 assertEquals(expected, actual);
             }
         }
@@ -169,8 +114,8 @@ public class BoardLayerTest {
             expected.put(Position(0, 0), Upekkha);
             final Polyomino polyomino = Polyomino._1;
             final Map<IPosition, State> mutation = new LayerMutationBuilder()
-                    .setSelfPositions(polyomino.positions())
-                    .setShadowPositions(polyomino.shadows())
+                    .setSelves(polyomino.positions())
+                    .setShadows(polyomino.shadows())
                     .build();
             final Layer newBoardLayer = LAYER.apply(mutation);
             final Map<IPosition, State> actual = newBoardLayer.getSelves();
@@ -190,9 +135,9 @@ public class BoardLayerTest {
             expected.put(Position(1, 1), Metta);
             final Polyomino polyomino = Polyomino._1;
             final Map<IPosition, State> mutation = new LayerMutationBuilder()
-                    .setSelfPositions(polyomino.positions())
-                    .setShadowPositions(polyomino.shadows())
-                    .setLightPositions(polyomino.lights())
+                    .setSelves(polyomino.positions())
+                    .setShadows(polyomino.shadows())
+                    .setLights(polyomino.lights())
                     .build();
             final Layer newBoardLayer = LAYER.apply(mutation);
             final Map<IPosition, State> actual = newBoardLayer.getLights();
@@ -202,11 +147,14 @@ public class BoardLayerTest {
 
     @Test
     public void testIsLight() {
-        for (int row = 0; row < LAYER.rows(); ++row)
-            for (int column = 0; column < LAYER.columns(); ++column)
+        for (int row = 0; row < ROWS; ++row)
+            for (int column = 0; column < COLUMNS; ++column)
                 assertFalse(LAYER.isLight(Position(row, column)));
         final IPosition position = Position(0, 0);
-        final Layer newBoardLayer = LAYER.apply(position, Metta);
+
+        final Map<IPosition, State> mutations = Maps.newHashMap();
+        mutations.put(position, Metta);
+        final Layer newBoardLayer = LAYER.apply(mutations);
         assertTrue(newBoardLayer.isLight(position));
     }
 
