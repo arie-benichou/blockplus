@@ -30,8 +30,6 @@ import com.google.common.collect.Maps;
 
 public final class Pieces implements Iterable<Entry<Polyomino, Integer>> {
 
-    public final static Pieces EMPTY = new Builder().build();
-
     public final static class Builder {
 
         private final Map<Polyomino, Integer> pieces;

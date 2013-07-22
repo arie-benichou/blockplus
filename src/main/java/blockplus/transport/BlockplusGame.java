@@ -28,7 +28,7 @@ import blockplus.model.Colors;
 import blockplus.model.Context;
 import blockplus.model.Context.Builder;
 import blockplus.model.Move;
-import blockplus.model.Side;
+import blockplus.model.Sides.Side;
 import blockplus.transport.events.interfaces.ClientInterface;
 import blockplus.transport.events.interfaces.MoveSubmitInterface;
 

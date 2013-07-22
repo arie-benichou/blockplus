@@ -9,7 +9,7 @@ public class BoardTest {
 
     private final static int ROWS = 20;
     private final static int COLUMNS = 20;
-    private final static Board BOARD = new Board.Builder(ROWS, COLUMNS).build();
+    private final static Board BOARD = Board.of(ROWS, COLUMNS);
 
     @Test
     public void testGetColors() {

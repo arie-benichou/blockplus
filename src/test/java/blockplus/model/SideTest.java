@@ -8,8 +8,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Assert;
 import org.junit.Test;
 
-import blockplus.model.Side;
-import blockplus.model.Pieces;
+import blockplus.model.Sides.Side;
 
 public class SideTest {
 

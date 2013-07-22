@@ -27,7 +27,7 @@ import blockplus.model.Colors;
 import blockplus.model.Context;
 import blockplus.model.Options;
 import blockplus.model.Pieces;
-import blockplus.model.Side;
+import blockplus.model.Sides.Side;
 import blockplus.model.polyomino.Polyomino;
 
 import com.google.common.collect.Lists;

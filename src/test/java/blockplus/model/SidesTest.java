@@ -11,6 +11,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import blockplus.model.Sides.Side;
 import blockplus.model.polyomino.Polyomino;
 
 public class SidesTest {

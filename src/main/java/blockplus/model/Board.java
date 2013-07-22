@@ -189,44 +189,30 @@ public final class Board {
 
     }
 
-    public final static class Builder {
-
-        private final int rows;
-
-        private final int columns;
-
-        private final Map<Colors, Layer> layerByColor = Maps.newHashMap();
-
-        public Builder(final int rows, final int columns) {
-            this.rows = rows;
-            this.columns = columns;
-            final Layer layer = new Layer(rows, columns);
-            {
-                final Map<IPosition, State> data = Maps.newHashMap();
-                data.put(Position(0, 0), State.Metta);
-                this.layerByColor.put(Blue, layer.apply(data));
-            }
-            {
-                final Map<IPosition, State> data = Maps.newHashMap();
-                data.put(Position(0, columns - 1), State.Metta);
-                this.layerByColor.put(Yellow, layer.apply(data));
-            }
-            {
-                final Map<IPosition, State> data = Maps.newHashMap();
-                data.put(Position(rows - 1, columns - 1), State.Metta);
-                this.layerByColor.put(Red, layer.apply(data));
-            }
-            {
-                final Map<IPosition, State> data = Maps.newHashMap();
-                data.put(Position(rows - 1, 0), State.Metta);
-                this.layerByColor.put(Green, layer.apply(data));
-            }
+    public final static Board of(final int rows, final int columns) {
+        final Map<Colors, Layer> layerByColor = Maps.newHashMap();
+        final Layer layer = new Layer(rows, columns);
+        {
+            final Map<IPosition, State> data = Maps.newHashMap();
+            data.put(Position(0, 0), State.Metta);
+            layerByColor.put(Blue, layer.apply(data));
         }
-
-        public Board build() {
-            return new Board(this.rows, this.columns, this.layerByColor);
+        {
+            final Map<IPosition, State> data = Maps.newHashMap();
+            data.put(Position(0, columns - 1), State.Metta);
+            layerByColor.put(Yellow, layer.apply(data));
         }
-
+        {
+            final Map<IPosition, State> data = Maps.newHashMap();
+            data.put(Position(rows - 1, columns - 1), State.Metta);
+            layerByColor.put(Red, layer.apply(data));
+        }
+        {
+            final Map<IPosition, State> data = Maps.newHashMap();
+            data.put(Position(rows - 1, 0), State.Metta);
+            layerByColor.put(Green, layer.apply(data));
+        }
+        return new Board(rows, columns, layerByColor);
     }
 
     private final Map<Colors, Layer> layers;

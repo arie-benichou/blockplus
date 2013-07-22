@@ -21,12 +21,39 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import blockplus.model.Sides.Side;
 import blockplus.model.polyomino.Polyomino;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 public final class Sides implements Iterable<Entry<Colors, Side>> {
+
+    public final static class Side {
+
+        public static Side with(final Pieces remainingPieces) {
+            return new Side(remainingPieces);
+        }
+
+        private final Pieces remainingPieces;
+
+        public Pieces remainingPieces() {
+            return this.remainingPieces;
+        }
+
+        private Side(final Pieces remainingPieces) {
+            this.remainingPieces = remainingPieces;
+        }
+
+        public Side apply(final Polyomino polyomino) {
+            return new Side(this.remainingPieces().remove(polyomino));
+        }
+
+        public boolean isNull() {
+            return !this.remainingPieces().contains(Polyomino._0);
+        }
+
+    }
 
     public final static class Builder {
 

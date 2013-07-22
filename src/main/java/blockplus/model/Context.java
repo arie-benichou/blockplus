@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import blockplus.model.Sides.Side;
 import blockplus.model.polyomino.Polyomino;
 import blockplus.model.polyomino.PolyominoInstances.PolyominoTranslatedInstance;
 import blockplus.model.polyomino.Polyominos;
@@ -51,7 +52,7 @@ public final class Context {
                 .build();
         private final static int ROWS = 20;
         private final static int COLUMNS = 20;
-        private final static Board BOARD = new Board.Builder(ROWS, COLUMNS).build();
+        private final static Board BOARD = Board.of(ROWS, COLUMNS);
 
         public Context build() {
             return new Context(SIDE, SIDES, BOARD);
