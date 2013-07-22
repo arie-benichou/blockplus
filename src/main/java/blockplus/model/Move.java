@@ -40,8 +40,4 @@ public class Move {
         return this.positions;
     }
 
-    public boolean isNull() {
-        return this.positions.isEmpty();
-    }
-
 }

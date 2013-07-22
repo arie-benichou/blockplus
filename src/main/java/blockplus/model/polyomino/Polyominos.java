@@ -91,7 +91,7 @@ public final class Polyominos {
 
     private PolyominoTranslatedInstance computeTranslatedInstance(final SortedSet<IPosition> positions, final PolyominoInstance instanceFromPositions,
             final Polyomino type) {
-        if (positions.isEmpty()) return PolyominoInstances.translate(instanceFromPositions, Direction(0, 0), type); // TODO à revoir...
+        if (positions.isEmpty()) return PolyominoInstances.translate(instanceFromPositions, Direction(0, 0), type);
         final IPosition position1 = positions.first();
         final IPosition position2 = ((SortedSet<IPosition>) instanceFromPositions.positions()).first();
         final int rowDelta = position1.row() - position2.row();

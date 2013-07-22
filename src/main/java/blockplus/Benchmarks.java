@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
 
+import blockplus.export.ContextRepresentation;
 import blockplus.model.Context;
 import blockplus.model.Move;
 import blockplus.model.Options;
@@ -23,7 +24,7 @@ public class Benchmarks {
         final Context initialContext = context;
         final Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
-        for (int i = 0; i < 100; ++i) {
+        for (int i = 0; i < 50; ++i) {
             while (!context.isTerminal()) {
                 final Options options = context.options();
                 final List<Set<IPosition>> list = options.toList();
@@ -31,6 +32,10 @@ public class Benchmarks {
                 final Move move = new Move(context.side(), positions);
                 context = context.apply(move).forward();
                 ++iteration;
+                final ContextRepresentation contextRepresentation = new ContextRepresentation(context);
+                contextRepresentation.encodeBoard();
+                contextRepresentation.encodeOptions();
+                contextRepresentation.encodePieces();
             }
             context = initialContext;
         }

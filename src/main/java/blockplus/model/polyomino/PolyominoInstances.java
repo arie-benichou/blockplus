@@ -107,11 +107,6 @@ public final class PolyominoInstances implements Supplier<Iterable<PolyominoInst
         return newPositions;
     }
 
-    public static PolyominoTranslatedInstance translate(final PolyominoInstance instance, final Direction direction) {
-        return translate(instance, direction, null);
-    }
-
-    // TODO à réfléchir avec OptionsSupplier...
     public static PolyominoTranslatedInstance translate(final PolyominoInstance instance, final Direction direction, final Polyomino type) {
         final SortedSet<IPosition> positions = translatePositions(instance.positions(), direction);
         final SortedSet<IPosition> shadows = translatePositions(instance.shadows(), direction);

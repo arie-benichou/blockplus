@@ -31,7 +31,6 @@ import blockplus.model.polyomino.Polyomino;
 import blockplus.model.polyomino.PolyominoInstances.PolyominoTranslatedInstance;
 import blockplus.model.polyomino.Polyominos;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import components.cells.IPosition;
@@ -140,13 +139,6 @@ public final class Context {
 
     public Side getPlayer() {
         return this.getPlayer(this.side());
-    }
-
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .addValue(this.board())
-                .toString();
     }
 
 }

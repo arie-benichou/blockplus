@@ -37,10 +37,6 @@ public final class Positions {
         return Neighbourhood.getNeighboursPositions(position, radius);
     }
 
-    public static Iterable<IPosition> neighbours(final IPosition position) {
-        return neighbours(position, 1);
-    }
-
     public static Set<IPosition> neighbours(final IPosition position, final Iterable<Direction> directions) {
         final Set<IPosition> positions = Sets.newLinkedHashSet();
         for (final Direction direction : directions)

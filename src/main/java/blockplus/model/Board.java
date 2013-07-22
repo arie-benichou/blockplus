@@ -125,14 +125,6 @@ public final class Board {
             return this.stateBoard;
         }
 
-        private int rows() {
-            return this.get().rows();
-        }
-
-        private int columns() {
-            return this.get().columns();
-        }
-
         public boolean isLight(final IPosition position) {
             return this.getLights().containsKey(position);
         }
@@ -179,8 +171,8 @@ public final class Board {
         @Override
         public String toString() {
             return Objects.toStringHelper(this)
-                    .add("rows", this.rows())
-                    .add("columns", this.columns())
+                    .add("rows", this.get().rows())
+                    .add("columns", this.get().columns())
                     .add("initial", this.get().initialSymbol())
                     .add("undefined", this.get().undefinedSymbol())
                     .add("mutations", this.get().get())

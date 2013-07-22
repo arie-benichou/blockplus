@@ -54,10 +54,6 @@ public final class ContextRepresentation {
         this.gameContext = game;
     }
 
-    public String encodeColor(final Colors color) {
-        return "\"" + color.toString() + "\"";
-    }
-
     public JsonElement encodeBoard() {
         final JsonObject boardState = new JsonObject();
         final JsonObject meta = new JsonObject();
