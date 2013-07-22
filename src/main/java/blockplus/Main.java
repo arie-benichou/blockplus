@@ -5,29 +5,20 @@ import java.util.List;
 import java.util.Set;
 
 import blockplus.model.Context;
-import blockplus.model.polyomino.Polyomino;
+import blockplus.model.Options;
 
-import com.google.common.collect.Table.Cell;
-import com.google.common.collect.TreeBasedTable;
 import components.cells.IPosition;
 
 public class Main {
 
     public static void main(final String[] args) throws Exception {
-
         final Context context = new Context.Builder().build();
-        final TreeBasedTable<IPosition, Polyomino, List<Set<IPosition>>> options =
-                                                                                   (TreeBasedTable<IPosition, Polyomino, List<Set<IPosition>>>)
-                                                                                   context.options();
-        int n = 0;
-        for (final Cell<IPosition, Polyomino, List<Set<IPosition>>> object : options.cellSet()) {
-            final List<Set<IPosition>> value = object.getValue();
-            for (final Iterable<IPosition> positions : value) {
-                System.out.println(positions);
-                ++n;
-            }
-
+        final Options options = context.options();
+        final List<Set<IPosition>> list = options.toList();
+        for (final Set<IPosition> positions : list) {
+            System.out.println(positions);
         }
-        System.out.println(n);
+        System.out.println(list.size());
     }
+
 }

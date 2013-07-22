@@ -18,7 +18,6 @@
 package blockplus.model.polyomino;
 
 import static components.cells.Directions.Direction;
-import static components.cells.Positions.Position;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -103,23 +102,6 @@ public final class Polyominos {
     public PolyominoTranslatedInstance get(final SortedSet<IPosition> positions) {
         final String rendering = PolyominoRenderer.render(positions);
         return this.computeTranslatedInstance(positions, this.getInstance(rendering), this.getType(rendering));
-    }
-
-    public static void main(final String[] args) {
-        final Polyomino polyomino = Polyomino._3;
-        System.out.println(polyomino);
-        final String string = polyomino.get().iterator().next().toString();
-        System.out.println(string);
-        final Polyominos polyominos = Polyominos.getInstance();
-        final PolyominoInstance instance = polyominos.getInstance(string);
-        final SortedSet<IPosition> positions = instance.apply(Position(5, 5));
-        final String rendering = PolyominoRenderer.render(positions);
-        final PolyominoInstance instanceFromPositions = polyominos.getInstance(rendering);
-        final Polyomino type = polyominos.getType(rendering);
-        final PolyominoTranslatedInstance translatedInstance = polyominos.computeTranslatedInstance(positions, instanceFromPositions, type);
-        System.out.println(translatedInstance.positions());
-        System.out.println(translatedInstance.shadows());
-        System.out.println(translatedInstance.lights());
     }
 
 }

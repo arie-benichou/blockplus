@@ -7,8 +7,6 @@ import static blockplus.model.Colors.Red;
 import static blockplus.model.Colors.Yellow;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -17,70 +15,65 @@ import blockplus.model.polyomino.Polyomino;
 
 public class SidesTest {
 
-    private static final PolyominoSet REMAINING_PIECES = new PolyominoSet.Builder().add(Polyomino._1).build();
-    private final static Side PLAYER1 = Side.from(REMAINING_PIECES);
-    private final static Side PLAYER2 = Side.from(REMAINING_PIECES);
-    private final static Side PLAYER3 = Side.from(REMAINING_PIECES);
-    private final static Side PLAYER4 = Side.from(REMAINING_PIECES);
-
-    private final static Sides PLAYERS = new Sides.Builder()
-            .add(Blue, PLAYER1)
-            .add(Yellow, PLAYER2)
-            .add(Red, PLAYER3)
-            .add(Green, PLAYER4)
-            .build();
+    private final static SidesOrdering SIDES_ORDERING = new SidesOrdering.Builder().add(Blue).add(Yellow).add(Red).add(Green).build();
+    private final static Pieces REMAINING_PIECES = new Pieces.Builder().add(Polyomino._0).add(Polyomino._1).build();
+    private final static Side PLAYER1 = Side.with(REMAINING_PIECES);
+    private final static Side PLAYER2 = Side.with(REMAINING_PIECES);
+    private final static Side PLAYER3 = Side.with(REMAINING_PIECES);
+    private final static Side PLAYER4 = Side.with(REMAINING_PIECES);
+    private final static Sides PLAYERS = new Sides.Builder(SIDES_ORDERING).add(PLAYER1).add(PLAYER2).add(PLAYER3).add(PLAYER4).build();
 
     @Test(expected = IllegalStateException.class)
     public void testBuildOfPlayersWithoutAnyPlayer() {
-        new Sides.Builder().build();
+        new Sides.Builder(SIDES_ORDERING).build();
     }
 
     @Test(expected = IllegalStateException.class)
     public void testBuildOfPlayersWithOnlyOnePlayer() {
-        new Sides.Builder().add(Blue, PLAYER1).build();
+        new Sides.Builder(SIDES_ORDERING).add(PLAYER1).build();
     }
 
     @Test(expected = IllegalStateException.class)
     public void testBuildOfPlayersWithOnlyTwoPlayers() {
-        new Sides.Builder()
-                .add(Blue, PLAYER1)
-                .add(Yellow, PLAYER2)
+        new Sides.Builder(SIDES_ORDERING)
+                .add(PLAYER1)
+                .add(PLAYER2)
                 .build();
     }
 
     @Test(expected = IllegalStateException.class)
     public void testBuildOfPlayersWithOnlyThreePlayers() {
-        new Sides.Builder()
-                .add(Blue, PLAYER1)
-                .add(Yellow, PLAYER2)
-                .add(Red, PLAYER3)
+        new Sides.Builder(SIDES_ORDERING)
+                .add(PLAYER1)
+                .add(PLAYER2)
+                .add(PLAYER3)
                 .build();
     }
 
     @Test
     public void testGet() {
-        assertEquals(PLAYER1, PLAYERS.getAlivePlayer(Blue));
-        assertEquals(PLAYER2, PLAYERS.getAlivePlayer(Yellow));
-        assertEquals(PLAYER3, PLAYERS.getAlivePlayer(Red));
-        assertEquals(PLAYER4, PLAYERS.getAlivePlayer(Green));
+        assertEquals(PLAYER1, PLAYERS.getSide(Blue));
+        assertEquals(PLAYER2, PLAYERS.getSide(Yellow));
+        assertEquals(PLAYER3, PLAYERS.getSide(Red));
+        assertEquals(PLAYER4, PLAYERS.getSide(Green));
     }
 
     @Test
     public void testHasAlivePlayer() {
-        assertTrue(PLAYERS.hasAlivePlayer());
+        assertTrue(PLAYERS.hasSide());
     }
 
     @Test
     public void testApply() {
         {
-            assertTrue(PLAYERS.getAlivePlayer(Blue).remainingPieces().contains(Polyomino._1));
+            assertTrue(PLAYERS.getSide(Blue).remainingPieces().contains(Polyomino._1));
             final Sides newPlayers = PLAYERS.apply(Blue, Polyomino._1);
-            assertFalse(newPlayers.getAlivePlayer(Blue).remainingPieces().contains(Polyomino._1));
+            assertFalse(newPlayers.getSide(Blue).remainingPieces().contains(Polyomino._1));
         }
         {
-            assertNotNull(PLAYERS.getAlivePlayer(Blue));
+            assertFalse(PLAYERS.getSide(Blue).isNull());
             final Sides newPlayers = PLAYERS.apply(Blue, Polyomino._0);
-            assertNull(newPlayers.getAlivePlayer(Blue));
+            assertTrue(newPlayers.getSide(Blue).isNull());
         }
     }
 

@@ -19,11 +19,9 @@ package blockplus.model;
 
 import java.util.SortedSet;
 
-import blockplus.model.interfaces.IMove;
-
 import components.cells.IPosition;
 
-public class Move implements IMove {
+public class Move {
 
     private final Colors color;
 
@@ -42,7 +40,6 @@ public class Move implements IMove {
         return this.positions;
     }
 
-    @Override
     public boolean isNull() {
         return this.positions.isEmpty();
     }

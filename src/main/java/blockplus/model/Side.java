@@ -17,24 +17,21 @@
 
 package blockplus.model;
 
-
 import blockplus.model.polyomino.Polyomino;
-
-import com.google.common.base.Objects;
 
 public final class Side {
 
-    public static Side from(final PolyominoSet remainingPieces) {
+    public static Side with(final Pieces remainingPieces) {
         return new Side(remainingPieces);
     }
 
-    private final PolyominoSet remainingPieces;
+    private final Pieces remainingPieces;
 
-    public PolyominoSet remainingPieces() {
+    public Pieces remainingPieces() {
         return this.remainingPieces;
     }
 
-    private Side(final PolyominoSet remainingPieces) {
+    private Side(final Pieces remainingPieces) {
         this.remainingPieces = remainingPieces;
     }
 
@@ -42,9 +39,8 @@ public final class Side {
         return new Side(this.remainingPieces().remove(polyomino));
     }
 
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this).add("pieces", this.remainingPieces()).toString();
+    public boolean isNull() {
+        return !this.remainingPieces().contains(Polyomino._0);
     }
 
 }

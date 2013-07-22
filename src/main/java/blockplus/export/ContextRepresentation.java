@@ -25,14 +25,14 @@ import java.util.Set;
 import blockplus.model.Board;
 import blockplus.model.Colors;
 import blockplus.model.Context;
-import blockplus.model.PolyominoSet;
+import blockplus.model.Options;
+import blockplus.model.Pieces;
 import blockplus.model.Side;
 import blockplus.model.polyomino.Polyomino;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.collect.Table;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -82,10 +82,11 @@ public final class ContextRepresentation {
     public JsonElement encodePieces() {
         final JsonObject data = new JsonObject();
         final Context context = this.getGameContext();
-        for (final Colors color : context.sides()) {
-            final Side player = context.getPlayer(color);
-            int bits = 0b1;
-            final PolyominoSet remainingPieces = player.remainingPieces();
+        for (final Entry<Colors, Side> sideEntry : context.sides()) {
+            final Colors color = sideEntry.getKey();
+            final Side side = sideEntry.getValue();
+            int bits = 1;
+            final Pieces remainingPieces = side.remainingPieces();
             for (final Entry<Polyomino, Integer> entry : remainingPieces) {
                 if (entry.getKey().ordinal() == 0) continue;
                 bits = bits << 1 | entry.getValue();
@@ -101,14 +102,12 @@ public final class ContextRepresentation {
     System.out.println(json);
     */
     public JsonElement encodeOptions() {
-
         final Board board = this.getGameContext().board();
         final int rows = board.rows();
         final int columns = board.columns();
-
-        final Table<IPosition, Polyomino, List<Set<IPosition>>> options = (Table<IPosition, Polyomino, List<Set<IPosition>>>) this.getGameContext().options();
+        final Options options = this.getGameContext().options();
         final Map<Integer, List<Set<Integer>>> legalPositionsByPiece = Maps.newTreeMap(); // TODO à revoir
-        for (final Entry<Polyomino, Map<IPosition, List<Set<IPosition>>>> entry : options.columnMap().entrySet()) {
+        for (final Entry<Polyomino, Map<IPosition, List<Set<IPosition>>>> entry : options.byPolyomino()) {
             final Polyomino polyomino = entry.getKey();
             final Map<IPosition, List<Set<IPosition>>> map = entry.getValue();
             final List<Set<Integer>> playablePositions = Lists.newArrayList();

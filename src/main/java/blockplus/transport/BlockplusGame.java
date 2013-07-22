@@ -85,7 +85,7 @@ public class BlockplusGame implements GameInterface<Context> {
             int n = 0;
             for (final ClientInterface client : clients) {
                 final Colors color = Colors.valueOf(this.SEQUENCE.get(n));
-                final Side player = gameContext.players().getDeadOrAlivePlayer(color);
+                final Side player = gameContext.sides().getSide(color);
                 builder1.put(player, client);
                 builder2.put(client, player);
                 builder3.put(color, client);
@@ -142,7 +142,7 @@ public class BlockplusGame implements GameInterface<Context> {
 
     public ClientInterface getUserToPlay() {
         final Colors colorToPlay = this.getContext().side();
-        final Side player = this.getContext().players().getAlivePlayer(colorToPlay);
+        final Side player = this.getContext().sides().getSide(colorToPlay);
         return this.clientByPlayer.get(player);
     }
 

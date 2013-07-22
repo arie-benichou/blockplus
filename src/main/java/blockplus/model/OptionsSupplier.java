@@ -24,12 +24,11 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 
-import blockplus.model.interfaces.IContext;
-import blockplus.model.interfaces.IOptionsSupplier;
 import blockplus.model.polyomino.Polyomino;
 import blockplus.model.polyomino.PolyominoInstances.PolyominoInstance;
 import blockplus.model.polyomino.Polyominos;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -37,17 +36,16 @@ import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import components.cells.IPosition;
 
-public final class OptionsSupplier implements IOptionsSupplier {
+public final class OptionsSupplier implements Supplier<Options> {
 
     private final static SortedMap<Integer, Set<Polyomino>> POLYOMINOS_BY_RADIUS = Polyominos.getInstance().byRadius();
+    private final static int MIN_RADIUS = Math.max(0, POLYOMINOS_BY_RADIUS.firstKey());
+    private final static int MAX_RADIUS = POLYOMINOS_BY_RADIUS.lastKey();
 
-    private final Integer minRadius;
+    private final Context context;
 
-    private final Integer maxRadius;
-
-    public OptionsSupplier() {
-        this.minRadius = Math.max(0, POLYOMINOS_BY_RADIUS.firstKey());
-        this.maxRadius = POLYOMINOS_BY_RADIUS.lastKey();
+    public OptionsSupplier(final Context context) {
+        this.context = context;
     }
 
     private Map<IPosition, Set<IPosition>> getPotentialPositionsByLight(final Board board, final Colors color, final Iterable<IPosition> lights,
@@ -74,14 +72,13 @@ public final class OptionsSupplier implements IOptionsSupplier {
     }
 
     @Override
-    public Table<IPosition, Polyomino, List<Set<IPosition>>> options(final IContext<?> contextInterface) {
-        final Context context = (Context) contextInterface;
-        final Colors color = context.side();
-        final Board board = context.board();
+    public Options get() {
+        final Colors color = this.context.side();
+        final Board board = this.context.board();
         final Iterable<IPosition> lights = board.getLights(color);
-        final PolyominoSet remainingPieces = context.getPlayer().remainingPieces();
+        final Pieces remainingPieces = this.context.getPlayer().remainingPieces();
         final Table<IPosition, Polyomino, List<Set<IPosition>>> table = TreeBasedTable.create();
-        for (int radius = this.minRadius; radius <= this.maxRadius; ++radius) {
+        for (int radius = MIN_RADIUS; radius <= MAX_RADIUS; ++radius) {
             final Map<IPosition, Set<IPosition>> potentialPositions = this.getPotentialPositionsByLight(board, color, lights, radius);
             final Set<Polyomino> polyominos = POLYOMINOS_BY_RADIUS.get(radius);
             for (final Polyomino polyomino : polyominos) {
@@ -97,6 +94,7 @@ public final class OptionsSupplier implements IOptionsSupplier {
                 }
             }
         }
-        return table;
+        return new Options(table);
     }
+
 }

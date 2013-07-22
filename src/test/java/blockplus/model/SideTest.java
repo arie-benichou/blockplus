@@ -9,15 +9,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import blockplus.model.Side;
-import blockplus.model.PolyominoSet;
+import blockplus.model.Pieces;
 
 public class SideTest {
 
-    private final static PolyominoSet PLAYER1_REMAINING_PIECES = new PolyominoSet.Builder().add(_1).build();
-    private final static PolyominoSet PLAYER2_REMAINING_PIECES = new PolyominoSet.Builder().add(_2).build();
+    private final static Pieces PLAYER1_REMAINING_PIECES = new Pieces.Builder().add(_1).build();
+    private final static Pieces PLAYER2_REMAINING_PIECES = new Pieces.Builder().add(_2).build();
 
-    private final static Side PLAYER1 = Side.from(PLAYER1_REMAINING_PIECES);
-    private final static Side PLAYER2 = Side.from(PLAYER2_REMAINING_PIECES);
+    private final static Side PLAYER1 = Side.with(PLAYER1_REMAINING_PIECES);
+    private final static Side PLAYER2 = Side.with(PLAYER2_REMAINING_PIECES);
 
     @Test
     public void testGetPieces() {

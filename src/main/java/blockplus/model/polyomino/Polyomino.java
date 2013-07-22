@@ -146,10 +146,6 @@ public enum Polyomino implements Supplier<Iterable<PolyominoInstance>> {
         return SET;
     }
 
-    public static Polyomino _(final int ordinal) {
-        return Polyomino.valueOf("_" + ordinal);
-    }
-
     private final PolyominoProperties properties;
 
     private final PolyominoInstances instances;
@@ -193,10 +189,4 @@ public enum Polyomino implements Supplier<Iterable<PolyominoInstance>> {
         return this.weight() + "." + this.radius() + "\n" + PolyominoRenderer.render(this);
     }
 
-    public static void main(final String[] args) {
-        for (final Polyomino polyomino : Polyomino.set()) {
-            System.out.println(polyomino);
-            System.out.println();
-        }
-    }
 }

@@ -19,13 +19,11 @@ package blockplus.model;
 
 import java.util.Set;
 
-import com.google.common.base.Equivalences;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Sets;
 
-public final class Adversity {
+public final class SidesOrdering {
 
     private static final int SIDES = 4;
 
@@ -40,54 +38,33 @@ public final class Adversity {
             return this;
         }
 
-        public Builder add(final Colors... colors) {
-            for (final Colors color : colors) {
-                this.add(color);
-            }
-            return this;
-        }
-
-        public Adversity build() {
+        public SidesOrdering build() {
             Preconditions.checkState(SIDES == this.sides.size());
             final ImmutableBiMap.Builder<Integer, Colors> builder = new ImmutableBiMap.Builder<Integer, Colors>();
             int i = -1;
             for (final Colors color : this.sides)
                 builder.put(++i, color);
-            return new Adversity(builder.build());
+            return new SidesOrdering(builder.build());
         }
 
     }
 
     private final ImmutableBiMap<Integer, Colors> sides;
 
-    private Adversity(final ImmutableBiMap<Integer, Colors> sides) {
+    private SidesOrdering(final ImmutableBiMap<Integer, Colors> sides) {
         this.sides = sides;
     }
 
-    public Iterable<Colors> sides() {
+    public Set<Colors> sides() {
         return this.sides.values();
     }
 
-    public Colors getOpponent(final Colors color) {
-        return this.sides.get((this.sides.inverse().get(color) + 1) % 4);
+    public Colors next(final Colors color) {
+        return this.sides.get((this.sides.inverse().get(color) + 1) % SIDES);
     }
 
-    @Override
-    public int hashCode() {
-        return this.sides.hashCode();
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        if (object == null) return false;
-        Preconditions.checkArgument(object instanceof Adversity);
-        final Adversity that = (Adversity) object;
-        return Equivalences.equals().equivalent(this.sides, that.sides);
-    }
-
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this).addValue(this.sides.values()).toString();
+    public Colors next(final int i) {
+        return this.sides.get((i + 1) % SIDES);
     }
 
 }

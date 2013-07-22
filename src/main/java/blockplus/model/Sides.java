@@ -17,92 +17,72 @@
 
 package blockplus.model;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import blockplus.model.interfaces.IPlayers;
 import blockplus.model.polyomino.Polyomino;
 
-import com.google.common.base.Equivalences;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
-public final class Sides implements IPlayers<Colors> {
-
-    private final static Map<Colors, Side> EMPTY = Maps.newHashMap();
+public final class Sides implements Iterable<Entry<Colors, Side>> {
 
     public final static class Builder {
 
-        private final Map<Colors, Side> alivePlayers = Maps.newTreeMap();
+        private final SidesOrdering sidesOrdering;
 
-        public Builder add(final Colors color, final Side player) {
-            this.alivePlayers.put(color, player);
+        private final Map<Colors, Side> sides = Maps.newTreeMap();
+
+        public Builder(final SidesOrdering sidesOrdering) {
+            this.sidesOrdering = sidesOrdering;
+        }
+
+        public Builder add(final Side side) {
+            final Colors color = this.sidesOrdering.next(this.sides.size() - 1);
+            this.sides.put(color, side);
             return this;
         }
 
         public Sides build() {
-            Preconditions.checkState(this.alivePlayers.size() == 4); // TODO use adversity
-            return new Sides(this.alivePlayers, EMPTY);
+            Preconditions.checkState(this.sides.size() == this.sidesOrdering.sides().size());
+            return new Sides(this.sidesOrdering, this.sides);
         }
     }
 
-    private final Map<Colors, Side> alivePlayers;
+    private final SidesOrdering sidesOrdering;
+    private final Map<Colors, Side> sides;
 
-    private final Map<Colors, Side> deadPlayers;
-
-    private Sides(final Map<Colors, Side> alivePlayers, final Map<Colors, Side> deadPlayers) {
-        this.alivePlayers = alivePlayers;
-        this.deadPlayers = deadPlayers;
+    private Sides(final SidesOrdering sidesOrdering, final Map<Colors, Side> sides) {
+        this.sidesOrdering = sidesOrdering;
+        this.sides = sides;
     }
 
-    public Side getAlivePlayer(final Colors color) {
-        return this.alivePlayers.get(color);
+    public boolean hasSide() {
+        for (final Side side : this.sides.values()) {
+            if (!side.isNull()) return true;
+        }
+        return false;
     }
 
-    public Side getDeadOrAlivePlayer(final Colors color) {
-        final Side alivePlayer = this.getAlivePlayer(color);
-        return alivePlayer == null ? this.deadPlayers.get(color) : alivePlayer;
-    }
-
-    @Override
-    public boolean hasAlivePlayer() {
-        return !this.alivePlayers.isEmpty();
+    public Side getSide(final Colors color) {
+        return this.sides.get(color);
     }
 
     public Sides apply(final Colors color, final Polyomino polyomino) {
-        final Side player = this.alivePlayers.get(color);
-        final Map<Colors, Side> alivePlayers = Maps.newHashMap(this.alivePlayers);
-        if (polyomino.ordinal() == 0) { // TODO à revoir...
-            final Map<Colors, Side> deadPlayers = Maps.newHashMap(this.deadPlayers);
-            alivePlayers.remove(color);
-            deadPlayers.put(color, player);
-            return new Sides(alivePlayers, deadPlayers);
-        }
-        final Side newPlayer = player.apply(polyomino);
-        alivePlayers.put(color, newPlayer);
-        return new Sides(alivePlayers, this.deadPlayers);
+        final Side player = this.sides.get(color);
+        final Map<Colors, Side> sides = Maps.newHashMap(this.sides);
+        sides.put(color, player.apply(polyomino));
+        return new Sides(this.sidesOrdering, sides);
+    }
+
+    public Colors next(final Colors color) {
+        return this.sidesOrdering.next(color);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(this.alivePlayers, this.deadPlayers);
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        if (object == null) return false;
-        Preconditions.checkArgument(object instanceof Sides);
-        final Sides that = (Sides) object;
-        return Equivalences.equals().equivalent(this.alivePlayers, that.alivePlayers)
-                && Equivalences.equals().equivalent(this.deadPlayers, that.deadPlayers);
-    }
-
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("alive", this.alivePlayers)
-                .add("dead", this.deadPlayers)
-                .toString();
+    public Iterator<Entry<Colors, Side>> iterator() {
+        return this.sides.entrySet().iterator();
     }
 
 }

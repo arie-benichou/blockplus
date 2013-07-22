@@ -28,10 +28,9 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
-// TODO ! utiliser un sorted set
-public final class PolyominoSet implements Iterable<Entry<Polyomino, Integer>> {
+public final class Pieces implements Iterable<Entry<Polyomino, Integer>> {
 
-    public final static PolyominoSet EMPTY = new Builder().build();
+    public final static Pieces EMPTY = new Builder().build();
 
     public final static class Builder {
 
@@ -59,27 +58,20 @@ public final class PolyominoSet implements Iterable<Entry<Polyomino, Integer>> {
             return this;
         }
 
-        public Builder addAll(final Polyomino... pieces) {
-            for (final Polyomino piece : pieces) {
-                this.add(piece);
-            }
-            return this;
-        }
-
         public Builder remove(final Polyomino piece) {
             this.pieces.put(piece, 0);
             return this;
         }
 
-        public PolyominoSet build() {
-            return new PolyominoSet(this.pieces);
+        public Pieces build() {
+            return new Pieces(this.pieces);
         }
 
     }
 
     private final Map<Polyomino, Integer> pieces;
 
-    private PolyominoSet(final Map<Polyomino, Integer> pieces) {
+    private Pieces(final Map<Polyomino, Integer> pieces) {
         this.pieces = pieces;
     }
 
@@ -88,7 +80,7 @@ public final class PolyominoSet implements Iterable<Entry<Polyomino, Integer>> {
         return integer != null && integer > 0;
     }
 
-    public PolyominoSet remove(final Polyomino piece) {
+    public Pieces remove(final Polyomino piece) {
         Preconditions.checkState(this.contains(piece));
         return new Builder(this.pieces).remove(piece).build();
     }
@@ -111,8 +103,9 @@ public final class PolyominoSet implements Iterable<Entry<Polyomino, Integer>> {
     @Override
     public boolean equals(final Object object) {
         if (object == null) return false;
-        Preconditions.checkArgument(object instanceof PolyominoSet);
-        final PolyominoSet that = (PolyominoSet) object;
+        Preconditions.checkArgument(object instanceof Pieces);
+        final Pieces that = (Pieces) object;
         return Equivalences.equals().equivalent(this.pieces, that.pieces);
     }
+
 }

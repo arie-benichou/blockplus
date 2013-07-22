@@ -11,44 +11,44 @@ import org.junit.Test;
 
 public class AdversityTest {
 
-    private final static Adversity ADVERSITY = new Adversity.Builder().add(Blue, Yellow, Red, Green).build();
+    private final static SidesOrdering ADVERSITY = new SidesOrdering.Builder().add(Blue).add(Yellow).add(Red).add(Green).build();
 
     @Test(expected = IllegalStateException.class)
     public void testBuildOfAdversityWithoutAnySide() {
-        new Adversity.Builder().build();
+        new SidesOrdering.Builder().build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testBuildOfAdversityWithNullSide() {
-        new Adversity.Builder().add((Colors) null);
+        new SidesOrdering.Builder().add((Colors) null);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testBuildOfAdversityWithOnlyOneSide() {
-        new Adversity.Builder().add(Blue).build();
+        new SidesOrdering.Builder().add(Blue).build();
     }
 
     @Test(expected = IllegalStateException.class)
     public void testBuildOfAdversityWithOnlyTwoSides() {
-        new Adversity.Builder().add(Blue, Yellow).build();
+        new SidesOrdering.Builder().add(Blue).add(Yellow).build();
     }
 
     @Test(expected = IllegalStateException.class)
     public void testBuildOfAdversityWithOnlyThreeSides() {
-        new Adversity.Builder().add(Blue, Yellow, Red).build();
+        new SidesOrdering.Builder().add(Blue).add(Yellow).add(Red).build();
     }
 
     @Test(expected = IllegalStateException.class)
     public void testBuildOfAdversityWithDuplicate() {
-        new Adversity.Builder().add(Blue, Blue);
+        new SidesOrdering.Builder().add(Blue).add(Blue);
     }
 
     @Test
     public void testGetOpponent() {
-        assertEquals(Yellow, ADVERSITY.getOpponent(Blue));
-        assertEquals(Red, ADVERSITY.getOpponent(Yellow));
-        assertEquals(Green, ADVERSITY.getOpponent(Red));
-        assertEquals(Blue, ADVERSITY.getOpponent(Green));
+        assertEquals(Yellow, ADVERSITY.next(Blue));
+        assertEquals(Red, ADVERSITY.next(Yellow));
+        assertEquals(Green, ADVERSITY.next(Red));
+        assertEquals(Blue, ADVERSITY.next(Green));
     }
 
 }
