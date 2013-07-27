@@ -3,32 +3,35 @@ var Blockplus = Blockplus || {};
  * @constructor
  */
 Blockplus.Options = function(data) {
-	this.data = [];
 	this.potentialPositions = {};
-	for ( var id in data) {
-		var pieceInstances = data[id];
-		var pieceInstancesObject = {
-			id : id,
-			size : pieceInstances[0].length,
-			instances : []
-		};
-		var n = pieceInstances.length;
-		for ( var i = 0; i < n; ++i) {
-			var pieceInstance = pieceInstances[i];
-			var size = pieceInstance.length;
-			var pieceInstanceObject = {};
-			for ( var j = 0; j < size; ++j) {
-				var index = pieceInstance[j];
-				this.potentialPositions[index] = true;
-				pieceInstanceObject[index] = true;
+	this.potentialPositionsByLight = {}
+	for ( var light in data) {
+		var instancesByPolyomino = data[light];
+		this.potentialPositions[light] = [];
+		this.potentialPositionsByLight[light] = []
+		for ( var polyomino in instancesByPolyomino) {
+			var instances = instancesByPolyomino[polyomino]
+			var polyominos = {
+				id : polyomino,
+				size : instances[0].length,
+				instances : []
+			};
+			for ( var i = 0; i < instances.length; ++i) {
+				var positions = instances[i];
+				var instance = {};
+				for ( var j = 0; j < positions.length; ++j) {
+					var position = positions[j];
+					instance[position] = true;
+					this.potentialPositions[light][position] = true;
+				}
+				polyominos.instances.push(instance);
 			}
-			pieceInstancesObject["instances"].push(pieceInstanceObject);
+			this.potentialPositionsByLight[light].push(polyominos);
 		}
-		this.data.push(pieceInstancesObject);
 	}
 };
 
-//TODO itérer une seule fois et retourner les matches
+// TODO itérer une seule fois et retourner les matches
 Blockplus.Options.prototype = {
 
 	constructor : Blockplus.Options,
@@ -37,41 +40,28 @@ Blockplus.Options.prototype = {
 		return this.data;
 	},
 
-	getPotentialPositions : function() {
-		return this.potentialPositions;
+	/*
+	 * isLight : function(position) { return position in this.getLights(); },
+	 * 
+	 * getLights : function() { return this.lights; },
+	 */
+
+	isLight : function(position) {
+		return position in this.getPotentialPositionsByLight();
 	},
 
-	matches : function(selectedPositions) {
-		var matches = {};
-		var min = selectedPositions.getSize();
-		var n = this.data.length;
-		for ( var i = 0; i < n; ++i) {
-			var pieceInstances = this.data[i];
-			if (pieceInstances.size >= min) {
-				var instances = pieceInstances.instances;
-				for ( var j = 0; j < instances.length; ++j) {
-					var match = true;
-					for ( var position in selectedPositions.get()) {
-						if (!(position in instances[j])) {
-							match = false;
-							break;
-						}
-					}
-					if (match) {
-						matches[pieceInstances.id] = true;
-					}
-				}
-			}
-		}
-		return matches;
+	getPotentialPositionsByLight : function() {
+		return this.potentialPositionsByLight;
 	},
 
-	matchPotentialPositions : function(selectedPositions) {
+	matchPotentialPositions : function(light, selectedPositions) {
+		if(light == null) return {};
+		var potentialPositions = this.potentialPositionsByLight[light];
 		var matches = {};
 		var min = selectedPositions.getSize();
-		var n = this.data.length;
+		var n = potentialPositions.length;
 		for ( var i = 0; i < n; ++i) {
-			var pieceInstances = this.data[i];
+			var pieceInstances = potentialPositions[i];
 			if (pieceInstances.size >= min) {
 				var instances = pieceInstances.instances;
 				for ( var j = 0; j < instances.length; ++j) {
@@ -95,10 +85,11 @@ Blockplus.Options.prototype = {
 	},
 
 	perfectMatch : function(selectedPositions) {
+		var potentialPositions = this.potentialPositionsByLight[selectedPositions.selectedLight];
 		var min = selectedPositions.getSize();
-		var n = this.data.length;
+		var n = potentialPositions.length;
 		for ( var i = 0; i < n; ++i) {
-			var pieceInstances = this.data[i];
+			var pieceInstances = potentialPositions[i];
 			if (pieceInstances.size == min) {
 				var instances = pieceInstances.instances;
 				for ( var j = 0; j < instances.length; ++j) {

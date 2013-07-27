@@ -93,7 +93,7 @@ Blockplus.BoardRenderer.prototype = {
 	
 	renderPotentialCell2 : function(position, color) {
 		this.context.save();
-		this.context.globalAlpha = 0.45;
+		this.context.globalAlpha = 0.8;
 		this.context.fillStyle = this.colors[color];
 		this.context.beginPath();
 		var x = this.cellWidth * position.column + this.cellWidth / 2 - 1;

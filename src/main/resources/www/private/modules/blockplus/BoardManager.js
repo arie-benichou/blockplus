@@ -25,7 +25,7 @@ Blockplus.BoardManager.prototype = {
 	render : function(board) {
 		board == undefined ? this.renderer.render(this.board) : this.renderer.render(board);
 		for ( var potentialPosition in this.potentialPositions) {
-			this.renderPotentialCell(this.positionFactory.positionFromIndex(potentialPosition), this.color);
+			this.renderPotentialCell2(this.positionFactory.positionFromIndex(potentialPosition), this.color);
 		}
 	},
 	renderPotentialCell : function(position, color) {

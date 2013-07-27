@@ -191,17 +191,44 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 			var p = this.boardManager.positionFromOffset(offsetX / this.scale.x, offsetY / this.scale.y);
 			var position = this.positionFactory.position(p.row + referential.row, p.column + referential.column);
 			var positionID = this.positionFactory.indexFromPosition(position);
-			var isPotentialPosition = this.isPotentialPosition(positionID);
-			if (isPotentialPosition) {
-				if (this.boardManager.hasSelection(position))
+			var isLight = this.options.isLight(positionID);
+			if (isLight) {
+				if (this.boardManager.selectedPositions.isEmpty()) {
+					this.boardManager.selectedPositions.setSelectedLight(positionID);
+				}
+			}
+			var isClickable = positionID in this.options.matchPotentialPositions(this.boardManager.selectedPositions.selectedLight, this.boardManager.selectedPositions);
+			if (isClickable) {
+				if (this.boardManager.hasSelection(position)) {
 					this.boardManager.unselect(position, this.color);
-				else if (positionID in this.options.matchPotentialPositions(this.boardManager.selectedPositions))
+					if(positionID == this.boardManager.selectedPositions.selectedLight) {
+						this.boardManager.selectedPositions.clear();
+					}
+				}
+				else
 					this.boardManager.select(position, this.color);
 			}
-			if (this.boardManager.selectedPositions.isEmpty())
+
+			if (this.boardManager.selectedPositions.isEmpty()) {
 				this.init();
-			else
+				this.boardManager.selectedPositions.setSelectedLight(null);
+			} else if (isClickable) {
+				var light = this.boardManager.selectedPositions.selectedLight;
+				var potentialPositions = this.options.matchPotentialPositions(light, this.boardManager.selectedPositions)
+				var allPotentialPositions = this.options.potentialPositions[light];
+				for ( var light in this.options.potentialPositions) {
+					for ( var position in this.options.potentialPositions[light]) {
+						if (!(position in this.boardManager.selectedPositions.get())) {
+							var p = this.positionFactory.positionFromIndex(position);
+							this.boardManager.renderEmptyCell(p);
+							if (position in potentialPositions) {
+								this.boardManager.renderPotentialCell(p, this.color);
+							}
+						}
+					}
+				}
 				this.controlPanelManager.handle(this.options, this.boardManager.selectedPositions, this.boardManager, this.color);
+			}
 		}, this);
 		this.boardManager.register('click.2', clickEventHandler2);
 	}, this);
@@ -223,10 +250,13 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 			this.boardManager.renderSelectedCells(this.boardManager.selectedPositions.get(), this.color);
 			for (position in this.boardManager.selectedPositions.get()) {
 				data.push(position);
-				this.boardManager.renderPotentialCell(this.positionFactory.positionFromIndex(position), this.color);
+				if(position == this.boardManager.selectedPositions.selectedLight) {
+					this.boardManager.renderPotentialCell2(this.positionFactory.positionFromIndex(position), this.color);
+				}
+				else {
+					this.boardManager.renderPotentialCell(this.positionFactory.positionFromIndex(position), this.color);	
+				}
 			}
-			// var pieceId =
-			// this.options.perfectMatch(this.boardManager.selectedPositions);
 			this.play(data);
 			// ////////////////////////////////////////////////
 		} else {
@@ -257,7 +287,7 @@ Blockplus.Game.prototype = {
 		this.options = new Blockplus.Options(gameState.getOptions(this.color));
 		// console.debug(this.options);
 
-		var potentialPositions = this.options.getPotentialPositions();
+		var potentialPositions = this.options.getPotentialPositionsByLight();
 		// console.debug(potentialPositions);
 
 		this.boardManager.updatePotentialPositions(potentialPositions);
@@ -297,10 +327,6 @@ Blockplus.Game.prototype = {
 
 	play : function(positions) {
 		this.client.say(this.messages.moveSubmit(positions));
-	},
-
-	isPotentialPosition : function(position) {
-		return position in this.options.getPotentialPositions();
 	}
 
 };

@@ -41,4 +41,8 @@ public class Options {
         return this.options.columnMap().entrySet();
     }
 
+    public Set<Entry<IPosition, Map<Polyomino, List<Set<IPosition>>>>> byLight() {
+        return this.options.rowMap().entrySet();
+    }
+
 }

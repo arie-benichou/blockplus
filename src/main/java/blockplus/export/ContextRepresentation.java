@@ -17,6 +17,7 @@
 
 package blockplus.export;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,31 +35,54 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import components.cells.IPosition;
 
 public final class ContextRepresentation {
 
-    private final static Gson GSON = new Gson();
+    private final static Type POSITIONS_BY_POLYOMINO = new TypeToken<Map<Polyomino, List<Set<IPosition>>>>() {}.getType();
 
-    private final Context gameContext;
-
-    public Context getGameContext() {
-        return this.gameContext;
+    private final static class PolyominoSerializer implements JsonSerializer<Polyomino> {
+        @Override
+        public JsonElement serialize(final Polyomino polyomino, final Type typeOfSrc, final JsonSerializationContext context) {
+            return new JsonPrimitive(polyomino.ordinal());
+        }
     }
 
+    private final class PositionSerializer implements JsonSerializer<IPosition> {
+        @Override
+        public JsonElement serialize(final IPosition position, final Type typeOfSrc, final JsonSerializationContext context) {
+            final int columns = ContextRepresentation.this.context.board().columns();
+            final int rows = ContextRepresentation.this.context.board().rows();
+            return new JsonPrimitive(columns * position.row() + position.column() % rows);
+        }
+    }
+
+    private final Gson gson;
+
+    private final Context context;
+
     public ContextRepresentation(final Context game) {
-        this.gameContext = game;
+        this.gson = new GsonBuilder()
+                .enableComplexMapKeySerialization()
+                .registerTypeAdapter(Polyomino.class, new PolyominoSerializer())
+                .registerTypeAdapter(IPosition.class, new PositionSerializer())
+                .create();
+        this.context = game;
     }
 
     public JsonElement encodeBoard() {
         final JsonObject boardState = new JsonObject();
         final JsonObject meta = new JsonObject();
         final JsonObject data = new JsonObject();
-        final Board board = this.getGameContext().board();
+        final Board board = this.context.board();
         final int rows = board.rows();
         final int columns = board.columns();
         meta.addProperty("rows", rows);
@@ -77,7 +101,7 @@ public final class ContextRepresentation {
 
     public JsonElement encodePieces() {
         final JsonObject data = new JsonObject();
-        final Context context = this.getGameContext();
+        final Context context = this.context;
         for (final Entry<Colors, Side> sideEntry : context.sides()) {
             final Colors color = sideEntry.getKey();
             final Side side = sideEntry.getValue();
@@ -92,16 +116,11 @@ public final class ContextRepresentation {
         return data;
     }
 
-    /* TODO !!! cf roadmap
-    final ObjectMapper mapper = new ObjectMapper();
-    final String json = mapper.writeValueAsString(options.rowMap());
-    System.out.println(json);
-    */
-    public JsonElement encodeOptions() {
-        final Board board = this.getGameContext().board();
+    public JsonElement _encodeOptions() {
+        final Board board = this.context.board();
         final int rows = board.rows();
         final int columns = board.columns();
-        final Options options = this.getGameContext().options();
+        final Options options = this.context.options();
         final Map<Integer, List<Set<Integer>>> legalPositionsByPiece = Maps.newTreeMap(); // TODO à revoir
         for (final Entry<Polyomino, Map<IPosition, List<Set<IPosition>>>> entry : options.byPolyomino()) {
             final Polyomino polyomino = entry.getKey();
@@ -119,14 +138,26 @@ public final class ContextRepresentation {
             }
             legalPositionsByPiece.put(polyomino.ordinal() + 1, playablePositions);
         }
-        return GSON.toJsonTree(legalPositionsByPiece);
+        return this.gson.toJsonTree(legalPositionsByPiece);
+    }
+
+    public JsonElement encodeOptions() {
+        final Options options = this.context.options();
+        final Set<Entry<IPosition, Map<Polyomino, List<Set<IPosition>>>>> byLight = options.byLight();
+        final JsonObject jsonObject = new JsonObject();
+        for (final Entry<IPosition, Map<Polyomino, List<Set<IPosition>>>> entry : byLight) {
+            final String light = this.gson.toJson(entry.getKey(), IPosition.class);
+            final JsonElement positionsByPolyominos = this.gson.toJsonTree(entry.getValue(), POSITIONS_BY_POLYOMINO);
+            jsonObject.add(light, positionsByPolyominos);
+        }
+        return jsonObject;
     }
 
     @Override
     public String toString() {
         final JsonObject data = new JsonObject();
-        data.addProperty("color", this.getGameContext().side().toString());
-        data.addProperty("isTerminal", this.getGameContext().isTerminal());
+        data.addProperty("color", this.context.side().toString());
+        data.addProperty("isTerminal", this.context.isTerminal());
         data.add("board", this.encodeBoard());
         data.add("pieces", this.encodePieces());
         data.add("options", this.encodeOptions());

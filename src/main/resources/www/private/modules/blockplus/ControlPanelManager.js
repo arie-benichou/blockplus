@@ -50,18 +50,6 @@ Blockplus.ControlPanelManager.prototype = {
 	},
 
 	handle : function(options, selectedPositions, boardManager, color) {
-		var potentialPositions = options.matchPotentialPositions(selectedPositions);
-		for ( var position in options.getPotentialPositions()) {
-			if (!(position in selectedPositions.get())) {
-				var p = this.positionFactory.positionFromIndex(position);
-				boardManager.renderEmptyCell(p);
-				if (position in potentialPositions) {
-					boardManager.renderPotentialCell(p, color);
-				} else {
-					boardManager.renderPotentialCell2(p, color);
-				}
-			}
-		}
 		var isPlayable = options.perfectMatch(selectedPositions);
 		if (!isPlayable) {
 			this.hide();

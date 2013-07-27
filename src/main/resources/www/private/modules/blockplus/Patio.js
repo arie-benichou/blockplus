@@ -78,17 +78,4 @@ Blockplus.Patio = function(container, viewPort, audioManager, client, messages, 
 };
 Blockplus.Patio.prototype = {
 	constructor : Blockplus.Patio
-// join : function() {
-// var max = this.games.length;
-// var game = 1;
-// this.client.register("fullGame", $.proxy(function(data) {
-// if (game < max)
-// this.client.say(this.messages.gameConnection(++game));
-// else
-// this.audioManager.play("../audio/none.mp3");
-// }, this));
-// this.client.say(this.messages.gameConnection(game));
-// this.game = new Blockplus.Game(this.viewPort, this.audioManager, this.client,
-// this.messages, this.colors, this.positionFactory, this.pieceManager);
-// },
 };

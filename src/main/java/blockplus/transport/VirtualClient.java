@@ -17,9 +17,7 @@
 
 package blockplus.transport;
 
-
 import java.net.URI;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
@@ -27,12 +25,10 @@ import java.util.Set;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketClient;
 
-
 import blockplus.model.Colors;
 import blockplus.transport.messages.MoveSubmit;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -108,16 +104,29 @@ public class VirtualClient implements WebSocket.OnTextMessage
             final String color = data.get("color").getAsString();
             if (color.equals(this.color)) {
                 final JsonObject options = data.get("options").getAsJsonObject();
-                final Set<Entry<String, JsonElement>> entrySet = options.entrySet();
                 if (data.get("isTerminal").getAsBoolean()) {
                     System.out.println("Game Over");
                 }
                 else {
-                    final List<Entry<String, JsonElement>> list = Lists.newArrayList(entrySet);
-                    final Entry<String, JsonElement> entry = list.get(entrySet.size() - 1);
-                    final JsonArray instances = entry.getValue().getAsJsonArray();
-                    final int n = new Random().nextInt(instances.size());
-                    final JsonArray positions = instances.get(n).getAsJsonArray();
+                    final Set<Entry<String, JsonElement>> entrySet = options.entrySet();
+                    int max = 0;
+                    String maxlight = null;
+                    for (final Entry<String, JsonElement> entry : entrySet) {
+                        final String light = entry.getKey();
+                        final JsonObject polyonimos = entry.getValue().getAsJsonObject();
+                        for (final Entry<String, JsonElement> polyonimo : polyonimos.entrySet()) {
+                            final int ordinal = Integer.parseInt(polyonimo.getKey());
+                            if (ordinal > max) {
+                                max = ordinal;
+                                maxlight = light;
+                            }
+                        }
+                    }
+                    final JsonObject jsonObject2 = options.get(maxlight).getAsJsonObject();
+                    final JsonArray instancesOfPolynimoWithBiggestId = jsonObject2.get(String.valueOf(max)).getAsJsonArray();
+
+                    final int n = new Random().nextInt(instancesOfPolynimoWithBiggestId.size());
+                    final JsonArray positions = instancesOfPolynimoWithBiggestId.get(n).getAsJsonArray();
                     final MoveSubmit moveSubmit = new MoveSubmit(positions);
                     try {
                         this.send(moveSubmit);
