@@ -42,9 +42,9 @@ Application = function(parameters) {
 			this.client.say(this.messages.disconnect());
 		}, this));
 		var games = null; // JSON.parse(data);
-		$("#splash").css("cursor", "pointer");
+		//$("#splash").css("cursor", "pointer");
 		$("#splash").show();
-		$("#splash").one(
+		$("#play").one(
 				"click",
 				$.proxy(function() {
 					this.audioManager.play("../audio/some.mp3");

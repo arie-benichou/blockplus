@@ -31,9 +31,6 @@ import blockplus.model.Pieces;
 import blockplus.model.Sides.Side;
 import blockplus.model.polyomino.Polyomino;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -114,31 +111,6 @@ public final class ContextRepresentation {
             data.add(color.toString(), new JsonPrimitive(bits));
         }
         return data;
-    }
-
-    public JsonElement _encodeOptions() {
-        final Board board = this.context.board();
-        final int rows = board.rows();
-        final int columns = board.columns();
-        final Options options = this.context.options();
-        final Map<Integer, List<Set<Integer>>> legalPositionsByPiece = Maps.newTreeMap(); // TODO à revoir
-        for (final Entry<Polyomino, Map<IPosition, List<Set<IPosition>>>> entry : options.byPolyomino()) {
-            final Polyomino polyomino = entry.getKey();
-            final Map<IPosition, List<Set<IPosition>>> map = entry.getValue();
-            final List<Set<Integer>> playablePositions = Lists.newArrayList();
-            for (final Entry<IPosition, List<Set<IPosition>>> instancesByLight : map.entrySet()) {
-                final List<Set<IPosition>> instances = instancesByLight.getValue();
-                for (final Set<IPosition> set : instances) {
-                    final Set<Integer> positions = Sets.newHashSet();
-                    for (final IPosition position : set) {
-                        positions.add(columns * position.row() + position.column() % rows); // TODO !!!
-                    }
-                    playablePositions.add(positions);
-                }
-            }
-            legalPositionsByPiece.put(polyomino.ordinal() + 1, playablePositions);
-        }
-        return this.gson.toJsonTree(legalPositionsByPiece);
     }
 
     public JsonElement encodeOptions() {

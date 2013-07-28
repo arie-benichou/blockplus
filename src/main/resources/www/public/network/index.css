@@ -112,6 +112,16 @@ p.green {
 	height: 100%;
 }
 
+#splash a:hover{
+	text-decoration: underline;
+}
+
+#splash a{
+	text-decoration: none;
+	font-size: 50%;
+	color: white;
+}
+
 #patio {
 	background-color: #888;
 	display: none;
