@@ -21,7 +21,7 @@ import blockplus.transport.events.interfaces.IClient;
 
 import com.google.common.collect.ImmutableList;
 
-public interface GameInterface<T> {
+public interface IGame<T> {
 
     Integer getOrdinal();
 
@@ -35,7 +35,7 @@ public interface GameInterface<T> {
 
     int getCapacity();
 
-    GameInterface<T> connect(IClient client);
+    IGame<T> connect(IClient client);
 
     void update();
 

@@ -38,7 +38,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import components.cells.IPosition;
 
-public class BlockplusGame implements GameInterface<Context> {
+public class BlockplusGame implements IGame<Context> {
 
     private final static List<Colors> COLORS = Lists.newArrayList(Colors.set());
 
@@ -90,7 +90,7 @@ public class BlockplusGame implements GameInterface<Context> {
     }
 
     @Override
-    public GameInterface<Context> connect(final IClient newClient) {
+    public IGame<Context> connect(final IClient newClient) {
         final ImmutableList<IClient> clients = new ImmutableList.Builder<IClient>().addAll(this.getClients()).add(newClient).build();
         BlockplusGame newGame = null;
         if (clients.size() == this.getCapacity()) {
@@ -111,7 +111,7 @@ public class BlockplusGame implements GameInterface<Context> {
         }
     }
 
-    public GameInterface<Context> play(final IMoveSubmit moveSubmitInterface) {
+    public IGame<Context> play(final IMoveSubmit moveSubmitInterface) {
         final Context context = this.getContext();
         final SortedSet<IPosition> positions = Sets.newTreeSet();
         for (final JsonElement element : moveSubmitInterface.getPositions()) {

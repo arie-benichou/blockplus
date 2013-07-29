@@ -59,7 +59,7 @@ public class BlockplusServer extends WebSocketServlet {
 
     private final Map<IEndPoint, IClient> clientByEndpoint = Maps.newConcurrentMap();
     private final ConcurrentLinkedDeque<IEndPoint> endpointsInPatio = new ConcurrentLinkedDeque<IEndPoint>();
-    private final Map<Integer, GameInterface<Context>> gameByOrdinal = Maps.newConcurrentMap(); // TODO utiliser un Futur
+    private final Map<Integer, IGame<Context>> gameByOrdinal = Maps.newConcurrentMap(); // TODO utiliser un Futur
 
     @Override
     public void init() throws ServletException {
@@ -77,11 +77,11 @@ public class BlockplusServer extends WebSocketServlet {
         this.clientByEndpoint.put(endPoint, user);
     }
 
-    public GameInterface<Context> getGame(final Integer ordinal) {
+    public IGame<Context> getGame(final Integer ordinal) {
         return this.gameByOrdinal.get(ordinal);
     }
 
-    public void updateGame(final Integer ordinal, final GameInterface<Context> newGame) {
+    public void updateGame(final Integer ordinal, final IGame<Context> newGame) {
         this.gameByOrdinal.put(ordinal, newGame);
     }
 
@@ -171,7 +171,7 @@ public class BlockplusServer extends WebSocketServlet {
         this.endpointsInPatio.add(endPoint);
     }
 
-    private BlockplusGame reset(final GameInterface<Context> game) {
+    private BlockplusGame reset(final IGame<Context> game) {
         final ImmutableList<IClient> empty = ImmutableList.of();
         final BlockplusGame newGame = new BlockplusGame(game.getOrdinal(), empty, null);
         this.updateGame(game.getOrdinal(), newGame);
@@ -180,7 +180,7 @@ public class BlockplusServer extends WebSocketServlet {
 
     public JsonObject games() {
         final JsonObject tables = new JsonObject();
-        for (final GameInterface<Context> game : this.gameByOrdinal.values()) {
+        for (final IGame<Context> game : this.gameByOrdinal.values()) {
             if (game.isFull()) {
                 boolean isAlive = false;
                 for (final IClient client : game.getClients()) {

@@ -46,7 +46,7 @@ public class BlockplusServerEvents {
     @Subscribe
     @AllowConcurrentEvents
     public void onGameConnection(final IGameConnection gameConnection) {
-        final GameInterface<Context> game = this.getServer().getGame(gameConnection.getOrdinal());
+        final IGame<Context> game = this.getServer().getGame(gameConnection.getOrdinal());
         if (!game.isFull()) {
             final IClient oldClient = this.getServer().getClientByEndpoint(gameConnection.getEndpoint());
             final IClient newClient = new Client(gameConnection.getEndpoint(), oldClient.getName(), game.getOrdinal());
