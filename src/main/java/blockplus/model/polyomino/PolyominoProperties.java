@@ -36,6 +36,8 @@ import components.cells.Positions;
 
 public final class PolyominoProperties {
 
+    private final static char NONE = ' ';
+
     public static PolyominoProperties from(final String[] data) {
         return new PolyominoProperties(data);
     }
@@ -49,7 +51,7 @@ public final class PolyominoProperties {
             for (int column = 0; column < columns; ++column) {
                 final IPosition position = Position(row, column);
                 final char cell = data[row].charAt(column);
-                if (cell != Polyomino.NONE) mutations.put(position, Integer.parseInt(String.valueOf(cell)));
+                if (cell != NONE) mutations.put(position, Integer.parseInt(String.valueOf(cell)));
             }
         }
         return cells.apply(mutations);

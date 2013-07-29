@@ -138,9 +138,7 @@ public enum Polyomino implements Supplier<Iterable<PolyominoInstance>> {
             " 0 ",
     });
 
-    public final static char NONE = ' ';
-
-    public final static Set<Polyomino> SET = new ImmutableSortedSet.Builder<Polyomino>(Ordering.natural()).add(Polyomino.values()).build();
+    private final static Set<Polyomino> SET = new ImmutableSortedSet.Builder<Polyomino>(Ordering.natural()).add(Polyomino.values()).build();
 
     public static Set<Polyomino> set() {
         return SET;
