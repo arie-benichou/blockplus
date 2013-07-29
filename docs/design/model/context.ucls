@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.1.3" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
   realizations="true" associations="true" dependencies="false" nesting-relationships="true">  
-  <enumeration id="1" language="java" name="blockplus.model.Colors" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/Colors.java" binary="false" corner="BOTTOM_RIGHT">    
+  <enumeration id="1" language="java" name="blockplus.model.Colors" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/Colors.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="162" y="282"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -10,8 +10,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </enumeration>  
-  <class id="2" language="java" name="blockplus.model.Context" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/Context.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="2" language="java" name="blockplus.model.Context" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/Context.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="445" y="162"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -19,8 +19,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="blockplus.model.Board" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/Board.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="3" language="java" name="blockplus.model.Board" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/Board.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="163" y="538"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -28,8 +28,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="blockplus.model.OptionsSupplier" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/OptionsSupplier.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="4" language="java" name="blockplus.model.OptionsSupplier" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/OptionsSupplier.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="777" y="81"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -37,8 +37,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="blockplus.model.Options" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/Options.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="5" language="java" name="blockplus.model.Options" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/Options.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="777" y="288"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -46,8 +46,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="blockplus.model.Sides.Side" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/Sides.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="6" language="java" name="blockplus.model.Sides.Side" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/Sides.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="445" y="609"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -55,8 +55,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="7" language="java" name="blockplus.model.Sides" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/Sides.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="7" language="java" name="blockplus.model.Sides" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/Sides.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="445" y="433"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -64,8 +64,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="8" language="java" name="blockplus.model.Pieces" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/Pieces.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="8" language="java" name="blockplus.model.Pieces" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/Pieces.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="775" y="538"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -73,8 +73,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="9" language="java" name="blockplus.model.Move" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/Move.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="9" language="java" name="blockplus.model.Move" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/Move.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="162" y="81"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      

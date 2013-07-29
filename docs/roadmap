@@ -1,6 +1,4 @@
 -----------------------------------------------------------8<-----------------------------------------------------------
-nettoyage couche transport
------------------------------------------------------------8<-----------------------------------------------------------
 générer une url pour rejoindre directement un jeu
 améliorer IA
 ne pas effectuer le zoom-in si le zoom est un zoom mort
@@ -17,3 +15,4 @@ couche transport: utiliser Akka
 utiliser Angular JS
 utiliser vagrant
 -----------------------------------------------------------8<-----------------------------------------------------------
+flat design ?

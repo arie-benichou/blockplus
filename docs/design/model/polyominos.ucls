@@ -2,7 +2,7 @@
 <class-diagram version="1.1.3" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
   realizations="true" associations="true" dependencies="false" nesting-relationships="true">  
   <class id="1" language="java" name="blockplus.model.polyomino.PolyominoInstances.PolyominoInstance" 
-    project="blockplus-128" file="/blockplus-128/src/main/java/blockplus/model/polyomino/PolyominoInstances.java" 
+    project="blockplus-129" file="/blockplus-129/src/main/java/blockplus/model/polyomino/PolyominoInstances.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="687" y="115"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
@@ -11,8 +11,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="2" language="java" name="blockplus.model.polyomino.PolyominoInstances" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/polyomino/PolyominoInstances.java" binary="false" 
+  <class id="2" language="java" name="blockplus.model.polyomino.PolyominoInstances" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/polyomino/PolyominoInstances.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="548" y="770"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
@@ -22,7 +22,7 @@
     </display>  
   </class>  
   <class id="3" language="java" name="blockplus.model.polyomino.PolyominoInstances.PolyominoTranslatedInstance" 
-    project="blockplus-128" file="/blockplus-128/src/main/java/blockplus/model/polyomino/PolyominoInstances.java" 
+    project="blockplus-129" file="/blockplus-129/src/main/java/blockplus/model/polyomino/PolyominoInstances.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="638" y="318"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
@@ -31,8 +31,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <enumeration id="4" language="java" name="blockplus.model.polyomino.Polyomino" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/polyomino/Polyomino.java" binary="false" corner="BOTTOM_RIGHT">    
+  <enumeration id="4" language="java" name="blockplus.model.polyomino.Polyomino" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/polyomino/Polyomino.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="172" y="518"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -40,8 +40,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </enumeration>  
-  <class id="5" language="java" name="blockplus.model.polyomino.PolyominoProperties" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/polyomino/PolyominoProperties.java" binary="false" 
+  <class id="5" language="java" name="blockplus.model.polyomino.PolyominoProperties" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/polyomino/PolyominoProperties.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="547" y="522"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
@@ -50,8 +50,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="blockplus.model.polyomino.Polyominos" project="blockplus-128" 
-    file="/blockplus-128/src/main/java/blockplus/model/polyomino/Polyominos.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="6" language="java" name="blockplus.model.polyomino.Polyominos" project="blockplus-129" 
+    file="/blockplus-129/src/main/java/blockplus/model/polyomino/Polyominos.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="172" y="77"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
