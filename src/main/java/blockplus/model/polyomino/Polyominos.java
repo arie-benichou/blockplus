@@ -99,6 +99,7 @@ public final class Polyominos {
         return PolyominoInstances.translate(instanceFromPositions, Direction(rowDelta, columnDelta), type);
     }
 
+    // TODO memoize
     public PolyominoTranslatedInstance get(final SortedSet<IPosition> positions) {
         final String rendering = PolyominoRenderer.render(positions);
         return this.computeTranslatedInstance(positions, this.getInstance(rendering), this.getType(rendering));
