@@ -15,12 +15,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.transport.events;
+package blockplus.transport.protocol;
 
-import blockplus.transport.events.interfaces.EventInterface;
+public interface IMessageDecoder {
 
-public interface GameConnectionInterface extends EventInterface {
-
-    Integer getOrdinal();
+    IMessage decode(String data);
 
 }

@@ -18,21 +18,21 @@
 package blockplus.transport.messages;
 
 
-import blockplus.transport.protocol.MessageInterface;
+import blockplus.transport.protocol.IMessage;
 
 import com.google.gson.JsonArray;
 
 public class Messages {
 
-    public MessageInterface newClient(final String name) {
+    public IMessage newClient(final String name) {
         return new Client(name);
     }
 
-    public MessageInterface newGameConnection(final int ordinal) {
+    public IMessage newGameConnection(final int ordinal) {
         return new GameConnection(ordinal);
     }
 
-    public MessageInterface newMoveSubmit(final JsonArray positions) {
+    public IMessage newMoveSubmit(final JsonArray positions) {
         return new MoveSubmit(positions);
     }
 

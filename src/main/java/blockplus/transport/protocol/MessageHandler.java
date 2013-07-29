@@ -17,12 +17,12 @@
 
 package blockplus.transport.protocol;
 
-import blockplus.transport.IOinterface;
+import blockplus.transport.IEndPoint;
 
 import com.google.common.base.Throwables;
 import com.google.gson.JsonObject;
 
-public class MessageHandler implements MessageHandlerInterface {
+public class MessageHandler implements IMessageHandler {
 
     private final String configuration;
 
@@ -40,13 +40,13 @@ public class MessageHandler implements MessageHandlerInterface {
     }
 
     @Override
-    public Object handle(final IOinterface io, final MessageInterface message) {
+    public Object handle(final IEndPoint io, final IMessage message) {
         Object object = null;
         final String type = message.getType();
         final JsonObject data = message.getData();
         try {
             final String inflection = "blockplus.transport.events." + type + "$Builder";
-            object = Class.forName(inflection).getMethod("build", IOinterface.class, JsonObject.class).invoke(null, io, data);
+            object = Class.forName(inflection).getMethod("build", IEndPoint.class, JsonObject.class).invoke(null, io, data);
         }
         catch (final Exception e) {
             Throwables.propagate(e); // TODO

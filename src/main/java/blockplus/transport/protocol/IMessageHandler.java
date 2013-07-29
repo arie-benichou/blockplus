@@ -15,8 +15,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.transport.events.interfaces;
+package blockplus.transport.protocol;
 
-public interface InPatioInterface extends EventInterface {
+import blockplus.transport.IEndPoint;
+
+public interface IMessageHandler {
+
+    Object handle(IEndPoint io, IMessage message);
 
 }

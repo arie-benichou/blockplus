@@ -17,27 +17,27 @@
 
 package blockplus.transport.events;
 
-import blockplus.transport.IOinterface;
-import blockplus.transport.events.interfaces.MoveSubmitInterface;
+import blockplus.transport.IEndPoint;
+import blockplus.transport.events.interfaces.IMoveSubmit;
 
 import com.google.common.base.Objects;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-public final class MoveSubmit implements MoveSubmitInterface {
+public final class MoveSubmit implements IMoveSubmit {
 
     public static class Builder {
 
-        public static MoveSubmit build(final IOinterface io, final JsonObject data) {
+        public static MoveSubmit build(final IEndPoint io, final JsonObject data) {
             return new MoveSubmit(io, data.get("positions").getAsJsonArray());
         }
 
     }
 
-    private final IOinterface io;
+    private final IEndPoint io;
 
     @Override
-    public IOinterface getIO() {
+    public IEndPoint getEndpoint() {
         return this.io;
     }
 
@@ -48,7 +48,7 @@ public final class MoveSubmit implements MoveSubmitInterface {
         return this.positions;
     }
 
-    public MoveSubmit(final IOinterface io, final JsonArray positions) {
+    public MoveSubmit(final IEndPoint io, final JsonArray positions) {
         this.io = io;
         this.positions = positions;
     }
@@ -56,7 +56,7 @@ public final class MoveSubmit implements MoveSubmitInterface {
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("io", this.getIO())
+                .add("io", this.getEndpoint())
                 .add("positions", this.getPositions())
                 .toString();
     }

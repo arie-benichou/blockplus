@@ -18,11 +18,11 @@
 package blockplus.transport.messages;
 
 
-import blockplus.transport.protocol.MessageInterface;
+import blockplus.transport.protocol.IMessage;
 
 import com.google.gson.JsonObject;
 
-public final class Client implements MessageInterface {
+public final class Client implements IMessage {
 
     private final String name;
 

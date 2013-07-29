@@ -34,8 +34,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class VirtualClient implements WebSocket.OnTextMessage
-{
+public class VirtualClient implements WebSocket.OnTextMessage {
 
     private final String name;
 
@@ -56,10 +55,6 @@ public class VirtualClient implements WebSocket.OnTextMessage
     }
 
     private Connection connection;
-
-    public Connection getConnection() {
-        return this.connection;
-    }
 
     private String color;
 

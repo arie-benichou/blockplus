@@ -18,30 +18,30 @@
 package blockplus.transport.events;
 
 
-import blockplus.transport.IOinterface;
-import blockplus.transport.events.interfaces.InPatioInterface;
+import blockplus.transport.IEndPoint;
+import blockplus.transport.events.interfaces.IInPatio;
 
 import com.google.common.base.Objects;
 import com.google.gson.JsonObject;
 
-public final class InPatio implements InPatioInterface {
+public final class InPatio implements IInPatio {
 
     public static class Builder {
 
-        public static InPatio build(final IOinterface io, final JsonObject data) {
+        public static InPatio build(final IEndPoint io, final JsonObject data) {
             return new InPatio(io);
         }
 
     }
 
-    private final IOinterface io;
+    private final IEndPoint io;
 
     @Override
-    public IOinterface getIO() {
+    public IEndPoint getEndpoint() {
         return this.io;
     }
 
-    private InPatio(final IOinterface io) {
+    private InPatio(final IEndPoint io) {
         this.io = io;
     }
 

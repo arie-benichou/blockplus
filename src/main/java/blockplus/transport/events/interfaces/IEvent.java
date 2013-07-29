@@ -17,8 +17,10 @@
 
 package blockplus.transport.events.interfaces;
 
-public interface GameConnectionInterface extends EventInterface {
+import blockplus.transport.IEndPoint;
 
-    Integer getOrdinal();
+public interface IEvent {
+
+    IEndPoint getEndpoint();
 
 }

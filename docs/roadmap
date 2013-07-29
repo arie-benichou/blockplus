@@ -1,17 +1,18 @@
 -----------------------------------------------------------8<-----------------------------------------------------------
+nettoyage couche transport
+-----------------------------------------------------------8<-----------------------------------------------------------
 générer une url pour rejoindre directement un jeu
-positions vitales, puis potentielles
+améliorer IA
 ne pas effectuer le zoom-in si le zoom est un zoom mort
 rendre optional le zoom
 pouvoir prendre une photo de la partie
 scoring à améliorer
 gérer le mode landscape
 gérer les pertes de connexions
-améliorer IA
 créer une démo didactique
 check messages origin
 -----------------------------------------------------------8<-----------------------------------------------------------
-couche export: utiliser Jackson
+couche export: utiliser Jackson ?
 couche transport: utiliser Akka
 utiliser Angular JS
 utiliser vagrant

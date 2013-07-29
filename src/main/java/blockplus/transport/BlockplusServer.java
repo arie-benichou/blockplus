@@ -17,38 +17,29 @@
 
 package blockplus.transport;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.mail.DefaultAuthenticator;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketClient;
 import org.eclipse.jetty.websocket.WebSocketClientFactory;
 import org.eclipse.jetty.websocket.WebSocketServlet;
 
 import blockplus.model.Context;
-import blockplus.transport.events.interfaces.ClientInterface;
-import blockplus.transport.events.interfaces.DisconnectInterface;
-import blockplus.transport.events.interfaces.EventInterface;
-import blockplus.transport.events.interfaces.FeedbackInterface;
-import blockplus.transport.events.interfaces.InPatioInterface;
-import blockplus.transport.events.interfaces.ShowGameInterface;
+import blockplus.transport.events.interfaces.IClient;
+import blockplus.transport.events.interfaces.IDisconnect;
+import blockplus.transport.events.interfaces.IEvent;
+import blockplus.transport.events.interfaces.IInPatio;
 import blockplus.transport.messages.Messages;
+import blockplus.transport.protocol.IMessage;
+import blockplus.transport.protocol.IMessageHandler;
 import blockplus.transport.protocol.MessageDecoder;
 import blockplus.transport.protocol.MessageHandler;
-import blockplus.transport.protocol.MessageHandlerInterface;
-import blockplus.transport.protocol.MessageInterface;
 
-import com.google.common.base.Stopwatch;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.AllowConcurrentEvents;
@@ -57,182 +48,144 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonObject;
 
-// TODO : non réellement serializable (les champs d'instance ne le sont pas).
-// Est ce un probleme pour plus tard ?
 @SuppressWarnings("serial")
 public class BlockplusServer extends WebSocketServlet {
 
-    private final MessageHandlerInterface messageHandler = new MessageHandler(); // TODO à injecter
+    private final static int GAMES = 25;
+
+    private final EventBus eventBus = new EventBus();
+    private final IMessageHandler messageHandler = new MessageHandler(); // TODO à injecter
     private final MessageDecoder messageDecoder = new MessageDecoder(); // TODO à injecter
 
-    private final Map<IOinterface, ClientInterface> clientByIO = Maps.newConcurrentMap();
+    private final Map<IEndPoint, IClient> clientByEndpoint = Maps.newConcurrentMap();
+    private final ConcurrentLinkedDeque<IEndPoint> endpointsInPatio = new ConcurrentLinkedDeque<IEndPoint>();
+    private final Map<Integer, GameInterface<Context>> gameByOrdinal = Maps.newConcurrentMap(); // TODO utiliser un Futur
 
-    public final ConcurrentLinkedDeque<IOinterface> clientsInPatio = new ConcurrentLinkedDeque<IOinterface>();
-
-    public void updateClients(final IOinterface io, final ClientInterface user) {
-        this.clientByIO.put(io, user);
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        this.eventBus.register(this);
+        final BlockplusServerEvents blockplusServerEvents = new BlockplusServerEvents(this); // TODO à injecter
+        this.eventBus.register(blockplusServerEvents);
+        final ImmutableList<IClient> empty = ImmutableList.of();
+        for (int i = 1; i <= GAMES; ++i) {
+            this.updateGame(i, new BlockplusGame(i, empty, null));
+        }
     }
 
-    public void removeFromClients(final IOinterface io) {
-        this.clientByIO.remove(io);
+    public void updateClients(final IEndPoint endPoint, final IClient user) {
+        this.clientByEndpoint.put(endPoint, user);
     }
-
-    // TODO utiliser un Futur<GameInterface<BlockplusGameContext>>
-    public final Map<Integer, GameInterface<Context>> gameByOrdinal = Maps.newConcurrentMap();
 
     public GameInterface<Context> getGame(final Integer ordinal) {
         return this.gameByOrdinal.get(ordinal);
     }
 
-    public void updateGames(final Integer ordinal, final GameInterface<Context> newGame) {
+    public void updateGame(final Integer ordinal, final GameInterface<Context> newGame) {
         this.gameByOrdinal.put(ordinal, newGame);
     }
 
-    private final Map<Integer, List<ClientInterface>> clientsByGame = Maps.newConcurrentMap(); // TODO à virer
-
-    //TODO add patio
-
-    public List<ClientInterface> getClientsByGame(final Integer game) {
-        return this.clientsByGame.get(game);
+    public void removeFromPatio(final IEndPoint endpoint) {
+        this.endpointsInPatio.remove(endpoint);
     }
 
-    public void updateGame(final Integer gameOrdinal, final ImmutableList<ClientInterface> gameUsers) {
-        this.clientsByGame.put(gameOrdinal, gameUsers);
-    }
-
-    public Collection<ClientInterface> getClients() {
-        return this.clientByIO.values();
-    }
-
-    private final EventBus eventBus = new EventBus();
-
-    public EventBus getEventBus() {
-        return this.eventBus;
-    }
-
-    @Override
-    public void init() throws ServletException {
-
-        super.init();
-
-        this.getEventBus().register(this);
-
-        final BlockplusServerEvents blockplusServerEvents = new BlockplusServerEvents(this); // TODO à injecter
-        this.getEventBus().register(blockplusServerEvents);
-
-        for (int i = 1; i <= 25; ++i) {
-            final ImmutableList<ClientInterface> empty = ImmutableList.of();
-            this.clientsByGame.put(i, empty);
-            this.gameByOrdinal.put(i, new BlockplusGame(i, "", empty, null, 0));
-        }
-
+    public ConcurrentLinkedDeque<IEndPoint> getEndpointsInPatio() {
+        return this.endpointsInPatio;
     }
 
     @Override
     public WebSocket doWebSocketConnect(final HttpServletRequest request, final String protocol) {
-        return new IO(this);
+        return new EndPoint(this);
     }
 
-    public void connect(final ClientInterface user) {
-        this.clientByIO.put(user.getIO(), user);
-    }
-
-    public void disconnect(final IOinterface io) {
-        this.clientByIO.remove(io);
-        this.clientsInPatio.remove(io);
-    }
-
-    public MessageInterface decode(final String data) {
+    public IMessage decode(final String data) {
         return this.messageDecoder.decode(data);
     }
 
-    public Object handle(final IO io, final MessageInterface message) {
-        return this.messageHandler.handle(io, message);
+    public Object handle(final IEndPoint endPoint, final IMessage message) {
+        return this.messageHandler.handle(endPoint, message);
     }
 
-    public ClientInterface getClient(final IOinterface io) {
-        return this.clientByIO.get(io);
+    public IClient getClientByEndpoint(final IEndPoint endPoint) {
+        return this.clientByEndpoint.get(endPoint);
     }
 
-    /*
-    private List<Integer> getGames() {
-        final Set<Integer> keySet = this.gameByOrdinal.keySet();
-        final ArrayList<Integer> games = Lists.newArrayList(keySet);
-        Collections.sort(games);
-        return games;
-    }
-    */
-
-    @Subscribe
-    @AllowConcurrentEvents
-    // TODO à revoir
-    public void onNewClient(final ClientInterface newClient) {
-        this.connect(newClient);
-        /*
-        final String game = new Gson().toJson(this.getGames());
-        newClient.getIO().emit("games", "\"" + game + "\"");
-        */
+    private void connect(final IEndPoint endPoint, final IClient client) {
+        this.clientByEndpoint.put(endPoint, client);
     }
 
-    @Subscribe
-    @AllowConcurrentEvents
-    public void onDisconnect(final DisconnectInterface client) {
-        System.out.println("disconnecting " + client);
-        this.disconnect(client.getIO());
-        /*
-        final JsonObject tables = this.tables();
-        System.out.println(this.clientsInPatio.size() + " clients dans le patio");
-        System.out.println(this.clientsInPatio.iterator().hasNext());
-        System.out.println(this.tables().toString());
-        for (final IOinterface other : this.clientsInPatio) {
-            System.out.println(other.getGame());
-            other.emit("tables", tables.toString());
-        }
-        */
+    public void disconnect(final IEndPoint endPoint) {
+        this.clientByEndpoint.remove(endPoint);
+        this.endpointsInPatio.remove(endPoint);
     }
 
-    @Subscribe
-    @AllowConcurrentEvents
-    public void onInPatio(final InPatioInterface inPatio) { // TODO trier les tables
-        final IOinterface io = inPatio.getIO();
-        final JsonObject tables = this.tables();
-        io.emit("tables", tables.toString());
-        for (final IOinterface other : this.clientsInPatio) {
-            other.emit("tables", tables.toString());
-        }
-        this.clientsInPatio.add(io);
-        System.out.println(this.clientsInPatio);
-        /*
-        final Runtime runtime = Runtime.getRuntime();
+    public void onMessage(final IEndPoint endPoint, final String data) {
+        IMessage message = null;
         try {
-            runtime.exec("beep -f 200 -l 180");
-            Thread.sleep(190);
-            runtime.exec("beep -f 400 -l 200");
-            Thread.sleep(210);
-            runtime.exec("beep -f 600 -l 250");
-            Thread.sleep(260);
-            runtime.exec("beep -f 800 -l 300");
+            message = this.decode(data);
+            System.out.println(message);
         }
-        catch (final Exception e) {}
-        */
+        catch (final Exception e) { // TODO MessageConstructionException
+            endPoint.say("Message could not be created from " + data + " : " + Throwables.getRootCause(e));
+        }
+        if (message != null) {
+            Object object = null;
+            try {
+                object = this.handle(endPoint, message);
+            }
+            catch (final Exception e) { // TODO EventConstructionException
+                endPoint.say("Event could not be created from " + message + " : " + Throwables.getRootCause(e));
+            }
+            if (object != null) {
+                try {
+                    this.eventBus.post(object);
+                }
+                catch (final Exception e) { // TODO EventDispatchingException
+                    endPoint.say("Event could not be dispatched from " + object + " : " + Throwables.getRootCause(e));
+                }
+            }
+        }
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void onConnection(final IClient newClient) {
+        this.connect(newClient.getEndpoint(), newClient);
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void onDisconnection(final IDisconnect client) {
+        this.disconnect(client.getEndpoint());
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void onInPatio(final IInPatio inPatio) {
+        final IEndPoint endPoint = inPatio.getEndpoint();
+        final JsonObject tables = this.games();
+        endPoint.emit("tables", tables.toString());
+        for (final IEndPoint other : this.endpointsInPatio) {
+            other.emit("tables", tables.toString());
+        }
+        this.endpointsInPatio.add(endPoint);
     }
 
     private BlockplusGame reset(final GameInterface<Context> game) {
-        final ImmutableList<ClientInterface> empty = ImmutableList.of();
-        this.updateGame(game.getOrdinal(), empty);
-        final BlockplusGame newGame = new BlockplusGame(game.getOrdinal(), "", empty, null, 0);
-        this.updateGames(game.getOrdinal(), newGame);
+        final ImmutableList<IClient> empty = ImmutableList.of();
+        final BlockplusGame newGame = new BlockplusGame(game.getOrdinal(), empty, null);
+        this.updateGame(game.getOrdinal(), newGame);
         return newGame;
     }
 
-    public JsonObject tables() {
+    public JsonObject games() {
         final JsonObject tables = new JsonObject();
         for (final GameInterface<Context> game : this.gameByOrdinal.values()) {
             if (game.isFull()) {
                 boolean isAlive = false;
-                for (final ClientInterface client : game.getClients()) {
-                    final boolean isOpen = client.getIO().getConnection().isOpen();
-                    if (!isOpen) this.disconnect(client.getIO());
+                for (final IClient client : game.getClients()) {
+                    final boolean isOpen = client.getEndpoint().isOpen();
+                    if (!isOpen) this.disconnect(client.getEndpoint());
                     isAlive = isAlive || isOpen;
                 }
                 if (!isAlive) {
@@ -242,9 +195,8 @@ public class BlockplusServer extends WebSocketServlet {
             else {
                 boolean isFullyAlive = true;
                 boolean isFullyDead = true;
-                for (final ClientInterface client : game.getClients()) {
-                    final boolean isOpen = client.getIO().getConnection().isOpen();
-                    //if (!isOpen) this.disconnect(client.getIO());
+                for (final IClient client : game.getClients()) {
+                    final boolean isOpen = client.getEndpoint().isOpen();
                     isFullyAlive = isFullyAlive && isOpen;
                     isFullyDead = isFullyDead && !isOpen;
                 }
@@ -261,109 +213,41 @@ public class BlockplusServer extends WebSocketServlet {
 
     @Subscribe
     @AllowConcurrentEvents
-    public void onShowGame(final ShowGameInterface showGame) {
-        final IOinterface io = showGame.getIO();
-        final Integer ordinal = showGame.getOrdinal();
-        final GameInterface<Context> game = this.gameByOrdinal.get(ordinal);
-        if (game.isFull()) { // TODO à revoir
-            final JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("game", ordinal);
-            jsonObject.addProperty("board", game.toJson());
-            io.emit("game", jsonObject.toString());
-        }
-    }
-
-    @Subscribe
-    @AllowConcurrentEvents
-    public void onFeedback(final FeedbackInterface feedback) {
-        final Email email = new SimpleEmail();
-        email.setHostName("smtp.googlemail.com");
-        email.setSmtpPort(465);
-        email.setAuthenticator(new DefaultAuthenticator("arie.benichou", "")); // TODO
-        email.setSSLOnConnect(true);
-        try {
-            email.setFrom("arie.benichou@gmail.com");
-            email.setSubject("[Block+] New feedback from " + feedback.getName() + " !");
-            email.setMsg(feedback.getContent());
-            email.addTo("arie.benichou@gmail.com");
-            email.send();
-            feedback.getIO().emit("info", "\"" + "Thank you for your feedback !" + "\"");
-        }
-        catch (final EmailException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Subscribe
-    @AllowConcurrentEvents
     public void onDeadEvent(final DeadEvent deadEvent) {
         final Object event = deadEvent.getEvent();
-        if (event instanceof EventInterface) {
-            final EventInterface eventInterface = (EventInterface) event;
-            eventInterface.getIO().emit("dead event", "\"" + eventInterface + "\"");
+        if (event instanceof IEvent) {
+            final IEvent eventInterface = (IEvent) event;
+            eventInterface.getEndpoint().emit("dead event", "\"" + eventInterface + "\"");
         }
         else System.out.println(deadEvent.getEvent());
     }
 
     // TODO use other virtual clients for testing
     public static void runVC(final String[] args) throws Exception {
-
-        /*
-        final Runtime runtime = Runtime.getRuntime();
-        runtime.exec("beep -f 200 -l 180");
-        Thread.sleep(190);
-        runtime.exec("beep -f 400 -l 200");
-        Thread.sleep(210);
-        runtime.exec("beep -f 600 -l 250");
-        Thread.sleep(260);
-        runtime.exec("beep -f 800 -l 300");
-        */
-
         final int game = args.length > 0 ? Integer.parseInt(args[0]) : 1;
-
         final String host = "localhost";
         final int port = 8282;
-
         final WebSocketClientFactory factory = new WebSocketClientFactory();
         factory.setBufferSize(4096);
         factory.start();
-
         final Messages messages = new Messages();
-
         final WebSocketClient client = factory.newWebSocketClient();
         client.setMaxIdleTime(60 * 1000 * 5);
-        //client.setMaxIdleTime(4 * (60 + 1) * 1000);
         client.setMaxTextMessageSize(1024 * 64);
-
         final VirtualClient virtualClient = new VirtualClient("virtual-client", client, host, port, "io");
         virtualClient.start();
-
-        //Thread.sleep(1000);
-
-        // connection
-        final MessageInterface message1 = messages.newClient(virtualClient.getName());
+        final IMessage message1 = messages.newClient(virtualClient.getName());
         virtualClient.send(message1);
-
-        // join game
-        final MessageInterface message2 = messages.newGameConnection(game);
+        final IMessage message2 = messages.newGameConnection(game);
         virtualClient.send(message2);
-
         //virtualClient.stop();
         //factory.stop();
-
     }
 
     public static void main(final String[] args) throws Exception {
-        final Stopwatch stopwatch = new Stopwatch();
-        stopwatch.start();
-        for (int i = 1; i <= 20; ++i) {
-            for (int n = 0; n < 4; ++n) {
-                runVC(new String[] { "" + i });
-            }
+        for (int n = 0; n < 4; ++n) {
+            runVC(new String[] { "" + 4 });
         }
-        stopwatch.stop();
-        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS));
-
     }
 
 }

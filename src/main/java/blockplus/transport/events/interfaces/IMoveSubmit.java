@@ -17,10 +17,10 @@
 
 package blockplus.transport.events.interfaces;
 
-import blockplus.transport.IOinterface;
+import com.google.gson.JsonArray;
 
-public interface EventInterface {
+public interface IMoveSubmit extends IEvent {
 
-    IOinterface getIO();
+    JsonArray getPositions();
 
 }

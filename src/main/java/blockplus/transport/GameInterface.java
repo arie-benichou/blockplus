@@ -17,7 +17,7 @@
 
 package blockplus.transport;
 
-import blockplus.transport.events.interfaces.ClientInterface;
+import blockplus.transport.events.interfaces.IClient;
 
 import com.google.common.collect.ImmutableList;
 
@@ -25,11 +25,7 @@ public interface GameInterface<T> {
 
     Integer getOrdinal();
 
-    String getCode();
-
-    long getTimeStamp();
-
-    ImmutableList<ClientInterface> getClients();
+    ImmutableList<IClient> getClients();
 
     T getContext();
 
@@ -39,10 +35,8 @@ public interface GameInterface<T> {
 
     int getCapacity();
 
-    GameInterface<T> connect(ClientInterface client);
+    GameInterface<T> connect(IClient client);
 
-    GameInterface<T> disconnect(ClientInterface client);
-
-    String toJson();
+    void update();
 
 }

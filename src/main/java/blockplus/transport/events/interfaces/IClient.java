@@ -15,14 +15,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.transport.protocol;
+package blockplus.transport.events.interfaces;
 
-import com.google.gson.JsonObject;
+public interface IClient extends IEvent {
 
-public interface MessageInterface {
+    String getName();
 
-    String getType();
-
-    JsonObject getData();
+    Integer getGame();
 
 }

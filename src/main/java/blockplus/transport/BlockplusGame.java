@@ -19,8 +19,8 @@ package blockplus.transport;
 
 import static components.cells.Positions.Position;
 
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.SortedSet;
 
 import blockplus.export.ContextRepresentation;
@@ -28,12 +28,9 @@ import blockplus.model.Colors;
 import blockplus.model.Context;
 import blockplus.model.Context.Builder;
 import blockplus.model.Move;
-import blockplus.model.Sides.Side;
-import blockplus.transport.events.interfaces.ClientInterface;
-import blockplus.transport.events.interfaces.MoveSubmitInterface;
+import blockplus.transport.events.interfaces.IClient;
+import blockplus.transport.events.interfaces.IMoveSubmit;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -43,58 +40,23 @@ import components.cells.IPosition;
 
 public class BlockplusGame implements GameInterface<Context> {
 
-    private static String computeCode(final ImmutableList<ClientInterface> clients) {
-        final List<Integer> parts = Lists.newArrayList();
-        for (final ClientInterface client : clients) {
-            parts.add(client.getIO().hashCode());
-        }
-        return Joiner.on(':').join(parts);
-    }
-
-    // TODO à revoir
-    private final ImmutableList<String> SEQUENCE = ImmutableList.of("Blue", "Yellow", "Red", "Green");
+    private final static List<Colors> COLORS = Lists.newArrayList(Colors.set());
 
     private final int ordinal;
-    private final String code;
-    private final ImmutableList<ClientInterface> clients;
-    private final Context gameContext;
-    private final long timeStamp;
+    private final ImmutableList<IClient> clients;
+    private final Context context;
 
-    private ImmutableMap<Side, ClientInterface> clientByPlayer;
-    private ImmutableMap<ClientInterface, Side> playerByClient;
+    private final ImmutableMap<Colors, IClient> clientByColor;
 
-    private ImmutableMap<Colors, ClientInterface> clientByColor;
-
-    public BlockplusGame(final int ordinal, final String code, final ImmutableList<ClientInterface> clients, final Context gameContext,
-            final long timeStamp) {
-
+    public BlockplusGame(final int ordinal, final ImmutableList<IClient> clients, final Context context) {
         this.ordinal = ordinal;
-        this.code = code;
-        this.timeStamp = timeStamp;
         this.clients = clients;
-        this.gameContext = gameContext;
-
-        // TODO ! Builder de game
-        if (this.gameContext == null) {
-            this.clientByPlayer = null;
-        }
-        else {
-            final ImmutableMap.Builder<Side, ClientInterface> builder1 = new ImmutableMap.Builder<Side, ClientInterface>();
-            final ImmutableMap.Builder<ClientInterface, Side> builder2 = new ImmutableMap.Builder<ClientInterface, Side>();
-            final ImmutableMap.Builder<Colors, ClientInterface> builder3 = new ImmutableMap.Builder<Colors, ClientInterface>();
-            int n = 0;
-            for (final ClientInterface client : clients) {
-                final Colors color = Colors.valueOf(this.SEQUENCE.get(n));
-                final Side player = gameContext.sides().getSide(color);
-                builder1.put(player, client);
-                builder2.put(client, player);
-                builder3.put(color, client);
-                ++n;
-            }
-            this.clientByPlayer = builder1.build();
-            this.playerByClient = builder2.build();
-            this.clientByColor = builder3.build();
-        }
+        this.context = context;
+        final Iterator<Colors> iterator = COLORS.iterator();
+        final ImmutableMap.Builder<Colors, IClient> builder = new ImmutableMap.Builder<Colors, IClient>();
+        for (final IClient client : clients)
+            builder.put(iterator.next(), client);
+        this.clientByColor = builder.build();
     }
 
     @Override
@@ -103,18 +65,13 @@ public class BlockplusGame implements GameInterface<Context> {
     }
 
     @Override
-    public String getCode() {
-        return this.code;
-    }
-
-    @Override
-    public ImmutableList<ClientInterface> getClients() {
+    public ImmutableList<IClient> getClients() {
         return this.clients;
     }
 
     @Override
     public Context getContext() {
-        return this.gameContext;
+        return this.context;
     }
 
     @Override
@@ -133,37 +90,28 @@ public class BlockplusGame implements GameInterface<Context> {
     }
 
     @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("ordinal", this.ordinal)
-                .add("code", this.code)
-                .toString();
-    }
-
-    public ClientInterface getUserToPlay() {
-        final Colors colorToPlay = this.getContext().side();
-        final Side player = this.getContext().sides().getSide(colorToPlay);
-        return this.clientByPlayer.get(player);
-    }
-
-    public Side getPlayer(final ClientInterface client) {
-        return this.playerByClient.get(client);
+    public GameInterface<Context> connect(final IClient newClient) {
+        final ImmutableList<IClient> clients = new ImmutableList.Builder<IClient>().addAll(this.getClients()).add(newClient).build();
+        BlockplusGame newGame = null;
+        if (clients.size() == this.getCapacity()) {
+            newGame = new BlockplusGame(this.ordinal, clients, new Builder().build());
+        }
+        else {
+            newGame = new BlockplusGame(this.ordinal, clients, this.context);
+        }
+        return newGame;
     }
 
     @Override
-    public GameInterface<Context> connect(final ClientInterface newClient) {
-        final ImmutableList<ClientInterface> clients = new ImmutableList.Builder<ClientInterface>().addAll(this.getClients()).add(newClient).build();
-        BlockplusGame newRoom = null;
-        if (clients.size() == this.getCapacity()) {
-            newRoom = new BlockplusGame(this.ordinal, computeCode(clients), clients, new Builder().build(), System.currentTimeMillis());
+    public void update() {
+        final Context context = this.getContext();
+        final ContextRepresentation gameRepresentation = new ContextRepresentation(context);
+        for (final IClient client : this.getClients()) {
+            client.getEndpoint().emit("update", gameRepresentation.toString());
         }
-        else {
-            newRoom = new BlockplusGame(this.ordinal, this.code, clients, this.gameContext, this.timeStamp);
-        }
-        return newRoom;
     }
 
-    public GameInterface<Context> play(final MoveSubmitInterface moveSubmitInterface) {
+    public GameInterface<Context> play(final IMoveSubmit moveSubmitInterface) {
         final Context context = this.getContext();
         final SortedSet<IPosition> positions = Sets.newTreeSet();
         for (final JsonElement element : moveSubmitInterface.getPositions()) {
@@ -172,48 +120,11 @@ public class BlockplusGame implements GameInterface<Context> {
             positions.add(position);
         }
         final Move move = new Move(context.side(), positions);
-        Context nextContext = context.apply(move);
-        nextContext = nextContext.forward();
-        return new BlockplusGame(this.getOrdinal(), this.getCode(), this.getClients(), nextContext, this.getTimeStamp());
+        return new BlockplusGame(this.getOrdinal(), this.getClients(), context.apply(move).forward());
     }
 
-    @Override
-    public GameInterface<Context> disconnect(final ClientInterface client) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public long getTimeStamp() {
-        return this.timeStamp;
-    }
-
-    public void update(final ClientInterface client) {
-        final Context context = this.getContext();
-        final ContextRepresentation gameRepresentation = new ContextRepresentation(context);
-        client.getIO().emit("update", gameRepresentation.toString());
-    }
-
-    public void update() {
-        final Context context = this.getContext();
-        final ContextRepresentation gameRepresentation = new ContextRepresentation(context);
-        for (final ClientInterface client : this.getClients()) {
-            client.getIO().emit("update", gameRepresentation.toString());
-        }
-    }
-
-    @Override
-    public String toJson() {
-        final Context context = this.getContext();
-        final ContextRepresentation gameRepresentation = new ContextRepresentation(context);
-        return gameRepresentation.encodeBoard().toString();
-    }
-
-    public ClientInterface getPlayer(final Colors to) {
-        for (final Entry<Colors, ClientInterface> entry : this.clientByColor.entrySet()) {
-            System.out.println(entry);
-        }
-        return this.clientByColor.get(to); // TODO à vérifier
+    public IClient getPlayer(final Colors color) {
+        return this.clientByColor.get(color);
     }
 
 }

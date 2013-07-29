@@ -15,20 +15,15 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.transport;
+package blockplus.transport.events.interfaces;
 
-import org.eclipse.jetty.websocket.WebSocket.OnTextMessage;
 
-public interface IOinterface extends OnTextMessage {
+public interface INotification extends IEvent {
 
-    BlockplusServer getServer();
+    String getFrom();
 
-    Connection getConnection();
+    String getTo();
 
-    Integer getGame();
-
-    void setRoom(Integer ordinal);
-
-    void emit(String type, String data);
+    String getMessage();
 
 }

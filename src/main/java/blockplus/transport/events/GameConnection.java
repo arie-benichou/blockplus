@@ -18,26 +18,26 @@
 package blockplus.transport.events;
 
 
-import blockplus.transport.IOinterface;
-import blockplus.transport.events.interfaces.GameConnectionInterface;
+import blockplus.transport.IEndPoint;
+import blockplus.transport.events.interfaces.IGameConnection;
 
 import com.google.common.base.Objects;
 import com.google.gson.JsonObject;
 
-public final class GameConnection implements GameConnectionInterface {
+public final class GameConnection implements IGameConnection {
 
     public static class Builder {
 
-        public static GameConnection build(final IOinterface io, final JsonObject data) {
+        public static GameConnection build(final IEndPoint io, final JsonObject data) {
             return new GameConnection(io, data.get("ordinal").getAsInt());
         }
 
     }
 
-    private final IOinterface io;
+    private final IEndPoint io;
 
     @Override
-    public IOinterface getIO() {
+    public IEndPoint getEndpoint() {
         return this.io;
     }
 
@@ -48,7 +48,7 @@ public final class GameConnection implements GameConnectionInterface {
         return this.ordinal;
     }
 
-    private GameConnection(final IOinterface io, final Integer ordinal) {
+    private GameConnection(final IEndPoint io, final Integer ordinal) {
         this.io = io;
         this.ordinal = ordinal;
     }

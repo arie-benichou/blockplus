@@ -17,26 +17,26 @@
 
 package blockplus.transport.events;
 
-import blockplus.transport.IOinterface;
-import blockplus.transport.events.interfaces.NotificationInterface;
+import blockplus.transport.IEndPoint;
+import blockplus.transport.events.interfaces.INotification;
 
 import com.google.common.base.Objects;
 import com.google.gson.JsonObject;
 
-public final class Notification implements NotificationInterface {
+public final class Notification implements INotification {
 
     public static class Builder {
 
-        public static Notification build(final IOinterface io, final JsonObject data) {
+        public static Notification build(final IEndPoint io, final JsonObject data) {
             return new Notification(io, data.get("from").getAsString(), data.get("to").getAsString(), data.get("message").getAsString());
         }
 
     }
 
-    private final IOinterface io;
+    private final IEndPoint io;
 
     @Override
-    public IOinterface getIO() {
+    public IEndPoint getEndpoint() {
         return this.io;
     }
 
@@ -44,7 +44,7 @@ public final class Notification implements NotificationInterface {
     private final String to;
     private final String message;
 
-    public Notification(final IOinterface io, final String from, final String to, final String message) {
+    public Notification(final IEndPoint io, final String from, final String to, final String message) {
         this.io = io;
         this.from = from;
         this.to = to;
@@ -54,7 +54,7 @@ public final class Notification implements NotificationInterface {
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("io", this.getIO())
+                .add("io", this.getEndpoint())
                 .add("from", this.getFrom())
                 .add("to", this.getTo())
                 .add("message", this.getMessage())

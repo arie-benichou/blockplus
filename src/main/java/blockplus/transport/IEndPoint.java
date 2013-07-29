@@ -15,15 +15,16 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.transport.events.interfaces;
+package blockplus.transport;
 
+import org.eclipse.jetty.websocket.WebSocket.OnTextMessage;
 
-public interface NotificationInterface extends EventInterface {
+public interface IEndPoint extends OnTextMessage {
 
-    String getFrom();
+    boolean isOpen();
 
-    String getTo();
+    void say(String message);
 
-    String getMessage();
+    void emit(String type, String data);
 
 }

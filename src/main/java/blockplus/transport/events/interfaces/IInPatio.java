@@ -17,10 +17,6 @@
 
 package blockplus.transport.events.interfaces;
 
-import com.google.gson.JsonArray;
-
-public interface MoveSubmitInterface extends EventInterface {
-
-    JsonArray getPositions();
+public interface IInPatio extends IEvent {
 
 }

@@ -20,7 +20,7 @@ package blockplus.transport.protocol;
 import com.google.common.base.Objects;
 import com.google.gson.JsonObject;
 
-public class Message implements MessageInterface {
+public class Message implements IMessage {
 
     private final String type;
     private final JsonObject data;

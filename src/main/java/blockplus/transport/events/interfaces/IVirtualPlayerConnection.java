@@ -17,7 +17,7 @@
 
 package blockplus.transport.events.interfaces;
 
-public interface ShowGameInterface extends EventInterface {
+public interface IVirtualPlayerConnection extends IEvent {
 
     Integer getOrdinal();
 

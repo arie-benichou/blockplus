@@ -28,29 +28,32 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
-public class MessageDecoder implements MessageDecoderInterface {
+public class MessageDecoder implements IMessageDecoder {
 
-    private static class MessageDeserializer implements JsonDeserializer<MessageInterface> {
+    private static final Type TYPE_TOKEN = new TypeToken<IMessage>() {}.getType();
+
+    private static class MessageDeserializer implements JsonDeserializer<IMessage> {
+
+        private final static String TYPE = "type";
+        private final static String DATA = "data";
 
         @Override
-        public MessageInterface deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+        public IMessage deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
             final JsonObject jsonObject = json.getAsJsonObject();
-            final JsonElement typeElement = jsonObject.get("type"); // TODO extract constant
-            final String type = typeElement.getAsString();
-            final JsonElement dataElement = jsonObject.get("data"); // TODO extract constant
-            final JsonObject data = dataElement.getAsJsonObject();
-            return new Message(type, data);
+            final JsonElement typeElement = jsonObject.get(TYPE);
+            final JsonElement dataElement = jsonObject.get(DATA);
+            return new Message(typeElement.getAsString(), dataElement.getAsJsonObject());
         }
 
     }
 
-    private static final Gson GSON_INSTANCE = new GsonBuilder()
-            .registerTypeAdapter(new TypeToken<MessageInterface>() {}.getType(), new MessageDeserializer())
+    private final static Gson GSON_INSTANCE = new GsonBuilder()
+            .registerTypeAdapter(TYPE_TOKEN, new MessageDeserializer())
             .create();
 
     @Override
-    public MessageInterface decode(final String data) {
-        return GSON_INSTANCE.fromJson(data, new TypeToken<MessageInterface>() {}.getType());
+    public IMessage decode(final String data) {
+        return GSON_INSTANCE.fromJson(data, TYPE_TOKEN);
     }
 
 }

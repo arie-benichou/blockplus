@@ -18,26 +18,26 @@
 package blockplus.transport.events;
 
 
-import blockplus.transport.IOinterface;
-import blockplus.transport.events.interfaces.VirtualPlayerConnectionInterface;
+import blockplus.transport.IEndPoint;
+import blockplus.transport.events.interfaces.IVirtualPlayerConnection;
 
 import com.google.common.base.Objects;
 import com.google.gson.JsonObject;
 
-public final class VirtualPlayerConnection implements VirtualPlayerConnectionInterface {
+public final class VirtualPlayerConnection implements IVirtualPlayerConnection {
 
     public static class Builder {
 
-        public static VirtualPlayerConnection build(final IOinterface io, final JsonObject data) {
+        public static VirtualPlayerConnection build(final IEndPoint io, final JsonObject data) {
             return new VirtualPlayerConnection(io, data.get("ordinal").getAsInt());
         }
 
     }
 
-    private final IOinterface io;
+    private final IEndPoint io;
 
     @Override
-    public IOinterface getIO() {
+    public IEndPoint getEndpoint() {
         return this.io;
     }
 
@@ -48,7 +48,7 @@ public final class VirtualPlayerConnection implements VirtualPlayerConnectionInt
         return this.ordinal;
     }
 
-    private VirtualPlayerConnection(final IOinterface io, final Integer ordinal) {
+    private VirtualPlayerConnection(final IEndPoint io, final Integer ordinal) {
         this.io = io;
         this.ordinal = ordinal;
     }

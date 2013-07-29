@@ -18,30 +18,30 @@
 package blockplus.transport.events;
 
 
-import blockplus.transport.IOinterface;
-import blockplus.transport.events.interfaces.DisconnectInterface;
+import blockplus.transport.IEndPoint;
+import blockplus.transport.events.interfaces.IDisconnect;
 
 import com.google.common.base.Objects;
 import com.google.gson.JsonObject;
 
-public final class Disconnect implements DisconnectInterface {
+public final class Disconnect implements IDisconnect {
 
     public static class Builder {
 
-        public static Disconnect build(final IOinterface io, final JsonObject data) {
+        public static Disconnect build(final IEndPoint io, final JsonObject data) {
             return new Disconnect(io);
         }
 
     }
 
-    private final IOinterface io;
+    private final IEndPoint io;
 
     @Override
-    public IOinterface getIO() {
+    public IEndPoint getEndpoint() {
         return this.io;
     }
 
-    private Disconnect(final IOinterface io) {
+    private Disconnect(final IEndPoint io) {
         this.io = io;
     }
 

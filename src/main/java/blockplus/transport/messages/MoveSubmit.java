@@ -18,12 +18,12 @@
 package blockplus.transport.messages;
 
 
-import blockplus.transport.protocol.MessageInterface;
+import blockplus.transport.protocol.IMessage;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-public final class MoveSubmit implements MessageInterface {
+public final class MoveSubmit implements IMessage {
 
     private final JsonArray positions;
 

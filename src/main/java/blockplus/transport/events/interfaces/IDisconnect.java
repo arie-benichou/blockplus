@@ -17,8 +17,6 @@
 
 package blockplus.transport.events.interfaces;
 
-public interface VirtualPlayerConnectionInterface extends EventInterface {
-
-    Integer getOrdinal();
+public interface IDisconnect extends IEvent {
 
 }

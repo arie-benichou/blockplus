@@ -17,27 +17,27 @@
 
 package blockplus.transport.events;
 
-import blockplus.transport.IOinterface;
-import blockplus.transport.events.interfaces.ClientInterface;
+import blockplus.transport.IEndPoint;
+import blockplus.transport.events.interfaces.IClient;
 
 import com.google.gson.JsonObject;
 
 // TODO event = {source:IO, message:JSON}
-public final class Client implements ClientInterface {
+public final class Client implements IClient {
 
     public static class Builder {
 
-        public static Client build(final IOinterface io, final JsonObject data) {
+        public static Client build(final IEndPoint io, final JsonObject data) {
             // TODO à revoir
             return new Client(io, data.get("name").getAsString(), data.has("game") ? data.get("game").getAsInt() : 0);
         }
 
     }
 
-    private final IOinterface io;
+    private final IEndPoint io;
 
     @Override
-    public IOinterface getIO() {
+    public IEndPoint getEndpoint() {
         return this.io;
     }
 
@@ -56,7 +56,7 @@ public final class Client implements ClientInterface {
     // TODO à revoir
     private final Integer game;
 
-    public Client(final IOinterface io, final String name, final Integer game) {
+    public Client(final IEndPoint io, final String name, final Integer game) {
         this.io = io;
         this.name = name;
         this.game = game;
@@ -69,7 +69,7 @@ public final class Client implements ClientInterface {
         final JsonObject data = new JsonObject();
         data.addProperty("name", this.getName());
         data.addProperty("game", this.getGame().toString());
-        data.addProperty("io", this.getIO().toString());
+        data.addProperty("io", this.getEndpoint().toString());
         jsonObject.add("data", data);
         return jsonObject.toString();
     }
