@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.export;
+package blockplus.exports;
 
 import blockplus.model.polyomino.Polyomino;
 

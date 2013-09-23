@@ -51,9 +51,13 @@ import com.google.gson.JsonObject;
 @SuppressWarnings("serial")
 public class BlockplusServer extends WebSocketServlet {
 
-    private final static int GAMES = 25;
+    private final static Messages MESSAGES = new Messages();
 
-    private final EventBus eventBus = new EventBus();
+    public final static int GAMES = 50;
+
+    //public final EventBus eventBus = new AsyncEventBus(Executors.newFixedThreadPool(4));
+    public final EventBus eventBus = new EventBus();
+
     private final IMessageHandler messageHandler = new MessageHandler(); // TODO à injecter
     private final MessageDecoder messageDecoder = new MessageDecoder(); // TODO à injecter
 
@@ -69,7 +73,7 @@ public class BlockplusServer extends WebSocketServlet {
         this.eventBus.register(blockplusServerEvents);
         final ImmutableList<IClient> empty = ImmutableList.of();
         for (int i = 1; i <= GAMES; ++i) {
-            this.updateGame(i, new BlockplusGame(i, empty, null));
+            this.updateGame(i, new BlockplusGame(i, empty, null, false));
         }
     }
 
@@ -123,7 +127,7 @@ public class BlockplusServer extends WebSocketServlet {
         IMessage message = null;
         try {
             message = this.decode(data);
-            System.out.println(message);
+            //            System.out.println(message);
         }
         catch (final Exception e) { // TODO MessageConstructionException
             endPoint.say("Message could not be created from " + data + " : " + Throwables.getRootCause(e));
@@ -173,7 +177,7 @@ public class BlockplusServer extends WebSocketServlet {
 
     private BlockplusGame reset(final IGame<Context> game) {
         final ImmutableList<IClient> empty = ImmutableList.of();
-        final BlockplusGame newGame = new BlockplusGame(game.getOrdinal(), empty, null);
+        final BlockplusGame newGame = new BlockplusGame(game.getOrdinal(), empty, null, false);
         this.updateGame(game.getOrdinal(), newGame);
         return newGame;
     }
@@ -223,30 +227,32 @@ public class BlockplusServer extends WebSocketServlet {
     }
 
     // TODO use other virtual clients for testing
-    public static void runVC(final String[] args) throws Exception {
+    public static VirtualClient runVC(final String[] args) throws Exception {
         final int game = args.length > 0 ? Integer.parseInt(args[0]) : 1;
         final String host = "localhost";
-        final int port = 8282;
+        //final String host = "192.168.0.1";
+        final int port = 8080;
         final WebSocketClientFactory factory = new WebSocketClientFactory();
         factory.setBufferSize(4096);
         factory.start();
-        final Messages messages = new Messages();
         final WebSocketClient client = factory.newWebSocketClient();
         client.setMaxIdleTime(60 * 1000 * 5);
         client.setMaxTextMessageSize(1024 * 64);
         final VirtualClient virtualClient = new VirtualClient("virtual-client", client, host, port, "io");
         virtualClient.start();
-        final IMessage message1 = messages.newClient(virtualClient.getName());
+        final IMessage message1 = MESSAGES.newClient(virtualClient.getName());
         virtualClient.send(message1);
-        final IMessage message2 = messages.newGameConnection(game);
+        final IMessage message2 = MESSAGES.newGameConnection(game);
         virtualClient.send(message2);
         //virtualClient.stop();
         //factory.stop();
+        return virtualClient;
     }
 
     public static void main(final String[] args) throws Exception {
         for (int n = 0; n < 4; ++n) {
-            runVC(new String[] { "" + 4 });
+            runVC(args);
+            Thread.sleep(1000);
         }
     }
 

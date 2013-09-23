@@ -79,7 +79,7 @@ public final class Context {
 
     private volatile Options options;
 
-    Context(final Colors side, final Sides players, final Board board) {
+    public Context(final Colors side, final Sides players, final Board board) {
         this.side = side;
         this.sides = players;
         this.board = board;
@@ -95,6 +95,8 @@ public final class Context {
         final SortedSet<IPosition> positions = move.positions();
         final Polyominos polyominos = Polyominos.getInstance();
         final PolyominoTranslatedInstance translatedInstance = polyominos.get(positions);
+        //System.out.println(color);
+        //System.out.println(translatedInstance);
         return new Context(color,
                 this.sides().apply(color, translatedInstance.type()),
                 this.board().apply(color, translatedInstance));
@@ -139,6 +141,11 @@ public final class Context {
 
     public Side getPlayer() {
         return this.getPlayer(this.side());
+    }
+
+    @Override
+    public String toString() {
+        return this.side().toString();
     }
 
 }

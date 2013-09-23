@@ -24,6 +24,7 @@ import blockplus.transport.events.interfaces.IClient;
 import blockplus.transport.events.interfaces.IGameConnection;
 import blockplus.transport.events.interfaces.IMoveSubmit;
 import blockplus.transport.events.interfaces.INotification;
+import blockplus.transport.events.interfaces.IPauseResumeGame;
 import blockplus.transport.events.interfaces.IVirtualPlayerConnection;
 
 import com.google.common.collect.ImmutableList;
@@ -73,7 +74,7 @@ public class BlockplusServerEvents {
             for (final IEndPoint endPoint : this.getServer().getEndpointsInPatio()) {
                 endPoint.emit("tables", this.getServer().games().toString());
             }
-            if (newGame.isFull()) newGame.update();
+            if (newGame.isFull() && !newGame.isPaused()) newGame.update();
         }
     }
 
@@ -91,12 +92,28 @@ public class BlockplusServerEvents {
     @Subscribe
     @AllowConcurrentEvents
     public void onMoveSubmit(final IMoveSubmit moveSubmit) {
+        //        try {
+        //            Thread.sleep(1000);
+        //        }
+        //        catch (final InterruptedException e) {
+        //            // TODO Auto-generated catch block
+        //            e.printStackTrace();
+        //        }
         final IClient client = this.getServer().getClientByEndpoint(moveSubmit.getEndpoint());
-        final Integer game = client.getGame();
-        final BlockplusGame blockplusGame = (BlockplusGame) this.getServer().getGame(game);
-        final BlockplusGame newGame = (BlockplusGame) blockplusGame.play(moveSubmit);
-        this.getServer().updateGame(newGame.getOrdinal(), newGame);
-        newGame.update();
+        final BlockplusGame blockplusGame = (BlockplusGame) this.getServer().getGame(client.getGame());
+        //        System.out.println();
+        //        System.out.println(blockplusGame.getOrdinal());
+        //        System.out.println();
+        //        System.out.println("is paused : " + blockplusGame.isPaused());
+        //        System.out.println();
+        if (blockplusGame.isPaused()) {
+            //System.out.println("PAUSED");
+        }
+        else {
+            final BlockplusGame newGame = (BlockplusGame) blockplusGame.play(moveSubmit);
+            this.getServer().updateGame(newGame.getOrdinal(), newGame);
+            newGame.update();
+        }
     }
 
     @Subscribe
@@ -114,6 +131,20 @@ public class BlockplusServerEvents {
         jsonObject.addProperty("to", to.toString());
         final IClient toClient = blockplusGame.getPlayer(to);
         toClient.getEndpoint().emit("notification", jsonObject.toString());
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void onPauseResumeGame(final IPauseResumeGame pauseResumeGame) {
+        final IClient client = this.getServer().getClientByEndpoint(pauseResumeGame.getEndpoint());
+        final BlockplusGame blockplusGame = (BlockplusGame) this.getServer().getGame(client.getGame());
+        final boolean wasPaused = blockplusGame.isPaused();
+        final BlockplusGame newGame = blockplusGame.isPaused(pauseResumeGame.isPaused());
+        this.getServer().updateGame(newGame.getOrdinal(), newGame);
+        //        System.out.println(pauseResumeGame.isPaused());
+        if (wasPaused && !pauseResumeGame.isPaused()) {
+            if (newGame.isFull()) newGame.update();
+        }
     }
 
 }

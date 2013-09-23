@@ -1,5 +1,5 @@
 
-package blockplus.export;
+package blockplus.exports;
 
 import static org.junit.Assert.assertEquals;
 

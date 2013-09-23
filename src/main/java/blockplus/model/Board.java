@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 
+import scala.collection.mutable.StringBuilder;
 import blockplus.model.Board.Layer.State;
 import blockplus.model.polyomino.PolyominoInstances.PolyominoTranslatedInstance;
 
@@ -282,6 +283,34 @@ public final class Board {
 
     public Iterable<IPosition> getSelves(final Colors color) {
         return this.get(color).getSelves().keySet();
+    }
+
+    @Override
+    public String toString() {
+        final Set<Entry<Colors, Layer>> entrySet = this.layers.entrySet();
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (final Entry<Colors, Layer> entry : entrySet) {
+            stringBuilder.append("\n");
+            stringBuilder.append(entry.getKey());
+            stringBuilder.append("\n");
+            stringBuilder.append(entry.getValue());
+        }
+        stringBuilder.append("\n");
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (object == null) return false;
+        if (object == this) return true;
+        if (!(object instanceof Board)) return false;
+        final Board that = (Board) object;
+        return that.hashCode() == this.hashCode();
     }
 
 }

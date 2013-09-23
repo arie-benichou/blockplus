@@ -43,7 +43,7 @@ Blockplus.PieceManager.prototype = {
 	},
 
 	init : function(color, pieces) {
-		console.debug(pieces.length);
+		//console.debug(pieces.length);
 		var container = this.container(color);
 		container.html("");
 		for ( var i = 0, n = pieces.length; i < n; ++i) {
@@ -57,7 +57,6 @@ Blockplus.PieceManager.prototype = {
 	},
 
 	update : function(color, pieces) {
-		console.debug(pieces);
 		var container = this.container(color);
 		for ( var i = 0, n = pieces.length; i < n; ++i) {
 			if (pieces[i] == 0) {

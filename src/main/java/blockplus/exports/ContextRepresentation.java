@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package blockplus.export;
+package blockplus.exports;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -115,7 +115,7 @@ public final class ContextRepresentation {
 
     public JsonElement encodeOptions() {
         final Options options = this.context.options();
-        final Set<Entry<IPosition, Map<Polyomino, List<Set<IPosition>>>>> byLight = options.byLight();
+        final Set<Entry<IPosition, Map<Polyomino, List<Set<IPosition>>>>> byLight = options.byLight().entrySet();
         final JsonObject jsonObject = new JsonObject();
         for (final Entry<IPosition, Map<Polyomino, List<Set<IPosition>>>> entry : byLight) {
             final String light = this.gson.toJson(entry.getKey(), IPosition.class);

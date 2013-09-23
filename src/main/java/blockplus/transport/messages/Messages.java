@@ -17,7 +17,6 @@
 
 package blockplus.transport.messages;
 
-
 import blockplus.transport.protocol.IMessage;
 
 import com.google.gson.JsonArray;
@@ -34,6 +33,10 @@ public class Messages {
 
     public IMessage newMoveSubmit(final JsonArray positions) {
         return new MoveSubmit(positions);
+    }
+
+    public IMessage newPauseResumeGame(final boolean isPaused) {
+        return new PauseResumeGame(isPaused);
     }
 
 }

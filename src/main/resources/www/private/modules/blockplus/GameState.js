@@ -17,14 +17,12 @@ Blockplus.GameState.prototype = {
 			var code = pieces[color];
 			var digits = Math.floor(1 + Math.log(code) / Math.log(2));
 			var n = digits - 1;
-			console.debug(n);
 			var array = [];
 			for ( var i = 0; i < n; ++i, code = code >> 1) {
 				array.push(code & 1);
 			}
 			data[color] = array.reverse();
 		}
-		console.debug(data);
 		return data;
 	},
 	getColor : function() {

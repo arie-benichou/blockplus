@@ -53,6 +53,11 @@ public final class Sides implements Iterable<Entry<Colors, Side>> {
             return !this.remainingPieces().contains(Polyomino._0);
         }
 
+        @Override
+        public String toString() {
+            return this.remainingPieces.toString();
+        }
+
     }
 
     public final static class Builder {
@@ -110,6 +115,25 @@ public final class Sides implements Iterable<Entry<Colors, Side>> {
     @Override
     public Iterator<Entry<Colors, Side>> iterator() {
         return this.sides.entrySet().iterator();
+    }
+
+    @Override
+    public String toString() {
+        return this.sides.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (object == null) return false;
+        if (object == this) return true;
+        if (!(object instanceof Sides)) return false;
+        final Sides that = (Sides) object;
+        return that.hashCode() == this.hashCode();
     }
 
 }

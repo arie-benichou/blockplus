@@ -23,7 +23,7 @@ Blockplus.Patio = function(container, viewPort, audioManager, client, messages, 
 	for (color in this.colors) {
 		players.push(color.toLowerCase());
 	}
-	console.debug(players);
+	//console.debug(players);
 
 	this.client.register("tables", $.proxy(function(tables) {
 		$("#tables").html("");

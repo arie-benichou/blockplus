@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import blockplus.export.PiecesRepresentation;
+import blockplus.exports.PiecesRepresentation;
 
 @SuppressWarnings("serial")
 public class HttpServer extends HttpServlet {

@@ -39,4 +39,6 @@ public interface IGame<T> {
 
     void update();
 
+    boolean isPaused();
+
 }

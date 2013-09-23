@@ -41,8 +41,22 @@ public class Options {
         return this.options.columnMap().entrySet();
     }
 
-    public Set<Entry<IPosition, Map<Polyomino, List<Set<IPosition>>>>> byLight() {
-        return this.options.rowMap().entrySet();
+    public Map<IPosition, Map<Polyomino, List<Set<IPosition>>>> byLight() {
+        return this.options.rowMap();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.options.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (object == null) return false;
+        if (object == this) return true;
+        if (!(object instanceof Options)) return false;
+        final Options that = (Options) object;
+        return this.options.equals(that.options);
     }
 
 }

@@ -21,6 +21,6 @@ import com.google.gson.JsonArray;
 
 public interface IMoveSubmit extends IEvent {
 
-    JsonArray getPositions();
+    JsonArray getPositions(); // TODO Set
 
 }

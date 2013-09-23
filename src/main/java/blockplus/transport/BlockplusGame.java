@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 
-import blockplus.export.ContextRepresentation;
+import blockplus.exports.ContextRepresentation;
 import blockplus.model.Colors;
 import blockplus.model.Context;
 import blockplus.model.Context.Builder;
@@ -48,10 +48,13 @@ public class BlockplusGame implements IGame<Context> {
 
     private final ImmutableMap<Colors, IClient> clientByColor;
 
-    public BlockplusGame(final int ordinal, final ImmutableList<IClient> clients, final Context context) {
+    private final boolean isPaused;
+
+    public BlockplusGame(final int ordinal, final ImmutableList<IClient> clients, final Context context, final boolean isPaused) {
         this.ordinal = ordinal;
         this.clients = clients;
         this.context = context;
+        this.isPaused = isPaused;
         final Iterator<Colors> iterator = COLORS.iterator();
         final ImmutableMap.Builder<Colors, IClient> builder = new ImmutableMap.Builder<Colors, IClient>();
         for (final IClient client : clients)
@@ -94,10 +97,10 @@ public class BlockplusGame implements IGame<Context> {
         final ImmutableList<IClient> clients = new ImmutableList.Builder<IClient>().addAll(this.getClients()).add(newClient).build();
         BlockplusGame newGame = null;
         if (clients.size() == this.getCapacity()) {
-            newGame = new BlockplusGame(this.ordinal, clients, new Builder().build());
+            newGame = new BlockplusGame(this.ordinal, clients, new Builder().build(), this.isPaused);
         }
         else {
-            newGame = new BlockplusGame(this.ordinal, clients, this.context);
+            newGame = new BlockplusGame(this.ordinal, clients, this.context, this.isPaused);
         }
         return newGame;
     }
@@ -120,11 +123,20 @@ public class BlockplusGame implements IGame<Context> {
             positions.add(position);
         }
         final Move move = new Move(context.side(), positions);
-        return new BlockplusGame(this.getOrdinal(), this.getClients(), context.apply(move).forward());
+        return new BlockplusGame(this.getOrdinal(), this.getClients(), context.apply(move).forward(), this.isPaused);
     }
 
     public IClient getPlayer(final Colors color) {
         return this.clientByColor.get(color);
+    }
+
+    public BlockplusGame isPaused(final boolean isPaused) {
+        return new BlockplusGame(this.getOrdinal(), this.getClients(), this.getContext(), isPaused);
+    }
+
+    @Override
+    public boolean isPaused() {
+        return this.isPaused;
     }
 
 }

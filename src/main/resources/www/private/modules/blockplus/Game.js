@@ -108,8 +108,8 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 	// /////////////////////////////////////////////////////////////////////
 
 	this.client.register("notification", $.proxy(function(data) {
-		console.debug(this.color);
-		console.debug(data.to);
+		// console.debug(this.color);
+		// console.debug(data.to);
 		if (data.to == this.color) { // TODO !!! à revoir coté serveur
 			$("#messages").removeClass();
 			$("#messages").addClass("from" + data.from);
@@ -197,15 +197,15 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 					this.boardManager.selectedPositions.setSelectedLight(positionID);
 				}
 			}
-			var isClickable = positionID in this.options.matchPotentialPositions(this.boardManager.selectedPositions.selectedLight, this.boardManager.selectedPositions);
+			var isClickable = positionID in this.options.matchPotentialPositions(this.boardManager.selectedPositions.selectedLight,
+					this.boardManager.selectedPositions);
 			if (isClickable) {
 				if (this.boardManager.hasSelection(position)) {
 					this.boardManager.unselect(position, this.color);
-					if(positionID == this.boardManager.selectedPositions.selectedLight) {
+					if (positionID == this.boardManager.selectedPositions.selectedLight) {
 						this.boardManager.selectedPositions.clear();
 					}
-				}
-				else
+				} else
 					this.boardManager.select(position, this.color);
 			}
 
@@ -250,11 +250,10 @@ Blockplus.Game = function(viewPort, audioManager, client, messages, colors, posi
 			this.boardManager.renderSelectedCells(this.boardManager.selectedPositions.get(), this.color);
 			for (position in this.boardManager.selectedPositions.get()) {
 				data.push(position);
-				if(position == this.boardManager.selectedPositions.selectedLight) {
+				if (position == this.boardManager.selectedPositions.selectedLight) {
 					this.boardManager.renderPotentialCell2(this.positionFactory.positionFromIndex(position), this.color);
-				}
-				else {
-					this.boardManager.renderPotentialCell(this.positionFactory.positionFromIndex(position), this.color);	
+				} else {
+					this.boardManager.renderPotentialCell(this.positionFactory.positionFromIndex(position), this.color);
 				}
 			}
 			this.play(data);
@@ -312,16 +311,29 @@ Blockplus.Game.prototype = {
 			this.pieceManager.show(leader);
 		} else {
 			if (gameState.getColor() == this.color) {
-				this.audioManager.play("../audio/some.mp3");
+				//this.audioManager.play("../audio/some.mp3");
 			}
 			// TODO on Game Ready
 			$("#board-container").removeClass();
 		}
 
+		var options = gameState.getOptions(this.color);
 		/*
-		 * var options = gameState.getOptions(this.color); for ( var i = 21; i >
-		 * 0; --i) { if (i in options) { this.play(options[i][0]); break; } }
-		 */
+		console.debug(options);
+		for (light in options) {
+			console.debug(light);
+			console.debug(options[light]);
+			for ( var i = 21; i >= 1; --i) {
+				console.debug(i in options[light]);
+				if (i in options[light]) {
+					console.debug(options[light][i]);
+					this.play(options[light][i][0]);
+					break;
+				}
+			}
+			break;
+		}
+		*/
 
 	},
 
