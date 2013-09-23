@@ -24,7 +24,6 @@ import blockplus.transport.events.interfaces.IClient;
 import blockplus.transport.events.interfaces.IGameConnection;
 import blockplus.transport.events.interfaces.IMoveSubmit;
 import blockplus.transport.events.interfaces.INotification;
-import blockplus.transport.events.interfaces.IPauseResumeGame;
 import blockplus.transport.events.interfaces.IVirtualPlayerConnection;
 
 import com.google.common.collect.ImmutableList;
@@ -133,18 +132,18 @@ public class BlockplusServerEvents {
         toClient.getEndpoint().emit("notification", jsonObject.toString());
     }
 
-    @Subscribe
-    @AllowConcurrentEvents
-    public void onPauseResumeGame(final IPauseResumeGame pauseResumeGame) {
-        final IClient client = this.getServer().getClientByEndpoint(pauseResumeGame.getEndpoint());
-        final BlockplusGame blockplusGame = (BlockplusGame) this.getServer().getGame(client.getGame());
-        final boolean wasPaused = blockplusGame.isPaused();
-        final BlockplusGame newGame = blockplusGame.isPaused(pauseResumeGame.isPaused());
-        this.getServer().updateGame(newGame.getOrdinal(), newGame);
-        //        System.out.println(pauseResumeGame.isPaused());
-        if (wasPaused && !pauseResumeGame.isPaused()) {
-            if (newGame.isFull()) newGame.update();
-        }
-    }
+    //    @Subscribe
+    //    @AllowConcurrentEvents
+    //    public void onPauseResumeGame(final IPauseResumeGame pauseResumeGame) {
+    //        final IClient client = this.getServer().getClientByEndpoint(pauseResumeGame.getEndpoint());
+    //        final BlockplusGame blockplusGame = (BlockplusGame) this.getServer().getGame(client.getGame());
+    //        final boolean wasPaused = blockplusGame.isPaused();
+    //        final BlockplusGame newGame = blockplusGame.isPaused(pauseResumeGame.isPaused());
+    //        this.getServer().updateGame(newGame.getOrdinal(), newGame);
+    //        //        System.out.println(pauseResumeGame.isPaused());
+    //        if (wasPaused && !pauseResumeGame.isPaused()) {
+    //            if (newGame.isFull()) newGame.update();
+    //        }
+    //    }
 
 }
