@@ -231,7 +231,7 @@ public class BlockplusServer extends WebSocketServlet {
         final int game = args.length > 0 ? Integer.parseInt(args[0]) : 1;
         final String host = "localhost";
         //final String host = "192.168.0.1";
-        final int port = 8080;
+        final int port = 8282;
         final WebSocketClientFactory factory = new WebSocketClientFactory();
         factory.setBufferSize(4096);
         factory.start();
