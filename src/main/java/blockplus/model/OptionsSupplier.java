@@ -61,12 +61,12 @@ public final class OptionsSupplier implements Supplier<Options> {
         return map;
     }
 
-    private List<Set<IPosition>> getLegalPositions(final Colors color, final Board board, final IPosition potentialPosition,
+    private List<Set<IPosition>> getLegalPositions(final Colors color, final Board board, final IPosition position, final IPosition potentialPosition,
             final Iterable<PolyominoInstance> instances) {
         final List<Set<IPosition>> options = Lists.newArrayList();
         for (final PolyominoInstance instance : instances) {
             final SortedSet<IPosition> positions = instance.apply(potentialPosition);
-            if (board.isLegal(color, positions)) options.add(positions);
+            if (positions.contains(position) && board.isLegal(color, positions)) options.add(positions);
         }
         return options;
     }
@@ -88,7 +88,7 @@ public final class OptionsSupplier implements Supplier<Options> {
                         final IPosition position = entry.getKey();
                         final List<Set<IPosition>> options = Lists.newArrayList();
                         for (final IPosition potentialPosition : entry.getValue())
-                            options.addAll(this.getLegalPositions(color, board, potentialPosition, instances));
+                            options.addAll(this.getLegalPositions(color, board, position, potentialPosition, instances));
                         if (!options.isEmpty()) table.put(position, polyomino, options);
                     }
                 }
