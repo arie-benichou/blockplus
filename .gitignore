@@ -1,0 +1,10 @@
+/target/
+/.settings/
+/.classpath
+/.project
+/*.cache
+/.pmd
+/.metadata/
+/bin/
+/nohup.out
+/*.save
