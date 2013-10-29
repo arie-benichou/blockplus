@@ -1,0 +1,30 @@
+#content {
+	margin: 0 auto;
+	border-width: 0px;
+	border-radius: 0;
+	box-shadow: 0 0 0 #000;
+}
+
+#game {
+	transition: none;
+}
+
+#players {
+	transition: none;
+}
+
+#players div {
+	transition: none;
+}
+
+#pieces {
+	transition: none;
+}
+
+#pieces div {
+	transition: none;
+}
+
+#pieces div img {
+	transition: none;
+}
