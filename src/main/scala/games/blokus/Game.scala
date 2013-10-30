@@ -30,7 +30,6 @@ object Game {
 
   sealed case class Move(side: Color, data: Instance) extends abstractions.Move[Color, Instance]
 
-  //private val pieces = Pieces(Polyominos.values.take(4): _*)
   private val pieces = Pieces(Polyominos.values: _*)
 
   private val side = Side(pieces)(
@@ -41,10 +40,6 @@ object Game {
   private val adversity = Adversity[Color](Color.Blue, Color.Yellow, Color.Red, Color.Green)
 
   private val sides = Sides(adversity, List(side, side, side, side))
-
-  //private val adversity = Adversity[Color](Color.Blue)
-
-  //private val sides = Sides(adversity, List(side))
 
   val context: Context[Color, Pieces, Board, Instance] = Context(sides, Board(20, 20))(
     (move: abstractions.Move[Color, Instance], space: Board) =>
