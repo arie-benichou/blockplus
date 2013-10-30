@@ -1,14 +1,10 @@
 package components
 
-import org.junit.Test
 import org.junit.runner.RunWith
-import org.scalatest.Assertions
 import org.scalatest.FunSpec
-import org.scalatest.FunSuite
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.junit.JUnitRunner
+
 import components.Positions.Position
-import components.Positions._
 
 @RunWith(classOf[JUnitRunner])
 class CellsTest extends FunSpec {

@@ -1,14 +1,11 @@
 package games.blokus
 
-import org.junit.Test
 import org.junit.runner.RunWith
-import org.scalatest.Assertions
 import org.scalatest.FunSpec
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class PositionsTest extends FunSpec {
+class PolyominosTest extends FunSpec {
 
   describe("[Polyominos]") {
 
