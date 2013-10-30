@@ -78,34 +78,100 @@ class BoardTest extends FunSpec {
   describe("[Board]") {
 
     it("should handle layers") {
-      val board = Board(2, 3)
-      assert(board.rows === 2)
-      assert(board.columns === 3)
+      val rows = 2
+      val columns = 3
+      val board = Board(rows, columns)
+      assert(board.rows === rows)
+      assert(board.columns === columns)
       assert(board.selves(Color.Blue) === Set())
-      assert(board.lights(Color.Blue) === Set(Position(0, 0)))
       assert(board.selves(Color.Yellow) === Set())
-      assert(board.lights(Color.Yellow) === Set(Position(0, 2)))
       assert(board.selves(Color.Red) === Set())
-      assert(board.lights(Color.Red) === Set(Position(1, 2)))
       assert(board.selves(Color.Green) === Set())
-      assert(board.lights(Color.Green) === Set(Position(1, 0)))
+      assert(board.lights(Color.Blue) === Set(Position(0, 0)))
+      assert(board.lights(Color.Yellow) === Set(Position(0, columns - 1)))
+      assert(board.lights(Color.Red) === Set(Position(rows - 1, columns - 1)))
+      assert(board.lights(Color.Green) === Set(Position(rows - 1, 0)))
+    }
+
+    it("should determine if a position, or a set of positions, reference only mutable location(s)") {
+      val board = Board(2, 2)
+      assert(!board.isMutable(Color.Blue, Position(-1, 0)))
+      assert(board.isMutable(Color.Blue, Position(0, 0)))
+      assert(board.isMutable(Color.Blue, Position(0, 1)))
+      assert(board.isMutable(Color.Blue, Position(1, 0)))
+      assert(board.isMutable(Color.Blue, Position(1, 1)))
+      assert(!board.isMutable(Color.Blue, Position(2, 0)))
+      assert(board.isMutable(Color.Blue, Set(Position(0, 0), Position(0, 1))))
+      assert(!board.isMutable(Color.Blue, Set(Position(0, 0), Position(2, 0))))
     }
 
     it("should return a new board on update") {
-      val board = Board(2, 3)
+
+      val board = Board(2, 2)
+
+      assert(board.layers(Color.Blue).cells.get(Position(0, 0)) === State.Metta)
+      assert(board.layers(Color.Blue).cells.get(Position(0, 1)) === State.Nirvana)
+      assert(board.layers(Color.Blue).cells.get(Position(1, 0)) === State.Nirvana)
+      assert(board.layers(Color.Blue).cells.get(Position(1, 1)) === State.Nirvana)
       assert(board.isMutable(Color.Blue, Position(0, 0)))
       assert(board.isMutable(Color.Blue, Position(0, 1)))
-      assert(board.isMutable(Color.Blue, Position(1, 1)))
+
+      assert(board.layers(Color.Yellow).cells.get(Position(0, 0)) === State.Nirvana)
+      assert(board.layers(Color.Yellow).cells.get(Position(0, 1)) === State.Metta)
+      assert(board.layers(Color.Yellow).cells.get(Position(1, 0)) === State.Nirvana)
+      assert(board.layers(Color.Yellow).cells.get(Position(1, 1)) === State.Nirvana)
+      assert(board.isMutable(Color.Yellow, Position(0, 0)))
+
+      assert(board.layers(Color.Red).cells.get(Position(0, 0)) === State.Nirvana)
+      assert(board.layers(Color.Red).cells.get(Position(0, 1)) === State.Nirvana)
+      assert(board.layers(Color.Red).cells.get(Position(1, 0)) === State.Nirvana)
+      assert(board.layers(Color.Red).cells.get(Position(1, 1)) === State.Metta)
+      assert(board.isMutable(Color.Red, Position(0, 0)))
+
+      assert(board.layers(Color.Green).cells.get(Position(0, 0)) === State.Nirvana)
+      assert(board.layers(Color.Green).cells.get(Position(0, 1)) === State.Nirvana)
+      assert(board.layers(Color.Green).cells.get(Position(1, 0)) === State.Metta)
+      assert(board.layers(Color.Green).cells.get(Position(1, 1)) === State.Nirvana)
+      assert(board.isMutable(Color.Green, Position(0, 0)))
+
       val newBoard = board.apply(Color.Blue, Set(Position(0, 0)), Set(Position(0, 1)), Set(Position(1, 1)))
       assert(board != newBoard)
-      assert(newBoard.selves(Color.Blue) === Set(Position(0, 0)))
-      assert(newBoard.lights(Color.Blue) === Set(Position(1, 1)))
+
+      assert(newBoard.layers(Color.Blue).cells.get(Position(0, 0)) === State.Upekkha)
+      assert(newBoard.layers(Color.Blue).cells.get(Position(0, 1)) === State.Karuna)
+      assert(newBoard.layers(Color.Blue).cells.get(Position(1, 0)) === State.Nirvana)
+      assert(newBoard.layers(Color.Blue).cells.get(Position(1, 1)) === State.Metta)
       assert(!newBoard.isMutable(Color.Blue, Position(0, 0)))
       assert(!newBoard.isMutable(Color.Blue, Position(0, 1)))
-      assert(newBoard.isMutable(Color.Blue, Position(1, 1)))
-      assert(!newBoard.isMutable(Color.Blue, Set(Position(0, 0), Position(0, 1))))
-      assert(newBoard.isMutable(Color.Blue, Set(Position(1, 1), Position(1, 2))))
-      assert(!newBoard.isMutable(Color.Blue, Set(Position(0, 0), Position(1, 1))))
+      assert(newBoard.isMutable(Color.Blue, Position(1, 0)))
+      assert(newBoard.isMutable(Color.Yellow, Position(1, 1)))
+
+      assert(newBoard.layers(Color.Yellow).cells.get(Position(0, 0)) === State.Mudita)
+      assert(newBoard.layers(Color.Yellow).cells.get(Position(0, 1)) === State.Metta)
+      assert(newBoard.layers(Color.Yellow).cells.get(Position(1, 0)) === State.Nirvana)
+      assert(newBoard.layers(Color.Yellow).cells.get(Position(1, 1)) === State.Nirvana)
+      assert(!newBoard.isMutable(Color.Yellow, Position(0, 0)))
+      assert(newBoard.isMutable(Color.Yellow, Position(0, 1)))
+      assert(newBoard.isMutable(Color.Yellow, Position(1, 0)))
+      assert(newBoard.isMutable(Color.Yellow, Position(1, 1)))
+
+      assert(newBoard.layers(Color.Red).cells.get(Position(0, 0)) === State.Mudita)
+      assert(newBoard.layers(Color.Red).cells.get(Position(0, 1)) === State.Nirvana)
+      assert(newBoard.layers(Color.Red).cells.get(Position(1, 0)) === State.Nirvana)
+      assert(newBoard.layers(Color.Red).cells.get(Position(1, 1)) === State.Metta)
+      assert(!newBoard.isMutable(Color.Red, Position(0, 0)))
+      assert(newBoard.isMutable(Color.Red, Position(0, 1)))
+      assert(newBoard.isMutable(Color.Red, Position(1, 0)))
+      assert(newBoard.isMutable(Color.Red, Position(1, 1)))
+
+      assert(newBoard.layers(Color.Green).cells.get(Position(0, 0)) === State.Mudita)
+      assert(newBoard.layers(Color.Green).cells.get(Position(0, 1)) === State.Nirvana)
+      assert(newBoard.layers(Color.Green).cells.get(Position(1, 0)) === State.Metta)
+      assert(newBoard.layers(Color.Green).cells.get(Position(1, 1)) === State.Nirvana)
+      assert(!newBoard.isMutable(Color.Green, Position(0, 0)))
+      assert(newBoard.isMutable(Color.Green, Position(0, 1)))
+      assert(newBoard.isMutable(Color.Green, Position(1, 0)))
+      assert(newBoard.isMutable(Color.Green, Position(1, 1)))
     }
 
   }

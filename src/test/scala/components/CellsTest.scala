@@ -59,7 +59,7 @@ class CellsTest extends FunSpec {
       assert(cells.filter((_._1.row == 0)) === Set(Position(0, 1), Position(0, 2)))
     }
 
-    it("should return a new instance of [Cells] updated by some given data") {
+    it("should return a new instance of cells on update") {
       val cells = Cells(1, 2, 'initial, 'undefined)
       assert(cells.get(Position(0, -1)) === 'undefined)
       assert(cells.get(Position(0, 0)) === 'initial)

@@ -9,47 +9,50 @@ import games.blokus.Polyominos.Instances._
 
 object Polyominos {
 
-  private object Rendering {
+  sealed trait Polyomino { self =>
+    val data: Array[String]
+    private lazy val cells = buildCells(data)
+    lazy val order: Int = cells.definedPositions.size
+    lazy val instances: List[NormalizedInstance] = Instances(self, cells)
+    private lazy val rendering = Rendering(self)
+    override def toString = rendering
+  }
 
-    private def dimension(positions: Set[Position]) = {
-      val (maxRowIndex, maxColumnIndex) = positions.foldLeft((0, 0))((t, p) => (Math.max(t._1, p.row), Math.max(t._2, p.column)))
-      (maxRowIndex + 1, maxColumnIndex + 1)
-    }
-
-    private def renderCell(array: Array[Array[Char]], position: Position, value: Char)(offset: (Int, Int)) =
-      array(position.row + offset._1)(position.column + offset._2) = value
-
-    private def render(
-      positions: Set[Position], shadows: Set[Position], lights: Set[Position], connectors: Set[Position])(padding: (Int, Int))(blank: Char) = {
-      val (rows, columns) = dimension(positions)
-      val (rowOffset, columnOffset) = padding
-      val (maxRow, maxColumn) = (rows + 2 * rowOffset, columns + 2 * columnOffset)
-      val array = Array.ofDim[Char](maxRow, maxColumn)
-      for (row <- 0 until maxRow) for (column <- 0 until maxColumn) array(row)(column) = blank
-      positions.foreach(position => renderCell(array, position, 'O')(padding))
-      shadows.foreach(renderCell(array, _, '•')(padding))
-      lights.foreach(renderCell(array, _, '¤')(padding))
-      connectors.foreach(renderCell(array, _, '0')(padding))
-      array
-    }
-
-    private def toString(data: Array[Array[Char]]) =
-      (0 until data.length).foldLeft("")((rendering, row) => rendering + "\n" + new String(data(row))).tail
-
-    def apply(polyomino: Polyomino) = toString(render(
-      polyomino.instances.head.positions,
-      polyomino.instances.head.shadows,
-      polyomino.instances.head.lights,
-      polyomino.instances.head.connectors
-    )(1, 1)('.'))
-
-    def apply(instance: NormalizedInstance) = toString(render(
-      instance.positions, Set.empty, Set.empty, Set.empty
-    )(0, 0)('.'))
-
+  private def buildCells(data: Array[String]): Cells[Char] = {
+    val rows = data.length
+    val columns = if (rows == 0) 0 else data(0).length
+    val cells = Cells(rows, columns, ' ', '?', Map.empty[Position, Char])
+    val mutations = Map[Position, Char]() ++ (for {
+      row <- 0 until rows
+      column <- 0 until columns
+    } yield (Position(row, column), data(row).charAt(column)))
+    cells.apply(mutations)
   }
 
   object Instances {
+
+    sealed case class Instance(selfType: Polyomino, positions: Set[Position], shadows: Set[Position], lights: Set[Position], connectors: Set[Position]) {
+      lazy val topLeftCorner: Position = Positions.topLeftCorner(positions)
+      lazy val isNormalized: Boolean = (topLeftCorner == Positions.Origin)
+      lazy val normalized = Instances.normalize(this)
+      lazy val rendering = Rendering(this.normalized)
+      def flip: Instance = Instance(selfType, mirror(positions), mirror(shadows), mirror(lights), mirror(connectors))
+      def rotate: Instance = Instance(selfType, rotate90(positions), rotate90(shadows), rotate90(lights), rotate90(connectors))
+      override def toString = rendering
+    }
+
+    sealed case class NormalizedInstance(selfType: Polyomino, positions: Set[Position], shadows: Set[Position], lights: Set[Position], connectors: Set[Position]) {
+      lazy val rendering = Rendering(this)
+      def translateBy(vector: (Int, Int)): Instance =
+        Instance(
+          selfType,
+          positions.map(_ + vector),
+          shadows.map(_ + vector),
+          lights.map(_ + vector),
+          connectors.map(_ + vector)
+        )
+      override def toString = rendering
+    }
 
     private def rotate90(position: Position) = Position(-position.column, position.row)
     private def rotate90(positions: Set[Position]): Set[Position] = positions.map(rotate90(_))
@@ -97,51 +100,46 @@ object Polyominos {
       buffer.toList
     }
 
-    sealed case class Instance(selfType: Polyomino, positions: Set[Position], shadows: Set[Position], lights: Set[Position], connectors: Set[Position]) {
-      lazy val topLeftCorner: Position = Positions.topLeftCorner(positions)
-      lazy val isNormalized: Boolean = (topLeftCorner == Positions.Origin)
-      lazy val normalized = Instances.normalize(this)
-      lazy val rendering = Rendering(this.normalized)
-      def flip: Instance = Instance(selfType, mirror(positions), mirror(shadows), mirror(lights), mirror(connectors))
-      def rotate: Instance = Instance(selfType, rotate90(positions), rotate90(shadows), rotate90(lights), rotate90(connectors))
-      override def toString = rendering
-    }
-
-    sealed case class NormalizedInstance(selfType: Polyomino, positions: Set[Position], shadows: Set[Position], lights: Set[Position], connectors: Set[Position]) {
-      lazy val rendering = Rendering(this)
-      def translateBy(vector: (Int, Int)): Instance =
-        Instance(
-          selfType,
-          positions.map(_ + vector),
-          shadows.map(_ + vector),
-          lights.map(_ + vector),
-          connectors.map(_ + vector)
-        )
-      override def toString = rendering
-    }
-
   }
 
-  private object Polyomino {
-    def apply(data: Array[String]): Cells[Char] = {
-      val rows = data.length
-      val columns = if (rows == 0) 0 else data(0).length
-      val cells = Cells(rows, columns, ' ', '?', Map.empty[Position, Char])
-      val mutations = Map[Position, Char]() ++ (for {
-        row <- 0 until rows
-        column <- 0 until columns
-      } yield (Position(row, column), data(row).charAt(column)))
-      cells.apply(mutations)
-    }
-  }
+  private object Rendering {
 
-  sealed trait Polyomino { self =>
-    val data: Array[String]
-    private lazy val cells = Polyomino(data)
-    lazy val order: Int = cells.definedPositions.size
-    lazy val instances: List[NormalizedInstance] = Instances(self, cells)
-    private lazy val rendering = Rendering(self)
-    override def toString = rendering
+    private def dimension(positions: Set[Position]) = {
+      val (maxRowIndex, maxColumnIndex) = positions.foldLeft((0, 0))((t, p) => (Math.max(t._1, p.row), Math.max(t._2, p.column)))
+      (maxRowIndex + 1, maxColumnIndex + 1)
+    }
+
+    private def renderCell(array: Array[Array[Char]], position: Position, value: Char)(offset: (Int, Int)) =
+      array(position.row + offset._1)(position.column + offset._2) = value
+
+    private def render(
+      positions: Set[Position], shadows: Set[Position], lights: Set[Position], connectors: Set[Position])(padding: (Int, Int))(blank: Char) = {
+      val (rows, columns) = dimension(positions)
+      val (rowOffset, columnOffset) = padding
+      val (maxRow, maxColumn) = (rows + 2 * rowOffset, columns + 2 * columnOffset)
+      val array = Array.ofDim[Char](maxRow, maxColumn)
+      for (row <- 0 until maxRow) for (column <- 0 until maxColumn) array(row)(column) = blank
+      positions.foreach(position => renderCell(array, position, 'O')(padding))
+      shadows.foreach(renderCell(array, _, '•')(padding))
+      lights.foreach(renderCell(array, _, '¤')(padding))
+      connectors.foreach(renderCell(array, _, '0')(padding))
+      array
+    }
+
+    private def toString(data: Array[Array[Char]]) =
+      (0 until data.length).foldLeft("")((rendering, row) => rendering + "\n" + new String(data(row))).tail
+
+    def apply(polyomino: Polyomino) = toString(render(
+      polyomino.instances.head.positions,
+      polyomino.instances.head.shadows,
+      polyomino.instances.head.lights,
+      polyomino.instances.head.connectors
+    )(1, 1)('.'))
+
+    def apply(instance: NormalizedInstance) = toString(render(
+      instance.positions, Set.empty, Set.empty, Set.empty
+    )(0, 0)('.'))
+
   }
 
   case object _0 extends Polyomino {
@@ -287,14 +285,5 @@ object Polyominos {
     Polyominos._16, Polyominos._17, Polyominos._18,
     Polyominos._19, Polyominos._20, Polyominos._21
   )
-
-  def main(args: Array[String]) {
-    Polyominos.values.foreach {
-      p =>
-        println("-------------8<-------------")
-        println(p)
-      //p.instances.foreach(i => println("\n" + i))
-    }
-  }
 
 }

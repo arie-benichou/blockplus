@@ -8,7 +8,7 @@ import components.Positions.Ordering
 import components.Positions.Position
 
 @RunWith(classOf[JUnitRunner])
-class PolyominosTest extends FunSpec {
+class PositionsTest extends FunSpec {
 
   describe("[Position]") {
 
@@ -50,7 +50,7 @@ class PolyominosTest extends FunSpec {
       assert(Positions.translateBy(vector, positions) === Set(Position(0, 3), Position(2, 5)))
     }
 
-    it("should define an implicit natural ordering beetween two positions...") {
+    it("should define an natural ordering beetween two positions...") {
       assert(Positions.Ordering.compare(Position(0, 0), Position(1, 0)) === -1)
       assert(Positions.Ordering.compare(Position(1, 0), Position(0, 0)) === 1)
       assert(Positions.Ordering.compare(Position(0, 0), Position(0, 1)) === -1)

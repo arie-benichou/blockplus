@@ -8,8 +8,8 @@ import scala.collection.immutable.SortedSet
 
 object Options {
 
-  private val nullPiece = Polyominos._0
-  private val nullOption = (Position(-1, -1), Polyominos._0, Set.empty[Position])
+  val NullOption: (Position, Polyomino, Set[Position]) = (Position(-1, -1), Polyominos._0, Set.empty)
+  val Null = Set(NullOption)
 
   def get(color: Color, board: Board, pieces: Pieces): Set[(Position, Polyomino, Set[Position])] = {
       def options = for {
@@ -19,7 +19,7 @@ object Options {
         connector <- instance.connectors
         translation = instance.positions.map(_ + (light - connector)); if (board.isMutable(color, translation))
       } yield (light, polyomino, translation)
-    if (options.isEmpty && pieces.contains(nullPiece)) Set(nullOption) else options
+    if (options.isEmpty && pieces.contains(Polyominos._0)) Null else options
   }
 
 }
