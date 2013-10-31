@@ -36,6 +36,8 @@ class GameTest extends FunSpec {
       assert(context.side(Color.Red).values === value)
       assert(context.side(Color.Green).values === value)
 
+      assert(context.side(Color.Blue).values.weight === 89)
+
     }
 
     it("should verify theses behaviours") {
