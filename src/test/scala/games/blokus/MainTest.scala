@@ -1,12 +1,10 @@
-package abstractions
+package games.blokus
 
 import org.junit.runner.RunWith
 import org.scalatest.FunSpec
 import org.scalatest.junit.JUnitRunner
 
-import games.blokus.Game
 import games.blokus.Game.Color
-import games.blokus.Main
 
 @RunWith(classOf[JUnitRunner])
 class MainTest extends FunSpec {
