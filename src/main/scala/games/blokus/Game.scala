@@ -41,9 +41,11 @@ object Game {
 
   private val sides = Sides(adversity, List(side, side, side, side))
 
-  val context: Context[Color, Pieces, Board, Instance] = Context(sides, Board(20, 20))(
-    (move: abstractions.Move[Color, Instance], space: Board) =>
-      space.apply(move.side, move.data.positions, move.data.shadows, move.data.lights)
+  type BlokusMove = abstractions.Move[Color, Instance]
+  type BlokusContext = Context[Color, Pieces, Board, Instance]
+
+  val context: BlokusContext = Context(sides, Board(20, 20))(
+    (move: BlokusMove, space: Board) => space.apply(move.side, move.data.positions, move.data.shadows, move.data.lights)
   )
 
 }
