@@ -53,7 +53,7 @@ object Main {
       val (light, polyomino, positions) = choose(options)
       val instance = positionsToInstance(polyomino, positions)
       val move = Move(context.id, instance)
-      context = context.apply(move)
+      context = context(move)
       render(context.id, light, positions, instance)
       context = context.forward
     }

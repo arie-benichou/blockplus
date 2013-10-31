@@ -70,7 +70,7 @@ class CellsTest extends FunSpec {
         Position(0, 1) -> 'undefined,
         Position(0, 2) -> 'extended
       )
-      val updatedCells = cells.apply(data)
+      val updatedCells = cells(data)
       assert(updatedCells.get(Position(0, -1)) === 'extended)
       assert(updatedCells.get(Position(0, 0)) === 'initial)
       assert(updatedCells.get(Position(0, 1)) === 'undefined)

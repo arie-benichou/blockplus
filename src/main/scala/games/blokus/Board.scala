@@ -63,7 +63,7 @@ object Board {
       positions.forall(isMutable)
 
     def apply(mutation: Map[Position, State]) =
-      new Layer(cells.apply(mutation.filter(e => isMutable(e._1))))
+      new Layer(cells(mutation.filter(e => isMutable(e._1))))
 
   }
 

@@ -139,7 +139,7 @@ class OptionsTest extends FunSpec {
       val tmp = Board(2, 2);
       val color = Color.Blue
       val lights = Set(Position(0, 0), Position(0, 1), Position(1, 0), Position(1, 1))
-      val board = tmp.apply(color, Set(), Set(), lights)
+      val board = tmp(color, Set(), Set(), lights)
       val pieces = Pieces(Polyominos._1)
       val expected = Set(
         (Position(0, 0), Polyominos._1, Set(Position(0, 0))),

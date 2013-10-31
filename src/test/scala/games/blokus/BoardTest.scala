@@ -38,7 +38,7 @@ class BoardTest extends FunSpec {
       val layer = Layer(1, 2)
       assert(layer.lights.isEmpty)
       assert(layer.selves.isEmpty)
-      val newLayer = layer.apply(Map(
+      val newLayer = layer(Map(
         Position(0, 0) -> State.Metta,
         Position(0, 1) -> State.Upekkha
       ))
@@ -53,7 +53,7 @@ class BoardTest extends FunSpec {
       assert(layer.isMutable(Position(0, 1)))
       assert(layer.isMutable(Position(0, 2)));
       {
-        val newLayer = layer.apply(Map(
+        val newLayer = layer(Map(
           Position(0, 0) -> State.Metta,
           Position(0, 1) -> State.Nirvana
         ))
@@ -62,7 +62,7 @@ class BoardTest extends FunSpec {
         assert(newLayer.isMutable(Position(0, 2)))
       }
       {
-        val newLayer = layer.apply(Map(
+        val newLayer = layer(Map(
           Position(0, 0) -> State.Karuna,
           Position(0, 1) -> State.Mudita,
           Position(0, 2) -> State.Upekkha
@@ -134,7 +134,7 @@ class BoardTest extends FunSpec {
       assert(board.layers(Color.Green).cells.get(Position(1, 1)) === State.Nirvana)
       assert(board.isMutable(Color.Green, Position(0, 0)))
 
-      val newBoard = board.apply(Color.Blue, Set(Position(0, 0)), Set(Position(0, 1)), Set(Position(1, 1)))
+      val newBoard = board(Color.Blue, Set(Position(0, 0)), Set(Position(0, 1)), Set(Position(1, 1)))
       assert(board != newBoard)
 
       assert(newBoard.layers(Color.Blue).cells.get(Position(0, 0)) === State.Upekkha)

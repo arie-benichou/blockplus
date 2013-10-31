@@ -26,7 +26,7 @@ object Polyominos {
       row <- 0 until rows
       column <- 0 until columns
     } yield (Position(row, column), data(row).charAt(column)))
-    cells.apply(mutations)
+    cells(mutations)
   }
 
   object Instances {

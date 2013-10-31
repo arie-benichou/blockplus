@@ -25,6 +25,6 @@ sealed case class Context[A, B, C, D] private (id: A, sides: Sides[A, B], space:
   def forward(): Context[A, B, C, D] = if (isTerminal) this else copy(next)
 
   def apply(move: Move[A, D]): Context[A, B, C, D] =
-    if (id == move.side) copy(id, sides.apply(move.side, move.data), spaceMutation(move, space)) else this
+    if (id == move.side) copy(id, sides(move.side, move.data), spaceMutation(move, space)) else this
 
 }
