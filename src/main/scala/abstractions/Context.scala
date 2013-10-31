@@ -16,7 +16,7 @@ sealed case class Context[A, B, C, D] private (id: A, sides: Sides[A, B], space:
   def side(id: A): Side[B] = sides.side(id)
 
   def next(id: A): A = {
-    if (isTerminal) id else {
+    if (isTerminal) this.id else {
       val nextSideId = sides.nextTo(id)
       if (sides.side(nextSideId).isOut) next(nextSideId) else nextSideId
     }
@@ -25,6 +25,5 @@ sealed case class Context[A, B, C, D] private (id: A, sides: Sides[A, B], space:
   def forward(): Context[A, B, C, D] = if (isTerminal) this else copy(next)
 
   def apply(move: Move[A, D]): Context[A, B, C, D] =
-    if (id == move.side) copy(id, sides(move.side, move.data), spaceMutation(move, space)) else this
-
+    if (move.side == id && !isTerminal) copy(id, sides(move.side, move.data), spaceMutation(move, space)) else this
 }
