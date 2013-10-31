@@ -6,7 +6,7 @@ object Context {
     new Context[A, B, C, D](sides.first, sides, space, spaceMutation)
 
 }
-
+// TODO add path: history of moves : Stack[Move]
 sealed case class Context[A, B, C, D] private (id: A, sides: Sides[A, B], space: C, spaceMutation: (Move[A, D], C) => C) {
 
   lazy val isTerminal: Boolean = (sides.count == 0)
