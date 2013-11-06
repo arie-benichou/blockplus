@@ -3,6 +3,7 @@ package abstractions
 import org.junit.runner.RunWith
 import org.scalatest.FunSpec
 import org.scalatest.junit.JUnitRunner
+import scala.collection.immutable.Stack
 
 @RunWith(classOf[JUnitRunner])
 class ContextTest extends FunSpec {
@@ -28,7 +29,9 @@ class ContextTest extends FunSpec {
       def spaceMutation(move: abstractions.Move[String, Int], space: List[(String, Int)]) =
         (move.side, move.data) :: space
 
-    val context = Context(sides, List.empty[(String, Int)])(spaceMutation)
+      def isLegal(move: abstractions.Move[String, Int], context: Context[String, Int, List[(String, Int)], Int]) = true
+
+    val context = Context(sides, List.empty[(String, Int)])(spaceMutation, isLegal)
 
     val sideOut1 = Side(-1)(
       (value: Int, p: Any) => value,
@@ -42,12 +45,13 @@ class ContextTest extends FunSpec {
 
     val sidesOut = Sides(adversity, List(sideOut1, sideOut2))
 
-    val terminalContext = Context(sidesOut, List.empty[(String, Int)])(spaceMutation)
+    val terminalContext = Context(sidesOut, List.empty[(String, Int)])(spaceMutation, isLegal)
 
     it("should verify theses properties") {
       assert(context.id === "side1")
       assert(context.sides === sides)
       assert(context.space === List.empty[(String, Int)])
+      assert(context.path.isEmpty)
       assert(context.isTerminal === false)
       assert(context.sideToPlay === side1)
       assert(context.next === "side2")
@@ -81,7 +85,7 @@ class ContextTest extends FunSpec {
         (value: Int) => value != 0
       )
       val sides = Sides(adversity, List(inside, outside, outside, inside))
-      val context = Context(sides, List.empty[(String, Int)])(spaceMutation)
+      val context = Context(sides, List.empty[(String, Int)])(spaceMutation, isLegal)
       assert(!context.isTerminal)
       assert(context.next("side2") === "side4")
       assert(context.next("side1") === "side4")
@@ -111,6 +115,7 @@ class ContextTest extends FunSpec {
       assert(newContext.sides === context.sides.apply(move.side, move.data))
       assert(newContext.space === (move.side, move.data) :: context.space)
       assert(newContext.isTerminal === false)
+      assert(newContext.path === Stack(move))
       assert(newContext.sideToPlay === context.sideToPlay(1))
       assert(newContext.next === context.next)
     }
