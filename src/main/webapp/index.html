@@ -5,6 +5,19 @@
 <title>Block+</title>
 <script src="/static/js/jquery.min.js"></script>
 <style>
+body {
+	margin: 0 auto;
+	padding: 0;
+	background-color: #a0a6ab;
+	overflow: hidden;
+}
+
+button {
+	font-size: 28px;
+	padding: 11px;
+	margin: 10px;
+}
+
 .blue {
 	background-color: rgb(57, 113, 196);
 }
@@ -29,6 +42,26 @@
 	opacity: 0.5
 }
 
+.Blue {
+	color: rgb(57, 113, 196);
+	background-color: #373B3F;
+}
+
+.Yellow {
+	color: rgb(247, 177, 42);
+	background-color: #373B3F;
+}
+
+.Red {
+	color: rgb(204, 43, 43);
+	background-color: #373B3F;
+}
+
+.Green {
+	color: rgb(4, 164, 75);
+	background-color: #373B3F;
+}
+
 table td {
 	color: white;
 	text-align: center;
@@ -41,7 +74,7 @@ table td {
 </head>
 <body>
 	<table id="board"></table>
-	<button id="submit">submit</button>
+	<button id="submit" style="display: none;">submit</button>
 </body>
 <script>
 	var colors = {
@@ -64,6 +97,9 @@ table td {
 		$.ajax({
 			url : "/context",
 			success : update
+		});
+		$("#board").bind("mousedown", function(event) {
+			event.preventDefault();
 		});
 	}
 
@@ -95,54 +131,161 @@ table td {
 		return positions;
 	};
 
-	var renderCell = function(row, column, color) {
-		cell(row, column).attr('class', color)
-	};
-
-	var renderCellObject = function(cell) {
-		renderCell(cell.row, cell.column, cell.color)
+	var renderCell = function(obj) {
+		cell(obj.row, obj.column).attr('class', obj.color)
 	};
 
 	var render = function(cells) {
 		for (i in cells)
-			renderCellObject(cells[i])
+			renderCell(cells[i])
 	};
 
 	var resetCells = function() {
 		for ( var i = 0; i < 20; ++i)
-			for ( var j = 0; j < 20; ++j)
-				renderCell(i, j, "black")
+			for ( var j = 0; j < 20; ++j) {
+				cell(i, j).attr('class', "black")
+				cell(i, j).html('')
+			}
 	};
 
-	var update = function(ctx) {
-		context = ctx
-		color = colors[context.color.charAt(0)]
-		resetCells();
-		render(parse(context.path))
-		selection = []
+	// 	var renderLight = function(row, column) {
+	// 		cell(row, column).html("O")
+	// 	};
+
+	// 	var renderLights = function(lights) {
+	// 		for (i in lights) {
+	// 			var light = lights[i];
+	// 			renderLight(light.row, light.column);
+	// 		}
+	// 	};
+
+	var updatePotentialCells = function(options, selection) {
+		var potentialPositions = partialMatch(options, selection);
+		for (position in distinctPositions) {
+			data = position.split(':')
+			var row = parseInt(data[0]);
+			var column = parseInt(data[1]);
+			cell(row, column).html('')
+		}
+		for (position in potentialPositions) {
+			data = position.split(':')
+			var row = parseInt(data[0]);
+			var column = parseInt(data[1]);
+			cell(row, column).html("O")
+			cell(row, column).attr("class", context.color);
+		}
+		//renderLights(lights);
 	}
 
+	var update = function(ctx) {
+		context = ctx;
+		var c = context.color.charAt(0);
+		color = colors[c];
+		resetCells();
+		render(parse(context.path));
+		selection = [];
+		distinctPositions = {};
+		options = [];
+		for (i in context.options) {
+			var positions = context.options[i].split('-')
+			var object = {}
+			for (j in positions) {
+				distinctPositions[positions[j]] = true
+				object[positions[j]] = true
+			}
+			options.push(object)
+		}
+		lights = parse([ c + context.lights ]);
+		updatePotentialCells(options, selection);
+	}
+
+	var partialMatch = function(options, selection) {
+		var matches = {};
+		var min = selection.length;
+		for (i in options) {
+			var option = options[i];
+			var order = Object.keys(option).length;
+			if (order >= min) {
+				var match = true;
+				for (j in selection) {
+					var position = selection[j];
+					if (!(position in option)) {
+						match = false;
+						break;
+					}
+				}
+				if (match)
+					for (position in option)
+						matches[position] = true;
+			}
+		}
+		return matches;
+	};
+
+	var match = function(options, selection) {
+		var n = selection.length;
+		for (i in options) {
+			var option = options[i];
+			var order = Object.keys(option).length;
+			if (order == n) {
+				var match = true;
+				for (j in selection) {
+					var position = selection[j];
+					if (!(position in option)) {
+						match = false;
+						break;
+					}
+				}
+				if (match)
+					return true;
+			}
+		}
+		return false;
+	};
+
 	var handleSelection = function(event) {
-		selection.push(event.target.id);
-		var position = event.target.id.split(':');
-		var object = {
-			row : parseInt(position[0]),
-			column : parseInt(position[1]),
-			color : color
-		};
-		renderCellObject(object);
-		cell(object.row, object.column).addClass('transparent')
+		var p = event.target.id
+		var potentialPositions = partialMatch(options, selection);
+		if (p in potentialPositions) {
+			var index = selection.indexOf(p);
+			if (index == -1)
+				selection.push(p)
+			else {
+				selection.splice(index, 1);
+				var position = p.split(':');
+				var object = {
+					row : parseInt(position[0]),
+					column : parseInt(position[1]),
+					color : "black"
+				};
+				renderCell(object);
+			}
+			updatePotentialCells(options, selection);
+			for (i in selection) {
+				var position = selection[i].split(':');
+				var object = {
+					row : parseInt(position[0]),
+					column : parseInt(position[1]),
+					color : color
+				};
+				renderCell(object);
+				cell(object.row, object.column).addClass('transparent');
+			}
+			if (match(options, selection))
+				$("#submit").show();
+			else
+				$("#submit").hide();
+		}
 	}
 
 	var handleSubmit = function(event) {
-		if (selection.length > 0) {
-			var move = context.color.charAt(0) + selection.join("-");
-			$.ajax({
-				url : "/play/" + move,
-				method : "post",
-				success : update
-			});
-		}
+		$("#submit").hide();
+		var move = context.color.charAt(0) + selection.join("-");
+		$.ajax({
+			url : "/play/" + move,
+			method : "post",
+			success : update
+		});
 	}
 
 	init();

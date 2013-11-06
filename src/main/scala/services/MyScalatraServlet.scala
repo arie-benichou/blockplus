@@ -65,14 +65,33 @@ class MyScalatraServlet extends MyScalatraWebAppStack with JacksonJsonSupport wi
   var context = Game.context
 
   get("/context") {
-    //val context = Main.run(this.context, Main.nullRenderer)
+    //val ctx = Main.run(context, Main.nullRenderer)
+    val ctx = context
     Map(
-      "color" -> context.id.toString,
-      "is-over" -> context.isTerminal.toString,
-      "path" -> MyScalatraServlet.pathToString(context.path).split(','),
-      "last-move" -> MyScalatraServlet.pathToString(context.path.take(1))
+      "color" -> ctx.id.toString,
+      "is-over" -> ctx.isTerminal.toString,
+      "path" -> MyScalatraServlet.pathToString(ctx.path).split(','),
+      "last-move" -> MyScalatraServlet.pathToString(ctx.path.take(1)),
+      "lights" -> ctx.space.lights(ctx.id).map(p => p.row + ":" + p.column).mkString("-"),
+      "options" -> Options.get(ctx.id, ctx.space, ctx.side(ctx.id).values).map(_._3.map(p => p.row + ":" + p.column).mkString("-"))
     )
   }
+
+  //  get("/context/lights") {
+  //    val ctx = this.context
+  //    val lights = ctx.space.lights(ctx.id)
+  //    lights.map(p => p.row + ":" + p.column).mkString("-")
+  //  }
+  //
+  //  get("/context/options") {
+  //    val ctx = this.context
+  //    val options = Options.get(ctx.id, ctx.space, ctx.side(ctx.id).values)
+  //    options.map(option => {
+  //      val (light, polyomino, positions) = option
+  //      positions.map(p => p.row + ":" + p.column).mkString("-")
+  //    }
+  //    )
+  //  }
 
   post("/play/:move") {
     val query = params("move")
