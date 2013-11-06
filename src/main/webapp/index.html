@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Block+</title>
+<script src="/static/js/jquery.min.js"></script>
+<style>
+.blue {
+	background-color: rgb(57, 113, 196);
+}
+
+.yellow {
+	background-color: rgb(247, 177, 42);
+}
+
+.red {
+	background-color: rgb(204, 43, 43);
+}
+
+.green {
+	background-color: rgb(4, 164, 75);
+}
+
+.black {
+	background-color: #373B3F;
+}
+
+.transparent {
+	opacity: 0.5
+}
+
+table td {
+	color: white;
+	text-align: center;
+	padding: 0;
+	width: 26px;
+	height: 26px;
+	background-color: purple;
+}
+</style>
+</head>
+<body>
+	<table id="board"></table>
+	<button id="submit">submit</button>
+</body>
+<script>
+	var colors = {
+		B : "blue",
+		Y : "yellow",
+		R : "red",
+		G : "green"
+	};
+
+	var init = function() {
+		var board = $("#board");
+		for ( var i = 0; i < 20; ++i) {
+			board.append("<tr></tr>");
+			var row = $("#board tr:nth-child(" + (i + 1) + ")");
+			for ( var j = 0; j < 20; ++j)
+				row.append("<td id='" + (i + ':' + j) + "'></td>");
+		}
+		$("#board td").bind("click", handleSelection);
+		$("#submit").bind("click", handleSubmit);
+		$.ajax({
+			url : "/context",
+			success : update
+		});
+	}
+
+	var cell = function(row, column) {
+		var tr = $("#board tr:nth-child(" + (row + 1) + ")");
+		var td = tr.find("td:nth-child(" + (column + 1) + ")");
+		return td;
+	};
+
+	var parse = function(moves) {
+		var positions = [];
+		for (i in moves) {
+			var move = moves[i];
+			var color = move.charAt(0)
+			var tail = move.substring(1)
+			if (tail !== "") {
+				var ps = tail.split('-')
+				for (j in ps) {
+					var position = ps[j].split(':')
+					var object = {
+						color : colors[color],
+						row : parseInt(position[0]),
+						column : parseInt(position[1])
+					}
+					positions.push(object);
+				}
+			}
+		}
+		return positions;
+	};
+
+	var renderCell = function(row, column, color) {
+		cell(row, column).attr('class', color)
+	};
+
+	var renderCellObject = function(cell) {
+		renderCell(cell.row, cell.column, cell.color)
+	};
+
+	var render = function(cells) {
+		for (i in cells)
+			renderCellObject(cells[i])
+	};
+
+	var resetCells = function() {
+		for ( var i = 0; i < 20; ++i)
+			for ( var j = 0; j < 20; ++j)
+				renderCell(i, j, "black")
+	};
+
+	var update = function(ctx) {
+		context = ctx
+		color = colors[context.color.charAt(0)]
+		resetCells();
+		render(parse(context.path))
+		selection = []
+	}
+
+	var handleSelection = function(event) {
+		selection.push(event.target.id);
+		var position = event.target.id.split(':');
+		var object = {
+			row : parseInt(position[0]),
+			column : parseInt(position[1]),
+			color : color
+		};
+		renderCellObject(object);
+		cell(object.row, object.column).addClass('transparent')
+	}
+
+	var handleSubmit = function(event) {
+		if (selection.length > 0) {
+			var move = context.color.charAt(0) + selection.join("-");
+			$.ajax({
+				url : "/play/" + move,
+				method : "post",
+				success : update
+			});
+		}
+	}
+
+	init();
+</script>
+</html>
