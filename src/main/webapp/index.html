@@ -148,17 +148,6 @@ table td {
 			}
 	};
 
-	// 	var renderLight = function(row, column) {
-	// 		cell(row, column).html("O")
-	// 	};
-
-	// 	var renderLights = function(lights) {
-	// 		for (i in lights) {
-	// 			var light = lights[i];
-	// 			renderLight(light.row, light.column);
-	// 		}
-	// 	};
-
 	var updatePotentialCells = function(options, selection) {
 		var potentialPositions = partialMatch(options, selection);
 		for (position in distinctPositions) {
@@ -171,10 +160,9 @@ table td {
 			data = position.split(':')
 			var row = parseInt(data[0]);
 			var column = parseInt(data[1]);
-			cell(row, column).html("O")
+			cell(row, column).html("+")
 			cell(row, column).attr("class", context.color);
 		}
-		//renderLights(lights);
 	}
 
 	var update = function(ctx) {
@@ -195,8 +183,10 @@ table td {
 			}
 			options.push(object)
 		}
-		lights = parse([ c + context.lights ]);
+		//lights = parse([ c + context.lights ]);
 		updatePotentialCells(options, selection);
+		scores = context.scores;
+		console.log(scores);
 	}
 
 	var partialMatch = function(options, selection) {

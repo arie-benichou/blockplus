@@ -2,12 +2,10 @@ package services
 
 import scala.Array.canBuildFrom
 import scala.collection.immutable.Stack
-
 import org.json4s.DefaultFormats
 import org.json4s.Formats
 import org.scalatra.json.JValueResult
 import org.scalatra.json.JacksonJsonSupport
-
 import components.Positions
 import components.Positions.Position
 import games.blokus.Game
@@ -17,6 +15,7 @@ import games.blokus.Game.Color
 import games.blokus.Game.Move
 import games.blokus.Options
 import games.blokus.Polyominos
+import games.blokus.Main
 
 object MyScalatraServlet {
 
@@ -52,6 +51,30 @@ object MyScalatraServlet {
     }
   }
 
+  private def lastMove(context: BlokusContext, side: Color): BlokusMove = {
+    context.path.dropWhile(_.side != side).tail.dropWhile(_.side != side).head
+  }
+
+  private def score(context: BlokusContext, id: Color) = {
+    val side = context.side(id)
+    val pieces = side.values;
+    val weight = -pieces.weight
+    if (weight != 0) weight
+    else if (lastMove(context, id).data.selfType != Polyominos._1) 15
+    else 20
+  }
+
+  def main(args: Array[String]) {
+    val ctx = Main.run(Game.context, Main.nullRenderer)
+    //val ctx = Game.context
+    println(score(ctx, Color.Blue))
+    println(score(ctx, Color.Yellow))
+    println(score(ctx, Color.Red))
+    println(score(ctx, Color.Green))
+    val scores = MyScalatraServlet.colorByChar.values.map(c => (c, MyScalatraServlet.score(ctx, c))).toMap
+    println(scores)
+  }
+
 }
 
 class MyScalatraServlet extends MyScalatraWebAppStack with JacksonJsonSupport with JValueResult {
@@ -72,26 +95,11 @@ class MyScalatraServlet extends MyScalatraWebAppStack with JacksonJsonSupport wi
       "is-over" -> ctx.isTerminal.toString,
       "path" -> MyScalatraServlet.pathToString(ctx.path).split(','),
       "last-move" -> MyScalatraServlet.pathToString(ctx.path.take(1)),
-      "lights" -> ctx.space.lights(ctx.id).map(p => p.row + ":" + p.column).mkString("-"),
-      "options" -> Options.get(ctx.id, ctx.space, ctx.side(ctx.id).values).map(_._3.map(p => p.row + ":" + p.column).mkString("-"))
+      //"lights" -> ctx.space.lights(ctx.id).map(p => p.row + ":" + p.column).mkString("-"),
+      "options" -> Options.get(ctx.id, ctx.space, ctx.side(ctx.id).values).map(_._3.map(p => p.row + ":" + p.column).mkString("-")),
+      "scores" -> MyScalatraServlet.colorByChar.values.map(c => (c.toString, MyScalatraServlet.score(ctx, c))).toMap
     )
   }
-
-  //  get("/context/lights") {
-  //    val ctx = this.context
-  //    val lights = ctx.space.lights(ctx.id)
-  //    lights.map(p => p.row + ":" + p.column).mkString("-")
-  //  }
-  //
-  //  get("/context/options") {
-  //    val ctx = this.context
-  //    val options = Options.get(ctx.id, ctx.space, ctx.side(ctx.id).values)
-  //    options.map(option => {
-  //      val (light, polyomino, positions) = option
-  //      positions.map(p => p.row + ":" + p.column).mkString("-")
-  //    }
-  //    )
-  //  }
 
   post("/play/:move") {
     val query = params("move")
