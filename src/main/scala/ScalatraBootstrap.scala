@@ -2,10 +2,10 @@
 
 import org.scalatra.LifeCycle
 import javax.servlet.ServletContext
-import services.MyScalatraServlet
+import services.BlokusContextContainer
 
 class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext) {
-    context.mount(new MyScalatraServlet, "/*")
+    context.mount(new BlokusContextContainer(), "/*")
   }
 }

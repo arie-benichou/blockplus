@@ -2,10 +2,12 @@ package services
 
 import scala.Array.canBuildFrom
 import scala.collection.immutable.Stack
+
 import org.json4s.DefaultFormats
 import org.json4s.Formats
 import org.scalatra.json.JValueResult
 import org.scalatra.json.JacksonJsonSupport
+
 import components.Positions
 import components.Positions.Position
 import games.blokus.Game
@@ -13,11 +15,11 @@ import games.blokus.Game.BlokusContext
 import games.blokus.Game.BlokusMove
 import games.blokus.Game.Color
 import games.blokus.Game.Move
+import games.blokus.Main
 import games.blokus.Options
 import games.blokus.Polyominos
-import games.blokus.Main
 
-object MyScalatraServlet {
+object BlokusContextContainer {
 
   private val colorByChar = Map(
     'B' -> Color.Blue,
@@ -91,7 +93,7 @@ object MyScalatraServlet {
 
 }
 
-class MyScalatraServlet extends MyScalatraWebAppStack with JacksonJsonSupport with JValueResult {
+class BlokusContextContainer extends GameContextContainer with JacksonJsonSupport with JValueResult {
 
   protected implicit val jsonFormats: Formats = DefaultFormats
 
@@ -106,27 +108,27 @@ class MyScalatraServlet extends MyScalatraWebAppStack with JacksonJsonSupport wi
     Map(
       "color" -> ctx.id.toString,
       "is-over" -> ctx.isTerminal.toString,
-      "path" -> MyScalatraServlet.pathToString(ctx.path).split(','),
-      "last-move" -> MyScalatraServlet.pathToString(ctx.path.take(1)),
+      "path" -> BlokusContextContainer.pathToString(ctx.path).split(','),
+      "last-move" -> BlokusContextContainer.pathToString(ctx.path.take(1)),
       "options" -> Options.get(ctx.id, ctx.space, ctx.side(ctx.id).values).map(_._3.map(p => p.row + ":" + p.column).mkString("-")),
-      "scores" -> MyScalatraServlet.colorByChar.values.map(c => (c.toString, MyScalatraServlet.score(ctx, c))).toMap
+      "scores" -> BlokusContextContainer.colorByChar.values.map(c => (c.toString, BlokusContextContainer.score(ctx, c))).toMap
     )
   }
 
   post("/play/:move") {
     val ctx = context
-    val (color, positions) = MyScalatraServlet.parseIncomingMoveData(params("move"))
+    val (color, positions) = BlokusContextContainer.parseIncomingMoveData(params("move"))
     try {
-      val instance = MyScalatraServlet.positionsToPolyomino(positions)
+      val instance = BlokusContextContainer.positionsToPolyomino(positions)
       val move = Move(color, instance)
       val nextContext = ctx.apply(move)
       if (!ctx.eq(nextContext)) {
         this.synchronized {
-          context = MyScalatraServlet.forceNullMove(nextContext.forward)
+          context = BlokusContextContainer.forceNullMove(nextContext.forward)
         }
       }
       else {
-        val path = MyScalatraServlet.pathToString(ctx.path)
+        val path = BlokusContextContainer.pathToString(ctx.path)
         println("################################Illegal Instruction################################")
         println("path               : " + path)
         println("query              : " + params("move"))
@@ -139,7 +141,7 @@ class MyScalatraServlet extends MyScalatraWebAppStack with JacksonJsonSupport wi
     }
     catch {
       case e: Exception => {
-        val path = MyScalatraServlet.pathToString(ctx.path)
+        val path = BlokusContextContainer.pathToString(ctx.path)
         println("################################Illegal Instruction################################")
         println("path               : " + path)
         println("query              : " + params("move"))

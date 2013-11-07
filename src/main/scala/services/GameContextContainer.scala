@@ -9,7 +9,7 @@ import org.scalatra.scalate.ScalateSupport
 
 import javax.servlet.http.HttpServletRequest
 
-trait MyScalatraWebAppStack extends ScalatraServlet with ScalateSupport {
+trait GameContextContainer extends ScalatraServlet with ScalateSupport {
 
   /* wire up the precompiled templates */
   override protected def defaultTemplatePath: List[String] = List("/WEB-INF/templates/views")
