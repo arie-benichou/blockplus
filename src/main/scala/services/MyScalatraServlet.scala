@@ -26,6 +26,17 @@ object MyScalatraServlet {
     'G' -> Color.Green
   )
 
+  private def parseIncomingMoveData(incomingMoveData: String) = {
+    val head = incomingMoveData.head
+    val color = colorByChar.get(head).get
+    val tail = incomingMoveData.tail
+    val positions = if (tail.isEmpty) Set.empty[Position] else tail.split('-').map(x => {
+      val data = x.split(':').map(y => Integer.parseInt(y))
+      Position(data(0), data(1))
+    }).toSet
+    (color, positions)
+  }
+
   private def positionsToPolyomino(positions: Set[Position]) = {
     val topLeftCorner = Positions.topLeftCorner(positions)
     val normalizedPositions = positions.map(_ + (Positions.Origin - topLeftCorner))
@@ -51,28 +62,31 @@ object MyScalatraServlet {
     }
   }
 
+  private def isNullMove(move: BlokusMove) = move.data.selfType == Polyominos._0
+
   private def lastMove(context: BlokusContext, side: Color): BlokusMove = {
-    context.path.dropWhile(_.side != side).tail.dropWhile(_.side != side).head
+    val path = context.path.dropWhile(_.side != side)
+    if (isNullMove(path.head))
+      path.tail.dropWhile(_.side != side).head
+    else path.head
   }
+
+  private def isSpecialMove(move: BlokusMove) = move.data.selfType == Polyominos._1
 
   private def score(context: BlokusContext, id: Color) = {
     val side = context.side(id)
     val pieces = side.values;
     val weight = -pieces.weight
     if (weight != 0) weight
-    else if (lastMove(context, id).data.selfType != Polyominos._1) 15
-    else 20
+    else if (isSpecialMove(lastMove(context, id))) 20
+    else 15
   }
 
   def main(args: Array[String]) {
     val ctx = Main.run(Game.context, Main.nullRenderer)
     //val ctx = Game.context
+    println(lastMove(ctx, Color.Blue))
     println(score(ctx, Color.Blue))
-    println(score(ctx, Color.Yellow))
-    println(score(ctx, Color.Red))
-    println(score(ctx, Color.Green))
-    val scores = MyScalatraServlet.colorByChar.values.map(c => (c, MyScalatraServlet.score(ctx, c))).toMap
-    println(scores)
   }
 
 }
@@ -88,69 +102,54 @@ class MyScalatraServlet extends MyScalatraWebAppStack with JacksonJsonSupport wi
   var context = Game.context
 
   get("/context") {
-    //val ctx = Main.run(context, Main.nullRenderer)
     val ctx = context
     Map(
       "color" -> ctx.id.toString,
       "is-over" -> ctx.isTerminal.toString,
       "path" -> MyScalatraServlet.pathToString(ctx.path).split(','),
       "last-move" -> MyScalatraServlet.pathToString(ctx.path.take(1)),
-      //"lights" -> ctx.space.lights(ctx.id).map(p => p.row + ":" + p.column).mkString("-"),
       "options" -> Options.get(ctx.id, ctx.space, ctx.side(ctx.id).values).map(_._3.map(p => p.row + ":" + p.column).mkString("-")),
       "scores" -> MyScalatraServlet.colorByChar.values.map(c => (c.toString, MyScalatraServlet.score(ctx, c))).toMap
     )
   }
 
   post("/play/:move") {
-    val query = params("move")
-    val head = query.head
-    val tail = query.tail
-    val color = MyScalatraServlet.colorByChar.get(head).get
-    val positions = if (tail.isEmpty) Set.empty[Position] else tail.split('-').map(x => {
-      val rowAndColumn = x.split(':').map(y => Integer.parseInt(y))
-      Position(rowAndColumn(0), rowAndColumn(1))
-    }).toSet
-    val initialContext = context
-    val path = MyScalatraServlet.pathToString(context.path)
-
+    val ctx = context
+    val (color, positions) = MyScalatraServlet.parseIncomingMoveData(params("move"))
     try {
-
       val instance = MyScalatraServlet.positionsToPolyomino(positions)
       val move = Move(color, instance)
-      val nextContext = context.apply(move)
-
-      if (!context.eq(nextContext)) {
+      val nextContext = ctx.apply(move)
+      if (!ctx.eq(nextContext)) {
         this.synchronized {
           context = MyScalatraServlet.forceNullMove(nextContext.forward)
         }
       }
       else {
+        val path = MyScalatraServlet.pathToString(ctx.path)
         println("################################Illegal Instruction################################")
         println("path               : " + path)
-        println("query              : " + query)
-        println("current side       : " + initialContext.id)
+        println("query              : " + params("move"))
+        println("current side       : " + ctx.id)
         println("incoming side      : " + move.side)
         println("incoming positions : " + positions)
         println(move.data)
         println("http://localhost:8080/static/rendering/?" + path)
       }
-
     }
-
     catch {
       case e: Exception => {
+        val path = MyScalatraServlet.pathToString(ctx.path)
         println("################################Illegal Instruction################################")
         println("path               : " + path)
-        println("query              : " + query)
-        println("current side       : " + initialContext.id)
+        println("query              : " + params("move"))
+        println("current side       : " + ctx.id)
         println("incoming positions : " + positions)
         println(e)
         println("http://localhost:8080/static/rendering/?" + path)
       }
     }
-
     redirect("/context")
-
   }
 
 }
