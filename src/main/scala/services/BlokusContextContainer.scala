@@ -115,7 +115,7 @@ class BlokusContextContainer extends GameContextContainer with JacksonJsonSuppor
         println("incoming side      : " + move.side)
         println("incoming positions : " + positions)
         println(move.data)
-        println("http://localhost:8080/static/rendering/?" + path)
+        println("http://localhost:8080/angular-seed-master/app/#/rendering?" + path)
       }
     }
     catch {
@@ -127,7 +127,7 @@ class BlokusContextContainer extends GameContextContainer with JacksonJsonSuppor
         println("current side       : " + ctx.id)
         println("incoming positions : " + positions)
         println(e)
-        println("http://localhost:8080/static/rendering/?" + path)
+        println("http://localhost:8080/angular-seed-master/app/#/rendering?" + path)
       }
     }
     redirect("/context")

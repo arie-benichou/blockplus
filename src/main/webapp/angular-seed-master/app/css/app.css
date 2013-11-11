@@ -1,0 +1,65 @@
+body {
+	margin: 0 auto;
+	padding: 0;
+	background-color: #a0a6ab;
+	overflow: hidden;
+}
+
+button {
+	font-size: 28px;
+	padding: 11px;
+	margin: 10px;
+}
+
+.blue {
+	background-color: rgb(57, 113, 196);
+}
+
+.yellow {
+	background-color: rgb(247, 177, 42);
+}
+
+.red {
+	background-color: rgb(204, 43, 43);
+}
+
+.green {
+	background-color: rgb(4, 164, 75);
+}
+
+.black {
+	background-color: #373B3F;
+}
+
+.transparent {
+	opacity: 0.5
+}
+
+.Blue {
+	color: rgb(57, 113, 196);
+	background-color: #373B3F;
+}
+
+.Yellow {
+	color: rgb(247, 177, 42);
+	background-color: #373B3F;
+}
+
+.Red {
+	color: rgb(204, 43, 43);
+	background-color: #373B3F;
+}
+
+.Green {
+	color: rgb(4, 164, 75);
+	background-color: #373B3F;
+}
+
+table td {
+	color: white;
+	text-align: center;
+	padding: 0;
+	width: 26px;
+	height: 26px;
+	background-color: purple;
+}
