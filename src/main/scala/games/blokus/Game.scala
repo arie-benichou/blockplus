@@ -56,9 +56,29 @@ object Game {
       val board = context.space
       pieces.contains(polyomino) &&
         board.isMutable(color, positions) &&
-        //(positions.isEmpty || positions.exists(board.layers(color).cells.get(_) == State.Metta))
         (positions.isEmpty || positions.exists(board.isLight(color, _)))
     }
   )
+
+  private def isNullMove(move: BlokusMove) = move.data.selfType == Polyominos._0
+
+  // TODO tester avec un path vide
+  private def lastMove(context: BlokusContext, side: Color): BlokusMove = {
+    val path = context.path.dropWhile(_.side != side)
+    if (isNullMove(path.head))
+      path.tail.dropWhile(_.side != side).head
+    else path.head
+  }
+
+  private def isSpecialMove(move: BlokusMove) = move.data.selfType == Polyominos._1
+
+  def score(context: BlokusContext, id: Color) = {
+    val side = context.side(id)
+    val pieces = side.values;
+    val weight = -pieces.weight
+    if (weight != 0) weight
+    else if (isSpecialMove(lastMove(context, id))) 20
+    else 15
+  }
 
 }

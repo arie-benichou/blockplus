@@ -64,31 +64,10 @@ object BlokusContextContainer {
     }
   }
 
-  private def isNullMove(move: BlokusMove) = move.data.selfType == Polyominos._0
-
-  private def lastMove(context: BlokusContext, side: Color): BlokusMove = {
-    val path = context.path.dropWhile(_.side != side)
-    if (isNullMove(path.head))
-      path.tail.dropWhile(_.side != side).head
-    else path.head
-  }
-
-  private def isSpecialMove(move: BlokusMove) = move.data.selfType == Polyominos._1
-
-  private def score(context: BlokusContext, id: Color) = {
-    val side = context.side(id)
-    val pieces = side.values;
-    val weight = -pieces.weight
-    if (weight != 0) weight
-    else if (isSpecialMove(lastMove(context, id))) 20
-    else 15
-  }
-
   def main(args: Array[String]) {
     val ctx = Main.run(Game.context, Main.nullRenderer)
     //val ctx = Game.context
-    println(lastMove(ctx, Color.Blue))
-    println(score(ctx, Color.Blue))
+    println(Game.score(ctx, Color.Blue))
   }
 
 }
@@ -111,7 +90,7 @@ class BlokusContextContainer extends GameContextContainer with JacksonJsonSuppor
       "path" -> BlokusContextContainer.pathToString(ctx.path).split(','),
       "last-move" -> BlokusContextContainer.pathToString(ctx.path.take(1)),
       "options" -> Options.get(ctx.id, ctx.space, ctx.side(ctx.id).values).map(_._3.map(p => p.row + ":" + p.column).mkString("-")),
-      "scores" -> BlokusContextContainer.colorByChar.values.map(c => (c.toString, BlokusContextContainer.score(ctx, c))).toMap
+      "scores" -> BlokusContextContainer.colorByChar.values.map(c => (c.toString, Game.score(ctx, c))).toMap
     )
   }
 
