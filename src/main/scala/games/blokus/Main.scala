@@ -3,12 +3,10 @@ package games.blokus
 import components.Positions
 import components.Positions.Ordering
 import components.Positions.Position
-import games.blokus.Game._
-import games.blokus.Polyominos.Polyomino
-import games.blokus.Game.Color
+import games.blokus.Game.BlokusContext
+import games.blokus.Game.Move
 import games.blokus.Polyominos.Instances.Instance
-import abstractions.Context
-import scala.collection.immutable.Stack
+import games.blokus.Polyominos.Polyomino
 
 object Main {
 
@@ -34,22 +32,9 @@ object Main {
     normalizedInstance.translateBy(topLeftCorner - Positions.Origin)
   }
 
-  private def positionsToPolyomino(positions: Set[Position]) = {
-    val topLeftCorner = Positions.topLeftCorner(positions)
-    val normalizedPositions = positions.map(_ + (Positions.Origin - topLeftCorner))
-    val polyomino = Polyominos.values.find(p => p.order == positions.size && p.instances.exists(_.positions == normalizedPositions)).get
-    val normalizedInstance = polyomino.instances.find(_.positions == normalizedPositions).get
-    normalizedInstance.translateBy(topLeftCorner - Positions.Origin)
-  }
-
-  private def pathToString(path: Stack[BlokusMove]) = path.map(move =>
-    move.side.toString().charAt(0) + (move.data.positions.map(p => p.row + ":" + p.column)).mkString("-")
-  ).mkString("|")
-
   private def renderer(context: BlokusContext, light: Position, positions: Set[Position], instance: Instance): Unit = {
     println(""
       + "================\n"
-      //+ pathToString(context.path) + "\n"
       + context.id
       + " -> (" + light.row + "," + light.column + ")"
       + "\n================\n"
@@ -86,60 +71,36 @@ object Main {
     println
 
     for ((color, side) <- terminalContext.sides) {
-      println(color)
-      println(side.values.weight)
-      side.values.polyominos.foreach(x => println("\n" + x.instances.head))
-      println
-      println
+      println(color + ":" + Game.score(terminalContext, color))
+      //side.values.polyominos.foreach(x => println("\n" + x.instances.head))
     }
 
-    val path = pathToString(terminalContext.path)
-    println(path)
+    /*
+    var board2 = Board(20, 20)
+    path.split('|').foreach(x =>
+      {
+        val color = colorByChar.get(x.head).get
+        val tail = x.tail
+        val positions =
+          if (tail.isEmpty()) Set.empty[Position]
+          else {
+            tail.split('-').map(x => {
+              val rowAndColumn = x.split(':').map(y => Integer.parseInt(y))
+              Position(rowAndColumn(0), rowAndColumn(1))
+            }).toSet
+          }
+        val instance = positionsToPolyomino(positions)
+        board2 = board2.apply(color, instance.positions, instance.shadows, instance.lights)
+      }
+    )
 
-    //    val colorByChar = Map(
-    //      'B' -> Color.Blue,
-    //      'Y' -> Color.Yellow,
-    //      'R' -> Color.Red,
-    //      'G' -> Color.Green
-    //    )
+      def boardToString(board: Board) = {
+        board.layers.keySet.map({ color =>
+          color.toString().charAt(0) + board.selves(color).map(p => p.row + ":" + p.column).mkString("", "-", "")
+        }).mkString("|")
+      }
+      */
 
-    //    var board2 = Board(20, 20)
-    //    path.split('|').foreach(x =>
-    //      {
-    //        val color = colorByChar.get(x.head).get
-    //        val tail = x.tail
-    //        val positions =
-    //          if (tail.isEmpty()) Set.empty[Position]
-    //          else {
-    //            tail.split('-').map(x => {
-    //              val rowAndColumn = x.split(':').map(y => Integer.parseInt(y))
-    //              Position(rowAndColumn(0), rowAndColumn(1))
-    //            }).toSet
-    //          }
-    //        val instance = positionsToPolyomino(positions)
-    //        board2 = board2.apply(color, instance.positions, instance.shadows, instance.lights)
-    //      }
-    //    )
-
-    //    println(terminalContext.space == board2)
-    //    println(terminalContext.space.layers(Color.Blue).cells.definedPositions == board2.layers(Color.Blue).cells.definedPositions)
-    //    println(terminalContext.space.layers(Color.Blue).cells.data == board2.layers(Color.Blue).cells.data)
-    //    println(terminalContext.space.layers(Color.Blue).cells.data.keySet == board2.layers(Color.Blue).cells.data.keySet)
-    //    println(terminalContext.space.layers(Color.Blue).cells.data.values == board2.layers(Color.Blue).cells.data.values)
-    //    val set1 = terminalContext.space.layers(Color.Blue).cells.data.toSet
-    //    val set2 = board2.layers(Color.Blue).cells.data.toSet
-    //    println(set1.diff(set2))
-
-    //      def boardToString(board: Board) = {
-    //        board.layers.keySet.map({ color =>
-    //          color.toString().charAt(0) + board.selves(color).map(p => p.row + ":" + p.column).mkString("", "-", "")
-    //        }).mkString("|")
-    //      }
-
-    //    println(boardToString(terminalContext.space))
-    //    println(boardToString(board2))
-    //
-    //    println(boardToString(terminalContext.space) == boardToString(board2))
   }
 
 }

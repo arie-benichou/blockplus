@@ -1,6 +1,5 @@
 package services
 
-import scala.Array.canBuildFrom
 import scala.collection.immutable.Stack
 
 import org.json4s.DefaultFormats
@@ -8,16 +7,12 @@ import org.json4s.Formats
 import org.scalatra.json.JValueResult
 import org.scalatra.json.JacksonJsonSupport
 
-import components.Positions
 import components.Positions.Position
 import games.blokus.Game
-import games.blokus.Game.BlokusContext
 import games.blokus.Game.BlokusMove
 import games.blokus.Game.Color
 import games.blokus.Game.Move
-import games.blokus.Main
 import games.blokus.Options
-import games.blokus.Polyominos
 
 object BlokusContextContainer {
 
@@ -39,34 +34,9 @@ object BlokusContextContainer {
     (color, positions)
   }
 
-  private def positionsToPolyomino(positions: Set[Position]) = {
-    val topLeftCorner = Positions.topLeftCorner(positions)
-    val normalizedPositions = positions.map(_ + (Positions.Origin - topLeftCorner))
-    val polyomino = Polyominos.values.find(p => p.order == positions.size && p.instances.exists(_.positions == normalizedPositions)).get
-    val normalizedInstance = polyomino.instances.find(_.positions == normalizedPositions).get
-    normalizedInstance.translateBy(topLeftCorner - Positions.Origin)
-  }
-
   private def pathToString(path: Stack[BlokusMove]) = path.map(move =>
     move.side.toString().charAt(0) + (move.data.positions.map(p => p.row + ":" + p.column)).mkString("-")
   ).mkString(",")
-
-  private def forceNullMove(context: BlokusContext): BlokusContext = {
-    if (context.isTerminal) context
-    else {
-      val options = Options.get(context.id, context.space, context.side(context.id).values)
-      if (options == Options.Null) {
-        val move = Move(context.id, Polyominos._0.instances.head.translateBy((0, 0)))
-        forceNullMove(context.apply(move).forward)
-      }
-      else context
-    }
-  }
-
-  def main(args: Array[String]) {
-    val ctx = Main.run(Game.context, Main.nullRenderer)
-    println(Game.score(ctx, Color.Blue))
-  }
 
 }
 
@@ -96,12 +66,12 @@ class BlokusContextContainer extends GameContextContainer with JacksonJsonSuppor
     val ctx = context
     val (color, positions) = BlokusContextContainer.parseIncomingMoveData(params("move"))
     try {
-      val instance = BlokusContextContainer.positionsToPolyomino(positions)
+      val instance = Game.positionsToPolyomino(positions)
       val move = Move(color, instance)
       val nextContext = ctx.apply(move)
       if (!ctx.eq(nextContext)) {
         this.synchronized {
-          context = BlokusContextContainer.forceNullMove(nextContext.forward)
+          context = Game.forceNullMove(nextContext.forward)
         }
       }
       else {

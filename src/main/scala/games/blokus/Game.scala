@@ -4,9 +4,11 @@ import abstractions.Adversity
 import abstractions.Context
 import abstractions.Side
 import abstractions.Sides
+import components.Positions
+import components.Positions.Position
+import games.blokus.Polyominos.Instances.Instance
 import games.blokus.Polyominos.Polyomino
-import games.blokus.Polyominos.Instances._
-import games.blokus.Board.Layer.State
+import games.blokus.Polyominos._
 
 object Game {
 
@@ -79,6 +81,27 @@ object Game {
     if (weight != 0) weight
     else if (isSpecialMove(lastMove(context, id))) 20
     else 15
+  }
+
+  // TODO use Option
+  def positionsToPolyomino(positions: Set[Position]) = {
+    val topLeftCorner = Positions.topLeftCorner(positions)
+    val normalizedPositions = positions.map(_ + (Positions.Origin - topLeftCorner))
+    val polyomino = Polyominos.values.find(p => p.order == positions.size && p.instances.exists(_.positions == normalizedPositions)).get
+    val normalizedInstance = polyomino.instances.find(_.positions == normalizedPositions).get
+    normalizedInstance.translateBy(topLeftCorner - Positions.Origin)
+  }
+
+  def forceNullMove(context: BlokusContext): BlokusContext = {
+    if (context.isTerminal) context
+    else {
+      val options = Options.get(context.id, context.space, context.side(context.id).values)
+      if (options == Options.Null) {
+        val move = Move(context.id, Polyominos._0.instances.head.translateBy((0, 0)))
+        forceNullMove(context.apply(move).forward)
+      }
+      else context
+    }
   }
 
 }
