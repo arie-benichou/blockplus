@@ -7,7 +7,7 @@ object Sides {
 
 }
 
-sealed case class Sides[A, B](adversity: Adversity[A], sides: Map[A, Side[B]]) {
+sealed case class Sides[A, B](adversity: Adversity[A], sides: Map[A, Side[B]]) extends Iterable[(A, Side[B])] {
 
   lazy val count: Int = sides.values.count(_.isIn)
 
@@ -18,5 +18,7 @@ sealed case class Sides[A, B](adversity: Adversity[A], sides: Map[A, Side[B]]) {
   def side(id: A): Side[B] = sides.get(id).get
 
   def apply(id: A, data: Any): Sides[A, B] = copy(sides = sides.updated(id, side(id).apply(data)))
+
+  def iterator = sides.iterator
 
 }
