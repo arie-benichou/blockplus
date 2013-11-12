@@ -88,7 +88,7 @@ class BlokusContextContainer extends GameContextContainer with JacksonJsonSuppor
       "path" -> BlokusContextContainer.pathToString(ctx.path).split(','),
       "last-move" -> BlokusContextContainer.pathToString(ctx.path.take(1)),
       "options" -> Options.get(ctx.id, ctx.space, ctx.side(ctx.id).values).map(_._3.map(p => p.row + ":" + p.column).mkString("-")),
-      "scores" -> BlokusContextContainer.colorByChar.values.map(c => (c.toString, Game.score(ctx, c))).toMap
+      "scores" -> ctx.sides.map(e => (e._1.toString, Game.score(ctx, e._1))).toMap
     )
   }
 
