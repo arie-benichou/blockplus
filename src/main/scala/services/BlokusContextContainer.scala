@@ -57,7 +57,6 @@ object BlokusContextContainer {
       val options = Options.get(context.id, context.space, context.side(context.id).values)
       if (options == Options.Null) {
         val move = Move(context.id, Polyominos._0.instances.head.translateBy((0, 0)))
-        println(context.id + " is out now")
         forceNullMove(context.apply(move).forward)
       }
       else context
@@ -66,7 +65,6 @@ object BlokusContextContainer {
 
   def main(args: Array[String]) {
     val ctx = Main.run(Game.context, Main.nullRenderer)
-    //val ctx = Game.context
     println(Game.score(ctx, Color.Blue))
   }
 
@@ -115,7 +113,7 @@ class BlokusContextContainer extends GameContextContainer with JacksonJsonSuppor
         println("incoming side      : " + move.side)
         println("incoming positions : " + positions)
         println(move.data)
-        println("http://localhost:8080/angular-seed-master/app/#/rendering?" + path)
+        println("http://localhost:8080/angular-seed-master/app/#/rendering?data=" + path)
       }
     }
     catch {
@@ -127,7 +125,7 @@ class BlokusContextContainer extends GameContextContainer with JacksonJsonSuppor
         println("current side       : " + ctx.id)
         println("incoming positions : " + positions)
         println(e)
-        println("http://localhost:8080/angular-seed-master/app/#/rendering?" + path)
+        println("http://localhost:8080/angular-seed-master/app/#/rendering?data=" + path)
       }
     }
     redirect("/context")
