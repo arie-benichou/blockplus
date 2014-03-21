@@ -13,6 +13,7 @@ import games.blokus.Game.BlokusMove
 import games.blokus.Game.Color
 import games.blokus.Game.Move
 import games.blokus.Options
+import games.blokus.Game.BlokusContext
 
 object BlokusContextContainer {
 
@@ -20,8 +21,7 @@ object BlokusContextContainer {
     'B' -> Color.Blue,
     'Y' -> Color.Yellow,
     'R' -> Color.Red,
-    'G' -> Color.Green
-  )
+    'G' -> Color.Green)
 
   private def parseIncomingMoveData(incomingMoveData: String) = {
     val head = incomingMoveData.head
@@ -35,8 +35,7 @@ object BlokusContextContainer {
   }
 
   private def pathToString(path: Stack[BlokusMove]) = path.map(move =>
-    move.side.toString().charAt(0) + (move.data.positions.map(p => p.row + ":" + p.column)).mkString("-")
-  ).mkString(",")
+    move.side.toString().charAt(0) + (move.data.positions.map(p => p.row + ":" + p.column)).mkString("-")).mkString(",")
 
 }
 
@@ -48,22 +47,22 @@ class BlokusContextContainer extends GameContextContainer with JacksonJsonSuppor
     contentType = formats("json")
   }
 
-  var context = Game.context
+  var previousContext: BlokusContext = null; // TODO NullContext
+  var currentContext = Game.context
 
   get("/context") {
-    val ctx = context
+    val ctx = currentContext
     Map(
       "color" -> ctx.id.toString,
       "is-over" -> ctx.isTerminal.toString,
       "path" -> BlokusContextContainer.pathToString(ctx.path).split(','),
       "last-move" -> BlokusContextContainer.pathToString(ctx.path.take(1)),
       "options" -> Options.get(ctx.id, ctx.space, ctx.side(ctx.id).values).map(_._3.map(p => p.row + ":" + p.column).mkString("-")),
-      "scores" -> ctx.sides.map(e => (e._1.toString, Game.score(ctx, e._1))).toMap
-    )
+      "scores" -> ctx.sides.map(e => (e._1.toString, Game.score(ctx, e._1))).toMap)
   }
 
   post("/play/:move") {
-    val ctx = context
+    val ctx = currentContext
     val (color, positions) = BlokusContextContainer.parseIncomingMoveData(params("move"))
     try {
       val instance = Game.positionsToPolyomino(positions)
@@ -71,10 +70,16 @@ class BlokusContextContainer extends GameContextContainer with JacksonJsonSuppor
       val nextContext = ctx.apply(move)
       if (!ctx.eq(nextContext)) {
         this.synchronized {
-          context = Game.forceNullMove(nextContext.forward)
+
+          previousContext = currentContext;
+
+          // TODO memoize context options
+          val options = Options.get(previousContext.id, previousContext.space, previousContext.side(previousContext.id).values)
+          //          println(options);
+
+          currentContext = Game.forceNullMove(nextContext.forward)
         }
-      }
-      else {
+      } else {
         val path = BlokusContextContainer.pathToString(ctx.path)
         println("################################Illegal Instruction################################")
         println("path               : " + path)
@@ -85,8 +90,7 @@ class BlokusContextContainer extends GameContextContainer with JacksonJsonSuppor
         println(move.data)
         println("http://localhost:8080/angular-seed-master/app/#/rendering?data=" + path)
       }
-    }
-    catch {
+    } catch {
       case e: Exception => {
         val path = BlokusContextContainer.pathToString(ctx.path)
         println("################################Illegal Instruction################################")

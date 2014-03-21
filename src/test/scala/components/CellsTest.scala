@@ -1,9 +1,8 @@
 package components
 
 import org.junit.runner.RunWith
-import org.scalatest.FunSpec
 import org.scalatest.junit.JUnitRunner
-
+import org.scalatest.FunSpec
 import components.Positions.Position
 
 @RunWith(classOf[JUnitRunner])
