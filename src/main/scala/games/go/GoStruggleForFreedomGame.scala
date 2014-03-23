@@ -50,7 +50,7 @@ object GoStruggleForFreedomGame {
       options = GoOptions('O', board)
       println("=================================\n")
       println(board)
-      val freedom = computeGlobalFreedom(board, 'O')
+      val freedom = evaluatedOptions.head._1
       println("number of options: " + options.size)
       println("freedom score: " + freedom)
       if (evaluatedOptions.size == 1) options = Set.empty

@@ -17,11 +17,12 @@ object GoOptions {
     val space = board.cells.filter(_._2 == '.')
     val stringsForSpace = board.layer('.').strings // TODO parameterize
     val islands = stringsForSpace.filter(_.out.size < 1).map(_.in.iterator.next)
-    val stringsForO = board.layer(character).strings
-    val suicides = stringsForO.filter(_.out.size == 1).map(_.out.iterator.next)
-    val stringsForX = board.layer(opponent(character)).strings
-    val captures = stringsForX.filter(_.out.size == 1).map(_.out.iterator.next)
-    SortedSet() ++ space -- islands -- suicides ++ captures
+    val stringsForPlayer = board.layer(character).strings
+    val suicides = stringsForPlayer.filter(_.out.size == 1).map(_.out.iterator.next)
+    val stringsForOpponent = board.layer(opponent(character)).strings
+    val captures = stringsForOpponent.filter(_.out.size == 1).map(_.out.iterator.next)
+    val effectiveIslands = islands.diff(captures).filterNot(p => stringsForPlayer.exists(_.out.contains(p)))
+    SortedSet() ++ space -- effectiveIslands -- suicides ++ captures
   }
 
   // TODO extract tests
