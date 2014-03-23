@@ -1,0 +1,119 @@
+package games.go
+
+import GoBoard._
+import components.Cells
+import components.Positions._
+import scala.collection.immutable.TreeMap
+import scala.collection.immutable.SortedSet
+
+object GoBoard {
+
+  def buildConsoleView(data: Array[String]) = {
+    val out0 = "┌" + (0 until data.length).mkString + "\n"
+    data.foldLeft(out0)((out, in) => out + (out.count(_ == '\n') - 1) + in + "\n")
+  }
+
+  def buildCells(data: Array[String], initial: Char, undefined: Char): Cells[Char] = {
+    val rows = data.length
+    val columns = if (rows == 0) 0 else data(0).length
+    val cells = Cells(rows, columns, initial, undefined, Map.empty[Position, Char])
+    val mutations = Map[Position, Char]() ++ (for {
+      row <- 0 until rows
+      column <- 0 until columns
+    } yield (Position(row, column), data(row).charAt(column)))
+    cells(mutations)
+  }
+
+  // TODO privatize
+  sealed case class CellData(id: Int, in: Set[Position], out: Set[Position])
+
+  // TODO functional way
+  def buildMapOfCellDataByPosition(color: Char, cells: Cells[Char]): collection.mutable.Map[Position, CellData] = {
+    var maxId = 0
+    var currentId = maxId
+    val mapOfCellDataByPosition = collection.mutable.Map[Position, CellData]().withDefaultValue(CellData(0, Set.empty[Position], Set.empty))
+    val cellsByNaturalOrder = TreeMap(cells.data.toSeq: _*)
+    for ((position, char) <- cellsByNaturalOrder) {
+      if (char == color) {
+        val sides = position * Directions.Sides
+        val effectiveSides = sides.filterNot(cells.get(_) == '?') // TODO parameterize
+        val connexions = effectiveSides.filter(cells.get(_) == color)
+        val freedom = effectiveSides.filter(cells.get(_) == '.') // TODO parameterize
+        if (connexions.isEmpty) {
+          maxId = maxId + 1
+          currentId = maxId
+        }
+        else {
+          val ids = connexions.map(mapOfCellDataByPosition(_).id)
+          if (ids == Set(0)) {
+            maxId = maxId + 1
+            currentId = maxId
+          }
+          else {
+            val filteredIds = ids.filter(_ > 0)
+            val min = filteredIds.min
+            val idsToFix = filteredIds.filterNot(_ == min)
+            idsToFix.foreach { idToFix =>
+              val positionsToFix = mapOfCellDataByPosition.filter(e => (e._2.id == idToFix)).keySet
+              positionsToFix.foreach { p =>
+                val data = mapOfCellDataByPosition(p)
+                mapOfCellDataByPosition.put(p, CellData(min, data.in, data.out))
+              }
+            }
+            currentId = min
+          }
+        }
+        mapOfCellDataByPosition.put(position, CellData(currentId, connexions, freedom))
+      }
+    }
+    mapOfCellDataByPosition
+  }
+
+  def main(args: Array[String]) {
+
+    val data = Array(
+      "..O..",
+      "..OO.",
+      ".O.OO",
+      "OOO..",
+      ".O.OO"
+    )
+
+    val board = GoBoard(data)
+    println(board)
+
+    val strings = board.strings('O')
+    strings.foreach(println)
+
+  }
+
+}
+
+sealed case class GoBoard(data: Array[String]) {
+
+  lazy val cells = buildCells(this.data, '.', '?')
+  lazy val consoleView = buildConsoleView(this.data)
+  override def toString = this.consoleView
+
+  // TODO use layers for characters to ensure laziness of strings computation
+
+  def mapOfCellDataByPosition(character: Char) = buildMapOfCellDataByPosition(character, this.cells)
+
+  def strings0(character: Char) = {
+    val map = this.mapOfCellDataByPosition(character)
+    val mapGroupedById = map.groupBy(e => e._2.id).mapValues(_.keySet)
+    mapGroupedById.mapValues(p => (p, p.flatMap(p => map(p).out)))
+  }
+
+  def strings(character: Char): List[GoString] = {
+    val strings0 = this.strings0(character)
+    val strings = strings0.map { e =>
+      val value = e._2
+      val in = SortedSet() ++ value._1
+      val out = SortedSet() ++ value._2
+      GoString(in, out)
+    }
+    strings.toList.sortBy(_.out.size)(math.Ordering.Int.reverse)
+  }
+
+}

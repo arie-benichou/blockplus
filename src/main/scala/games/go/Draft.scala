@@ -8,7 +8,7 @@ import org.specs2.internal.scalaz.syntax.std.ToTupleOps
 
 // TODO IHM humain-ordi, fixe répétition, réfléchir à la mise à jour incrémentale du jeu      
 
-object Main {
+object Draft {
 
   object Evaluation {
     def apply(a: Evaluation, b: Evaluation) = new Evaluation(a.in - b.in, a.out - b.out)
