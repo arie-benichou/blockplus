@@ -9,6 +9,7 @@ object GoOptions {
    *  1) As long as there is at least one degree of freedom remaining once played
    *  2) Except if the opponent string will loose its last degree of freedom
    */
+  // TODO remove hardcoded opponent
   def apply(character: Char, board: GoBoard): Set[Position] = {
     val space = board.cells.filter(_._2 == '.')
     val stringsForSpace = board.layer('.').strings
