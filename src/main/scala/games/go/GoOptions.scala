@@ -10,8 +10,19 @@ object GoOptions {
    *  2) Except if the opponent string will loose its last degree of freedom
    */
   def apply(character: Char, board: GoBoard): Set[Position] = {
+
     val space = board.cells.filter(_._2 == '.')
-    SortedSet() ++ space
+
+    val stringsForSpace = board.layer('.').strings
+    val islands = stringsForSpace.filter(_.out.size < 1).map(_.in.iterator.next)
+
+    val stringsForO = board.layer('O').strings
+    val suicides = stringsForO.filter(_.out.size == 1).map(_.out.iterator.next)
+
+    val stringsForX = board.layer('X').strings
+    val captures = stringsForX.filter(_.out.size == 1).map(_.out.iterator.next)
+
+    SortedSet() ++ space -- suicides ++ captures -- (islands.diff(captures))
   }
 
   // TODO extract tests
@@ -26,43 +37,26 @@ object GoOptions {
         "XXX",
         "..."
       )
-
+      println("=================================")
       val board = GoBoard(data)
       println(board)
-
-      println("Strings for 'O'\n")
-      val strings = board.layer('O').strings
-      strings.foreach { string =>
-        println(string)
-        if (string.out.size == 1) {
-          println("suicide: ")
-          println(string.out.iterator.next + "\n")
-        }
-      }
-
-      println("Options for 'O'\n")
+      println("Options for 'O' :")
       val options = GoOptions('O', board)
       options.foreach(println)
     }
 
-    /*
     {
       val data = Array(
         "XXO",
         ".XO",
         "XXO",
         "OOO",
-        "..."
+        "XX."
       )
-
+      println("=================================")
       val board = GoBoard(data)
       println(board)
-
-      println("Strings for 'O'\n")
-      val strings = board.layer('O').strings
-      strings.foreach(println)
-
-      println("Options for 'O'\n")
+      println("Options for 'O' :")
       val options = GoOptions('O', board)
       options.foreach(println)
     }
@@ -75,19 +69,13 @@ object GoOptions {
         ".X",
         "XX"
       )
-
+      println("=================================")
       val board = GoBoard(data)
       println(board)
-
-      println("Strings for 'O'\n")
-      val strings = board.layer('O').strings
-      strings.foreach(println)
-
-      println("Options for 'O'\n")
+      println("Options for 'O' :")
       val options = GoOptions('O', board)
       options.foreach(println)
     }
-    */
 
   }
 

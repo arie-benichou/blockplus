@@ -9,7 +9,7 @@ import scala.collection.immutable.SortedSet
 object GoBoard {
 
   def buildConsoleView(data: Array[String]) = {
-    val out0 = "┌" + (0 until data.length).mkString + "\n"
+    val out0 = "┌" + (0 until data(0).length).mkString + "\n"
     data.foldLeft(out0)((out, in) => out + (out.count(_ == '\n') - 1) + in + "\n")
   }
 
