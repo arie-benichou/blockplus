@@ -10,19 +10,14 @@ object GoOptions {
    *  2) Except if the opponent string will loose its last degree of freedom
    */
   def apply(character: Char, board: GoBoard): Set[Position] = {
-
     val space = board.cells.filter(_._2 == '.')
-
     val stringsForSpace = board.layer('.').strings
     val islands = stringsForSpace.filter(_.out.size < 1).map(_.in.iterator.next)
-
     val stringsForO = board.layer('O').strings
     val suicides = stringsForO.filter(_.out.size == 1).map(_.out.iterator.next)
-
     val stringsForX = board.layer('X').strings
     val captures = stringsForX.filter(_.out.size == 1).map(_.out.iterator.next)
-
-    SortedSet() ++ space -- suicides ++ captures -- (islands.diff(captures))
+    SortedSet() ++ space -- islands -- suicides ++ captures
   }
 
   // TODO extract tests
