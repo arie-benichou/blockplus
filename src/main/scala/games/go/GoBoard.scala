@@ -36,7 +36,7 @@ object GoBoard {
     for ((position, char) <- cellsByNaturalOrder) {
       if (char == color) {
         val sides = position * Directions.Sides
-        val effectiveSides = sides.filterNot(cells.get(_) == '?') // TODO parameterize
+        val effectiveSides = sides.filterNot(cells.get(_) == '!') // TODO parameterize
         val connexions = effectiveSides.filter(cells.get(_) == color)
         val freedom = effectiveSides.filter(cells.get(_) == '.') // TODO parameterize
         if (connexions.isEmpty) {
@@ -109,13 +109,13 @@ sealed case class Layer(character: Char, cells: Cells[Char]) {
 
 sealed case class GoBoard(data: Array[String]) {
 
-  lazy val cells = buildCells(this.data, '.', '?')
+  lazy val cells = buildCells(this.data, '?', '!')
 
   lazy val consoleView = buildConsoleView(this.data)
 
   override def toString = this.consoleView
 
-  val layers = Map(
+  private val layers = Map(
     'O' -> Layer('O', this.cells),
     'X' -> Layer('X', this.cells),
     '.' -> Layer('.', this.cells)
