@@ -82,32 +82,21 @@ object GoBoard {
     val board = GoBoard(data)
     println(board)
 
-    val strings = board.strings('O')
+    println("Strings for 'O'\n")
+    val strings = board.layer('O').strings
     strings.foreach(println)
 
   }
 
 }
 
-sealed case class GoBoard(data: Array[String]) {
+sealed case class Layer(character: Char, cells: Cells[Char]) {
 
-  lazy val cells = buildCells(this.data, '.', '?')
-  lazy val consoleView = buildConsoleView(this.data)
-  override def toString = this.consoleView
-
-  // TODO use layers for characters to ensure laziness of strings computation
-
-  def mapOfCellDataByPosition(character: Char) = buildMapOfCellDataByPosition(character, this.cells)
-
-  def strings0(character: Char) = {
-    val map = this.mapOfCellDataByPosition(character)
+  lazy val strings: List[GoString] = {
+    val map = buildMapOfCellDataByPosition(this.character, this.cells)
     val mapGroupedById = map.groupBy(e => e._2.id).mapValues(_.keySet)
-    mapGroupedById.mapValues(p => (p, p.flatMap(p => map(p).out)))
-  }
-
-  def strings(character: Char): List[GoString] = {
-    val strings0 = this.strings0(character)
-    val strings = strings0.map { e =>
+    val rawStrings = mapGroupedById.mapValues(p => (p, p.flatMap(p => map(p).out)))
+    val strings = rawStrings.map { e =>
       val value = e._2
       val in = SortedSet() ++ value._1
       val out = SortedSet() ++ value._2
@@ -115,5 +104,23 @@ sealed case class GoBoard(data: Array[String]) {
     }
     strings.toList.sortBy(_.out.size)(math.Ordering.Int.reverse)
   }
+
+}
+
+sealed case class GoBoard(data: Array[String]) {
+
+  lazy val cells = buildCells(this.data, '.', '?')
+
+  lazy val consoleView = buildConsoleView(this.data)
+
+  override def toString = this.consoleView
+
+  val layers = Map(
+    'O' -> Layer('O', this.cells),
+    'X' -> Layer('X', this.cells),
+    '.' -> Layer('.', this.cells)
+  )
+
+  def layer(character: Char) = layers(character)
 
 }
