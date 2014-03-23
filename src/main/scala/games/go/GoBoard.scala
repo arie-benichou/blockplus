@@ -10,8 +10,8 @@ object GoBoard {
 
   def buildConsoleView(data: Array[String]) = {
     val stringTopBottom = " " + "+" + "-" * (data(0).length) + "+" + "\n"
-    val out0 = "  " + (0 until data(0).length).mkString + "\n" + stringTopBottom
-    data.foldLeft(out0)((out, in) => out + (out.count(_ == '\n') - 2) + "|" + in + "|\n") + stringTopBottom
+    val out0 = "  " + (0 until data(0).length).map(_ % 10).mkString + "\n" + stringTopBottom
+    data.foldLeft(out0)((out, in) => out + ((out.count(_ == '\n') - 2) % 10) + "|" + in + "|\n") + stringTopBottom
   }
 
   def buildCells(data: Array[String], initial: Char, undefined: Char): Cells[Char] = {
