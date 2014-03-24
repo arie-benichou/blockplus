@@ -4,7 +4,16 @@ import components.Positions._
 import scala.collection.immutable.TreeMap
 import scala.collection.immutable.SortedSet
 
+// TODO compute protected land
 object GoGame {
+
+  val letters = "ABCDEFGHJ"
+  val columns = letters.zipWithIndex.toMap
+  val numbers = "987654321"
+  val rows = numbers.zipWithIndex.toMap
+
+  def inputToPosition(line: String) = Position(rows(line(1)), columns(line(0).toUpper))
+  def positionToInput(p: Position) = "" + letters(p.column) + numbers(p.row)
 
   private def opponent(character: Char) = {
     if (character == 'O') 'X' else if (character == 'X') 'O' else error("Unknown Character")
@@ -25,15 +34,17 @@ object GoGame {
     clone
   }
 
-  private def computeGlobalFreedom(board: GoBoard, character: Char): Int = {
+  private def computeGlobalFreedom(board: GoBoard, character: Char): Double = {
     val s = board.layer(character).strings
-    s.foldLeft(0)((sum, string) => sum + string.in.size * string.out.size)
+    val f = s.foldLeft(0)((sum, string) => sum + string.in.size * string.out.size)
+    val n = s.size
+    2 * f / (n + 1)
   }
 
   private def evaluateOptions(options: Set[Position], character: Char, board: GoBoard) = {
     val evaluations = options.map(p => (p, computeGlobalFreedom(GoBoard(play(board.data, character, p, false)), character))).toMap
     val groupedEvaluations = evaluations.groupBy(_._2).mapValues(SortedSet() ++ _.keySet)
-    TreeMap(groupedEvaluations.toSeq: _*)(math.Ordering.Int.reverse)
+    TreeMap(groupedEvaluations.toSeq: _*)(math.Ordering.Double.reverse)
   }
 
   def main(args: Array[String]) {
@@ -79,7 +90,16 @@ object GoGame {
           val selectedPosition =
             if (player == 'O')
               evaluatedOptions.head._2.iterator.next
-            else options.toList(util.Random.nextInt(options.size))
+            else {
+              //              var selectedPosition = Position(-1, -1)
+              //              do {
+              //                System.err.println("Enter coordinates for X: ");
+              //                val line = scala.Console.readLine
+              //                selectedPosition = inputToPosition(line)
+              //              } while (!options.contains(selectedPosition))
+              //              selectedPosition
+              options.toList(util.Random.nextInt(options.size))
+            }
 
           println("=================================")
           println("player  : " + player)
@@ -89,6 +109,7 @@ object GoGame {
           //            //          }
           //            println(board)
           println("move    : " + selectedPosition)
+          println(positionToInput(selectedPosition))
           println
 
           history = selectedPosition :: history
