@@ -79,6 +79,16 @@ object GoGame {
     val character = 'O'
 
     val data = Array(
+      ".............",
+      ".............",
+      ".............",
+      ".............",
+      ".............",
+      ".............",
+      "............."
+    )
+
+    val _data = Array(
       ".........",
       ".........",
       ".........",
@@ -122,8 +132,12 @@ object GoGame {
       if (!options.isEmpty) {
 
         val selectedPosition =
-          if (player == 'O' /**/ || player == 'X' /**/ ) {
-            val evaluatedOptions = evaluateOptions(options, player, board, 1)
+          if (player == 'O' || player == 'X') {
+            val evaluatedOptions =
+              if (player == 'X')
+                evaluateOptions(options, player, board, 1)
+              else
+                evaluateOptions(options, player, board, 0)
             // TODO shouldNotPlay
             val shouldPassToo = {
               if (!history.isEmpty && history.head == Position(-1, -1))
@@ -168,7 +182,7 @@ object GoGame {
           //            //          }
           //            println(board)
           println("move    : " + selectedPosition)
-          println(positionToInput(selectedPosition))
+          //          println(positionToInput(selectedPosition))
           println
 
           next = play(next, player, selectedPosition, false)
