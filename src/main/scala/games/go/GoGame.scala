@@ -7,14 +7,6 @@ import scala.collection.immutable.SortedSet
 // TODO compute protected land
 object GoGame {
 
-  val letters = "ABCDEFGHJ"
-  val columns = letters.zipWithIndex.toMap
-  val numbers = "987654321"
-  val rows = numbers.zipWithIndex.toMap
-
-  def inputToPosition(line: String) = Position(rows(line(1)), columns(line(0).toUpper))
-  def positionToInput(p: Position) = "" + letters(p.column) + numbers(p.row)
-
   private def opponent(character: Char) = {
     if (character == 'O') 'X' else if (character == 'X') 'O' else error("Unknown Character")
   }
@@ -54,13 +46,30 @@ object GoGame {
     diff * globalFreedom * 4 * protectedLands
   }
 
-  private def evaluateOption(character: Char, board0: GoBoard, p: Position): Double = {
+  private def _evaluateOption(character: Char, board0: GoBoard, p: Position): Double = {
     val nextBoard = GoBoard(play(board0.data, character, p, false))
     evaluateBoard(character, board0, nextBoard)
   }
 
-  private def evaluateOptions(options: Set[Position], character: Char, board: GoBoard) = {
-    val evaluations = options.map(p => (p, evaluateOption(character, board, p))).toMap
+  private def evaluateOption(character: Char, board0: GoBoard, p: Position, level: Int): Double = {
+    val nextBoard = GoBoard(play(board0.data, character, p, false))
+    val score = evaluateBoard(character, board0, nextBoard)
+    if (level == 0) {
+      score
+    }
+    else {
+      val opponentOptions = GoOptions(opponent(character), nextBoard)
+      if (opponentOptions.isEmpty) {
+        score
+      }
+      else {
+        score - evaluateOptions(opponentOptions, opponent(character), nextBoard, level - 1).firstKey
+      }
+    }
+  }
+
+  private def evaluateOptions(options: Set[Position], character: Char, board: GoBoard, level: Int) = {
+    val evaluations = options.map(p => (p, evaluateOption(character, board, p, level))).toMap
     val groupedEvaluations = evaluations.groupBy(_._2).mapValues(SortedSet() ++ _.keySet)
     TreeMap(groupedEvaluations.toSeq: _*)(math.Ordering.Double.reverse)
   }
@@ -69,7 +78,7 @@ object GoGame {
 
     val character = 'O'
 
-    val data = Array(
+    val _data = Array(
       ".........",
       ".........",
       ".........",
@@ -81,51 +90,80 @@ object GoGame {
       "........."
     )
 
+    val __data = Array(
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    )
+
+    val data = Array(
+      ".....",
+      ".....",
+      ".....",
+      ".....",
+      "....."
+    )
+
+    val letters = "ABCDEFGHJ".take(data(0).length())
+    val columns = letters.zipWithIndex.toMap
+    val numbers = (1 to data.length).toList.reverse.mkString("")
+    val rows = numbers.zipWithIndex.toMap
+
+    def inputToPosition(line: String) = Position(rows(line(1)), columns(line(0).toUpper))
+    def positionToInput(p: Position) = "" + letters(p.column) + numbers(p.row)
+
     var player = character
     var next = data
     var board = GoBoard(next)
     var options = GoOptions(player, board)
     var history = List.empty[Position]
 
-    val scores = collection.mutable.Map[Char, Double]() //.withDefaultValue(0)
+    val scores = collection.mutable.Map[Char, Double]().withDefaultValue(0)
 
     while (history.isEmpty || history.take(2) != List(Position(-1, -1), Position(-1, -1))) {
       //for (i <- 1 to 125) {
 
       if (!options.isEmpty) {
-        val evaluatedOptions = evaluateOptions(options, player, board)
 
-        // TODO shouldNotPlay
-        val shouldPassToo =
-          if (!history.isEmpty && history.head == Position(-1, -1)) {
-            evaluatedOptions.head._1 < scores(player)
-          }
-          else false
-
-        if (shouldPassToo) {
-          println("=================================")
-          println("Player '" + player + "'" + " has passed")
-          history = Position(-1, -1) :: history
-        }
-        else {
-          val selectedPosition =
-            if (player == 'O')
-              evaluatedOptions.head._2.iterator.next
-            else {
-              //              var selectedPosition = Position(-1, -1)
-              //              do {
-              //                System.err.println("Enter coordinates for X: ");
-              //                val line = scala.Console.readLine
-              //                selectedPosition = inputToPosition(line)
-              //              } while (!options.contains(selectedPosition))
-              //              selectedPosition
-
-              options.toList(util.Random.nextInt(options.size))
-
-              //options.toList.head
+        val selectedPosition =
+          if (player == 'O' /*|| player == 'X'*/ ) {
+            val evaluatedOptions = evaluateOptions(options, player, board, 3)
+            // TODO shouldNotPlay
+            val shouldPassToo = {
+              if (!history.isEmpty && history.head == Position(-1, -1))
+                evaluatedOptions.head._1 < scores(player)
+              else false
             }
+            if (shouldPassToo) {
+              println("=================================")
+              println("Player '" + player + "'" + " has passed")
+              history = Position(-1, -1) :: history
+              Position(-1, -1)
+            }
+            else {
+              scores.update(player, evaluatedOptions.head._1)
+              val bestOptions = evaluatedOptions.head._2
+              bestOptions.toList(util.Random.nextInt(bestOptions.size))
+            }
+          }
+          else {
+            var selectedPosition = Position(-1, -1)
+            do {
+              System.err.println("Enter coordinates for X: ");
+              val line = scala.Console.readLine
+              selectedPosition = inputToPosition(line)
+            } while (!options.contains(selectedPosition))
+            selectedPosition
 
-          scores.update(player, evaluatedOptions.head._1)
+            //options.toList(util.Random.nextInt(options.size))
+            //options.toList.head
+          }
+
+        if (selectedPosition != Position(-1, -1)) {
 
           println("=================================")
           println("player  : " + player)
