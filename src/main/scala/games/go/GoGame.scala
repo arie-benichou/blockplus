@@ -4,7 +4,7 @@ import components.Positions._
 import scala.collection.immutable.TreeMap
 import scala.collection.immutable.SortedSet
 
-// TODO compute protected land
+// TODO handle cycles in play
 object GoGame {
 
   private def opponent(character: Char) = {
@@ -78,7 +78,7 @@ object GoGame {
 
     val character = 'O'
 
-    val _data = Array(
+    val data = Array(
       ".........",
       ".........",
       ".........",
@@ -98,14 +98,6 @@ object GoGame {
       ".......",
       ".......",
       "......."
-    )
-
-    val data = Array(
-      ".....",
-      ".....",
-      ".....",
-      ".....",
-      "....."
     )
 
     val letters = "ABCDEFGHJ".take(data(0).length())
@@ -130,8 +122,8 @@ object GoGame {
       if (!options.isEmpty) {
 
         val selectedPosition =
-          if (player == 'O' /*|| player == 'X'*/ ) {
-            val evaluatedOptions = evaluateOptions(options, player, board, 3)
+          if (player == 'O' /**/ || player == 'X' /**/ ) {
+            val evaluatedOptions = evaluateOptions(options, player, board, 1)
             // TODO shouldNotPlay
             val shouldPassToo = {
               if (!history.isEmpty && history.head == Position(-1, -1))
@@ -141,7 +133,6 @@ object GoGame {
             if (shouldPassToo) {
               println("=================================")
               println("Player '" + player + "'" + " has passed")
-              history = Position(-1, -1) :: history
               Position(-1, -1)
             }
             else {
@@ -151,17 +142,21 @@ object GoGame {
             }
           }
           else {
-            var selectedPosition = Position(-1, -1)
-            do {
-              System.err.println("Enter coordinates for X: ");
-              val line = scala.Console.readLine
-              selectedPosition = inputToPosition(line)
-            } while (!options.contains(selectedPosition))
-            selectedPosition
+            //            var line = ""
+            //            var selectedPosition = Position(-1, -1)
+            //            do {
+            //              System.err.println("Enter coordinates for X: ");
+            //              line = scala.Console.readLine
+            //              if (line == "pass") selectedPosition = Position(-1, -1)
+            //              else selectedPosition = inputToPosition(line)
+            //            } while (line != "pass" && !options.contains(selectedPosition))
+            //            selectedPosition
 
-            //options.toList(util.Random.nextInt(options.size))
+            options.toList(util.Random.nextInt(options.size))
             //options.toList.head
           }
+
+        history = selectedPosition :: history
 
         if (selectedPosition != Position(-1, -1)) {
 
@@ -176,7 +171,6 @@ object GoGame {
           println(positionToInput(selectedPosition))
           println
 
-          history = selectedPosition :: history
           next = play(next, player, selectedPosition, false)
           board = GoBoard(next)
 
