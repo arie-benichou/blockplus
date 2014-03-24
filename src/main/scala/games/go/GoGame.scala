@@ -41,17 +41,26 @@ object GoGame {
     2 * f / (n + 1)
   }
 
-  private def evaluateBoard(character: Char, board: GoBoard): Double = {
-    val globalFreedom = computeGlobalFreedom(board, character)
-    val protectedLands = GoLands(character, board).size + 1 // ? avoid playing in protected lands
-    globalFreedom * 4 * protectedLands
+  private def evaluateBoard(character: Char, board: GoBoard, nextBoard: GoBoard): Double = {
+
+    val n0 = board.cells.filter(_._2 == opponent(character)).size
+    val n1 = nextBoard.cells.filter(_._2 == opponent(character)).size
+
+    val diff = (n0 - n1) + 1
+
+    val globalFreedom = computeGlobalFreedom(nextBoard, character)
+    val protectedLands = GoLands(character, nextBoard).size + 1 // ? avoid playing in protected lands
+
+    diff * globalFreedom * 4 * protectedLands
+  }
+
+  private def evaluateOption(character: Char, board0: GoBoard, p: Position): Double = {
+    val nextBoard = GoBoard(play(board0.data, character, p, false))
+    evaluateBoard(character, board0, nextBoard)
   }
 
   private def evaluateOptions(options: Set[Position], character: Char, board: GoBoard) = {
-    val evaluations = options.map { p =>
-      val tmp = GoBoard(play(board.data, character, p, false))
-      (p, evaluateBoard(character, tmp))
-    }.toMap
+    val evaluations = options.map(p => (p, evaluateOption(character, board, p))).toMap
     val groupedEvaluations = evaluations.groupBy(_._2).mapValues(SortedSet() ++ _.keySet)
     TreeMap(groupedEvaluations.toSeq: _*)(math.Ordering.Double.reverse)
   }
@@ -78,6 +87,8 @@ object GoGame {
     var options = GoOptions(player, board)
     var history = List.empty[Position]
 
+    val scores = collection.mutable.Map[Char, Double]() //.withDefaultValue(0)
+
     while (history.isEmpty || history.take(2) != List(Position(-1, -1), Position(-1, -1))) {
       //for (i <- 1 to 125) {
 
@@ -87,7 +98,7 @@ object GoGame {
         // TODO shouldNotPlay
         val shouldPassToo =
           if (!history.isEmpty && history.head == Position(-1, -1)) {
-            evaluatedOptions.firstKey <= evaluateBoard(player, board)
+            evaluatedOptions.head._1 < scores(player)
           }
           else false
 
@@ -110,8 +121,11 @@ object GoGame {
               //              selectedPosition
 
               options.toList(util.Random.nextInt(options.size))
-              //              options.toList.head
+
+              //options.toList.head
             }
+
+          scores.update(player, evaluatedOptions.head._1)
 
           println("=================================")
           println("player  : " + player)
@@ -129,7 +143,7 @@ object GoGame {
           board = GoBoard(next)
 
           println(board)
-          println("score   : " + computeGlobalFreedom(board, character))
+          println("score   : " + scores(player))
         }
       }
 
