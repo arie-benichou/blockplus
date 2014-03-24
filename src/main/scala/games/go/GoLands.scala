@@ -15,34 +15,60 @@ object GoLands {
     val islands = stringsForSpace.filter(_.out.size < 1).map(_.in.iterator.next)
     val stringsForPlayer = board.layer(character).strings
     val stringsForOpponent = board.layer(opponent(character)).strings
-    val effectiveIslands = islands.filter { p =>
+    val capturables = stringsForPlayer.filter(_.out.size == 1).map(_.out.iterator.next)
+    val effectiveIslands = islands.diff(capturables).filter { p =>
       stringsForPlayer.exists(_.out.contains(p)) &&
         !stringsForOpponent.exists(_.out.contains(p))
     }
     SortedSet() ++ effectiveIslands
   }
 
+  // TODO extract tests
   def main(args: Array[String]) {
 
-    val data = Array(
-      "OO.OO",
-      ".OOO.",
-      "OO.OO",
-      "O.O.O",
-      "OO.OO"
-    )
+    // TODO extract method
+    {
+      val data = Array(
+        "OO.OO",
+        ".OOO.",
+        "OO.OO",
+        "O.O.O",
+        "OO.OO"
+      )
 
-    val board = GoBoard(data)
-    val lands = GoLands('O', board)
+      val board = GoBoard(data)
+      val lands = GoLands('O', board)
 
-    println("=================================")
-    println
-    println(board)
-    println("Lands for 'O' :\n")
-    lands.foreach { land =>
-      println(" " + land)
+      println("=================================")
+      println
+      println(board)
+      println("Lands for 'O' :\n")
+      lands.foreach { land =>
+        println(" " + land)
+      }
+      println
     }
-    println
+
+    {
+      val data = Array(
+        ".OOX.",
+        "OOOX.",
+        "XXX.."
+      )
+
+      val board = GoBoard(data)
+      val lands = GoLands('O', board)
+
+      println("=================================")
+      println
+      println(board)
+      println("Lands for 'O' :\n")
+      lands.foreach { land =>
+        println(" " + land)
+      }
+      println
+    }
+
     println("=================================")
 
   }
