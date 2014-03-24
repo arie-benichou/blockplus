@@ -41,8 +41,17 @@ object GoGame {
     2 * f / (n + 1)
   }
 
+  private def evaluateBoard(character: Char, board: GoBoard): Double = {
+    val globalFreedom = computeGlobalFreedom(board, character)
+    val protectedLands = GoLands(character, board).size + 1 // ? avoid playing in protected lands
+    globalFreedom * 4 * protectedLands
+  }
+
   private def evaluateOptions(options: Set[Position], character: Char, board: GoBoard) = {
-    val evaluations = options.map(p => (p, computeGlobalFreedom(GoBoard(play(board.data, character, p, false)), character))).toMap
+    val evaluations = options.map { p =>
+      val tmp = GoBoard(play(board.data, character, p, false))
+      (p, evaluateBoard(character, tmp))
+    }.toMap
     val groupedEvaluations = evaluations.groupBy(_._2).mapValues(SortedSet() ++ _.keySet)
     TreeMap(groupedEvaluations.toSeq: _*)(math.Ordering.Double.reverse)
   }
@@ -70,6 +79,7 @@ object GoGame {
     var history = List.empty[Position]
 
     while (history.isEmpty || history.take(2) != List(Position(-1, -1), Position(-1, -1))) {
+      //for (i <- 1 to 125) {
 
       if (!options.isEmpty) {
         val evaluatedOptions = evaluateOptions(options, player, board)
@@ -77,7 +87,7 @@ object GoGame {
         // TODO shouldNotPlay
         val shouldPassToo =
           if (!history.isEmpty && history.head == Position(-1, -1)) {
-            computeGlobalFreedom(board, player) > evaluatedOptions.firstKey
+            evaluatedOptions.firstKey <= evaluateBoard(player, board)
           }
           else false
 
@@ -98,7 +108,9 @@ object GoGame {
               //                selectedPosition = inputToPosition(line)
               //              } while (!options.contains(selectedPosition))
               //              selectedPosition
+
               options.toList(util.Random.nextInt(options.size))
+              //              options.toList.head
             }
 
           println("=================================")
@@ -129,6 +141,8 @@ object GoGame {
 
       player = opponent(player)
       options = GoOptions(player, board)
+      println
+      //println(i)
 
     }
 
