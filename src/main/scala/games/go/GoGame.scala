@@ -4,25 +4,17 @@ import components.Positions._
 import scala.collection.immutable.TreeMap
 import scala.collection.immutable.SortedSet
 
-// TODO handle cycles in play
 object GoGame {
 
-  private def opponent(character: Char) = {
-    if (character == 'O') 'X' else if (character == 'X') 'O' else error("Unknown Character")
-  }
+  private def opponent(character: Char) = if (character == 'O') 'X' else 'O'
 
-  private def play(data: Array[String], character: Char, position: Position, debug: Boolean) = {
+  private def play(data: Array[String], character: Char, position: Position) = {
     val clone = data.clone
     clone.update(position.row, clone(position.row).updated(position.column, character))
     val board = GoBoard(clone)
     val stringsForOpponent = board.layer(opponent(character)).strings
     val captures = stringsForOpponent.filter(_.out.isEmpty).map(_.in)
-    captures.foreach { string =>
-      string.foreach { position =>
-        clone.update(position.row, clone(position.row).updated(position.column, '.')) // TODO parameterize
-      }
-    }
-    if (debug) println(captures)
+    captures.foreach(s => s.foreach(p => clone.update(p.row, clone(p.row).updated(p.column, '.'))))
     clone
   }
 
@@ -34,37 +26,20 @@ object GoGame {
   }
 
   private def evaluateBoard(character: Char, board: GoBoard, nextBoard: GoBoard): Double = {
-
     val n0 = board.cells.filter(_._2 == opponent(character)).size
     val n1 = nextBoard.cells.filter(_._2 == opponent(character)).size
-
-    val diff = (n0 - n1) + 1
-
     val globalFreedom = computeGlobalFreedom(nextBoard, character)
-    val protectedLands = GoLands(character, nextBoard).size + 1 // ? avoid playing in protected lands
-
-    diff * globalFreedom * 4 * protectedLands
+    val protectedLands = GoLands(character, nextBoard).size
+    (1 + n0 - n1) * globalFreedom * (1 + protectedLands)
   }
 
-  private def _evaluateOption(character: Char, board0: GoBoard, p: Position): Double = {
-    val nextBoard = GoBoard(play(board0.data, character, p, false))
-    evaluateBoard(character, board0, nextBoard)
-  }
-
-  private def evaluateOption(character: Char, board0: GoBoard, p: Position, level: Int): Double = {
-    val nextBoard = GoBoard(play(board0.data, character, p, false))
-    val score = evaluateBoard(character, board0, nextBoard)
-    if (level == 0) {
-      score
-    }
-    else {
+  private def evaluateOption(character: Char, board: GoBoard, p: Position, level: Int): Double = {
+    val nextBoard = GoBoard(play(board.data, character, p))
+    val score = evaluateBoard(character, board, nextBoard)
+    if (level == 0) score else {
       val opponentOptions = GoOptions(opponent(character), nextBoard)
-      if (opponentOptions.isEmpty) {
-        score
-      }
-      else {
-        score - evaluateOptions(opponentOptions, opponent(character), nextBoard, level - 1).firstKey
-      }
+      if (opponentOptions.isEmpty) score
+      else score - evaluateOptions(opponentOptions, opponent(character), nextBoard, level - 1).firstKey
     }
   }
 
@@ -74,21 +49,20 @@ object GoGame {
     TreeMap(groupedEvaluations.toSeq: _*)(math.Ordering.Double.reverse)
   }
 
+  private def askForOption(inputToPosition: String => Position, options: Set[Position], nullOption: Position) = {
+    var line = ""
+    var selectedPosition = nullOption
+    do {
+      System.out.println("Enter coordinates for 'X' :");
+      line = scala.Console.readLine
+      if (line == "pass") selectedPosition = nullOption else selectedPosition = inputToPosition(line)
+    } while (line != "pass" && !options.contains(selectedPosition))
+    selectedPosition
+  }
+
   def main(args: Array[String]) {
-
     val character = 'O'
-
     val data = Array(
-      ".............",
-      ".............",
-      ".............",
-      ".............",
-      ".............",
-      ".............",
-      "............."
-    )
-
-    val _data = Array(
       ".........",
       ".........",
       ".........",
@@ -99,55 +73,32 @@ object GoGame {
       ".........",
       "........."
     )
-
-    val __data = Array(
-      ".......",
-      ".......",
-      ".......",
-      ".......",
-      ".......",
-      ".......",
-      "......."
-    )
-
     val letters = "ABCDEFGHJ".take(data(0).length())
     val columns = letters.zipWithIndex.toMap
     val numbers = (1 to data.length).toList.reverse.mkString("")
     val rows = numbers.zipWithIndex.toMap
-
     def inputToPosition(line: String) = Position(rows(line(1)), columns(line(0).toUpper))
     def positionToInput(p: Position) = "" + letters(p.column) + numbers(p.row)
-
     var player = character
     var next = data
     var board = GoBoard(next)
     var options = GoOptions(player, board)
     var history = List.empty[Position]
-
     val scores = collection.mutable.Map[Char, Double]().withDefaultValue(0)
-
-    while (history.isEmpty || history.take(2) != List(Position(-1, -1), Position(-1, -1))) {
-      //for (i <- 1 to 125) {
-
+    val nullOption = Position(-1, -1)
+    while ((history.isEmpty && !options.isEmpty) || history.take(2) != List(nullOption, nullOption)) {
       if (!options.isEmpty) {
-
         val selectedPosition =
-          if (player == 'O' || player == 'X') {
-            val evaluatedOptions =
-              if (player == 'X')
-                evaluateOptions(options, player, board, 1)
-              else
-                evaluateOptions(options, player, board, 0)
-            // TODO shouldNotPlay
-            val shouldPassToo = {
-              if (!history.isEmpty && history.head == Position(-1, -1))
-                evaluatedOptions.head._1 < scores(player)
-              else false
+          if (player == 'O' /*|| player == 'X'*/ ) {
+            val evaluatedOptions = if (player == 'O') evaluateOptions(options, player, board, 1)
+            else evaluateOptions(options, player, board, 0)
+            val shouldPassToo = { // TODO shouldNotPlay
+              if (!history.isEmpty && history.head == nullOption) evaluatedOptions.head._1 < scores(player) else false
             }
             if (shouldPassToo) {
               println("=================================")
               println("Player '" + player + "'" + " has passed")
-              Position(-1, -1)
+              nullOption
             }
             else {
               scores.update(player, evaluatedOptions.head._1)
@@ -156,58 +107,33 @@ object GoGame {
             }
           }
           else {
-            //            var line = ""
-            //            var selectedPosition = Position(-1, -1)
-            //            do {
-            //              System.err.println("Enter coordinates for X: ");
-            //              line = scala.Console.readLine
-            //              if (line == "pass") selectedPosition = Position(-1, -1)
-            //              else selectedPosition = inputToPosition(line)
-            //            } while (line != "pass" && !options.contains(selectedPosition))
-            //            selectedPosition
-
-            options.toList(util.Random.nextInt(options.size))
-            //options.toList.head
+            askForOption(inputToPosition, options, nullOption)
+            //options.toList(util.Random.nextInt(options.size))
           }
-
         history = selectedPosition :: history
-
-        if (selectedPosition != Position(-1, -1)) {
-
+        if (selectedPosition != nullOption) {
           println("=================================")
           println("player  : " + player)
-          //            println("options : " + options.size)
-          //            //          options.foreach { opt =>
-          //            //            println("          " + opt)
-          //            //          }
-          //            println(board)
           println("move    : " + selectedPosition)
           //          println(positionToInput(selectedPosition))
           println
-
-          next = play(next, player, selectedPosition, false)
+          next = play(next, player, selectedPosition)
           board = GoBoard(next)
-
           println(board)
           println("score   : " + scores(player))
         }
       }
-
       else {
         println("=================================")
         println("No option left for player '" + player + "'")
-        history = Position(-1, -1) :: history
+        history = nullOption :: history
       }
-
       player = opponent(player)
       options = GoOptions(player, board)
-      println
-      //println(i)
-
+      Thread.sleep(125)
     }
-
     println("=================================")
-
+    println("Game Over")
   }
 
 }
