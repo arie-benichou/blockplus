@@ -128,4 +128,15 @@ sealed case class GoBoard(data: Array[String]) {
 
   def layer(character: Char) = layers(character)
 
+  def play(character: Char)(position: Position): GoBoard = {
+    def opponent(character: Char) = if (character == 'O') 'X' else 'O'
+    val clone = this.data.clone
+    clone.update(position.row, clone(position.row).updated(position.column, character))
+    val board = GoBoard(clone)
+    val stringsForOpponent = board.layer(opponent(character)).strings
+    val captures = stringsForOpponent.filter(_.out.isEmpty).map(_.in)
+    captures.foreach(s => s.foreach(p => clone.update(p.row, clone(p.row).updated(p.column, '.'))))
+    GoBoard(clone)
+  }
+
 }

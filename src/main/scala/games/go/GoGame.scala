@@ -8,16 +8,6 @@ object GoGame {
 
   private def opponent(character: Char) = if (character == 'O') 'X' else 'O'
 
-  private def play(data: Array[String], character: Char, position: Position) = {
-    val clone = data.clone
-    clone.update(position.row, clone(position.row).updated(position.column, character))
-    val board = GoBoard(clone)
-    val stringsForOpponent = board.layer(opponent(character)).strings
-    val captures = stringsForOpponent.filter(_.out.isEmpty).map(_.in)
-    captures.foreach(s => s.foreach(p => clone.update(p.row, clone(p.row).updated(p.column, '.'))))
-    clone
-  }
-
   private def computeGlobalFreedom(board: GoBoard, character: Char): Double = {
     val s = board.layer(character).strings
     val f = s.foldLeft(0)((sum, string) => sum + string.in.size * string.out.size)
@@ -30,11 +20,11 @@ object GoGame {
     val n1 = nextBoard.cells.filter(_._2 == opponent(character)).size
     val globalFreedom = computeGlobalFreedom(nextBoard, character)
     val protectedLands = GoLands(character, nextBoard).size
-    (1 + n0 - n1) * globalFreedom * (1 + protectedLands)
+    (1 + n0 - n1) * globalFreedom * 4 * (1 + protectedLands)
   }
 
   private def evaluateOption(character: Char, board: GoBoard, p: Position, level: Int): Double = {
-    val nextBoard = GoBoard(play(board.data, character, p))
+    val nextBoard = board.play(character)(p)
     val score = evaluateBoard(character, board, nextBoard)
     if (level == 0) score else {
       val opponentOptions = GoOptions(opponent(character), nextBoard)
@@ -63,15 +53,13 @@ object GoGame {
   def main(args: Array[String]) {
     val character = 'O'
     val data = Array(
-      ".........",
-      ".........",
-      ".........",
-      ".........",
-      ".........",
-      ".........",
-      ".........",
-      ".........",
-      "........."
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
     )
     val letters = "ABCDEFGHJ".take(data(0).length())
     val columns = letters.zipWithIndex.toMap
@@ -80,8 +68,7 @@ object GoGame {
     def inputToPosition(line: String) = Position(rows(line(1)), columns(line(0).toUpper))
     def positionToInput(p: Position) = "" + letters(p.column) + numbers(p.row)
     var player = character
-    var next = data
-    var board = GoBoard(next)
+    var board = GoBoard(data)
     var options = GoOptions(player, board)
     var history = List.empty[Position]
     val scores = collection.mutable.Map[Char, Double]().withDefaultValue(0)
@@ -90,7 +77,7 @@ object GoGame {
       if (!options.isEmpty) {
         val selectedPosition =
           if (player == 'O' /*|| player == 'X'*/ ) {
-            val evaluatedOptions = if (player == 'O') evaluateOptions(options, player, board, 1)
+            val evaluatedOptions = if (player == 'O') evaluateOptions(options, player, board, 0)
             else evaluateOptions(options, player, board, 0)
             val shouldPassToo = { // TODO shouldNotPlay
               if (!history.isEmpty && history.head == nullOption) evaluatedOptions.head._1 < scores(player) else false
@@ -103,22 +90,23 @@ object GoGame {
             else {
               scores.update(player, evaluatedOptions.head._1)
               val bestOptions = evaluatedOptions.head._2
-              bestOptions.toList(util.Random.nextInt(bestOptions.size))
+              //bestOptions.toList(util.Random.nextInt(bestOptions.size))
+              bestOptions.head
             }
           }
           else {
-            askForOption(inputToPosition, options, nullOption)
+            //            askForOption(inputToPosition, options, nullOption)
             //options.toList(util.Random.nextInt(options.size))
+            options.head
           }
         history = selectedPosition :: history
         if (selectedPosition != nullOption) {
           println("=================================")
           println("player  : " + player)
           println("move    : " + selectedPosition)
-          //          println(positionToInput(selectedPosition))
+          println(positionToInput(selectedPosition))
           println
-          next = play(next, player, selectedPosition)
-          board = GoBoard(next)
+          board = board.play(player)(selectedPosition)
           println(board)
           println("score   : " + scores(player))
         }
