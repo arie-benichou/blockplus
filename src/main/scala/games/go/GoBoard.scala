@@ -14,6 +14,21 @@ object GoBoard {
     data.foldLeft(out0)((out, in) => out + ((out.count(_ == '\n') - 2) % 10) + "|" + in + "|\n") + stringTopBottom
   }
 
+  def cellsToArray(cells: Cells[Char]) = {
+    val max = cells.data.max
+    val rowMax = max._1.row
+    val colMax = max._1.column
+    var data = Array.fill(rowMax + 1)("?" * (colMax + 1))
+    for (i <- 0 to rowMax) {
+      var str = ""
+      for (j <- 0 to colMax) {
+        str += cells.get(Position(i, j))
+      }
+      data.update(i, str)
+    }
+    data
+  }
+
   def buildCells(data: Array[String], initial: Char, undefined: Char): Cells[Char] = {
     val rows = data.length
     val columns = if (rows == 0) 0 else data(0).length
@@ -43,14 +58,12 @@ object GoBoard {
         if (connexions.isEmpty) {
           maxId = maxId + 1
           currentId = maxId
-        }
-        else {
+        } else {
           val ids = connexions.map(mapOfCellDataByPosition(_).id)
           if (ids == Set(0)) {
             maxId = maxId + 1
             currentId = maxId
-          }
-          else {
+          } else {
             val filteredIds = ids.filter(_ > 0)
             val min = filteredIds.min
             val idsToFix = filteredIds.filterNot(_ == min)
@@ -70,6 +83,8 @@ object GoBoard {
     mapOfCellDataByPosition
   }
 
+  def apply(data: Array[String]) = new GoBoard(buildCells(data, '?', '!'))
+
   def main(args: Array[String]) {
 
     val data = Array(
@@ -77,12 +92,11 @@ object GoBoard {
       "..OO.",
       ".O.OO",
       "OOO..",
-      ".O.OO"
-    )
+      ".O.OO")
 
     val board = GoBoard(data)
     println(board)
-
+1
     println("Strings for 'O'\n")
     val strings = board.layer('O').strings
     strings.foreach(println)
@@ -112,31 +126,31 @@ sealed case class Layer(character: Char, cells: Cells[Char]) {
 
 }
 
-sealed case class GoBoard(data: Array[String]) {
+sealed case class GoBoard(cells: Cells[Char]) {
 
-  lazy val cells = buildCells(this.data, '?', '!')
-
-  lazy val consoleView = buildConsoleView(this.data)
+  lazy val consoleView = buildConsoleView(cellsToArray(this.cells))
 
   override def toString = this.consoleView
 
   private val layers = Map(
     'O' -> Layer('O', this.cells),
     'X' -> Layer('X', this.cells),
-    '.' -> Layer('.', this.cells)
-  )
+    '.' -> Layer('.', this.cells))
 
   def layer(character: Char) = layers(character)
 
   def play(character: Char)(position: Position): GoBoard = {
     def opponent(character: Char) = if (character == 'O') 'X' else 'O'
-    val clone = this.data.clone
-    clone.update(position.row, clone(position.row).updated(position.column, character))
-    val board = GoBoard(clone)
+    val updatedCells = cells.apply(Map(position -> character))
+    val board = GoBoard(updatedCells)
     val stringsForOpponent = board.layer(opponent(character)).strings
     val captures = stringsForOpponent.filter(_.out.isEmpty).map(_.in)
-    captures.foreach(s => s.foreach(p => clone.update(p.row, clone(p.row).updated(p.column, '.'))))
-    GoBoard(clone)
+    if (captures.isEmpty) board
+    else {
+      val positions = captures.head
+      val map = positions.map(p => (p, '.')).toMap
+      GoBoard(updatedCells.apply(map))
+    }
   }
 
 }
