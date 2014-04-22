@@ -24,7 +24,7 @@ object GoGame {
   }
 
   private def evaluateOption(character: Char, board: GoBoard, p: Position, level: Int): Double = {
-    val nextBoard = board.play(character)(p)
+    val nextBoard = board.play(p, character)
     val score = evaluateBoard(character, board, nextBoard)
     if (level == 0) score else {
       val opponentOptions = GoOptions(opponent(character), nextBoard)
@@ -61,6 +61,7 @@ object GoGame {
       ".......",
       "......."
     )
+
     val letters = "ABCDEFGHJ".take(data(0).length())
     val columns = letters.zipWithIndex.toMap
     val numbers = (1 to data.length).toList.reverse.mkString("")
@@ -77,7 +78,7 @@ object GoGame {
       if (!options.isEmpty) {
         val selectedPosition =
           if (player == 'O' /*|| player == 'X'*/ ) {
-            val evaluatedOptions = if (player == 'O') evaluateOptions(options, player, board, 0)
+            val evaluatedOptions = if (player == 'O') evaluateOptions(options, player, board, 1)
             else evaluateOptions(options, player, board, 0)
             val shouldPassToo = { // TODO shouldNotPlay
               if (!history.isEmpty && history.head == nullOption) evaluatedOptions.head._1 < scores(player) else false
@@ -95,7 +96,7 @@ object GoGame {
             }
           }
           else {
-            //            askForOption(inputToPosition, options, nullOption)
+            //askForOption(inputToPosition, options, nullOption)
             //options.toList(util.Random.nextInt(options.size))
             options.head
           }
@@ -106,7 +107,7 @@ object GoGame {
           println("move    : " + selectedPosition)
           println(positionToInput(selectedPosition))
           println
-          board = board.play(player)(selectedPosition)
+          board = board.play(selectedPosition, player)
           println(board)
           println("score   : " + scores(player))
         }
