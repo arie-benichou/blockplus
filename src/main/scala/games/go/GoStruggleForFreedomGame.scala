@@ -6,6 +6,7 @@ import scala.collection.immutable.SortedSet
 
 object GoStruggleForFreedomGame {
 
+  /*
   private def play(data: Array[String], color: Char, position: Position) = {
     val clone = data.clone
     clone.update(position.row, clone(position.row).updated(position.column, color))
@@ -57,5 +58,6 @@ object GoStruggleForFreedomGame {
     }
 
   }
+  */
 
 }

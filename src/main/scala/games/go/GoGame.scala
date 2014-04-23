@@ -51,18 +51,20 @@ object GoGame {
   }
 
   def main(args: Array[String]) {
+
     val character = 'X'
-    val data = Array(
-      ".........",
-      ".........",
-      ".........",
-      ".........",
-      "....O....",
-      ".........",
-      ".........",
-      ".........",
-      "........."
-    )
+
+    //    val data = Array(
+    //      ".........",
+    //      ".........",
+    //      ".........",
+    //      ".........",
+    //      "....O....",
+    //      ".........",
+    //      ".........",
+    //      ".........",
+    //      "........."
+    //    )
 
     //    val data = Array(
     //      "XXXXXXXO.",
@@ -83,27 +85,28 @@ object GoGame {
     //      ".....",
     //      "....."
     //    )
-    //    val data = Array(
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      ".........O.........",
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      "...................",
-    //      "..................."
-    //    )
+
+    val data = Array(
+      "...................",
+      "...................",
+      "...................",
+      "...................",
+      "...................",
+      "...................",
+      "...................",
+      "...................",
+      "...................",
+      ".........O.........",
+      "...................",
+      "...................",
+      "...................",
+      "...................",
+      "...................",
+      "...................",
+      "...................",
+      "...................",
+      "..................."
+    )
 
     val letters = "ABCDEFGHJ".take(data(0).length())
     val columns = letters.zipWithIndex.toMap
@@ -121,7 +124,7 @@ object GoGame {
       if (!options.isEmpty) {
         val selectedPosition =
           if (player == 'O') {
-            val evaluatedOptions = evaluateOptions(options, player, board, 1)
+            val evaluatedOptions = evaluateOptions(options, player, board, 0)
             val shouldPassToo = { // TODO shouldNotPlay
               if (!history.isEmpty && history.head == nullOption) evaluatedOptions.head._1 < scores(player) else false
             }
@@ -133,17 +136,17 @@ object GoGame {
             else {
               scores.update(player, evaluatedOptions.head._1)
               val bestOptions = evaluatedOptions.head._2
-              //bestOptions.toList(util.Random.nextInt(bestOptions.size))
-              bestOptions.head
+              bestOptions.toList(util.Random.nextInt(bestOptions.size))
+              //bestOptions.head
             }
           }
           else {
             //askForOption(inputToPosition, options, nullOption)
-            //options.toList(util.Random.nextInt(options.size))
+            options.toList(util.Random.nextInt(options.size))
             //            val evaluatedOptions = evaluateOptions(options, player, board, 0)
             //            val bestOptions = evaluatedOptions.head._2
             //            bestOptions.head
-            options.head
+            //options.head
           }
         history = selectedPosition :: history
         if (selectedPosition != nullOption) {
@@ -156,7 +159,7 @@ object GoGame {
           println(board)
           println("score   : " + scores(player))
           println("options : " + options.size)
-          verifyBoardUpdate(board)
+          //          verifyBoardUpdate(board)
         }
       }
       else {
