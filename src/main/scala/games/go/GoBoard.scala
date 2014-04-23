@@ -5,23 +5,38 @@ import components.Cells
 import components.Positions._
 import scala.collection.immutable.TreeMap
 import scala.collection.mutable.ListBuffer
+import scala.collection.immutable.SortedSet
+import scala.annotation.tailrec
 
 object GoBoard {
 
   // TODO inject function
   def opponent(character: Char) = if (character == 'O') 'X' else 'O'
 
-  def update(board: GoBoard, position: Position, character: Char) = {
+  private def updateFromCells1(board: GoBoard, position: Position, character: Char) = {
+    val update1 = GoBoard(board.cells.apply(Map(position -> character)))
+    val stringsForOpponent = update1.layer(opponent(character)).strings
+    val capturedPositions = stringsForOpponent.filter(_.out.isEmpty).flatMap(s => s.in)
+    GoBoard(update1.cells.apply(capturedPositions.foldLeft(Map[Position, Char]())((map, p) => map + (p -> '.'))))
+  }
+
+  private def updateFromCells2(board: GoBoard, position: Position, character: Char) = {
+    val capturedPositions = board.layer(opponent(character)).strings.filter(_.out == Set(position)).flatMap(s => s.in)
+    GoBoard(board.cells.apply(capturedPositions.foldLeft(Map(position -> character))((map, p) => map + (p -> '.'))))
+  }
+
+  private def updateFromStrings(board: GoBoard, position: Position, character: Char) = {
     val others = board.layer(opponent(character)).strings
-    val mutatedOutsForOthers = others.filter(e => e.out.contains(position)).map(e => GoString(e.in, e.out - position))
-    val captures = mutatedOutsForOthers.filter(_.out.isEmpty)
-    val updatedOthers = (others.filterNot(e => e.out.contains(position)) ++ mutatedOutsForOthers.filterNot(_.out.isEmpty))
+    val (othersFilterYes, othersFilterNo) = others.partition(e => e.out.contains(position))
+    val mutatedOutsForOthers = othersFilterYes.map(e => GoString(e.in, e.out - position))
+    val (captures, mutatedOutsForOthersWithoutCaptures) = mutatedOutsForOthers.partition(_.out.isEmpty)
+    val updatedOthers = othersFilterNo ++ mutatedOutsForOthersWithoutCaptures
     val capturedPositions = captures.flatMap(s => s.in)
     val selves = board.layer(character).strings
-    val connexions = selves.filter(e => e.out.contains(position))
+    val (connexions, notConnexions) = selves.partition(e => e.out.contains(position))
     val ins = connexions.flatMap(_.in) + position
     val outs = connexions.flatMap(_.out) - position ++ (position * Directions.Sides).filter(board.cells.get(_) == '.')
-    val updatedSelves1 = Set(GoString(ins, outs)) ++ selves.filterNot(e => e.out.contains(position))
+    val updatedSelves1 = Set(GoString(ins, outs)) ++ notConnexions
     val _updatedCells = board.cells.apply(Map(position -> character))
     val ordinalBySelves = updatedSelves1.zip((1 to updatedSelves1.size)).toMap
     val selvesOutsToUpdate = collection.mutable.Map.empty[Int, Set[Position]].withDefaultValue(Set.empty[Position])
@@ -42,36 +57,32 @@ object GoBoard {
     val updatedSelves2 = selvesByOrdinal.values.toSet
     val updatedCells = _updatedCells.apply(capturedPositions.map(p => (p, '.')).toMap)
     val common = board.layer('.').strings
-    val concernedSpaceString = common.filter(e => e.out.contains(position))
-    val unconcernedSpaceString = common.filterNot(e => e.out.contains(position))
+    val (concernedSpaceString, unconcernedSpaceString) = common.partition(_.out.contains(position))
     val updatedSpaceStrings =
       if (concernedSpaceString.isEmpty)
         unconcernedSpaceString.filterNot(e => e.in.contains(position)) ++ captures.map(e => GoString(e.in, if (e.in.size == 1) Set() else e.in))
       else {
-        val concernedSpaces = concernedSpaceString.head.in - position
-        val (ls1, ls2) = concernedSpaces.foldLeft((List.empty[Set[Position]], List.empty[Set[Position]])) { (tuple, p) =>
-          val (ls1, ls2) = tuple
-          val n = ((p * Directions.Sides) - position).filter(updatedCells.get(_) == '.')
-          if (n.isEmpty) (Set(p) :: ls1, ls2) else (ls1, (n + p) :: ls2)
-        }
-        val strings1 = ls2.foldLeft(List[Set[Position]]()) { (acc, ps) =>
-          if (acc.exists(!_.intersect(ps).isEmpty)) acc.map(e => if (e.intersect(ps).isEmpty) e else e ++ ps)
-          else ps :: acc
-        }
-        val strings2 = strings1.foldLeft(strings1) { (s, ps) =>
-          if (s.exists(!_.intersect(ps).isEmpty)) {
-            val (tmp1, tmp2) = s.foldLeft((List.empty[Set[Position]], Set.empty[Position])) { (acc, e) =>
-              val (tmp1, tmp2) = acc
-              if (e.intersect(ps).isEmpty) (e :: tmp1, tmp2) else (tmp1, e ++ ps)
-            }
-            tmp2 :: tmp1
+        @tailrec
+        def f(acc: List[Position], visited: Set[Position]): Set[Position] = {
+          if (acc.isEmpty) visited
+          else {
+            val spaceAround = (acc.head * Directions.Sides).filter(e => updatedCells.get(e) == '.' && !visited.contains(e))
+            if (spaceAround.isEmpty) f(acc.tail, visited + acc.head) else f(acc.tail ++ spaceAround, visited + acc.head)
           }
-          else ps :: s
         }
-        val islands = ls1.map(GoString(_, Set()))
-        val updatedStrings = strings2.map(s => GoString(s, s))
+        val spaceAround = (position * Directions.Sides).filter(updatedCells.get(_) == '.')
+        val (ls, _) = spaceAround.foldLeft((List[Set[Position]](), Set[Position]())) { (tuple, p) =>
+          val (ls, visited) = tuple
+          if (visited.contains(p)) tuple
+          else {
+            val connected = f(List(p), Set())
+            (connected :: ls, visited ++ connected)
+          }
+        }
+        val newStrings = ls.map(e => GoString(e, if (e.size == 1) Set() else e))
         val stringsFromCaptures = captures.map(e => GoString(e.in, if (e.in.size == 1) Set() else e.in))
-        unconcernedSpaceString ++ stringsFromCaptures ++ islands ++ updatedStrings
+        val updatedSpaceStrings = unconcernedSpaceString ++ newStrings ++ stringsFromCaptures
+        updatedSpaceStrings
       }
     val updatedLayers = Map(character -> Layer(updatedSelves2), opponent(character) -> Layer(updatedOthers), '.' -> Layer(updatedSpaceStrings))
     GoBoard(updatedCells, updatedLayers)
@@ -165,6 +176,14 @@ object GoBoard {
     strings.toSet
   }
 
+  def apply(cells: Cells[Char]) = {
+    val layers = Map(
+      'O' -> Layer(computeStrings('O', cells)),
+      'X' -> Layer(computeStrings('X', cells)),
+      '.' -> Layer(computeStrings('.', cells)))
+    new GoBoard(cells, layers)
+  }
+
   def apply(data: Array[String]) = {
     val cells = buildCells(data, '?', '!')
     val layers = Map(
@@ -174,18 +193,19 @@ object GoBoard {
     new GoBoard(cells, layers)
   }
 
-  def main(args: Array[String]) {
-    val data = Array(
-      ".....",
-      ".....",
-      ".....",
-      ".....",
-      "....."
-    )
-    val board = GoBoard(data)
-    println(board)
-    val newBoard = board.play(Position(2, 2), 'X')
-    println(newBoard)
+  def reduce(board: GoBoard) = {
+    val buffer = ListBuffer[Position]()
+    for (row <- 0 to board.cells.rows) {
+      for (column <- 0 to board.cells.columns) {
+        val p = Position(row, column)
+        if (board.cells.get(p) == '.') {
+          val neighbours = (p * Directions.AllAround).filter(board.cells.get(_) != '!')
+          val n = neighbours.count(board.cells.get(_) == '.')
+          if (n != neighbours.size) buffer += p
+        }
+      }
+    }
+    buffer.toSet
   }
 
 }
@@ -199,6 +219,8 @@ sealed case class Layer(strings: Set[GoString]) {}
 sealed case class GoBoard(cells: Cells[Char], layers: Map[Char, Layer]) {
   lazy val consoleView = buildConsoleView(cellsToArray(this.cells))
   def layer(character: Char) = layers(character)
-  def play(position: Position, character: Char) = update(this, position, character)
+  //def play(position: Position, character: Char) = updateFromCells1(this, position, character)
+  def play(position: Position, character: Char) = updateFromCells2(this, position, character)
+  //def play(position: Position, character: Char) = updateFromStrings(this, position, character)
   override def toString = this.consoleView
 }

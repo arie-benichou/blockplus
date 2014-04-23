@@ -3,7 +3,8 @@ package games.go
 import org.junit.runner.RunWith
 import org.scalatest.FunSpec
 import org.scalatest.junit.JUnitRunner
-import components.Positions.Position
+import components.Positions._
+import scala.collection.immutable.SortedSet
 
 @RunWith(classOf[JUnitRunner])
 class GoBoardTest extends FunSpec {
@@ -246,8 +247,6 @@ class GoBoardTest extends FunSpec {
       ".O.",
       "..."
     ))
-
-    assert(actualBoard == expectedBoard)
     assert(actualBoard == expectedBoard)
   }
 
@@ -263,8 +262,6 @@ class GoBoardTest extends FunSpec {
       ".X.",
       "..."
     ))
-
-    assert(actualBoard == expectedBoard)
     assert(actualBoard == expectedBoard)
   }
 
@@ -280,8 +277,6 @@ class GoBoardTest extends FunSpec {
       ".X.",
       "..."
     ))
-
-    assert(actualBoard == expectedBoard)
     assert(actualBoard == expectedBoard)
   }
 
@@ -297,8 +292,7 @@ class GoBoardTest extends FunSpec {
       ".X.",
       ".OO"
     ))
-
-    assert(actualBoard == expectedBoard)
+    assert(actualBoard.layer('.').strings == expectedBoard.layer('.').strings)
     assert(actualBoard == expectedBoard)
   }
 
@@ -314,24 +308,22 @@ class GoBoardTest extends FunSpec {
       ".X.",
       "XOO"
     ))
-
-    assert(actualBoard == expectedBoard)
     assert(actualBoard == expectedBoard)
   }
 
   it("should update - case 6") {
     val data = Array(
-      ".XO",
+      "X.O",
       "XXO",
       "XOO"
     )
-    val actualBoard = GoBoard(data).play(Position(0, 0), 'X')
+    val actualBoard = GoBoard(data).play(Position(0, 1), 'X')
     val expectedBoard = GoBoard(Array(
-      "XXO",
-      "XXO",
-      "XOO"
+      "XX.",
+      "XX.",
+      "X.."
     ))
-
+    assert(actualBoard.layer('.').strings == expectedBoard.layer('.').strings)
     assert(actualBoard == expectedBoard)
   }
 
@@ -347,7 +339,6 @@ class GoBoardTest extends FunSpec {
       "X.X",
       ".X."
     ))
-
     assert(actualBoard == expectedBoard)
   }
 
@@ -363,7 +354,6 @@ class GoBoardTest extends FunSpec {
       "O..O",
       "OOOO"
     ))
-
     assert(actualBoard == expectedBoard)
   }
 
@@ -379,7 +369,6 @@ class GoBoardTest extends FunSpec {
       "OO",
       ".O"
     ))
-
     assert(actualBoard == expectedBoard)
   }
 
@@ -392,7 +381,6 @@ class GoBoardTest extends FunSpec {
       "....."
     )
     val actualBoard = GoBoard(data).play(Position(3, 2), 'X')
-    println(actualBoard)
     val expectedBoard = GoBoard(Array(
       ".....",
       "..X..",
@@ -400,8 +388,100 @@ class GoBoardTest extends FunSpec {
       "..X..",
       "....."
     ))
-
     assert(actualBoard == expectedBoard)
+  }
+
+  it("should update - case 11") {
+    val data = Array(
+      "......",
+      "..OO..",
+      ".X..X.",
+      ".X....",
+      "......"
+    )
+    val actualBoard = GoBoard(data).play(Position(4, 2), 'X')
+    val expectedBoard = GoBoard(Array(
+      "......",
+      "..OO..",
+      ".X..X.",
+      ".X....",
+      "..X..."
+    ))
+    assert(actualBoard == expectedBoard)
+  }
+
+  it("should update - case 12") {
+    val data = Array(
+      "XXX...XXX",
+      "X.XX.XX.X",
+      "X.......X",
+      "X.XX.XX.X",
+      "XXX...XXX"
+    )
+    val actualBoard = GoBoard(data).play(Position(2, 4), 'O')
+    val expectedBoard = GoBoard(Array(
+      "XXX...XXX",
+      "X.XX.XX.X",
+      "X...O...X",
+      "X.XX.XX.X",
+      "XXX...XXX"
+    ))
+    assert(actualBoard == expectedBoard)
+  }
+
+  it("should update - case 13") {
+    val data = Array(
+      ".........",
+      "....O....",
+      "...XO....",
+      "....OX...",
+      "....O....",
+      "...OO....",
+      "..X..X...",
+      "..X......",
+      "........."
+    )
+    val actualBoard = GoBoard(data).play(Position(8, 3), 'X')
+    val expectedBoard = GoBoard(Array(
+      ".........",
+      "....O....",
+      "...XO....",
+      "....OX...",
+      "....O....",
+      "...OO....",
+      "..X..X...",
+      "..X......",
+      "...X....."
+    ))
+    assert(actualBoard == expectedBoard)
+  }
+
+  it("should update - case 14") {
+    val data = Array(
+      ".........",
+      ".X.......",
+      "..X......",
+      "...X.....",
+      "....OOO..",
+      ".........",
+      ".........",
+      ".........",
+      "........."
+    )
+    val actualBoard = GoBoard(data).play(Position(4, 7), 'O')
+    val expectedBoard = GoBoard(Array(
+      ".........",
+      ".X.......",
+      "..X......",
+      "...X.....",
+      "....OOOO.",
+      ".........",
+      ".........",
+      ".........",
+      "........."
+    ))
+    assert(actualBoard == expectedBoard)
+
   }
 
 }

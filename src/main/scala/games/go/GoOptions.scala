@@ -118,6 +118,27 @@ object GoOptions {
       assert(options == Set(Position(1, 3), Position(2, 1)))
     }
 
+    //    {
+    //      val data = Array(
+    //        ".O.O.O.OO",
+    //        "OOOOOOOOO",
+    //        ".O.XOOXX.",
+    //        "XO.O..OXO",
+    //        ".OOOOOOOO",
+    //        "XXXOOXXXO",
+    //        ".XX.XXXXO",
+    //        "XXXXXXXOO",
+    //        ".XXXXXOO."
+    //      )
+    //      println("=================================")
+    //      val board = GoBoard(data)
+    //      println(board)
+    //      println("Options for 'X' :")
+    //      val options = GoOptions('X', board)
+    //      options.foreach(println)
+    //      //assert(options == Set(Position(1, 3), Position(2, 1)))
+    //    }
+
   }
 
 }
