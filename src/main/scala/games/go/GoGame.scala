@@ -53,13 +53,15 @@ object GoGame {
   def main(args: Array[String]) {
     val character = 'O'
     val data = Array(
-      ".......",
-      ".......",
-      ".......",
-      ".......",
-      ".......",
-      ".......",
-      "......."
+      ".........",
+      ".........",
+      ".........",
+      ".........",
+      ".........",
+      ".........",
+      ".........",
+      ".........",
+      "........."
     )
 
     val letters = "ABCDEFGHJ".take(data(0).length())
@@ -96,9 +98,9 @@ object GoGame {
             }
           }
           else {
-            //askForOption(inputToPosition, options, nullOption)
+            askForOption(inputToPosition, options, nullOption)
             //options.toList(util.Random.nextInt(options.size))
-            options.head
+            //options.head
           }
         history = selectedPosition :: history
         if (selectedPosition != nullOption) {
