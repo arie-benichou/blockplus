@@ -16,17 +16,14 @@ object GoOptions {
   def apply(character: Char, board: GoBoard): Set[Position] = {
     val space = board.cells.filter(_._2 == '.')
     val stringsForSpace = board.layer('.').strings // TODO parameterize
-    val islands = stringsForSpace.filter(_.out.size < 1).map(_.in.iterator.next)
-    val stringsForPlayer = board.layer(character).strings
-    val suicides = stringsForPlayer.filter { string =>
-      string.out.size == 1 &&
-        islands.contains(string.out.iterator.next) &&
-        stringsForPlayer.count(s => s.out.contains(string.out.iterator.next)) < 2
-    }.map(_.out.iterator.next)
+    val islands = stringsForSpace.filter(_.out.size < 1).flatMap(_.in)
+    val stringsForPlayer = board.layer(character).strings.map(_.out)
+    val tmp1 = stringsForPlayer.filter(_.size < 2).flatten
+    val tmp2 = tmp1.filter(e => islands.contains(e))
+    val suicides = tmp2.filter(e => !stringsForPlayer.exists(s => s.contains(e) && s.size > 1))
     val stringsForOpponent = board.layer(opponent(character)).strings
-    val captures = stringsForOpponent.filter(_.out.size == 1).map(_.out.iterator.next)
-    val effectiveIslands = islands.diff(captures).filterNot(p => stringsForPlayer.exists(_.out.contains(p)))
-
+    val captures = stringsForOpponent.filter(_.out.size == 1).flatMap(_.out)
+    val effectiveIslands = islands.diff(captures).filterNot(p => stringsForPlayer.exists(_.contains(p)))
     SortedSet() ++ space -- effectiveIslands -- suicides ++ captures
   }
 
@@ -118,26 +115,20 @@ object GoOptions {
       assert(options == Set(Position(1, 3), Position(2, 1)))
     }
 
-    //    {
-    //      val data = Array(
-    //        ".O.O.O.OO",
-    //        "OOOOOOOOO",
-    //        ".O.XOOXX.",
-    //        "XO.O..OXO",
-    //        ".OOOOOOOO",
-    //        "XXXOOXXXO",
-    //        ".XX.XXXXO",
-    //        "XXXXXXXOO",
-    //        ".XXXXXOO."
-    //      )
-    //      println("=================================")
-    //      val board = GoBoard(data)
-    //      println(board)
-    //      println("Options for 'X' :")
-    //      val options = GoOptions('X', board)
-    //      options.foreach(println)
-    //      //assert(options == Set(Position(1, 3), Position(2, 1)))
-    //    }
+    {
+      val data = Array(
+        "O.OOOO",
+        "OOOX.O",
+        "OOOOXO"
+      )
+      println("=================================")
+      val board = GoBoard(data)
+      println(board)
+      println("Options for 'X' :")
+      val options = GoOptions('X', board)
+      options.foreach(println)
+      assert(options.isEmpty)
+    }
 
   }
 
