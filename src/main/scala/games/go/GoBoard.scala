@@ -23,23 +23,20 @@ object GoBoard {
   }
 
   private def cellsToArray(cells: Cells[Char]) = {
-    val max = cells.data.max
-    val rowMax = max._1.row
-    val colMax = max._1.column
+    val (rowMax, colMax) = (cells.positions.max.row, cells.positions.max.column)
     val data = Array.fill(rowMax + 1)("?" * (colMax + 1))
     for (i <- 0 to rowMax) data.update(i, (0 to colMax).foldLeft("") { (str, j) => str + cells.get(Position(i, j)) })
     data
   }
 
-  private def buildCells(data: Array[String], initial: Char, undefined: Char): Cells[Char] = {
-    val rows = data.length
-    val columns = if (rows == 0) 0 else data(0).length
-    val cells = Cells(rows, columns, initial, undefined, Map.empty[Position, Char])
-    val mutations = Map[Position, Char]() ++ (for {
+  private def buildCells(input: Array[String], initial: Char, undefined: Char): Cells[Char] = {
+    val rows = input.length
+    val columns = if (rows == 0) 0 else input(0).length
+    val data = Map[Position, Char]() ++ (for {
       row <- 0 until rows
       column <- 0 until columns
-    } yield (Position(row, column), data(row).charAt(column)))
-    cells(mutations)
+    } yield (Position(row, column), input(row).charAt(column)))
+    Cells(data, initial, undefined)
   }
 
   private sealed case class CellData(id: Int, in: Set[Position], out: Set[Position])
@@ -48,11 +45,11 @@ object GoBoard {
     var maxId = 0
     var currentId = maxId
     val mapOfCellDataByPosition = collection.mutable.Map[Position, CellData]().withDefaultValue(CellData(0, Set.empty[Position], Set.empty))
-    val cellsByNaturalOrder = TreeMap(cells.data.toSeq: _*)
-    for ((position, char) <- cellsByNaturalOrder) {
+    cells.positions.foreach { position =>
+      val char = cells.get(position)
       if (char == color) {
         val sides = position * Directions.Sides
-        val effectiveSides = sides.filterNot(cells.get(_) == '!') // TODO parameterize
+        val effectiveSides = sides.filterNot(cells.get(_) == '?') // TODO parameterize
         val connexions = effectiveSides.filter(cells.get(_) == color)
         val freedom = effectiveSides.filter(cells.get(_) == '.') // TODO parameterize
         if (connexions.isEmpty) {
@@ -110,7 +107,7 @@ object GoBoard {
     new GoBoard(cells, layers)
   }
 
-  def apply(data: Array[String]): GoBoard = GoBoard(buildCells(data, '?', '!'))
+  def apply(data: Array[String]): GoBoard = GoBoard(buildCells(data, '.', '?'))
 
 }
 

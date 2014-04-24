@@ -11,11 +11,11 @@ object GoGame {
 
   private def reduce(board: GoBoard) = {
     val buffer = ListBuffer[Position]()
-    for (row <- 0 to board.cells.rows) {
-      for (column <- 0 to board.cells.columns) {
+    for (row <- 0 to board.cells.max.row) {
+      for (column <- 0 to board.cells.max.column) {
         val p = Position(row, column)
         if (board.cells.get(p) == '.') {
-          val neighbours = (p * Directions.AllAround).filter(board.cells.get(_) != '!')
+          val neighbours = (p * Directions.AllAround).filter(board.cells.get(_) != '?') // TODO
           val n = neighbours.count(board.cells.get(_) == '.')
           if (n != neighbours.size) buffer += p
         }
@@ -32,8 +32,8 @@ object GoGame {
   }
 
   private def evaluateBoard(character: Char, board: GoBoard, nextBoard: GoBoard): Double = {
-    val n0 = board.cells.filter(_._2 == opponent(character)).size
-    val n1 = nextBoard.cells.filter(_._2 == opponent(character)).size
+    val n0 = board.cells.filterOthers(_._2 == opponent(character)).size
+    val n1 = nextBoard.cells.filterOthers(_._2 == opponent(character)).size
     val globalFreedom = computeGlobalFreedom(nextBoard, character)
     val protectedLands = GoLands(character, nextBoard).size
     (1 + n0 - n1) * globalFreedom * 4 * (1 + protectedLands)
