@@ -1,0 +1,31 @@
+------------------------------------
+
+handle cycles in play
+
+------------------------------------
+
+players should learn to pass :
+
+  0123456789012
+ +-------------+
+0|.XX.X.XXXXOOO|
+1|XX.XXX.X.XOOO|
+2|.XXXXXXXXXO.O|
+3|XX.XXXXXXXOOO|
+4|X.XXX.OXXXOOO|
+5|XXXX.XXXXXO.O|
+6|.X.XX.XXXXOOO|
+ +-------------+
+  
+  0123456789012
+ +-------------+
+0|.XX.X.XXXXOOO|
+1|XX.XXX.X.XOOO|
+2|.XXXXXXXXXO.O|
+3|XX.XXXXXXXOOO|
+4|X.XXX.OXXXOOO|
+5|XXXX.XXXXXOOO|
+6|.X.XX.XXXXOOO|
+ +-------------+
+ 
+ ------------------------------------
