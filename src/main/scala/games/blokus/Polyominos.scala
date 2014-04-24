@@ -12,21 +12,20 @@ object Polyominos {
   sealed trait Polyomino { self =>
     val data: Array[String]
     private lazy val cells = buildCells(data)
-    lazy val order: Int = cells.definedPositions.size
+    lazy val order: Int = cells.filterOthers(_ => true).size
     lazy val instances: List[NormalizedInstance] = Instances(self, cells)
     private lazy val rendering = Rendering(self)
     override def toString = rendering
   }
 
-  private def buildCells(data: Array[String]): Cells[Char] = {
-    val rows = data.length
-    val columns = if (rows == 0) 0 else data(0).length
-    val cells = Cells(rows, columns, ' ', '?', Map.empty[Position, Char])
-    val mutations = Map[Position, Char]() ++ (for {
+  private def buildCells(input: Array[String]): Cells[Char] = {
+    val rows = input.length
+    val columns = if (rows == 0) 0 else input(0).length
+    val data = Map[Position, Char]() ++ (for {
       row <- 0 until rows
       column <- 0 until columns
-    } yield (Position(row, column), data(row).charAt(column)))
-    cells(mutations)
+    } yield (Position(row, column), input(row).charAt(column)))
+    Cells(data, ' ', '?')
   }
 
   object Instances {
@@ -88,7 +87,7 @@ object Polyominos {
     }
 
     def apply(selfType: Polyomino, cells: Cells[Char]): List[NormalizedInstance] = {
-      val positions: Set[Position] = cells.definedPositions
+      val positions: Set[Position] = cells.filterOthers(_ => true)
       val sides = positions.flatMap(_.*(Directions.Sides))
       val corners = positions.flatMap(_.*(Directions.Corners))
       val shadows = sides.diff(positions)
@@ -285,5 +284,9 @@ object Polyominos {
     Polyominos._16, Polyominos._17, Polyominos._18,
     Polyominos._19, Polyominos._20, Polyominos._21
   )
+
+  def main(args: Array[String]) {
+    values.foreach { p => println(p + "\n" + p.order + "\n") }
+  }
 
 }

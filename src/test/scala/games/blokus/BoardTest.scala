@@ -18,7 +18,6 @@ class BoardTest extends FunSpec {
 
     it("should handle cells") {
       val layer = Layer(1, 2)
-      assert(layer.cells === Cells(1, 2, State.Nirvana, State.Mudita))
       assert(layer.lights === Set.empty)
       assert(layer.selves === Set.empty)
     }

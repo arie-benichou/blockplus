@@ -1,11 +1,14 @@
 package games.blokus
 
 import components.Cells
-import components.Positions.Position
-import games.blokus.Board.Layer
-import games.blokus.Board.Layer.State
+import components.Positions._
+
 import games.blokus.Game.Color
 import games.blokus.Polyominos.Instances._
+
+import Board._
+import Board.Layer._
+import Board.Layer.State._
 
 object Board {
 
@@ -43,74 +46,54 @@ object Board {
       case object Nirvana extends State
     }
 
-    def apply(rows: Int, columns: Int): Layer =
-      Layer(Cells(rows, columns, State.Nirvana, State.Mudita, Map.empty[Position, State]))
+    def apply(data: Map[Position, State]): Layer = Layer(Cells(data, Nirvana, Mudita))
+
+    def apply(rows: Int, columns: Int): Layer = Layer((for (r <- 0 until rows; c <- 0 until columns) yield (Position(r, c), Nirvana)).toMap)
 
   }
 
   sealed case class Layer private (cells: Cells[State]) {
-
-    lazy val lights = cells.filter(_._2 == State.Metta)
-    lazy val selves = cells.filter(_._2 == State.Upekkha)
-
-    def isLight(position: Position) = cells.get(position) == State.Metta
-
+    lazy val lights = cells.filterOthers(_._2 == Metta)
+    lazy val selves = cells.filterOthers(_._2 == Upekkha)
+    def isLight(position: Position) = cells.get(position) == Metta
     def isMutable(position: Position): Boolean = cells.get(position) match {
-      case State.Nirvana => true
-      case State.Metta   => true
-      case _             => false
+      case Nirvana => true
+      case Metta   => true
+      case _       => false
     }
-
-    def isMutable(positions: Iterable[Position]): Boolean =
-      positions.forall(isMutable)
-
-    def apply(mutation: Map[Position, State]) =
-      new Layer(cells(mutation.filter(e => isMutable(e._1))))
-
+    def isMutable(positions: Iterable[Position]): Boolean = positions.forall(isMutable)
+    def apply(mutation: Map[Position, State]) = Layer(cells(mutation.filter(e => isMutable(e._1))))
   }
 
-  def apply(rows: Int, columns: Int) = {
-
+  def apply(rows: Int, columns: Int): Board = {
+    val emptyLayer = Layer(rows, columns)
     val data = List(
       (Color.Blue, Position(0, 0)),
       (Color.Yellow, Position(0, columns - 1)),
       (Color.Red, Position(rows - 1, columns - 1)),
       (Color.Green, Position(rows - 1, 0))
     )
-
-    val layers = data.foldLeft(Map[Color, Layer]())((layers, tuple) => {
+    val layers = data.foldLeft(Map[Color, Layer]()) { (map, tuple) =>
       val (color, position) = tuple
-      layers + ((color, Layer(rows, columns).apply(Map(position -> State.Metta))))
-    })
-
-    new Board(rows, columns, layers);
-
+      map + ((color, emptyLayer(Map(position -> Metta))))
+    }
+    Board(rows, columns, layers)
   }
 
 }
 
-import Board._
 sealed case class Board private (rows: Int, columns: Int, layers: Map[Color, Layer]) {
-
-  def isMutable(color: Color, position: Position): Boolean =
-    layers.get(color).get.isMutable(position)
-
-  def isMutable(color: Color, positions: Iterable[Position]): Boolean =
-    layers.get(color).get.isMutable(positions)
-
+  def isMutable(color: Color, position: Position): Boolean = layers.get(color).get.isMutable(position)
+  def isMutable(color: Color, positions: Iterable[Position]): Boolean = layers.get(color).get.isMutable(positions)
   def lights(color: Color) = layers.get(color).get.lights
-
   def selves(color: Color) = layers.get(color).get.selves
-
   def isLight(color: Color, position: Position) = layers(color).isLight(position)
-
   def apply(color: Color, positions: Set[Position], shadows: Set[Position], lights: Set[Position]): Board = {
-    val selfMutation = EmptyMutation ++ positions.map((_, State.Upekkha)) ++ shadows.map((_, State.Karuna)) ++ lights.map((_, State.Metta))
-    val otherMutation = EmptyMutation ++ positions.map((_, State.Mudita))
-    val newLayers = layers.keys.foldLeft(Map[Color, Layer]())((l, c) =>
+    val selfMutation = EmptyMutation ++ positions.map((_, Upekkha)) ++ shadows.map((_, Karuna)) ++ lights.map((_, Metta))
+    val otherMutation = EmptyMutation ++ positions.map((_, Mudita))
+    val newLayers = layers.keys.foldLeft(Map[Color, Layer]()) { (l, c) =>
       l + ((c, layers.get(c).get.apply(if (c == color) selfMutation else otherMutation)))
-    )
+    }
     copy(layers = newLayers)
   }
-
 }
