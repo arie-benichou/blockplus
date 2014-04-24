@@ -1,28 +1,45 @@
 package components
 
+import Cells._
+
+import scala.collection.immutable.SortedSet
+
+import components.Positions.Ordering
 import components.Positions.Position
 
 object Cells {
 
-  private def isInDimension(rows: Int, columns: Int)(p: Position) =
-    p.row > -1 && p.column > -1 && p.row < rows && p.column < columns
+  type Predicate[A] = ((Position, A)) => Boolean
+  type Positions = Set[Position]
 
-  def apply[A](rows: Int, columns: Int, initialSymbol: A, undefinedSymbol: A, data: Map[Position, A]): Cells[A] = {
-    val cells = (data.filterNot(_._2 == initialSymbol)).withDefaultValue(initialSymbol)
-    new Cells[A](cells, rows, columns, initialSymbol, undefinedSymbol)
+  def update[A](input: Map[Position, A], default: A, undefined: A, defaults: Map[Position, A], explicitelyUndefined: Map[Position, A], others: Map[Position, A]) = {
+    val (updateForDefaults, updateForNotDefaults) = input.partition(_._2 == default)
+    val (updateForExplicitelyUndefined, updateForOthers) = updateForNotDefaults.partition(_._2 == undefined)
+    (
+      defaults.filterNot(e => updateForNotDefaults.isDefinedAt(e._1)) ++ updateForDefaults,
+      explicitelyUndefined.filterNot(e => updateForDefaults.isDefinedAt(e._1) || updateForOthers.isDefinedAt(e._1)) ++ updateForExplicitelyUndefined,
+      others.filterNot(e => updateForDefaults.isDefinedAt(e._1) || updateForExplicitelyUndefined.isDefinedAt(e._1)) ++ updateForOthers
+    )
   }
 
-  def apply[A](rows: Int, columns: Int, initialSymbol: A, undefinedSymbol: A): Cells[A] = {
-    apply(rows, columns, initialSymbol, undefinedSymbol, Map.empty[Position, A])
+  def apply[A](data: Map[Position, A], default: A, undefined: A): Cells[A] = {
+    val (defaults, notDefaults) = data.partition(_._2 == default)
+    val (explicitelyUndefined, others) = notDefaults.partition(_._2 == undefined)
+    new Cells((defaults, explicitelyUndefined, others), default, undefined)
   }
 
 }
 
-sealed case class Cells[A] private (data: Map[Position, A], rows: Int, columns: Int, initialSymbol: A, undefinedSymbol: A) {
-  lazy val definedPositions: Set[Position] = data.keySet
-  // TODO prendre en compte les modifications apportés dans Blokus.Board
-  // TODO game of life test
-  def get(position: Position): A = if (Cells.isInDimension(rows, columns)(position)) data(position) else data.getOrElse(position, undefinedSymbol)
-  def filter(p: ((Position, A)) => Boolean): Set[Position] = data.filter(p).keySet
-  def apply(input: Map[Position, A]): Cells[A] = copy(data ++ (input.filterNot(_._2 == initialSymbol)))
+sealed case class Cells[A] private (data: (Map[Position, A], Map[Position, A], Map[Position, A]), default: A, undefined: A) {
+  private lazy val (defaults, explicitelyUndefined, others) = data
+  lazy val positions: Positions = SortedSet() ++ (this.defaults.keySet ++ this.others.keySet)
+  lazy val min: Position = this.positions.min
+  lazy val max: Position = this.positions.max
+  def get(position: Position): A = if (positions.contains(position)) this.others.getOrElse(position, this.default) else this.undefined
+  def filterDefaults(p: Predicate[A]): Positions = this.defaults.filter(p).keySet
+  def filterExplicitelyUndefined(p: Predicate[A]): Positions = this.explicitelyUndefined.filter(p).keySet
+  def filterOthers(p: Predicate[A]): Positions = this.others.filter(p).keySet
+  def filterDefined(p: Predicate[A]): Positions = this.filterDefaults(p) ++ this.filterOthers(p)
+  def filter(p: Predicate[A]): Positions = this.filterDefined(p) ++ filterExplicitelyUndefined(p)
+  def apply(input: Map[Position, A]): Cells[A] = copy(Cells.update(input, default, undefined, defaults, explicitelyUndefined, others))
 }
