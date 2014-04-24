@@ -7,9 +7,8 @@ import components.Positions.Position
 
 object GoOptions {
 
-  private def opponent(character: Char) = {
-    if (character == 'O') 'X' else if (character == 'X') 'O' else error("Unknown Character")
-  }
+  // TODO inject
+  private def opponent(character: Char) = if (character == 'O') 'X' else 'O'
 
   /**
    *  1) As long as there is at least one degree of freedom remaining once played
