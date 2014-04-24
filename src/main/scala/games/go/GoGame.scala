@@ -134,23 +134,24 @@ object GoGame {
               scores.update(player, evaluatedOptions.head._1)
               val bestOptions = evaluatedOptions.head._2
               bestOptions.toList(util.Random.nextInt(bestOptions.size))
-              //bestOptions.head
+              //              bestOptions.head
             }
           }
           else {
-            //askForOption(inputToPosition, options, nullOption)
-            //options.toList(util.Random.nextInt(options.size))
+            //            askForOption(inputToPosition, options, nullOption)
+            options.toList(util.Random.nextInt(options.size))
             //            val evaluatedOptions = evaluateOptions(options, player, board, 0)
             //            val bestOptions = evaluatedOptions.head._2
+            //            bestOptions.toList(util.Random.nextInt(bestOptions.size))
             //            bestOptions.head
-            options.head
+            //            options.head
           }
         history = selectedPosition :: history
         if (selectedPosition != nullOption) {
           println("=================================")
           println("player  : " + player)
           println("move    : " + selectedPosition)
-          ///println(positionToInput(selectedPosition))
+          //          println(positionToInput(selectedPosition))
           println
           board = board.play(selectedPosition, player)
           println(board)
@@ -165,7 +166,7 @@ object GoGame {
       }
       player = opponent(player)
       options = GoOptions(player, board).intersect(reduce(board))
-      //Thread.sleep(125)
+      //      Thread.sleep(125)
     }
     println("=================================")
     println("Game Over")
