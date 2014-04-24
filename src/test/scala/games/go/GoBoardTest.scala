@@ -4,6 +4,7 @@ import components.Positions._
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
+import games.go.GoBoard.GoString
 
 @RunWith(classOf[JUnitRunner])
 class GoBoardTest extends FunSuite {

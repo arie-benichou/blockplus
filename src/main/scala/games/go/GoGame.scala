@@ -3,10 +3,26 @@ package games.go
 import components.Positions._
 import scala.collection.immutable.TreeMap
 import scala.collection.immutable.SortedSet
+import scala.collection.mutable.ListBuffer
 
 object GoGame {
 
   private def opponent(character: Char) = if (character == 'O') 'X' else 'O'
+
+  private def reduce(board: GoBoard) = {
+    val buffer = ListBuffer[Position]()
+    for (row <- 0 to board.cells.rows) {
+      for (column <- 0 to board.cells.columns) {
+        val p = Position(row, column)
+        if (board.cells.get(p) == '.') {
+          val neighbours = (p * Directions.AllAround).filter(board.cells.get(_) != '!')
+          val n = neighbours.count(board.cells.get(_) == '.')
+          if (n != neighbours.size) buffer += p
+        }
+      }
+    }
+    buffer.toSet
+  }
 
   private def computeGlobalFreedom(board: GoBoard, character: Char): Double = {
     val s = board.layer(character).strings
@@ -27,7 +43,7 @@ object GoGame {
     val nextBoard = board.play(p, character)
     val score = evaluateBoard(character, board, nextBoard)
     if (level == 0) score else {
-      val opponentOptions = GoOptions(opponent(character), nextBoard).intersect(GoBoard.reduce(nextBoard))
+      val opponentOptions = GoOptions(opponent(character), nextBoard).intersect(reduce(nextBoard))
       if (opponentOptions.isEmpty) score
       else score - evaluateOptions(opponentOptions, opponent(character), nextBoard, level - 1).firstKey
     }
@@ -54,39 +70,19 @@ object GoGame {
 
     val character = 'X'
 
-    //    val data = Array(
-    //      ".........",
-    //      ".........",
-    //      ".........",
-    //      ".........",
-    //      "....O....",
-    //      ".........",
-    //      ".........",
-    //      ".........",
-    //      "........."
-    //    )
+    val board9X9 = Array(
+      ".........",
+      ".........",
+      ".........",
+      ".........",
+      "....O....",
+      ".........",
+      ".........",
+      ".........",
+      "........."
+    )
 
-    //    val data = Array(
-    //      "XXXXXXXO.",
-    //      "XXXXXXXOO",
-    //      "XXXXXX.O.",
-    //      "...X...OO",
-    //      "....OOOO.",
-    //      "....O..OO",
-    //      "....O..O.",
-    //      ".OOOO..OO",
-    //      ".......O."
-    //    )
-
-    //    val data = Array(
-    //      "O....",
-    //      ".....",
-    //      ".....",
-    //      ".....",
-    //      "....."
-    //    )
-
-    val data = Array(
+    val board19X19 = Array(
       "...................",
       "...................",
       "...................",
@@ -108,6 +104,7 @@ object GoGame {
       "..................."
     )
 
+    val data = board19X19
     val letters = "ABCDEFGHJ".take(data(0).length())
     val columns = letters.zipWithIndex.toMap
     val numbers = (1 to data.length).toList.reverse.mkString("")
@@ -116,7 +113,7 @@ object GoGame {
     def positionToInput(p: Position) = "" + letters(p.column) + numbers(p.row)
     var player = character
     var board = GoBoard(data)
-    var options = GoOptions(player, board).intersect(GoBoard.reduce(board))
+    var options = GoOptions(player, board).intersect(reduce(board))
     var history = List.empty[Position]
     val scores = collection.mutable.Map[Char, Double]().withDefaultValue(0)
     val nullOption = Position(-1, -1)
@@ -142,11 +139,11 @@ object GoGame {
           }
           else {
             //askForOption(inputToPosition, options, nullOption)
-            options.toList(util.Random.nextInt(options.size))
+            //options.toList(util.Random.nextInt(options.size))
             //            val evaluatedOptions = evaluateOptions(options, player, board, 0)
             //            val bestOptions = evaluatedOptions.head._2
             //            bestOptions.head
-            //options.head
+            options.head
           }
         history = selectedPosition :: history
         if (selectedPosition != nullOption) {
@@ -159,7 +156,6 @@ object GoGame {
           println(board)
           println("score   : " + scores(player))
           println("options : " + options.size)
-          //          verifyBoardUpdate(board)
         }
       }
       else {
@@ -168,40 +164,11 @@ object GoGame {
         history = nullOption :: history
       }
       player = opponent(player)
-      options = GoOptions(player, board).intersect(GoBoard.reduce(board))
-      Thread.sleep(125)
+      options = GoOptions(player, board).intersect(reduce(board))
+      //Thread.sleep(125)
     }
     println("=================================")
     println("Game Over")
-  }
-
-  private def verifyBoardUpdate(board: games.go.GoBoard) = {
-    val expectedBoard = GoBoard(GoBoard.cellsToArray(board.cells))
-    val actualBoard = board
-    if (actualBoard.layer('O') != expectedBoard.layer('O')) {
-      println("#################################")
-      println("\nError in board update: 'O'\n")
-      val s = GoBoard.cellsToArray(expectedBoard.cells)
-      s.foreach(e => println("\"" + e + "\","))
-      println("#################################")
-      exit
-    }
-    else if (actualBoard.layer('X') != expectedBoard.layer('X')) {
-      println("#################################")
-      println("\nError in board update: 'X'\n")
-      val s = GoBoard.cellsToArray(expectedBoard.cells)
-      s.foreach(e => println("\"" + e + "\","))
-      println("#################################")
-      exit
-    }
-    else if (actualBoard.layer('.') != expectedBoard.layer('.')) {
-      println("#################################")
-      println("\nError in board update: '.'\n")
-      val s = GoBoard.cellsToArray(expectedBoard.cells)
-      s.foreach(e => println("\"" + e + "\","))
-      println("#################################")
-      exit
-    }
   }
 
 }
