@@ -1,39 +1,48 @@
 package games.go
 
-import games.go.GoGame._
-import components.Positions._
-import scala.collection.immutable.TreeMap
-import scala.collection.immutable.SortedSet
-import scala.collection.mutable.ListBuffer
+import components.Positions.Position
+import games.go.GoGame.GoContext
+import games.go.GoGame.Move
 
 object GoMain {
 
-  private def renderer(context: GoContext, move: GoMove) = {
-    //println(context.id + " -> (" + move.data.row + "," + move.data.column + ")")
-    println(context.space)
-    Thread.sleep(1 * 300)
+  private implicit def renderer(context: GoContext) = {
+    println("=================================")
+    if (context.path.isEmpty) {
+      println("\nNew Game\n")
+      println("=================================")
+      println
+      println(context.space)
+    }
+    else {
+      val lastMove = context.path.head
+      if (lastMove.data == GoGame.NullOption) {
+        println("player " + lastMove.side + " has passed")
+      }
+      else {
+        println
+        println("player  : " + lastMove.side)
+        println("move    : " + lastMove.data)
+        println
+        println(context.space)
+      }
+    }
+    if (context.isTerminal) {
+      println("=================================")
+      println("\nGame is over !\n")
+      println("=================================")
+    }
   }
 
   private def choose(options: Set[Position]) = options.head
 
-  private def run(context: GoContext, renderer: (GoContext, GoMove) => Unit): GoContext = {
-    if (context.isTerminal) context
-    else {
-      val options = GoOptions(context.id, context.space)
-      val move = if (context.path.size < 10)
-        Move(context.id, choose(options))
-      else
-        Move(context.id, GoGame.NullOption)
-      val nextContext = context(move)
-      renderer(nextContext, move)
-      run(nextContext.forward, renderer)
-    }
+  private def run(context: GoContext)(implicit renderer: GoContext => Unit): GoContext = {
+    renderer(context)
+    if (context.isTerminal) context else run(context(Move(context.id, choose(GoOptions(context.id, context.space)))).forward)
   }
 
   def main(args: Array[String]) {
-    val initialContext = GoGame.context
-    val terminalContext = run(initialContext, renderer)
-    println("\nGame Over !\n")
+    run(GoGame.context)
   }
 
 }
