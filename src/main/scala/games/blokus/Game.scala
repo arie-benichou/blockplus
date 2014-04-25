@@ -48,7 +48,11 @@ object Game {
   type BlokusMove = abstractions.Move[Color, Instance]
   type BlokusContext = Context[Color, Pieces, Board, Instance]
 
-  val context: BlokusContext = Context(sides, Board(20, 20))(
+  def isTerminalFunction(context: BlokusContext) = context.sides.count == 0
+
+  val context: BlokusContext = Context(
+    sides,
+    Board(20, 20),
     (move: BlokusMove, space: Board) => space.apply(move.side, move.data.positions, move.data.shadows, move.data.lights),
     (move: BlokusMove, context: BlokusContext) => {
       val color = move.side
@@ -56,11 +60,9 @@ object Game {
       val positions = move.data.positions
       val pieces = context.side(color).values
       val board = context.space
-      pieces.contains(polyomino) &&
-        board.isMutable(color, positions) &&
-        (positions.isEmpty || positions.exists(board.isLight(color, _)))
-    }
-  )
+      pieces.contains(polyomino) && board.isMutable(color, positions) && (positions.isEmpty || positions.exists(board.isLight(color, _))
+      )
+    }, isTerminalFunction)
 
   private def isNullMove(move: BlokusMove) = move.data.selfType == Polyominos._0
 

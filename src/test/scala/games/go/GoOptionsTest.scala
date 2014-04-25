@@ -45,7 +45,7 @@ class GoOptionsTest extends FunSuite {
     )
     val board = GoBoard(data)
     val options = GoOptions('O', board)
-    assert(options.isEmpty)
+    assert(options == Set(GoGame.NullOption))
   }
 
   test("options - case 4") {
@@ -93,7 +93,7 @@ class GoOptionsTest extends FunSuite {
     )
     val board = GoBoard(data)
     val options = GoOptions('X', board)
-    assert(options.isEmpty)
+    assert(options == Set(GoGame.NullOption))
   }
 
 }

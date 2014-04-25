@@ -15,7 +15,7 @@ object GoOptions {
    *  2) Except if the opponent string will loose its last degree of freedom
    */
   def apply(character: Char, board: GoBoard): Set[Position] = {
-    val space = board.cells.filterDefaults(_ => true)
+    val space = board.cells.filterDefaults()
     val stringsForSpace = board.layer('.').strings // TODO parameterize
     val islands = stringsForSpace.filter(_.out.size < 1).flatMap(_.in)
     val stringsForPlayer = board.layer(character).strings.map(_.out)
@@ -25,7 +25,8 @@ object GoOptions {
     val stringsForOpponent = board.layer(opponent(character)).strings
     val captures = stringsForOpponent.filter(_.out.size == 1).flatMap(_.out)
     val effectiveIslands = islands.diff(captures).filterNot(p => stringsForPlayer.exists(_.contains(p)))
-    SortedSet() ++ space -- effectiveIslands -- suicides ++ captures
+    val options = SortedSet() ++ space -- effectiveIslands -- suicides ++ captures
+    if (options.isEmpty) Set(Position(Integer.MIN_VALUE, Integer.MIN_VALUE)) else options
   }
 
 }
