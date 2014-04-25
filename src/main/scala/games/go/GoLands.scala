@@ -4,7 +4,7 @@ import components.Positions.Position
 
 object GoLands {
 
-  // TODO inject
+  // TODO use adversity abstraction
   private def opponent(character: Char) = if (character == 'O') 'X' else 'O'
 
   def apply(character: Char, board: GoBoard): Set[Position] = {

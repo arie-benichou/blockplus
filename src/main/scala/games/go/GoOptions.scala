@@ -7,7 +7,7 @@ import components.Positions.Position
 
 object GoOptions {
 
-  // TODO inject
+  // TODO use adversity abstraction
   private def opponent(character: Char) = if (character == 'O') 'X' else 'O'
 
   /**

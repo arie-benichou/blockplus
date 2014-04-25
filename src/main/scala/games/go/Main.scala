@@ -18,7 +18,9 @@ object GoMain {
     else {
       val lastMove = context.path.head
       if (lastMove.data == GoGame.NullOption) {
+        println
         println("player " + lastMove.side + " has passed")
+        println
       }
       else {
         println
