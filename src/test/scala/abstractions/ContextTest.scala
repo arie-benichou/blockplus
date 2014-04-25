@@ -26,12 +26,13 @@ class ContextTest extends FunSpec {
 
     sealed case class Move(side: String, data: Int) extends abstractions.Move[String, Int]
 
-      def spaceMutation(move: abstractions.Move[String, Int], space: List[(String, Int)]) =
-        (move.side, move.data) :: space
+    def spaceMutation(move: abstractions.Move[String, Int], space: List[(String, Int)]) =
+      (move.side, move.data) :: space
 
-      def isLegal(move: abstractions.Move[String, Int], context: Context[String, Int, List[(String, Int)], Int]) = true
+    def isLegal(move: abstractions.Move[String, Int], context: Context[String, Int, List[(String, Int)], Int]) = true
+    def isTerminal(context: Context[String, Int, List[(String, Int)], Int]) = context.sides.count == 0
 
-    val context = Context(sides, List.empty[(String, Int)])(spaceMutation, isLegal)
+    val context = Context(sides, List.empty[(String, Int)], spaceMutation, isLegal, isTerminal)
 
     val sideOut1 = Side(-1)(
       (value: Int, p: Any) => value,
@@ -45,7 +46,7 @@ class ContextTest extends FunSpec {
 
     val sidesOut = Sides(adversity, List(sideOut1, sideOut2))
 
-    val terminalContext = Context(sidesOut, List.empty[(String, Int)])(spaceMutation, isLegal)
+    val terminalContext = Context(sidesOut, List.empty[(String, Int)], spaceMutation, isLegal, isTerminal)
 
     it("should verify theses properties") {
       assert(context.id === "side1")
@@ -85,7 +86,7 @@ class ContextTest extends FunSpec {
         (value: Int) => value != 0
       )
       val sides = Sides(adversity, List(inside, outside, outside, inside))
-      val context = Context(sides, List.empty[(String, Int)])(spaceMutation, isLegal)
+      val context = Context(sides, List.empty[(String, Int)], spaceMutation, isLegal, isTerminal)
       assert(!context.isTerminal)
       assert(context.next("side2") === "side4")
       assert(context.next("side1") === "side4")
