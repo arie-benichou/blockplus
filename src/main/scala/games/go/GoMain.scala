@@ -1,6 +1,7 @@
 package games.go
 
-import components.Positions.Position
+import scala.annotation.tailrec
+
 import games.go.GoGame.GoContext
 import games.go.GoGame.Move
 
@@ -34,15 +35,31 @@ object GoMain {
     }
   }
 
-  private def choose(options: Set[Position]) = options.head
+  private def choose(context: GoContext) = {
+    val options = GoOptions(context.id, context.space)
+    if (context.sideToPlay == context.side('O')) {
+      val evaluatedOptions = GoGame.evaluateOptions(options, context.id, context.space, 0)
+      // TODO shouldPass
+      val shouldPassToo = if (!context.path.isEmpty && context.path.head == Move('X', GoGame.NullOption))
+        evaluatedOptions.head._1 < GoGame.evaluateBoard('O', context.space, context.space)
+      else false
+      if (shouldPassToo) GoGame.NullOption
+      else {
+        val bestOptions = evaluatedOptions.head._2
+        bestOptions.toList(util.Random.nextInt(bestOptions.size))
+      }
+    }
+    else options.toList(util.Random.nextInt(options.size))
+  }
 
+  @tailrec
   private def run(context: GoContext)(implicit renderer: GoContext => Unit): GoContext = {
     renderer(context)
-    if (context.isTerminal) context else run(context(Move(context.id, choose(GoOptions(context.id, context.space)))).forward)
+    if (context.isTerminal) context else run(context(Move(context.id, choose(context))).forward)
   }
 
   def main(args: Array[String]) {
-    run(GoGame.context)
+    val terminalContext = run(GoGame.context)
   }
 
 }
