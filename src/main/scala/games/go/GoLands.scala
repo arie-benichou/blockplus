@@ -8,7 +8,7 @@ object GoLands {
   private def opponent(character: Char) = if (character == 'O') 'X' else 'O'
 
   def apply(character: Char, board: GoBoard): Set[Position] = {
-    val space = board.cells.filterDefaults(_ => true)
+    val space = board.cells.filterDefaults()
     val stringsForSpace = board.layer('.').strings // TODO parameterize
     val islands = stringsForSpace.filter(_.out.isEmpty).flatMap(_.in)
     val stringsForPlayer = board.layer(character).strings

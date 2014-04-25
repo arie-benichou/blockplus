@@ -1,10 +1,14 @@
 package components
 
+import scala.collection.immutable.SortedSet
+
 object Positions {
 
   type Direction = (Int, Int)
 
   val Origin = Position(0, 0)
+
+  implicit def tupleOfIntToPosition(t: (Int, Int)) = Position(t._1, t._2)
 
   implicit object Ordering extends Ordering[Position] {
     def compare(p1: Position, p2: Position): Int =
@@ -43,5 +47,32 @@ object Positions {
 
   def translateBy(vector: Direction, positions: Set[Position]): Set[Position] =
     positions.map(_ + vector)
+
+  trait Positions {
+    def min: Position
+    def max: Position
+    def positions: Iterable[Position]
+    def map[A](e: A): Map[Position, A]
+  }
+
+  sealed case class PositionsBuilder(from: Position, to: Position) {
+    def build(): Positions = ConcretePositions(from, to)
+  }
+
+  sealed case class from(f: Position) {
+    def to(t: Position) = PositionsBuilder(f, t).build()
+  }
+
+  private def computePositions(positions: Positions) = {
+    for {
+      r <- (positions.min.row to positions.max.row)
+      c <- (positions.min.column to positions.max.column)
+    } yield Position(r, c)
+  }
+
+  sealed case class ConcretePositions(min: Position, max: Position) extends Positions {
+    lazy val positions: Set[Position] = SortedSet() ++ computePositions(this)
+    def map[A](e: A) = this.positions.foldLeft(Map[Position, A]()) { (m, p) => m + (p -> e) }
+  }
 
 }

@@ -12,7 +12,7 @@ object Polyominos {
   sealed trait Polyomino { self =>
     val data: Array[String]
     private lazy val cells = buildCells(data)
-    lazy val order: Int = cells.filterOthers(_ => true).size
+    lazy val order: Int = cells.filterOthers().size
     lazy val instances: List[NormalizedInstance] = Instances(self, cells)
     private lazy val rendering = Rendering(self)
     override def toString = rendering
@@ -87,7 +87,7 @@ object Polyominos {
     }
 
     def apply(selfType: Polyomino, cells: Cells[Char]): List[NormalizedInstance] = {
-      val positions: Set[Position] = cells.filterOthers(_ => true)
+      val positions: Set[Position] = cells.filterOthers()
       val sides = positions.flatMap(_.*(Directions.Sides))
       val corners = positions.flatMap(_.*(Directions.Corners))
       val shadows = sides.diff(positions)
