@@ -1,35 +1,99 @@
 ------------------------------------
 
-handle cycles in play
-
-------------------------------------
-
 web ui
 
 ------------------------------------
 
-players should learn to pass :
+handle cycles in play:
 
-  0123456789012
- +-------------+
-0|.XX.X.XXXXOOO|
-1|XX.XXX.X.XOOO|
-2|.XXXXXXXXXO.O|
-3|XX.XXXXXXXOOO|
-4|X.XXX.OXXXOOO|
-5|XXXX.XXXXXO.O|
-6|.X.XX.XXXXOOO|
- +-------------+
-  
-  0123456789012
- +-------------+
-0|.XX.X.XXXXOOO|
-1|XX.XXX.X.XOOO|
-2|.XXXXXXXXXO.O|
-3|XX.XXXXXXXOOO|
-4|X.XXX.OXXXOOO|
-5|XXXX.XXXXXOOO|
-6|.X.XX.XXXXOOO|
- +-------------+
- 
- ------------------------------------
+player  : X
+move    : Position(8,7)
+
+  012345678
+ +---------+
+0|O.OO.O.O.|
+1|OOOOOOOOO|
+2|.OO.O.O.O|
+3|OO.OOOOOO|
+4|.OO.O.OO.|
+5|OOOOOO.OO|
+6|.OOO.OOO.|
+7|OOOOOO.OX|
+8|.OO.O.OX.|
+ +---------+
+
+=================================
+
+player  : O
+move    : Position(8,8)
+
+  012345678
+ +---------+
+0|O.OO.O.O.|
+1|OOOOOOOOO|
+2|.OO.O.O.O|
+3|OO.OOOOOO|
+4|.OO.O.OO.|
+5|OOOOOO.OO|
+6|.OOO.OOO.|
+7|OOOOOO.OX|
+8|.OO.O.O.O|
+ +---------+
+
+=================================
+
+player  : X
+move    : Position(8,7)
+
+  012345678
+ +---------+
+0|O.OO.O.O.|
+1|OOOOOOOOO|
+2|.OO.O.O.O|
+3|OO.OOOOOO|
+4|.OO.O.OO.|
+5|OOOOOO.OO|
+6|.OOO.OOO.|
+7|OOOOOO.OX|
+8|.OO.O.OX.|
+ +---------+
+
+=================================
+
+player  : O
+move    : Position(8,8)
+
+  012345678
+ +---------+
+0|O.OO.O.O.|
+1|OOOOOOOOO|
+2|.OO.O.O.O|
+3|OO.OOOOOO|
+4|.OO.O.OO.|
+5|OOOOOO.OO|
+6|.OOO.OOO.|
+7|OOOOOO.OX|
+8|.OO.O.O.O|
+ +---------+
+
+=================================
+
+player  : X
+move    : Position(8,7)
+
+  012345678
+ +---------+
+0|O.OO.O.O.|
+1|OOOOOOOOO|
+2|.OO.O.O.O|
+3|OO.OOOOOO|
+4|.OO.O.OO.|
+5|OOOOOO.OO|
+6|.OOO.OOO.|
+7|OOOOOO.OX|
+8|.OO.O.OX.|
+ +---------+
+
+
+
+------------------------------------

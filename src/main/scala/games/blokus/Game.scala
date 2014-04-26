@@ -43,6 +43,7 @@ object Game {
 
   private val adversity = Adversity[Color](Color.Blue, Color.Yellow, Color.Red, Color.Green)
 
+  // TODO define unique side1, side2, side3, side4
   private val sides = Sides(adversity, List(side, side, side, side))
 
   type BlokusMove = abstractions.Move[Color, Instance]

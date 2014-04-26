@@ -25,8 +25,7 @@ object GoOptions {
     val stringsForOpponent = board.layer(opponent(character)).strings
     val captures = stringsForOpponent.filter(_.out.size == 1).flatMap(_.out)
     val effectiveIslands = islands.diff(captures).filterNot(p => stringsForPlayer.exists(_.contains(p)))
-    val options = SortedSet() ++ space -- effectiveIslands -- suicides ++ captures
-    if (options.isEmpty) Set(Position(Integer.MIN_VALUE, Integer.MIN_VALUE)) else options
+    Set() ++ space -- effectiveIslands -- suicides ++ captures
   }
 
 }
