@@ -12,7 +12,7 @@ class CellsTest extends FunSpec {
 
     it("should verify the following properties") {
       val positions = Positions.from((0, 0)).to((0, 1))
-      val cells = Cells(positions.map('default), 'default, 'undefined)
+      val cells = Cells(positions.apply('default), 'default, 'undefined)
       assert(cells.default === 'default)
       assert(cells.undefined === 'undefined)
       assert(cells.min === positions.min)
@@ -22,7 +22,7 @@ class CellsTest extends FunSpec {
 
     it("should allow to filter positions with default symbol") {
       val positions = Positions.from((0, 0)).to((0, 1))
-      val data = positions.map('default)
+      val data = positions.apply('default)
         .updated((0, 1), 'other)
       val cells = Cells(data, 'default, 'undefined)
       assert(cells.filterDefaults() === Set(Position(0, 0)))
@@ -30,7 +30,7 @@ class CellsTest extends FunSpec {
 
     it("should return a symbol for a given position") {
       val positions = Positions.from((0, 0)).to((0, 1))
-      val data = positions.map('default)
+      val data = positions.apply('default)
         .updated((0, 1), 'other)
         .updated((0, 2), 'another)
       val cells = Cells(data, 'default, 'undefined)
@@ -42,7 +42,7 @@ class CellsTest extends FunSpec {
 
     it("should return a set of defined positions for a given predicate") {
       val positions = Positions.from((0, 0)).to((0, 1))
-      val data = positions.map('default)
+      val data = positions.apply('default)
         .updated((0, 1), 'other)
         .updated((0, 2), 'another)
       val cells = Cells(data, 'default, 'undefined)
@@ -53,7 +53,7 @@ class CellsTest extends FunSpec {
 
     it("should return a new instance of cells on update") {
       val positions = Positions.from((0, 0)).to((0, 1))
-      val data = positions.map('default)
+      val data = positions.apply('default)
       val cells = Cells(data, 'default, 'undefined)
       assert(cells.get(Position(0, -1)) === 'undefined)
       assert(cells.get(Position(0, 0)) === 'default)

@@ -34,8 +34,12 @@ object BlokusContextContainer {
     (color, positions)
   }
 
-  private def pathToString(path: Stack[BlokusMove]) = path.map(move =>
-    move.side.toString().charAt(0) + (move.data.positions.map(p => p.row + ":" + p.column)).mkString("-")).mkString(",")
+  private def moveToString(move: BlokusMove) = move.side.toString().charAt(0) + (move.data.positions.map(p => p.row + ":" + p.column)).mkString("-")
+
+  private def pathToString(ctx: BlokusContext) = {
+    val stack = ctx.history.map { ctx => moveToString(ctx.lastMove) }
+    stack.push(ctx.lastMove).mkString(",")
+  }
 
 }
 
@@ -55,8 +59,8 @@ class BlokusContextContainer extends GameContextContainer with JacksonJsonSuppor
     Map(
       "color" -> ctx.id.toString,
       "is-over" -> ctx.isTerminal.toString,
-      "path" -> BlokusContextContainer.pathToString(ctx.path).split(','),
-      "last-move" -> BlokusContextContainer.pathToString(ctx.path.take(1)),
+      "path" -> BlokusContextContainer.pathToString(ctx).split(','),
+      "last-move" -> BlokusContextContainer.moveToString(ctx.lastMove),
       "options" -> Options.get(ctx.id, ctx.space, ctx.side(ctx.id).values).map(_._3.map(p => p.row + ":" + p.column).mkString("-")),
       "scores" -> ctx.sides.map(e => (e._1.toString, Game.score(ctx, e._1))).toMap)
   }
@@ -68,31 +72,16 @@ class BlokusContextContainer extends GameContextContainer with JacksonJsonSuppor
       val instance = Game.positionsToPolyomino(positions)
       val move = Move(color, instance)
       val nextContext = ctx.apply(move)
-      if (!ctx.eq(nextContext)) {
-        this.synchronized {
-
-          previousContext = currentContext;
-
-          // TODO memoize context options
-          val options = Options.get(previousContext.id, previousContext.space, previousContext.side(previousContext.id).values)
-          //          println(options);
-
-          currentContext = Game.forceNullMove(nextContext.forward)
-        }
-      } else {
-        val path = BlokusContextContainer.pathToString(ctx.path)
-        println("################################Illegal Instruction################################")
-        println("path               : " + path)
-        println("query              : " + params("move"))
-        println("current side       : " + ctx.id)
-        println("incoming side      : " + move.side)
-        println("incoming positions : " + positions)
-        println(move.data)
-        println("http://localhost:8080/angular-seed-master/app/#/rendering?data=" + path)
+      this.synchronized {
+        previousContext = currentContext;
+        // TODO memoize context options
+        val options = Options.get(previousContext.id, previousContext.space, previousContext.side(previousContext.id).values)
+        currentContext = Game.forceNullMove(nextContext)
       }
-    } catch {
+    }
+    catch {
       case e: Exception => {
-        val path = BlokusContextContainer.pathToString(ctx.path)
+        val path = BlokusContextContainer.pathToString(ctx)
         println("################################Illegal Instruction################################")
         println("path               : " + path)
         println("query              : " + params("move"))

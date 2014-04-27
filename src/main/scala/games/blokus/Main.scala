@@ -56,7 +56,7 @@ object Main {
       val move = Move(context.id, instance)
       val nextContext = context(move)
       renderer(nextContext, light, positions, instance)
-      run(nextContext.forward, renderer)
+      run(nextContext, renderer)
     }
 
   }

@@ -4,7 +4,6 @@ import org.junit.runner.RunWith
 import org.scalatest.FunSpec
 import org.scalatest.junit.JUnitRunner
 import scala.collection.immutable.Stack
-
 @RunWith(classOf[JUnitRunner])
 class ContextTest extends FunSpec {
 
@@ -31,8 +30,9 @@ class ContextTest extends FunSpec {
 
     def isLegal(move: abstractions.Move[String, Int], context: Context[String, Int, List[(String, Int)], Int]) = true
     def isTerminal(context: Context[String, Int, List[(String, Int)], Int]) = context.sides.count == 0
+    def onUpdate(context: Context[String, Int, List[(String, Int)], Int]) = ()
 
-    val context = Context(sides, List.empty[(String, Int)], spaceMutation, isLegal, isTerminal)
+    val context = Context(sides, List.empty[(String, Int)], spaceMutation, isLegal, isTerminal, onUpdate)
 
     val sideOut1 = Side(-1)(
       (value: Int, p: Any) => value,
@@ -46,13 +46,13 @@ class ContextTest extends FunSpec {
 
     val sidesOut = Sides(adversity, List(sideOut1, sideOut2))
 
-    val terminalContext = Context(sidesOut, List.empty[(String, Int)], spaceMutation, isLegal, isTerminal)
+    val terminalContext = Context(sidesOut, List.empty[(String, Int)], spaceMutation, isLegal, isTerminal, onUpdate)
 
     it("should verify theses properties") {
       assert(context.id === "side1")
       assert(context.sides === sides)
       assert(context.space === List.empty[(String, Int)])
-      assert(context.path.isEmpty)
+      assert(context.history.isEmpty)
       assert(context.isTerminal === false)
       assert(context.sideToPlay === side1)
       assert(context.next === "side2")
@@ -86,51 +86,38 @@ class ContextTest extends FunSpec {
         (value: Int) => value != 0
       )
       val sides = Sides(adversity, List(inside, outside, outside, inside))
-      val context = Context(sides, List.empty[(String, Int)], spaceMutation, isLegal, isTerminal)
+      val context = Context(sides, List.empty[(String, Int)], spaceMutation, isLegal, isTerminal, onUpdate)
       assert(!context.isTerminal)
       assert(context.next("side2") === "side4")
       assert(context.next("side1") === "side4")
     }
 
-    it("should forward a new instance having the next side as the side to play") {
-      assert(!context.isTerminal)
-      assert(context.sideToPlay === side1)
-      val nextContext = context.forward
-      assert(nextContext.sideToPlay === side2)
-      assert(nextContext.id === context.next)
-      assert(nextContext.sides === context.sides)
-      assert(nextContext.space === context.space)
-      assert(nextContext.isTerminal === context.isTerminal)
-      assert(nextContext.next === context.id)
-    }
-
-    it("should forward its own instance if terminal") {
-      assert(terminalContext.isTerminal)
-      assert(terminalContext.forward === terminalContext)
-    }
-
     it("should return a new instance on update") {
       val move = Move("side1", 1)
       val newContext = context(move)
-      assert(newContext.id === context.id)
-      assert(newContext.sides === context.sides.apply(move.side, move.data))
+      assert(newContext.id === context.next)
+      assert(newContext.sides === context.sides(move.side, move.data))
       assert(newContext.space === (move.side, move.data) :: context.space)
       assert(newContext.isTerminal === false)
-      assert(newContext.path === Stack(move))
-      assert(newContext.sideToPlay === context.sideToPlay(1))
-      assert(newContext.next === context.next)
+      assert(newContext.history === Stack(context))
+      assert(newContext.sideToPlay === newContext.side("side2"))
+      assert(newContext.next === context.id)
     }
 
-    it("should return its own instance if move is not for the side to play") {
+    it("should throw an exception if move is not for the side to play") {
       assert(context.id === "side1")
       val move = Move("side2", 1)
-      assert(context(move) === context)
+      intercept[RuntimeException] {
+        context(move)
+      }
     }
 
-    it("should return its own instance if terminal") {
+    it("should throw an exception if terminal") {
       val move = Move("side1", 1)
       assert(terminalContext.isTerminal)
-      assert(terminalContext(move) === terminalContext)
+      intercept[RuntimeException] {
+        terminalContext(move)
+      }
     }
 
   }

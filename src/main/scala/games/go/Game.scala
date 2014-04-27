@@ -2,15 +2,15 @@ package games.go
 
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.TreeMap
-
 import abstractions.Adversity
 import abstractions.Context
 import abstractions.Side
 import abstractions.Sides
+import components.Positions
+import components.Positions._
+import components.Cells
 
-import components.Positions.Directions
-import components.Positions.Ordering
-import components.Positions.Position
+import Board.Symbols._
 
 object Game {
 
@@ -25,28 +25,8 @@ object Game {
     ".........",
     "........."
   )
-
-  val Board19X19 = Array(
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "...................",
-    "..................."
-  )
+  val Board13X13 = Cells((Positions.from(Origin).to((12, 12)))(Space), Space, Undefined)
+  val Board19X19 = Cells((Positions.from(Origin).to((18, 18)))(Space), Space, Undefined)
 
   type GoContext = Context[Char, Char, Board, Position]
   type GoMove = abstractions.Move[Char, Position]
@@ -66,12 +46,16 @@ object Game {
   private def application(move: GoMove, space: Board) = if (move.data == NullOption) space else space.play(move.data, move.side)
 
   // TODO optimisable
-  // TODO détecter les cycles
-  private def isLegal(move: GoMove, context: GoContext) = move.data == NullOption || context.space.layer(context.id).options.contains(move.data)
+  private def isLegal(move: GoMove, context: GoContext) = {
+    move.data == NullOption || context.space.layer(context.id).options.contains(move.data) &&
+      !context.history.exists(_.space == application(move, context.space))
+  }
 
   private def isTerminal(context: GoContext) =
-    (context.path.size > 2 && context.path.take(2).toSet == Set(Move('O', NullOption), Move('X', NullOption)))
+    (context.history.size > 2 && Set(context.lastMove, context.history.head.lastMove) == Set(Move('O', NullOption), Move('X', NullOption)))
 
-  val context: GoContext = Context(sides, Board(Board9X9), application, isLegal, isTerminal)
+  private def onUpdate(context: GoContext) = ()
+
+  val context: GoContext = Context(sides, Board(Board13X13), application, isLegal, isTerminal, onUpdate)
 
 }

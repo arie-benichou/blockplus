@@ -74,7 +74,7 @@ class PositionsTest extends FunSpec {
       val positions = Positions.from((0, 0)).to((1, 1))
       assert(positions.min === Position(0, 0))
       assert(positions.max === Position(1, 1))
-      assert(positions.map('.') === Map(
+      assert(positions('.') === Map(
         Position(0, 0) -> '.',
         Position(0, 1) -> '.',
         Position(1, 0) -> '.',

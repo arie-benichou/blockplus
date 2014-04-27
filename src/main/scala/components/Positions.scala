@@ -52,7 +52,7 @@ object Positions {
     def min: Position
     def max: Position
     def positions: Iterable[Position]
-    def map[A](e: A): Map[Position, A]
+    def apply[A](e: A): Map[Position, A]
   }
 
   sealed case class PositionsBuilder(from: Position, to: Position) {
@@ -72,7 +72,7 @@ object Positions {
 
   sealed case class ConcretePositions(min: Position, max: Position) extends Positions {
     lazy val positions: Set[Position] = SortedSet() ++ computePositions(this)
-    def map[A](e: A) = this.positions.foldLeft(Map[Position, A]()) { (m, p) => m + (p -> e) }
+    def apply[A](e: A) = this.positions.foldLeft(Map[Position, A]()) { (m, p) => m + (p -> e) }
   }
 
 }

@@ -51,6 +51,8 @@ object Game {
 
   def isTerminalFunction(context: BlokusContext) = context.sides.count == 0
 
+  def onUpdate(context: BlokusContext) = ()
+
   val context: BlokusContext = Context(
     sides,
     Board(20, 20),
@@ -63,16 +65,18 @@ object Game {
       val board = context.space
       pieces.contains(polyomino) && board.isMutable(color, positions) && (positions.isEmpty || positions.exists(board.isLight(color, _))
       )
-    }, isTerminalFunction)
+    }, isTerminalFunction, onUpdate)
 
   private def isNullMove(move: BlokusMove) = move.data.selfType == Polyominos._0
 
-  // TODO tester avec un path vide
   private def lastMove(context: BlokusContext, side: Color): BlokusMove = {
-    val path = context.path.dropWhile(_.side != side)
-    if (isNullMove(path.head))
-      path.tail.dropWhile(_.side != side).head
-    else path.head
+    if (context.lastMove.side == side) context.lastMove
+    else {
+      val path = context.history.dropWhile(_.lastMove.side != side)
+      if (isNullMove(path.head.lastMove))
+        path.tail.dropWhile(_.lastMove.side != side).head.lastMove
+      else path.head.lastMove
+    }
   }
 
   private def isSpecialMove(move: BlokusMove) = move.data.selfType == Polyominos._1
@@ -101,7 +105,7 @@ object Game {
       val options = Options.get(context.id, context.space, context.side(context.id).values)
       if (options == Options.Null) {
         val move = Move(context.id, Polyominos._0.instances.head.translateBy((0, 0)))
-        forceNullMove(context.apply(move).forward)
+        forceNullMove(context.apply(move))
       }
       else context
     }

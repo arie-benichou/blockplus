@@ -26,10 +26,10 @@ class GameTest extends FunSpec {
       assert(context.sides.count === 4)
 
       assert(context.id == Color.Blue)
-      assert(context.forward.id === Color.Yellow)
-      assert(context.forward.forward.id === Color.Red)
-      assert(context.forward.forward.forward.id === Color.Green)
-      assert(context.forward.forward.forward.forward.id === Color.Blue)
+      //      assert(context.forward.id === Color.Yellow)
+      //      assert(context.forward.forward.id === Color.Red)
+      //      assert(context.forward.forward.forward.id === Color.Green)
+      //      assert(context.forward.forward.forward.forward.id === Color.Blue)
 
       assert(context.side(Color.Blue).values === value)
       assert(context.side(Color.Yellow).values === value)
@@ -50,9 +50,9 @@ class GameTest extends FunSpec {
         assert(context.sideToPlay.values.contains(p1.selfType))
         val move = Move(Color.Blue, p1)
         val newContext = context.apply(move)
-        assert(!newContext.sideToPlay.values.contains(p1.selfType))
+        assert(!newContext.side(Color.Blue).values.contains(p1.selfType))
         assert(!newContext.space.selves(context.id).isEmpty)
-        assert(newContext.sideToPlay.isIn)
+        assert(newContext.side(Color.Blue).isIn)
       }
 
       {
@@ -61,9 +61,9 @@ class GameTest extends FunSpec {
         assert(context.space.selves(context.id).isEmpty)
         val move = Move(Color.Blue, p0)
         val newContext = context.apply(move)
-        assert(!newContext.sideToPlay.values.contains(p0.selfType))
+        assert(!newContext.side(Color.Blue).values.contains(p0.selfType))
         assert(newContext.space.selves(context.id).isEmpty)
-        assert(newContext.sideToPlay.isOut)
+        assert(newContext.side(Color.Blue).isOut)
       }
 
     }
