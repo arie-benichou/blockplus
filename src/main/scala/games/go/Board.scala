@@ -1,8 +1,8 @@
 package games.go
 
-import GoBoard._
-import GoBoard.Symbols._
-import GoBoard.Layers._
+import Board._
+import Board.Symbols._
+import Board.Layers._
 import components.Cells
 import components.Positions._
 import scala.collection.immutable.TreeMap
@@ -10,7 +10,7 @@ import scala.collection.mutable.{ Map => MutableMap }
 import scala.collection.immutable.SortedSet
 import scala.annotation.tailrec
 
-object GoBoard {
+object Board {
 
   object Symbols {
     val Black = 'O'
@@ -77,11 +77,11 @@ object GoBoard {
       }
       strings.toSet
     }
-    def apply(board: GoBoard, character: Char) = computeStrings(board.cells, character)
+    def apply(board: Board, character: Char) = computeStrings(board.cells, character)
   }
 
   private object Lands {
-    def apply(board: GoBoard, character: Char) = {
+    def apply(board: Board, character: Char) = {
       val stringsForSpace = board.layer(Space).strings
       val islands = stringsForSpace.filter(_.out.isEmpty).flatMap(_.in)
       val stringsForPlayer = board.layer(character).strings
@@ -92,7 +92,7 @@ object GoBoard {
   }
 
   private object Options {
-    def apply(board: GoBoard, character: Char) = {
+    def apply(board: Board, character: Char) = {
       val stringsForSpace = board.layer(Space).strings
       val islands = stringsForSpace.filter(_.out.size < 1).flatMap(_.in)
       val stringsForPlayer = board.layer(character).strings.map(_.out)
@@ -107,12 +107,12 @@ object GoBoard {
   }
 
   object Layers {
-    sealed case class Layer(character: Char, board: GoBoard) {
+    sealed case class Layer(character: Char, board: Board) {
       lazy val strings = Strings(this.board, this.character)
       lazy val lands = Lands(this.board, this.character)
       lazy val options = Options(this.board, this.character)
     }
-    def apply(board: GoBoard) = Map(Black -> Layer(Black, board), White -> Layer(White, board), Space -> Layer(Space, board))
+    def apply(board: Board) = Map(Black -> Layer(Black, board), White -> Layer(White, board), Space -> Layer(Space, board))
   }
 
   private object ToString {
@@ -127,12 +127,12 @@ object GoBoard {
       val out0 = "  " + (0 until data(0).length).map(_ % 10).mkString + "\n" + stringTopBottom
       data.foldLeft(out0)((out, in) => out + ((out.count(_ == '\n') - 2) % 10) + "|" + in + "|\n") + stringTopBottom
     }
-    def apply(board: GoBoard) = toString(cellsToArray(board.cells))
+    def apply(board: Board) = toString(cellsToArray(board.cells))
   }
 
   ///////////////////////////////////////////////////////////////////////////////////
 
-  private def reduce(board: GoBoard) = {
+  private def reduce(board: Board) = {
     val positions = board.spaces.foldLeft(Set[Position]()) { (s, p) =>
       val neighbours = (p * Directions.AllAround).filter(board.cells.get(_) != Undefined)
       if (neighbours.count(board.cells.get(_) == Space) != neighbours.size) s + p else s
@@ -142,17 +142,17 @@ object GoBoard {
 
   private def opponent(character: Char) = if (character == Black) White else Black
 
-  private def update(board: GoBoard, position: Position, character: Char) = {
+  private def update(board: Board, position: Position, character: Char) = {
     val capturedPositions = board.layer(opponent(character)).strings.filter(_.out == Set(position)).flatMap(s => s.in)
-    GoBoard(board.cells.apply(capturedPositions.foldLeft(Map(position -> character))((map, p) => map + (p -> Space))))
+    Board(board.cells.apply(capturedPositions.foldLeft(Map(position -> character))((map, p) => map + (p -> Space))))
   }
 
   ///////////////////////////////////////////////////////////////////////////////////  
 
-  def apply(data: Array[String]): GoBoard = GoBoard(Parser(data))
+  def apply(data: Array[String]): Board = Board(Parser(data))
 }
 
-sealed case class GoBoard(cells: Cells[Char]) {
+sealed case class Board(cells: Cells[Char]) {
 
   lazy val spaces = this.cells.filterDefaults()
   lazy val mainSpaces = reduce(this)

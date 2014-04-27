@@ -12,7 +12,7 @@ import components.Positions.Directions
 import components.Positions.Ordering
 import components.Positions.Position
 
-object GoGame {
+object Game {
 
   val Board9X9 = Array(
     ".........",
@@ -48,7 +48,7 @@ object GoGame {
     "..................."
   )
 
-  type GoContext = Context[Char, Char, GoBoard, Position]
+  type GoContext = Context[Char, Char, Board, Position]
   type GoMove = abstractions.Move[Char, Position]
 
   sealed case class Move(side: Char, data: Position) extends abstractions.Move[Char, Position]
@@ -63,7 +63,7 @@ object GoGame {
 
   private val sides = Sides(Adversity('O', 'X'), List(side1, side2))
 
-  private def application(move: GoMove, space: GoBoard) = if (move.data == NullOption) space else space.play(move.data, move.side)
+  private def application(move: GoMove, space: Board) = if (move.data == NullOption) space else space.play(move.data, move.side)
 
   // TODO optimisable
   // TODO détecter les cycles
@@ -72,6 +72,6 @@ object GoGame {
   private def isTerminal(context: GoContext) =
     (context.path.size > 2 && context.path.take(2).toSet == Set(Move('O', NullOption), Move('X', NullOption)))
 
-  val context: GoContext = Context(sides, GoBoard(Board9X9), application, isLegal, isTerminal)
+  val context: GoContext = Context(sides, Board(Board9X9), application, isLegal, isTerminal)
 
 }
