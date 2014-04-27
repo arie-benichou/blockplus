@@ -20,7 +20,7 @@ object Board {
   }
 
   private object Parser {
-    def cells(input: Array[String], initial: Char, undefined: Char): Cells[Char] = {
+    private def cells(input: Array[String], initial: Char, undefined: Char) = {
       val rows = input.length
       val columns = if (rows == 0) 0 else input(0).length
       val data = Map[Position, Char]() ++ (for {
@@ -37,7 +37,7 @@ object Board {
       override def toString = "\n  in:\n    " + this.in.mkString("\n    ") + "\n  out:\n    " + this.out.mkString("\n    ") + "\n"
     }
     sealed case class CellData(id: Int, in: Set[Position], out: Set[Position])
-    private def f(character: Char, cells: Cells[Char], tuple: (Int, Int), map: MutableMap[Position, CellData], position: Position): (Int, Int) = {
+    private def updateMap(cells: Cells[Char], character: Char, position: Position, map: MutableMap[Position, CellData], tuple: (Int, Int)) = {
       val (max, id) = tuple
       val effectiveSides = (position * Directions.Sides).filterNot(cells.get(_) == Undefined)
       val connexions = effectiveSides.filter(cells.get(_) == character)
@@ -62,20 +62,16 @@ object Board {
       map.put(position, CellData(maxAndCurrentId._2, connexions, spaces))
       maxAndCurrentId
     }
-    private def buildMapOfCellDataByPosition(char: Char, cells: Cells[Char]): MutableMap[Position, CellData] = {
+    private def buildMap(char: Char, cells: Cells[Char]): MutableMap[Position, CellData] = {
       val map = MutableMap[Position, CellData]().withDefaultValue(CellData(0, Set(), Set()))
-      cells.positions.foldLeft((0, 0))((tuple, position) => if (cells.get(position) == char) f(char, cells, tuple, map, position) else tuple)
+      cells.positions.foldLeft((0, 0))((tuple, p) => if (cells.get(p) == char) updateMap(cells, char, p, map, tuple) else tuple)
       map
     }
-    def computeStrings(cells: Cells[Char], character: Char) = {
-      val map = buildMapOfCellDataByPosition(character, cells)
+    private def computeStrings(cells: Cells[Char], character: Char) = {
+      val map = buildMap(character, cells)
       val mapGroupedById = map.groupBy(e => e._2.id).mapValues(_.keySet)
       val rawStrings = mapGroupedById.mapValues(p => (p, p.flatMap(p => map(p).out)))
-      val strings = rawStrings.map { e =>
-        val value = e._2
-        GoString(value._1.toSet, value._2.toSet)
-      }
-      strings.toSet
+      rawStrings.map { e => val value = e._2; GoString(value._1.toSet, value._2.toSet) }.toSet
     }
     def apply(board: Board, character: Char) = computeStrings(board.cells, character)
   }
@@ -116,21 +112,19 @@ object Board {
   }
 
   private object ToString {
-    def cellsToArray(cells: Cells[Char]) = {
+    private def cellsToArray(cells: Cells[Char]) = {
       val (rowMax, colMax) = (cells.positions.max.row, cells.positions.max.column)
       val data = Array.fill(rowMax + 1)(Undefined.toString * (colMax + 1))
       for (i <- 0 to rowMax) data.update(i, (0 to colMax).foldLeft("") { (str, j) => str + cells.get(Position(i, j)) })
       data
     }
-    def toString(data: Array[String]) = {
+    private def toString(data: Array[String]) = {
       val stringTopBottom = " " + "+" + "-" * (data(0).length) + "+" + "\n"
       val out0 = "  " + (0 until data(0).length).map(_ % 10).mkString + "\n" + stringTopBottom
       data.foldLeft(out0)((out, in) => out + ((out.count(_ == '\n') - 2) % 10) + "|" + in + "|\n") + stringTopBottom
     }
     def apply(board: Board) = toString(cellsToArray(board.cells))
   }
-
-  ///////////////////////////////////////////////////////////////////////////////////
 
   private def reduce(board: Board) = {
     val positions = board.spaces.foldLeft(Set[Position]()) { (s, p) =>
@@ -147,22 +141,15 @@ object Board {
     Board(board.cells.apply(capturedPositions.foldLeft(Map(position -> character))((map, p) => map + (p -> Space))))
   }
 
-  ///////////////////////////////////////////////////////////////////////////////////  
-
   def apply(data: Array[String]): Board = Board(Parser(data))
 }
 
 sealed case class Board(cells: Cells[Char]) {
-
   lazy val spaces = this.cells.filterDefaults()
   lazy val mainSpaces = reduce(this)
-
   private lazy val layers: Map[Char, Layer] = Layers(this)
   def layer(character: Char) = this.layers(character)
-
   private lazy val asString = ToString(this)
   override def toString = this.asString
-
   def play(position: Position, character: Char) = update(this, position, character)
-
 }
