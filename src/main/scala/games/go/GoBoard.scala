@@ -9,7 +9,16 @@ import scala.annotation.tailrec
 
 object GoBoard {
 
+  // TODO use adversity abstraction
   private def opponent(character: Char) = if (character == 'O') 'X' else 'O'
+
+  private def reduce(board: GoBoard) = {
+    val positions = board.spaces.foldLeft(Set[Position]()) { (s, p) =>
+      val neighbours = (p * Directions.AllAround).filter(board.cells.get(_) != '?') // TODO
+      if (neighbours.count(board.cells.get(_) == '.') != neighbours.size) s + p else s // TODO
+    }
+    if (positions.isEmpty) board.spaces else positions
+  }
 
   private def update(board: GoBoard, position: Position, character: Char) = {
     val capturedPositions = board.layer(opponent(character)).strings.filter(_.out == Set(position)).flatMap(s => s.in)
@@ -41,6 +50,7 @@ object GoBoard {
 
   private sealed case class CellData(id: Int, in: Set[Position], out: Set[Position])
 
+  // TODO functional way
   private def buildMapOfCellDataByPosition(color: Char, cells: Cells[Char]): collection.mutable.Map[Position, CellData] = {
     var maxId = 0
     var currentId = maxId
@@ -113,6 +123,8 @@ object GoBoard {
 
 sealed case class GoBoard(cells: Cells[Char], layers: Map[Char, Layer]) {
   lazy val consoleView = buildConsoleView(cellsToArray(this.cells))
+  lazy val spaces = this.cells.filterDefaults()
+  lazy val mainSpaces = reduce(this)
   def layer(character: Char) = layers(character)
   def play(position: Position, character: Char) = update(this, position, character)
   override def toString = this.consoleView

@@ -38,23 +38,23 @@ object GoMain {
   }
 
   private def choose(context: GoContext) = {
-    val options = GoOptions(context.id, context.space)
+    val options = GoOptions(context.id, context.space).intersect(context.space.mainSpaces)
     if (options.isEmpty) GoGame.NullOption
     else if (options.size == 1) options.head
     else {
       if (context.sideToPlay == context.side('O')) {
-        val evaluatedOptions = GoGame.evaluateOptions(options, context.id, context.space, 0)
+        val evaluatedOptions = GoEvaluation.evaluateOptions(options, context.id, context.space, 0)
         // TODO shouldPass
         val shouldPassToo = if (!context.path.isEmpty && context.path.head == Move('X', GoGame.NullOption))
-          evaluatedOptions.head._1 < GoGame.evaluateBoard('O', context.space, context.space)
+          evaluatedOptions.head._1 < GoEvaluation.evaluateBoard('O', context.space, context.space)
         else false
         if (shouldPassToo) GoGame.NullOption
         else {
           val bestOptions = evaluatedOptions.head._2
-          bestOptions.toList(util.Random.nextInt(bestOptions.size))
+          bestOptions.head //.toList(util.Random.nextInt(bestOptions.size))
         }
       }
-      else options.toList(util.Random.nextInt(options.size))
+      else options.head //.toList(util.Random.nextInt(options.size))
     }
   }
 
