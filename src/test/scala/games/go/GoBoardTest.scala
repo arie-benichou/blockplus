@@ -7,7 +7,7 @@ import org.scalatest.junit.JUnitRunner
 
 import components.Positions._
 
-import games.go.GoBoard.GoString
+import games.go.GoBoard.Strings._
 
 @RunWith(classOf[JUnitRunner])
 class GoBoardTest extends FunSpec {
@@ -502,7 +502,7 @@ class GoBoardTest extends FunSpec {
       )
 
       val board = GoBoard(data)
-      val lands = board.lands('O')
+      val lands = board.layer('O').lands
       assert(lands == Set(
         Position(0, 2),
         Position(1, 0),
@@ -521,7 +521,7 @@ class GoBoardTest extends FunSpec {
         "XXX.."
       )
       val board = GoBoard(data)
-      val lands = board.lands('O')
+      val lands = board.layer('O').lands
       assert(lands.isEmpty)
     }
   }
@@ -537,7 +537,7 @@ class GoBoardTest extends FunSpec {
         "..."
       )
       val board = GoBoard(data)
-      val options = board.options('O')
+      val options = board.layer('O').options
       assert(options == Set(Position(4, 0), Position(4, 1), Position(4, 2)))
     }
 
@@ -550,7 +550,7 @@ class GoBoardTest extends FunSpec {
         "XX."
       )
       val board = GoBoard(data)
-      val options = board.options('O')
+      val options = board.layer('O').options
       assert(options == Set(Position(1, 0), Position(4, 2)))
     }
 
@@ -563,7 +563,7 @@ class GoBoardTest extends FunSpec {
         "XX"
       )
       val board = GoBoard(data)
-      val options = board.options('O')
+      val options = board.layer('O').options
       assert(options == Set())
     }
 
@@ -576,7 +576,7 @@ class GoBoardTest extends FunSpec {
         "..OO."
       )
       val board = GoBoard(data)
-      val options = board.options('X')
+      val options = board.layer('X').options
       assert(options == Set(Position(4, 0), Position(4, 1)))
     }
 
@@ -588,7 +588,7 @@ class GoBoardTest extends FunSpec {
         "OOOOOO"
       )
       val board = GoBoard(data)
-      val options = board.options('X')
+      val options = board.layer('X').options
       assert(options == Set(Position(1, 3), Position(2, 1)))
     }
 
@@ -600,7 +600,7 @@ class GoBoardTest extends FunSpec {
         "OOOOOO"
       )
       val board = GoBoard(data)
-      val options = board.options('X')
+      val options = board.layer('X').options
       assert(options == Set(Position(1, 3), Position(2, 1)))
     }
 
@@ -611,7 +611,7 @@ class GoBoardTest extends FunSpec {
         "OOOOXO"
       )
       val board = GoBoard(data)
-      val options = board.options('X')
+      val options = board.layer('X').options
       assert(options == Set())
     }
   }

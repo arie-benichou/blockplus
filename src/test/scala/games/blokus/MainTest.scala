@@ -12,7 +12,7 @@ class MainTest extends FunSpec {
   describe("[Main]") {
 
     it("should have this result") {
-      // TODO tester chemin + résultat => TODO add path of moves to Context
+      // TODO tester chemin + résultat
       val expected = Map(
         Color.Blue -> 23,
         Color.Yellow -> 20,

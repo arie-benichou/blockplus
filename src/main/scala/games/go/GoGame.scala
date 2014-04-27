@@ -67,7 +67,7 @@ object GoGame {
 
   // TODO optimisable
   // TODO détecter les cycles
-  private def isLegal(move: GoMove, context: GoContext) = move.data == NullOption || context.space.options(context.id).contains(move.data)
+  private def isLegal(move: GoMove, context: GoContext) = move.data == NullOption || context.space.layer(context.id).options.contains(move.data)
 
   private def isTerminal(context: GoContext) =
     (context.path.size > 2 && context.path.take(2).toSet == Set(Move('O', NullOption), Move('X', NullOption)))

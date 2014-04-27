@@ -38,7 +38,7 @@ object GoMain {
   }
 
   private def choose(context: GoContext) = {
-    val options = context.space.options(context.id).intersect(context.space.mainSpaces)
+    val options = context.space.layer(context.id).options.intersect(context.space.mainSpaces)
     if (options.isEmpty) GoGame.NullOption
     else if (options.size == 1) options.head
     else {

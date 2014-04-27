@@ -20,7 +20,7 @@ object GoEvaluation {
     val n0 = board.cells.filterOthers(_._2 == opponent(character)).size
     val n1 = nextBoard.cells.filterOthers(_._2 == opponent(character)).size
     val globalFreedom = computeGlobalFreedom(nextBoard, character)
-    val protectedLands = nextBoard.lands(character).size
+    val protectedLands = nextBoard.layer(character).lands.size
     (1 + n0 - n1) * globalFreedom * 4 * (1 + protectedLands)
   }
 
@@ -28,7 +28,7 @@ object GoEvaluation {
     val nextBoard = board.play(p, character)
     val score = evaluateBoard(character, board, nextBoard)
     if (level == 0) score else {
-      val opponentOptions = nextBoard.options(opponent(character)).intersect(nextBoard.mainSpaces)
+      val opponentOptions = nextBoard.layer(opponent(character)).options.intersect(nextBoard.mainSpaces)
       if (opponentOptions.isEmpty) score
       else score - evaluateOptions(opponentOptions, opponent(character), nextBoard, level - 1).firstKey
     }
