@@ -7,10 +7,44 @@ import scala.collection.immutable.TreeMap
 import scala.collection.immutable.SortedSet
 import scala.annotation.tailrec
 
+// TODO extract Parser object
+// TODO extract Utils object
+// TODO extract new Layer and Layers objects
+// TODO extract Strings object
 object GoBoard {
 
-  // TODO use adversity abstraction
-  private def opponent(character: Char) = if (character == 'O') 'X' else 'O'
+  private object GoOptions {
+    /**
+     *  1) As long as there is at least one degree of freedom remaining once played
+     *  2) Except if the opponent string will loose its last degree of freedom
+     */
+    def apply(character: Char, board: GoBoard) = {
+      val stringsForSpace = board.layer('.').strings // TODO parameterize
+      val islands = stringsForSpace.filter(_.out.size < 1).flatMap(_.in)
+      val stringsForPlayer = board.layer(character).strings.map(_.out)
+      val tmp1 = stringsForPlayer.filter(_.size < 2).flatten
+      val tmp2 = tmp1.filter(e => islands.contains(e))
+      val suicides = tmp2.filter(e => !stringsForPlayer.exists(s => s.contains(e) && s.size > 1))
+      val stringsForOpponent = board.layer(opponent(character)).strings
+      val captures = stringsForOpponent.filter(_.out.size == 1).flatMap(_.out)
+      val effectiveIslands = islands.diff(captures).filterNot(p => stringsForPlayer.exists(_.contains(p)))
+      Set() ++ board.spaces -- effectiveIslands -- suicides ++ captures
+    }
+  }
+
+  private object GoLands {
+    def apply(character: Char, board: GoBoard) = {
+      val stringsForSpace = board.layer('.').strings // TODO parameterize
+      val islands = stringsForSpace.filter(_.out.isEmpty).flatMap(_.in)
+      val stringsForPlayer = board.layer(character).strings
+      val stringsForOpponent = board.layer(opponent(character)).strings
+      val capturables = stringsForPlayer.filter(_.out.size == 1).flatMap(_.out)
+      val effectiveIslands = islands.diff(capturables).filter { p =>
+        stringsForPlayer.exists(_.out.contains(p)) && !stringsForOpponent.exists(_.out.contains(p))
+      }
+      effectiveIslands
+    }
+  }
 
   private def reduce(board: GoBoard) = {
     val positions = board.spaces.foldLeft(Set[Position]()) { (s, p) =>
@@ -19,6 +53,8 @@ object GoBoard {
     }
     if (positions.isEmpty) board.spaces else positions
   }
+
+  private def opponent(character: Char) = if (character == 'O') 'X' else 'O'
 
   private def update(board: GoBoard, position: Position, character: Char) = {
     val capturedPositions = board.layer(opponent(character)).strings.filter(_.out == Set(position)).flatMap(s => s.in)
@@ -125,7 +161,14 @@ sealed case class GoBoard(cells: Cells[Char], layers: Map[Char, Layer]) {
   lazy val consoleView = buildConsoleView(cellsToArray(this.cells))
   lazy val spaces = this.cells.filterDefaults()
   lazy val mainSpaces = reduce(this)
-  def layer(character: Char) = layers(character)
+
+  // TODO extract Strings Object and create new Layer
+  private val landsByCharacter = collection.mutable.Map[Char, Set[Position]]()
+  private val optionsByCharacter = collection.mutable.Map[Char, Set[Position]]()
+  def layer(character: Char) = this.layers(character)
+  def lands(character: Char) = this.landsByCharacter.getOrElseUpdate(character, GoLands(character, this))
+  def options(character: Char) = this.optionsByCharacter.getOrElseUpdate(character, GoOptions(character, this))
+
   def play(position: Position, character: Char) = update(this, position, character)
   override def toString = this.consoleView
 }

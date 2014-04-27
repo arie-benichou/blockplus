@@ -6,7 +6,7 @@ import scala.collection.immutable.TreeMap
 
 object GoEvaluation {
 
-  // TODO use adversity abstraction
+  // TODO ? use adversity abstraction
   private def opponent(character: Char) = if (character == 'O') 'X' else 'O'
 
   private def computeGlobalFreedom(board: GoBoard, character: Char): Double = {
@@ -20,7 +20,7 @@ object GoEvaluation {
     val n0 = board.cells.filterOthers(_._2 == opponent(character)).size
     val n1 = nextBoard.cells.filterOthers(_._2 == opponent(character)).size
     val globalFreedom = computeGlobalFreedom(nextBoard, character)
-    val protectedLands = GoLands(character, nextBoard).size
+    val protectedLands = nextBoard.lands(character).size
     (1 + n0 - n1) * globalFreedom * 4 * (1 + protectedLands)
   }
 
@@ -28,7 +28,7 @@ object GoEvaluation {
     val nextBoard = board.play(p, character)
     val score = evaluateBoard(character, board, nextBoard)
     if (level == 0) score else {
-      val opponentOptions = GoOptions(opponent(character), nextBoard).intersect(nextBoard.mainSpaces)
+      val opponentOptions = nextBoard.options(opponent(character)).intersect(nextBoard.mainSpaces)
       if (opponentOptions.isEmpty) score
       else score - evaluateOptions(opponentOptions, opponent(character), nextBoard, level - 1).firstKey
     }
