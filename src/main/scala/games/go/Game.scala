@@ -51,11 +51,12 @@ object Game {
       !context.history.exists(_.space == application(move, context.space))
   }
 
+  // TODO cas ou <= 2
   private def isTerminal(context: GoContext) =
     (context.history.size > 2 && Set(context.lastMove, context.history.head.lastMove) == Set(Move('O', NullOption), Move('X', NullOption)))
 
   private def onUpdate(context: GoContext) = ()
 
-  val context: GoContext = Context(sides, Board(Board13X13), application, isLegal, isTerminal, onUpdate)
+  val context: GoContext = Context(sides, Board(Board9X9), application, isLegal, isTerminal, onUpdate)
 
 }
