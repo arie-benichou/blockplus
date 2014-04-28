@@ -7,44 +7,16 @@ import components.Positions._
 
 object GoMain {
 
-  private implicit def renderer(context: GoContext) {
-    println("=================================")
-    if (context.history.isEmpty) {
-      println("\nNew Game\n")
-      println("=================================")
-      println
-      println(context.space)
-    }
-    else {
-      val lastMove = context.lastMove
-      if (lastMove.data == Game.NullOption) {
-        println
-        println("player " + lastMove.side + " has passed")
-        println
-      }
-      else {
-        println
-        println("player  : " + lastMove.side)
-        println("move    : " + lastMove.data)
-        println
-        println(context.space)
-      }
-    }
-    if (context.isTerminal) {
-      println("=================================")
-      println("\nGame is over !\n")
-      println("=================================")
-    }
-  }
-
-  def avoidDuplicateBoard(context: GoContext, ls: List[Position]): Position = {
+  @tailrec
+  private def avoidDuplicateBoard(context: GoContext, ls: List[Position]): Position = {
     if (ls.isEmpty) Game.NullOption
     else if (context.isLegal(Move(context.id, ls.head), context)) ls.head
     else avoidDuplicateBoard(context, ls.tail)
   }
 
-  private def choose(context: GoContext) = {
+  private def chooseMove(context: GoContext) = {
     val options = context.space.layer(context.id).options.intersect(context.space.mainSpaces)
+    // TODO use pattern matching
     val ls = if (options.isEmpty) List(Game.NullOption)
     else if (options.size == 1) List(options.head)
     else {
@@ -55,16 +27,49 @@ object GoMain {
           evaluatedOptions.head._1 < Evaluation.evaluateBoard('O', context.space, context.space)
         else false
         if (shouldPassToo) List(Game.NullOption)
-        else evaluatedOptions.values.flatten.toList
+        else
+          evaluatedOptions.values.flatten.toList
       }
       else options.toList
     }
-    avoidDuplicateBoard(context, ls)
+    val position = avoidDuplicateBoard(context, ls)
+    Move(context.id, position)
   }
 
   @tailrec
-  private def run(context: GoContext)(implicit renderer: GoContext => Unit): GoContext = {
-    if (context.isTerminal) context else run(context(Move(context.id, choose(context))))
+  private def run(context: GoContext): GoContext = if (context.isTerminal) context else run(context(chooseMove(context)))
+
+  private def renderer(context: GoContext) {
+    println("=================================")
+    if (context.history.isEmpty) {
+      println
+      println("New Game")
+      println
+      println("=================================")
+      println
+      println(context.space)
+    }
+    else {
+      if (context.lastMove.data != Game.NullOption) {
+        println
+        println("player  : " + context.lastMove.side)
+        println("move    : " + context.lastMove.data)
+        println
+        println(context.space)
+      }
+      else {
+        println
+        println("player " + context.lastMove.side + " has passed")
+        println
+      }
+    }
+    if (context.isTerminal) {
+      println("=================================")
+      println
+      println("Game is over !")
+      println
+      println("=================================")
+    }
   }
 
   def main(args: Array[String]) {
