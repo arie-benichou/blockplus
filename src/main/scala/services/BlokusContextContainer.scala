@@ -37,7 +37,7 @@ object BlokusContextContainer {
 
   private def pathToString(ctx: BlokusContext) = {
     val stack = ctx.history.map { ctx => moveToString(ctx.lastMove) }
-    (if (ctx.lastMove != null) stack.push(ctx.lastMove) else stack).mkString(",")
+    (if (ctx.lastMove != null) stack.push(moveToString(ctx.lastMove)) else stack).mkString(",")
   }
 
 }
