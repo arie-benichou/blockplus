@@ -1,7 +1,5 @@
 package services
 
-import scala.collection.immutable.Stack
-
 import org.json4s.DefaultFormats
 import org.json4s.Formats
 import org.scalatra.json.JValueResult
@@ -9,11 +7,11 @@ import org.scalatra.json.JacksonJsonSupport
 
 import components.Positions.Position
 import games.blokus.Game
+import games.blokus.Game.BlokusContext
 import games.blokus.Game.BlokusMove
 import games.blokus.Game.Color
 import games.blokus.Game.Move
 import games.blokus.Options
-import games.blokus.Game.BlokusContext
 
 object BlokusContextContainer {
 
@@ -34,11 +32,12 @@ object BlokusContextContainer {
     (color, positions)
   }
 
-  private def moveToString(move: BlokusMove) = move.side.toString().charAt(0) + (move.data.positions.map(p => p.row + ":" + p.column)).mkString("-")
+  private def moveToString(move: BlokusMove) =
+    if (move == null) "" else move.side.toString().charAt(0) + (move.data.positions.map(p => p.row + ":" + p.column)).mkString("-")
 
   private def pathToString(ctx: BlokusContext) = {
     val stack = ctx.history.map { ctx => moveToString(ctx.lastMove) }
-    stack.push(ctx.lastMove).mkString(",")
+    (if (ctx.lastMove != null) stack.push(ctx.lastMove) else stack).mkString(",")
   }
 
 }
